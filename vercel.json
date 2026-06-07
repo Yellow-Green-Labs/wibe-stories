@@ -1,0 +1,42 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/wisprstories.html" },
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/language-stats", "destination": "/language-stats.html" },
+    { "source": "/card", "destination": "/api/card" },
+    { "source": "/c/:id", "destination": "/api/c/[id]" }
+  ],
+  "redirects": [
+    { "source": "/about.html", "destination": "/about", "statusCode": 301 },
+    { "source": "/language-stats.html", "destination": "/language-stats", "statusCode": 301 }
+  ],
+  "crons": [
+    { "path": "/api/cleanup", "schedule": "0 3 * * *" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.blob.vercel-storage.com https://*.public.blob.vercel-storage.com; media-src 'self' blob:; connect-src 'self' https://unpkg.com https://fonts.googleapis.com https://fonts.gstatic.com https://*.public.blob.vercel-storage.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), geolocation=(), gyroscope=(), magnetometer=(), payment=(), usb=(), microphone=(self)" },
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin-allow-popups" }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(js|css|html)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, must-revalidate" }
+      ]
+    }
+  ]
+}

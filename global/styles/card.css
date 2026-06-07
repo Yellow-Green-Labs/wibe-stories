@@ -1,0 +1,899 @@
+/* PREVIEW LABEL */
+.pvw-lbl {
+  font-size: clamp(10px, 0.3vw + 9px, 11px);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 16px;
+}
+
+/* CARD WRAP */
+.card-wrap {
+  width: 100%;
+  max-width: 360px;
+  position: relative;
+  /* Just enough room below the card for the bottom half of the
+     sticker-style overlap download button (which sits at bottom: -24px,
+     half on / half off the card). */
+  padding-block-end: 32px;
+}
+
+/* THE CARD */
+.card {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  position: relative;
+  background: transparent;
+  border-radius: 32px;
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.18),
+    0 6px 20px rgba(0, 0, 0, 0.1);
+  transition:
+    box-shadow 0.3s,
+    transform 0.22s,
+    opacity 0.45s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Empty-state typewriter demo: gentle fade between cycles. The text writes
+   itself in character-by-character; no caret is drawn. */
+.card-demo-fading {
+  opacity: 0;
+}
+
+.card-empty {
+  border: 2px dashed rgba(0, 0, 0, 0.12);
+  background: transparent !important;
+  box-shadow: none;
+}
+.card-empty .card-bg {
+  display: none;
+}
+.card-empty .card-panel {
+  display: none;
+}
+.card-empty .card-voice-label {
+  display: none;
+}
+.card-empty .card-wv {
+  display: none;
+}
+.card-empty .card-label,
+.card-empty .card-foot {
+  display: none;
+}
+
+.card-empty-state {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 24px;
+  pointer-events: none;
+}
+.card-empty .card-empty-state {
+  display: flex;
+}
+.card-empty-state .card-empty-prompt {
+  font-family: var(--serif);
+  font-size: clamp(16px, 2.2vw, 22px);
+  font-style: italic;
+  color: var(--ink2);
+  text-align: center;
+  line-height: 1.6;
+  max-width: 260px;
+}
+.card-empty-state .card-empty-quote {
+  font-family: var(--serif);
+  font-size: clamp(12px, 1.1vw, 14px);
+  font-style: italic;
+  color: var(--ink3);
+  opacity: 0.7;
+  text-align: center;
+  line-height: 1.55;
+  max-width: 240px;
+  letter-spacing: 0.01em;
+  position: relative;
+  padding-top: 14px;
+}
+.card-empty-state .card-empty-quote::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 1px;
+  background: var(--rule);
+}
+
+
+.card {
+  min-height: 240px;
+}
+
+.card-bg {
+  position: absolute;
+  inset: 0;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+/* Tone icon watermark in the top-right corner of the card.
+   Fully visible (not clipped), sized to feel like an accent not a glitch,
+   transparent enough to sit behind text without competing with it. */
+.card-ghost {
+  position: absolute;
+  top: 3px;
+  right: 0px;
+  font-size: clamp(42px, 9vw, 64px);
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.2);
+  user-select: none;
+  pointer-events: none;
+  z-index: 1;
+  transition: color 0.3s;
+}
+.card-empty .card-ghost {
+  display: none;
+}
+.card-content {
+  position: relative;
+  z-index: 2;
+  padding: 20px 18px 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+  gap: 6px;
+}
+.card-label {
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  font-weight: 500;
+  color: #ffffeb;
+  min-height: 16px;
+  flex-shrink: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+.card-label-name {
+  font-weight: 600;
+  color: #ffffeb;
+}
+.card-label-sep {
+  font-weight: 500;
+  color: #ffffeb;
+}
+.card-label-lang {
+  font-weight: 500;
+  color: #ffffeb;
+}
+.card-panel {
+  position: relative;
+  background: var(--card-panel-bg, #fff);
+  border-radius: 10px;
+  padding-inline: 14px;
+  padding-block-start: 20px;
+  padding-block-end: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.card-panel[dir="rtl"] .card-panel-text,
+.card-panel-text {
+  font-family: var(--sans);
+  font-size: clamp(14px, 0.25vw + 13.2px, 15px);
+  font-weight: 400;
+  margin-block-end: 8px;
+  line-height: 1.5;
+  color: var(--ink);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  transition:
+    font-family 0.2s,
+    font-weight 0.2s,
+    font-style 0.2s,
+    letter-spacing 0.2s;
+}
+
+.card-panel-text.mt {
+  color: #aaa;
+  font-style: italic;
+}
+.card-wv {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5px;
+  height: 22px;
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+.wb {
+  flex: 1;
+  border-radius: 1px;
+  min-height: 2px;
+  background: rgba(26, 26, 26, 0.12);
+  transition: all 0.2s ease;
+}
+.card-voice-label {
+  font-size: clamp(10px, 0.3vw + 9px, 11px);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(26, 26, 26, 0.45);
+  margin-top: 4px;
+  text-align: left !important;
+  direction: ltr;
+  /* Display-only label (set by updateSourceLabel) — not interactive. No pointer
+     cursor or hover/scale effect, so it doesn't read as a clickable control. */
+  cursor: default;
+  pointer-events: none;
+  user-select: none;
+}
+.card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.card-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffffeb;
+  position: relative;
+}
+.card-logo-img {
+  height: 26px;
+  display: block;
+}
+.card-logo-text {
+  font-family: var(--sans);
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  font-weight: 600;
+  letter-spacing: -0.1px;
+  color: rgba(255, 255, 255, 0.8);
+}
+.card-made-with {
+  font-size: clamp(10px, 0.3vw + 9px, 12px);
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.02em;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* WISPR CTA — conversion surface shown after a card is created.
+   Visual weight bumped via size, weight, and a soft elevation. Stays neutral
+   (ink/cream) so it never competes with the amber "Create card" primary
+   action in the left column when both are on screen. Fully reversible: revert
+   this block to restore the previous compact styling. */
+.wcta {
+  width: 100%;
+  max-width: 320px;
+  /* Extra top margin so the gold "Download card" sticker button (which
+     hangs ~26px below the card edge) has clear breathing room before
+     this CTA box starts. Same value works on desktop and mobile. */
+  margin-top: 32px;
+  background: var(--cream2);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  padding: 16px 20px;
+  text-align: center;
+  display: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+.wcta.show {
+  display: block;
+}
+.wcta p {
+  font-size: clamp(13px, 0.3vw + 12px, 14px);
+  color: var(--ink2);
+  line-height: 1.55;
+  margin-bottom: 11px;
+}
+.wcta a {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--cream);
+  font-size: clamp(13px, 0.3vw + 12px, 14px);
+  font-weight: 700;
+  padding: 10px 22px;
+  border-radius: 8px;
+  text-decoration: none;
+  letter-spacing: 0.005em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    opacity 0.18s;
+}
+.wcta a:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+.wcta a:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.14);
+}
+
+/* GHOST BACKGROUND IMAGE */
+.bg-ghost-decoration {
+  position: fixed;
+  bottom: 50px;
+  right: 40px;
+  width: clamp(120px, 20vw, 260px);
+  height: auto;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.bg-ghost-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.15s;
+  pointer-events: none;
+}
+.bg-ghost-img:active {
+  transform: scale(0.92);
+}
+
+/* Ghost wiggle on click */
+@keyframes ghostWiggle {
+  0%   { transform: rotate(0deg); }
+  20%  { transform: rotate(-6deg); }
+  40%  { transform: rotate(5deg); }
+  60%  { transform: rotate(-4deg); }
+  80%  { transform: rotate(2deg); }
+  100% { transform: rotate(0deg); }
+}
+.bg-ghost-img.wiggle {
+  animation: ghostWiggle 0.4s ease;
+}
+
+/* Speech bubble */
+.ghost-bubble {
+  position: absolute;
+  bottom: calc(100% + 18px);
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  transform-origin: bottom center;
+  background: var(--cream2);
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 12px;
+  padding: 8px 14px;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  opacity: 0;
+  transition: none;
+  pointer-events: none;
+  z-index: 100;
+}
+.ghost-bubble.show {
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
+}
+.ghost-bubble.float-out {
+  transform: translateX(-50%) scale(0.9) translateY(-30px);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+/* Border tail — the stroke layer (larger) */
+.ghost-bubble::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-top-color: rgba(0,0,0,0.15);
+  pointer-events: none;
+}
+
+/* Fill tail — the background layer (smaller, shifted up to reveal border edges) */
+.ghost-bubble::after {
+  content: '';
+  position: absolute;
+  top: calc(100% - 1px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 7px solid transparent;
+  border-top-color: var(--cream2);
+  pointer-events: none;
+}
+.ghost-bubble-text {
+  font-size: clamp(13px, 0.3vw + 12px, 14px);
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.03em;
+  font-family: var(--sans);
+}
+.ghost-bubble-text .typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 14px;
+  background: var(--ink);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink 0.7s step-end infinite;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+:root.dark .ghost-bubble {
+  background: #2a2a2a;
+  border-color: rgba(255,255,235,0.2);
+}
+:root.dark .ghost-bubble::before {
+  border-top-color: rgba(255,255,235,0.2);
+}
+:root.dark .ghost-bubble::after {
+  border-top-color: #2a2a2a;
+}
+:root.dark .ghost-bubble-text { color: #ffffeb; }
+:root.dark .ghost-bubble-text .typing-cursor { background: #ffffeb; }
+
+/* Custom tooltip for logos */
+.custom-tip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  transform-origin: top center;
+  background: var(--cream2);
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 12px;
+  padding: 8px 14px;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 300;
+  font-family: var(--sans);
+  font-size: clamp(13px, 0.3vw + 12px, 14px);
+  font-weight: 600;
+  color: var(--ink);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s;
+}
+.nav-brand:hover .custom-tip,
+.card-logo:hover .custom-tip {
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+}
+.custom-tip::after {
+  content: '';
+  position: absolute;
+  bottom: calc(100% - 1px);
+  left: 50%;
+  transform: translateX(-50%);
+  border: 7px solid transparent;
+  border-bottom-color: var(--cream2);
+  pointer-events: none;
+}
+:root.dark .custom-tip {
+  background: #2a2a2a;
+  border-color: rgba(255,255,235,0.2);
+  color: #ffffeb;
+}
+:root.dark .custom-tip::after {
+  border-bottom-color: #2a2a2a;
+}
+
+.shell.has-card .bg-ghost-decoration {
+  display: none;
+}
+
+/* DOWNLOAD BUTTON — "sticker" overlap pattern. The button sits at
+   bottom: -26px relative to the card-wrap, meaning roughly half of it
+   sits on the card and half hangs below. This breaks the card's
+   rectangular frame and draws the eye — without competing with the gold
+   primary CTAs. A slow "halo" pulse animates outward to gently catch
+   peripheral vision. Works in light and dark modes; mobile rules below
+   override to the existing top-sticky pattern. */
+.dl-btn {
+  position: absolute;
+  /* `bottom: 6px` inside a card-wrap with padding-block-end: 32px puts
+     the button's center exactly at the card's bottom edge — so half of
+     the 52px button sits on the card and half hangs into the padding
+     below (the "sticker" overlap). */
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  /* Frosted-glass white pill — high contrast against EVERY card color
+     in the palette (violet, amber, crimson, emerald, ocean, rose,
+     orange, teal, fuchsia, indigo). Backdrop blur creates depth so the
+     button reads as floating above the card, not pasted on. */
+  background: #f59e0b;
+  color: #1a1a1a;
+  border: 0.5px solid rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  padding: 0 26px;
+  min-height: 52px;
+  font-size: clamp(14px, 0.3vw + 13px, 15px);
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  white-space: nowrap;
+  max-width: calc(100% - 16px);
+  /* Clean Wispr-Flow-style drop shadow — soft gold ambient lift +
+     subtle dark drop. No thick rings. */
+  box-shadow:
+    0 8px 24px rgba(245, 158, 11, 0.5),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+  transition:
+    background 0.2s,
+    transform 0.18s ease,
+    box-shadow 0.2s;
+  pointer-events: auto;
+  isolation: isolate;
+}
+.dl-btn::before {
+  /* Animated halo — a glowing ring that pulses outward, catching
+     peripheral vision against any card background. Uses box-shadow
+     (not scale) so the glow expands beyond the button without needing
+     overflow tricks. */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  animation: dl-halo 2.2s ease-out infinite;
+}
+/* Single soft gold halo pulse — calm, peripheral catch. No rings. */
+@keyframes dl-halo {
+  0% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.55);
+  }
+  100% {
+    box-shadow: 0 0 0 14px rgba(245, 158, 11, 0);
+  }
+}
+.dl-btn:hover {
+  background: #f59e0b;
+  border-color: rgba(0, 0, 0, 0.12);
+  transform: translateX(-50%) translateY(-3px);
+  box-shadow:
+    0 12px 32px rgba(245, 158, 11, 0.6),
+    0 6px 16px rgba(0, 0, 0, 0.2);
+}
+.dl-btn:active {
+  transform: translateX(-50%) translateY(-1px);
+  box-shadow:
+    0 6px 16px rgba(245, 158, 11, 0.5),
+    0 3px 10px rgba(0, 0, 0, 0.18);
+}
+.dl-btn .fa-download {
+  font-size: clamp(16px, 0.5vw + 14px, 18px);
+  color: #1a1a1a;
+  animation: dl-bounce 1s ease infinite;
+}
+/* Respect users who've asked the OS for reduced motion — halo pause +
+   bounce pause. Button still works, just static. */
+@media (prefers-reduced-motion: reduce) {
+  .dl-btn::before,
+  .dl-btn .fa-download {
+    animation: none;
+  }
+}
+@keyframes dl-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+.dl-btn .fa-spinner {
+  animation: fa-spin 0.8s linear infinite;
+}
+.dl-btn.done .fa-download {
+  animation: none;
+}
+.dl-btn.success {
+  background: #22c55e;
+  color: #fff;
+  box-shadow:
+    0 8px 24px rgba(34, 197, 94, 0.5),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+.dl-btn.success .fa-check {
+  font-size: clamp(18px, 0.5vw + 16px, 20px);
+}
+:root.dark .dl-btn.success {
+  box-shadow:
+    0 8px 24px rgba(34, 197, 94, 0.45),
+    0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
+/* Dark mode: same clean drop shadow approach, just deeper to compensate
+   for the darker chrome behind it. Gold halo pulse stays gold (no
+   ring/border effect). */
+:root.dark .dl-btn {
+  box-shadow:
+    0 8px 24px rgba(245, 158, 11, 0.45),
+    0 4px 14px rgba(0, 0, 0, 0.5);
+}
+:root.dark .dl-btn:hover {
+  box-shadow:
+    0 12px 32px rgba(245, 158, 11, 0.55),
+    0 6px 18px rgba(0, 0, 0, 0.55);
+}
+
+@media (max-width: 720px) {
+  /* Mobile: same overlap pattern as desktop — button straddles card's
+     bottom edge, centered. Hover/active transforms disabled so taps
+     don't shift the button sideways. Smaller, calmer shadow than
+     desktop to avoid the "big ring" effect on narrow viewports. */
+  .card-wrap {
+    padding-block-end: 32px;
+  }
+  .dl-btn {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    max-width: calc(100% - 24px);
+    padding: 0 22px;
+    min-height: 48px;
+    font-size: clamp(14px, 0.3vw + 13px, 15px);
+    background: #f59e0b;
+    color: #1a1a1a;
+    border: 0.5px solid rgba(0, 0, 0, 0.08);
+    /* Tighter, less spread shadow than desktop. */
+    box-shadow:
+      0 4px 12px rgba(245, 158, 11, 0.4),
+      0 2px 6px rgba(0, 0, 0, 0.18);
+    z-index: 50;
+    justify-content: center;
+  }
+  /* Touch devices: keep button anchored on tap — no translateY shift.
+     Preserve translateX(-50%) so it stays centered. */
+  .dl-btn:hover {
+    background: #f59e0b;
+    transform: translateX(-50%);
+    box-shadow:
+      0 4px 12px rgba(245, 158, 11, 0.45),
+      0 2px 6px rgba(0, 0, 0, 0.18);
+  }
+  .dl-btn:active {
+    transform: translateX(-50%);
+    box-shadow:
+      0 2px 8px rgba(245, 158, 11, 0.4),
+      0 1px 4px rgba(0, 0, 0, 0.18);
+  }
+  :root.dark .dl-btn,
+  :root.dark .dl-btn:hover,
+  :root.dark .dl-btn:active {
+    background: #f59e0b;
+    color: #1a1a1a;
+    box-shadow:
+      0 4px 12px rgba(245, 158, 11, 0.4),
+      0 2px 6px rgba(0, 0, 0, 0.45);
+  }
+}
+.btn-s .fa-spinner {
+  animation: fa-spin 0.8s linear infinite;
+}
+
+/* Voice Attach Toggle */
+.voice-bar {
+  position: absolute;
+  bottom: 66px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 0.5px solid rgba(0,0,0,0.08);
+  border-radius: 40px;
+  padding: 8px 18px;
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  font-weight: 600;
+  color: #1a1a1a;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  white-space: nowrap;
+  pointer-events: auto;
+  transition: opacity 0.3s, transform 0.3s;
+}
+.voice-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+.voice-toggle-icon {
+  font-size: clamp(16px, 0.4vw + 14px, 18px);
+}
+.voice-toggle-text {
+  font-weight: 600;
+}
+.voice-toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.voice-toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.voice-toggle-slider {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: #ccc;
+  border-radius: 20px;
+  transition: 0.25s;
+}
+.voice-toggle-slider::before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.25s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.voice-toggle-switch input:checked + .voice-toggle-slider {
+  background: #f59e0b;
+}
+.voice-toggle-switch input:checked + .voice-toggle-slider::before {
+  transform: translateX(16px);
+}
+.voice-toggle-switch input:disabled + .voice-toggle-slider {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.voice-toggle-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  color: #555;
+}
+.voice-toggle-duration {
+  font-size: clamp(11px, 0.2vw + 10px, 12px);
+  font-variant-numeric: tabular-nums;
+}
+.voice-play-btn {
+  background: none;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  color: #555;
+  transition: 0.15s;
+  padding: 0;
+  line-height: 1;
+}
+.voice-play-btn:hover {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: #f59e0b;
+  color: #1a1a1a;
+}
+.voice-play-btn.playing {
+  background: #f59e0b;
+  border-color: #f59e0b;
+  color: #1a1a1a;
+}
+.voice-rerecord-btn {
+  background: none;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  color: #555;
+  transition: 0.15s;
+  padding: 0;
+  line-height: 1;
+}
+.voice-rerecord-btn:hover {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: #f59e0b;
+  color: #1a1a1a;
+}
+:root.dark .voice-bar {
+  background: rgba(40, 40, 40, 0.92);
+  border-color: rgba(255,255,255,0.1);
+  color: #ffffeb;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+}
+:root.dark .voice-toggle-slider {
+  background: #555;
+}
+:root.dark .voice-toggle-switch input:checked + .voice-toggle-slider {
+  background: #f59e0b;
+}
+:root.dark .voice-toggle-info {
+  color: #aaa;
+}
+:root.dark .voice-play-btn {
+  border-color: rgba(255,255,255,0.2);
+  color: #aaa;
+}
+:root.dark .voice-play-btn:hover {
+  background: rgba(245, 158, 11, 0.2);
+  color: #ffffeb;
+}
+:root.dark .voice-rerecord-btn {
+  border-color: rgba(255,255,255,0.2);
+  color: #aaa;
+}
+:root.dark .voice-rerecord-btn:hover {
+  background: rgba(245, 158, 11, 0.2);
+  color: #ffffeb;
+}
+.source-nudge {
+  font-size: clamp(9px, 0.2vw + 8px, 10px);
+  color: var(--ink3);
+  opacity: 0;
+  transition: opacity 0.3s;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+.source-nudge.show {
+  opacity: 0.7;
+}
+:root.dark .source-nudge {
+  color: rgba(255,255,235,0.4);
+}
+@media (max-width: 720px) {
+  .voice-bar {
+    bottom: 62px;
+    padding: 6px 14px;
+    gap: 6px;
+    font-size: clamp(11px, 0.3vw + 10px, 12px);
+  }
+  .voice-toggle-switch {
+    width: 32px;
+    height: 18px;
+  }
+  .voice-toggle-slider::before {
+    height: 14px;
+    width: 14px;
+  }
+  .voice-toggle-switch input:checked + .voice-toggle-slider::before {
+    transform: translateX(14px);
+  }
+}
+

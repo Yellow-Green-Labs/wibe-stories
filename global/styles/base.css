@@ -1,0 +1,114 @@
+/* WISPR STORIES - BASE STYLES */
+/* Resets, variables, typography, and global styles */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--sc-thumb);
+  border-radius: 2px;
+}
+
+* {
+  scrollbar-color: var(--sc-thumb) transparent;
+}
+
+:root {
+  --cream: #ffffeb;
+  --cream2: #f0f0df;
+  --cream3: #ebebd0;
+  --ink: #1a1a1a;
+  --ink2: #555548;
+  --ink3: #77776a;
+  --rule: rgba(26, 26, 26, 0.1);
+  --nav-bg: rgba(255, 255, 235, 0.95);
+  --sc-thumb: rgba(0, 0, 0, 0.14);
+  --sc-track: rgba(0, 0, 0, 0.12);
+  --focus-border: rgba(26, 26, 26, 0.3);
+  --card-panel-bg: #fff;
+  /* Font stacks are defined in fonts.css */
+}
+
+:root.dark {
+  --cream: #1a1a1a;
+  --cream2: #2a2a2a;
+  --cream3: #353535;
+  --ink: #ffffeb;
+  --ink2: #c0c0b0;
+  --ink3: #a0a090;
+  --rule: rgba(255, 255, 235, 0.12);
+  --nav-bg: rgba(26, 26, 26, 0.95);
+  --sc-thumb: rgba(255, 255, 235, 0.35);
+  --sc-track: rgba(255, 255, 235, 0.15);
+  --focus-border: rgba(255, 255, 235, 0.3);
+  --card-panel-bg: #fff;
+}
+
+html.theme-transitioning body,
+html.theme-transitioning body *,
+html.theme-transitioning body *::before,
+html.theme-transitioning body *::after {
+  transition: background-color 0.2s ease,
+              color 0.2s ease,
+              border-color 0.2s ease !important;
+}
+
+html {
+  font-size: 16px;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+textarea,
+input {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* NAV */
+/* SHELL, LEFT, RIGHT, FOOTER — defined in layout.css */
+
+/* Visually hidden (screen-reader + SEO friendly) */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

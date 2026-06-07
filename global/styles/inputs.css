@@ -1,0 +1,896 @@
+/* RECORD */
+.rec-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.rec-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--cream);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  touch-action: manipulation;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+.rec-btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  opacity: 0.92;
+}
+.rec-btn:active {
+  transform: scale(0.88);
+}
+.rec-btn svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.2s;
+}
+.rec-btn.on svg {
+  transform: scale(1.12);
+}
+.rec-btn.on {
+  background: #dc2626;
+  animation: rp 1.2s ease infinite;
+}
+.rec-btn.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+}
+@keyframes rp {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 18px rgba(220, 38, 38, 0);
+  }
+}
+.rec-st {
+  font-size: clamp(15px, 0.4vw + 14px, 17px);
+  font-weight: 500;
+  color: var(--ink);
+}
+.rec-st.retry {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+.rec-sub {
+  font-size: clamp(15px, 0.4vw + 14px, 17px);
+  color: var(--ink3);
+  margin-top: 2px;
+}
+.rec-sub.live {
+  color: var(--ink);
+  font-weight: 500;
+}
+.rec-counter {
+  display: none;
+  font-size: clamp(14px, 0.5vw + 12px, 17px);
+  color: #d97706;
+  background: rgba(217, 119, 6, 0.08);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 12px;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+.rec-counter.warn,
+.rec-counter.exhausted {
+  display: block;
+}
+.rec-counter.exhausted {
+  color: #b91c1c;
+  background: rgba(185, 28, 28, 0.06);
+}
+@media (max-width: 480px) {
+  .rec-counter.warn,
+  .rec-counter.exhausted {
+    font-size: 18px;
+    padding: 12px 16px;
+  }
+  .rec-sub {
+    font-size: 18px;
+  }
+}
+.mic-select-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  color: var(--ink3);
+}
+.mic-select-row i {
+  flex-shrink: 0;
+  font-size: 12px;
+}
+.mic-select-row select {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--cream);
+  color: var(--ink);
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  font-family: inherit;
+  cursor: pointer;
+}
+/* FONT SIZE STEPPER (Style section) */
+.font-size-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.font-step {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--rule);
+  background: var(--cream);
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+.font-step:hover:not(:disabled) {
+  background: var(--cream2);
+}
+.font-step:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.font-size-val {
+  min-width: 48px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.font-size-info {
+  flex-basis: 100%;
+  font-size: clamp(11px, 0.3vw + 10px, 12px);
+  color: var(--ink3);
+}
+/* Enabled state reads as active (not greyed) so the live status is clear. */
+.font-size-info.on {
+  color: var(--ink2, var(--ink));
+}
+.font-size-row.disabled .font-size-val {
+  opacity: 0.4;
+}
+.rec-btn.paused {
+  background: var(--cream2);
+  color: var(--ink3);
+}
+
+/* OR */
+.or {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+}
+.orl {
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+.ort-icon {
+  color: var(--ink3);
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  opacity: 0.55;
+  line-height: 1;
+}
+
+/* TEXTAREA */
+.sta {
+  width: 100%;
+  min-height: 100px;
+  font-family: "Inter", system-ui, sans-serif;
+  background: var(--cream2);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: clamp(11px, 0.3vw + 10px, 12px);
+  line-height: 1.65;
+  color: var(--ink);
+  resize: none;
+  outline: none;
+}
+.sta::placeholder {
+  color: var(--ink3);
+  font-style: italic;
+}
+.sta:focus {
+  border-color: var(--focus-border);
+  outline: none;
+}
+.char-r {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+.char-c {
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  color: var(--ink3);
+  transition: all 0.2s;
+}
+.char-c.warn {
+  color: #eab308;
+  font-weight: 600;
+}
+.char-c.warn::before {
+  content: "\26A0\FE0F";
+  display: inline-block;
+  font-size: clamp(11px, 0.3vw + 10px, 12px);
+}
+.char-c.grace {
+  --grace-red: #dc2626;
+  color: var(--grace-red);
+  font-weight: 600;
+}
+@media (prefers-color-scheme: dark) {
+  .char-c.grace { --grace-red: #f87171; }
+}
+.char-c.grace::before {
+  content: "\1F6DF";
+  display: inline-block;
+  font-size: clamp(11px, 0.3vw + 10px, 12px);
+}
+.grace-link {
+  color: inherit;
+  font-size: clamp(11px, 0.3vw + 10px, 12px);
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: rgba(255, 255, 255, 0.35);
+  text-underline-offset: 2px;
+  cursor: pointer;
+  transition: text-decoration-color 0.15s, text-decoration-style 0.15s;
+}
+.grace-link:hover {
+  text-decoration-style: solid;
+  text-decoration-color: inherit;
+}
+@media (prefers-color-scheme: light) {
+  .grace-link { text-decoration-color: rgba(0, 0, 0, 0.3); }
+}
+@media (hover: none) {
+  .grace-link:active {
+    color: #fff;
+    background: var(--grace-red, #dc2626);
+    border-radius: 2px;
+    padding: 0 2px;
+    margin: 0 -2px;
+  }
+}
+.reset-btn {
+  /* Pushed to the right edge of .rec-row (the row with the mic + Tap to
+     speak), aligned with the top of that section so the user can hit
+     "Start over" without scrolling.
+
+     Default state uses a muted red (#b91c1c) so the destructive intent is
+     readable at a glance without competing with the gold primary CTA.
+     Hover escalates to the brighter alarm-red to signal "this is the
+     point of no return." */
+  margin-left: auto;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  font-weight: 700;
+  color: #b91c1c;
+  background: transparent;
+  border: 1px solid rgba(185, 28, 28, 0.35);
+  /* Soft rect (8px) — matches the action-button tier (.btn-c, .btn-s,
+     upgrade buttons). One consistent radius for action-type buttons. */
+  border-radius: 8px;
+  padding: 6px 10px;
+  transition: all 0.18s;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.reset-btn i {
+  font-size: clamp(11px, 0.3vw + 10px, 12px);
+}
+:root.dark .reset-btn {
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.4);
+}
+
+/* Mobile — stack icon on top, label on bottom, matching the mobile-bar
+   pattern (Create/Share are also icon-over-text). Saves horizontal space
+   so the button doesn't collide with the mic+title block. */
+@media (max-width: 720px) {
+  .reset-btn {
+    flex-direction: column;
+    gap: 3px;
+    padding: 8px 10px;
+    font-size: clamp(10px, 0.3vw + 9px, 11px);
+    line-height: 1.1;
+    min-width: 56px;
+    align-items: center;
+    justify-content: center;
+  }
+  .reset-btn i {
+    font-size: clamp(14px, 0.3vw + 13px, 15px);
+  }
+}
+.reset-btn:hover {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.35);
+}
+.reset-btn:active {
+  transform: scale(0.95);
+}
+:root.dark .reset-btn:hover {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.55);
+}
+
+.rec-done-btn {
+  margin-left: auto;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  font-weight: 700;
+  color: #fff;
+  background: #b8893b;
+  border: 1px solid #b8893b;
+  border-radius: 8px;
+  padding: 6px 12px;
+  transition: all 0.18s;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+.rec-done-btn i {
+  font-size: clamp(11px, 0.3vw + 10px, 12px);
+}
+.rec-done-btn:hover {
+  background: #a07530;
+  border-color: #a07530;
+}
+.rec-done-btn:active {
+  transform: scale(0.95);
+}
+.rec-done-btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+:root.dark .rec-done-btn {
+  background: #d4a352;
+  border-color: #d4a352;
+  color: #1a1410;
+}
+:root.dark .rec-done-btn:hover {
+  background: #e6b663;
+  border-color: #e6b663;
+}
+@media (max-width: 720px) {
+  .rec-done-btn {
+    flex-direction: column;
+    gap: 3px;
+    padding: 8px 10px;
+    font-size: clamp(10px, 0.3vw + 9px, 11px);
+    line-height: 1.1;
+    min-width: 56px;
+    align-items: center;
+    justify-content: center;
+  }
+  .rec-done-btn i {
+    font-size: clamp(14px, 0.3vw + 13px, 15px);
+  }
+}
+
+/* NAME */
+.nin {
+  width: 100%;
+  background: var(--cream2);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 10px 13px;
+  font-size: clamp(12px, 0.5vw + 11.4px, 14px);
+  color: var(--ink);
+  outline: none;
+  transition: all 0.2s;
+}
+.nin::placeholder {
+  color: var(--ink3);
+}
+.nin:focus {
+  border-color: var(--focus-border);
+  outline: none;
+}
+
+/* TONE */
+.tone-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tc {
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  color: var(--ink2);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  touch-action: manipulation;
+  cursor: pointer;
+}
+.tc:hover {
+  border-color: var(--ink3);
+  color: var(--ink);
+}
+.tc.on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--cream);
+  font-weight: 500;
+}
+.tc:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Tone limit badges — show remaining rewrites directly on each tone button.
+   Bumped from 9–10px to 13px so the count is legible at a glance without
+   needing to lean in. Min-width keeps single-digit counts visually balanced
+   with double-digit / infinity glyphs. */
+.tone-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(13px, 0.3vw + 12px, 14px);
+  font-weight: 800;
+  line-height: 1;
+  margin-left: 6px;
+  padding: 3px 7px;
+  min-width: 20px;
+  border-radius: 8px;
+  vertical-align: middle;
+  letter-spacing: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+.tone-badge-unlimited {
+  background: rgba(34, 197, 94, 0.22);
+  color: #0d5c2b;
+  font-size: clamp(14px, 0.3vw + 13px, 15px);
+}
+/* Selected chip — switch to a solid, high-contrast badge so the count/glyph
+   stays legible against the dark (light-mode) or light (dark-mode) chip
+   background. Translucent backgrounds disappeared against ink chips. */
+.tc.on .tone-badge-unlimited {
+  background: #22c55e;
+  color: #04240f;
+}
+.tone-badge-limited {
+  background: rgba(245, 158, 11, 0.22);
+  color: #8a3f00;
+}
+.tc.on .tone-badge-limited {
+  background: #f59e0b;
+  color: #1a1a1a;
+}
+/* Exhausted state — when count hits 0 and the chip is disabled. Stronger
+   red contrast + a subtle pulse so the user notices the lockout. */
+.tc:disabled .tone-badge-limited {
+  background: rgba(220, 38, 38, 0.28);
+  color: #7f1d1d;
+  animation: tone-badge-exhausted-pulse 1.8s ease-in-out infinite;
+}
+@keyframes tone-badge-exhausted-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+/* Pro badge — infinity symbol for unlimited rewrites */
+.tone-badge-pro {
+  background: rgba(139, 92, 246, 0.22);
+  color: #6d28d9;
+  font-size: clamp(15px, 0.3vw + 14px, 16px);
+}
+.tc.on .tone-badge-pro {
+  background: #8b5cf6;
+  color: #ffffff;
+}
+
+/* Dark mode — slightly lighter text + background so badges stay readable
+   against the dark chip surface. */
+:root.dark .tone-badge-unlimited {
+  background: rgba(34, 197, 94, 0.28);
+  color: #4ade80;
+}
+:root.dark .tone-badge-limited {
+  background: rgba(245, 158, 11, 0.28);
+  color: #fbbf24;
+}
+:root.dark .tc:disabled .tone-badge-limited {
+  background: rgba(220, 38, 38, 0.32);
+  color: #fca5a5;
+}
+:root.dark .tone-badge-pro {
+  background: rgba(139, 92, 246, 0.32);
+  color: #c4b5fd;
+}
+/* Dark-mode + selected chip — explicit override (same specificity as the
+   generic dark-mode rules above, but later in cascade so it wins). Solid
+   high-contrast badges so the count stays legible on the cream-colored
+   selected-chip background in dark mode, mirroring the light-mode fix. */
+:root.dark .tc.on .tone-badge-unlimited {
+  background: #22c55e;
+  color: #04240f;
+}
+:root.dark .tc.on .tone-badge-limited {
+  background: #f59e0b;
+  color: #1a1a1a;
+}
+:root.dark .tc.on .tone-badge-pro {
+  background: #8b5cf6;
+  color: #ffffff;
+}
+
+/* Mobile — keep badges almost as large as desktop. Small drop in padding
+   keeps the chip-row from wrapping awkwardly on narrow screens while still
+   being thumb-friendly. */
+@media (max-width: 720px) {
+  .tone-badge {
+    font-size: clamp(12px, 0.3vw + 11px, 13px);
+    padding: 3px 6px;
+    min-width: 18px;
+    margin-left: 5px;
+  }
+  .tone-badge-unlimited,
+  .tone-badge-pro {
+    font-size: clamp(13px, 0.3vw + 12px, 14px);
+  }
+}
+
+/* Blank state: tone / colour / size / roundness rows are inert until the
+   card has content. JS already early-returns clicks; this is the matching
+   visual affordance so users see they can't interact yet. */
+.shell:not(.has-card) #toneRow .tc,
+.shell:not(.has-card) #palRow .pd,
+.shell:not(.has-card) #sizeRow .sz,
+.shell:not(.has-card) #roundnessRow .sz {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.tone-pill-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.tone-pill {
+  font-size: clamp(11px, 0.3vw + 10px, 12px);
+  color: var(--ink2);
+  background: rgba(26, 26, 26, 0.06);
+  padding: 4px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+:root.dark .tone-pill {
+  background: rgba(255, 255, 235, 0.08);
+  color: var(--ink3);
+}
+.tone-pill.exhausted {
+  background: rgba(220, 38, 38, 0.08);
+  color: #dc2626;
+  font-weight: 500;
+  animation: exhausted-pulse 2s ease-in-out infinite;
+}
+:root.dark .tone-pill.exhausted {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+}
+@keyframes exhausted-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+.tone-pill.supporter {
+  background: #febbf1;
+  color: #1a1a1a;
+}
+:root.dark .tone-pill.supporter {
+  background: rgba(255, 215, 0, 0.12);
+  color: #fbbf24;
+}
+.tone-upgrade-link {
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  font-weight: 700;
+  color: #1a1a1a;
+  background: #f59e0b;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition: background 0.2s, transform 0.1s;
+}
+.tone-upgrade-link:hover {
+  background: #e69500;
+}
+.tone-upgrade-link:active {
+  transform: scale(0.96);
+}
+
+/* PALETTE */
+.pal-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.pd {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  transition: transform 0.18s;
+  flex-shrink: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+  /* Button reset — these swatches are now <button> elements (for proper
+     keyboard/screen-reader semantics). Override the browser's default
+     button chrome so they keep their pure-circle appearance. */
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.pd:hover {
+  transform: scale(1.18);
+}
+.pd.on {
+  border-color: var(--ink);
+}
+
+/* SIZE BUTTONS */
+.sz-row {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.sz {
+  background: transparent;
+  border: 1px solid var(--rule);
+  /* Full pill — matches .tc tone chips. Both are inline single-select
+     group pickers and now read as one consistent visual language. */
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  color: var(--ink2);
+  transition: all 0.18s;
+  white-space: nowrap;
+  touch-action: manipulation;
+}
+.sz:hover {
+  border-color: var(--ink3);
+  color: var(--ink);
+}
+.sz.on {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--cream);
+  font-weight: 500;
+}
+
+/* CUSTOMIZE ACCORDION — native <details> with custom chevron.
+   Open by default for the new hierarchy; user can collapse if desired. */
+.customize {
+  border-bottom: 1px solid var(--rule);
+  /* Internal bottom padding keeps the last sub-section (Shape buttons)
+     from sitting flush against the section's bottom border. The outer
+     .left gap (28px) still handles spacing to the next section. */
+  padding: 0 0 16px;
+}
+.customize > summary.customize-summary {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 2px;
+  cursor: pointer;
+  user-select: none;
+  font-family: var(--sans);
+  color: var(--ink2);
+  transition: color 0.18s;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 0;
+}
+.customize > summary.customize-summary::-webkit-details-marker {
+  display: none;
+}
+.customize > summary.customize-summary:hover,
+.customize > summary.customize-summary:focus-visible {
+  color: var(--ink);
+}
+.customize-summary-label {
+  font-size: clamp(14px, 0.3vw + 13px, 15px);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+/* Live chip summary inside the Style accordion's collapsed header. Shows
+   the user's current tone, color, and shape choices at a glance so the
+   collapsed state never feels like state-loss. */
+.customize-summary-hint {
+  flex: 1;
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  color: var(--ink3);
+  font-weight: 400;
+  letter-spacing: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.cz-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--ink2);
+  white-space: nowrap;
+}
+.cz-chip-sep {
+  color: var(--ink3);
+  opacity: 0.5;
+  user-select: none;
+}
+.cz-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+:root.dark .cz-swatch {
+  border-color: rgba(255, 255, 235, 0.25);
+}
+.customize-chevron {
+  font-size: clamp(10px, 0.3vw + 9px, 11px);
+  color: var(--ink3);
+  transition: transform 0.2s ease;
+}
+.customize[open] > summary.customize-summary .customize-chevron {
+  transform: rotate(90deg);
+}
+/* Vertical spacing between wrapped steps. `.left`'s `gap: 24px` only reaches
+   direct children, and these step divs are grandchildren now — restore the
+   same rhythm explicitly. The 18px top on the first step pulls it closer to
+   the summary header for grouping; subsequent steps get the full 24px. */
+.customize[open] > div {
+  margin-top: 24px;
+}
+.customize[open] > div:first-of-type {
+  margin-top: 18px;
+}
+/* Hide non-summary children when collapsed. Only applies to <details> elements. */
+details.customize:not([open]) > *:not(summary.customize-summary) {
+  display: none !important;
+}
+
+/* Layout hierarchy redesign — "Clear Path" for elderly usability */
+
+/* Hero input zone: wraps record + or divider + textarea */
+.input-hero {
+  background: var(--cream2);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  padding: 24px;
+  /* Bottom spacing is owned by .left's gap (28px) — no margin-bottom here.
+     See spacing-rhythm pass: parent gap is the single source of truth. */
+}
+.input-hero > div {
+  margin-bottom: 0;
+}
+.input-hero > div + .or,
+.input-hero > .or + div {
+  margin-top: 20px;
+}
+.input-hero .rec-row {
+  margin-top: 8px;
+}
+.input-hero .lbl {
+  margin-bottom: 15px;
+}
+.input-hero .sta {
+  margin-top: 8px;
+}
+.input-hero .char-r {
+  margin-top: 8px;
+}
+
+/* Wispr Flow toggle */
+/* Compact name row */
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--cream2);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  /* Bottom spacing owned by .left's gap (28px) — no margin-bottom. */
+}
+.name-label {
+  font-size: clamp(14px, 0.3vw + 13px, 15px);
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.name-row .nin {
+  flex: 1;
+  margin-bottom: 0;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: clamp(11px, 0.3vw + 10px, 12px);
+  background: var(--cream);
+}
+.name-row .nin:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+
+/* Customize section header (no longer a <details> toggle) */
+.customize-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+.customize-header-label {
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.customize-header-hint {
+  font-size: clamp(11px, 0.3vw + 10px, 12px);
+  color: var(--ink3);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}

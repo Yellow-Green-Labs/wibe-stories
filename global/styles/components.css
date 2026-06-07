@@ -1,0 +1,106 @@
+/* WISPR STORIES - COMPONENT STYLES */
+/* Typography, form elements, cards, modals, and UI components */
+
+/* REWRITE PREVIEW BAR */
+.rewrite-preview-bar {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--cream2);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  margin-top: 12px;
+  font-size: clamp(13px, 0.3vw + 12px, 14px);
+  color: var(--ink2);
+}
+.rewrite-preview-bar.show {
+  display: flex;
+  flex-wrap: wrap;
+}
+.rewrite-preview-label {
+  flex: 1;
+  font-weight: 600;
+  color: var(--ink);
+}
+.rewrite-preview-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: clamp(13px, 0.3vw + 12px, 14px);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.rewrite-preview-btn:active {
+  transform: scale(0.97);
+}
+.rewrite-preview-accept {
+  background: var(--ink);
+  color: var(--cream);
+}
+.rewrite-preview-accept:hover {
+  background: #333;
+}
+.rewrite-preview-cancel {
+  background: transparent;
+  color: var(--ink2);
+  border: 1px solid var(--rule);
+}
+.rewrite-preview-cancel:hover {
+  background: var(--cream2);
+  color: var(--ink);
+}
+@media (max-width: 720px) {
+  .rewrite-preview-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .rewrite-preview-btn {
+    justify-content: center;
+  }
+}
+
+/* Firefox + shared-link notices replaced by the unified `.notice` slot;
+   see typography.css. The old .ff-notice / .shared-cta classes are gone
+   from the HTML — no styles needed here. */
+
+/* DARK MODE OVERRIDES */
+:root.dark .card-panel-text {
+  color: #1a1a1a;
+}
+:root.dark .card-empty {
+  border-color: rgba(255, 255, 235, 0.15);
+}
+:root.dark .ec:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* PAGE-LOAD ANIMATIONS */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.shell > .left {
+  animation: fade-up 0.45s ease-out both;
+}
+.pvw-lbl {
+  animation: fade-up 0.45s ease-out both;
+  animation-delay: 0.04s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .shell > .left,
+  .pvw-lbl {
+    animation: none;
+  }
+}

@@ -1,0 +1,244 @@
+{
+  "nav": {
+    "tagline": "बोलें · स्टाइल करें · साझा करें",
+    "help": "कैसे उपयोग करें",
+    "theme": "डार्क मोड टॉगल करें"
+  },
+  "hero": {
+    "title": "एक बार बोलें, हमेशा साझा करें",
+    "subtitle": "माइक से रिकॉर्ड करें या <a href=\"https://wisprflow.ai/r?BEST76\" target=\"_blank\" rel=\"noopener\" class=\"wispr-flow-link\"><strong><em>Wispr Flow</em></strong></a> से बोलें। स्टाइल करें और प्यार से साझा करें।",
+    "quote": "\"यादों को संजोकर रखें; वे आपको संजोकर रखेंगी।\""
+  },
+  "sharedCta": "✨ <strong>आपको एक Wibe Story मिली!</strong> अपनी खुद की बनाने के लिए <em>मेरा कार्ड बनाएं</em> टैप करें।",
+  "record": {
+    "label": "आपकी आवाज़",
+    "status": "बोलने के लिए टैप करें",
+    "sub": "आपके शब्द रुकने पर दिखाई देते हैं",
+    "generating": "बनाया जा रहा है…",
+    "processing": "आपका ऑडियो प्रोसेस हो रहा है…",
+    "cancel": "रद्द करें",
+    "couldntRetry": "ट्रांसक्राइब नहीं हो सका। पुनः प्रयास के लिए टैप करें",
+    "listening": "आपके शब्द सुनकर और प्रतिपादन",
+    "paused": "रुका हुआ — जारी शुरू करने के लिए माइक दबाएं",
+    "pausedHint": "ट्रांस्क्रिप्ट करने के लिए डन दबाएं",
+    "ended": "Recording ended",
+    "done": "हो गया",
+    "softHint": "आज और कुछ 💛",
+    "softHintDone": "कल और 💛"
+  },
+  "speechLang": {
+    "title": "भाषण भाषा चुनें",
+    "sub": "अपनी बोली जाने वाली भाषा चुनें: 44 विकल्प",
+    "triggerLabel": "भाषा सेट करें",
+    "reminderEmpty": "भाषण पहचान के लिए भाषा चुनें",
+    "reminderNative": "असमर्थित भाषाओं को मातृभाषा माना जाएगा",
+    "micDisabledNoLang": "माइक बंद है",
+    "micDisabledNative": "माइक बंद है",
+    "subNoLang": "माइक चालू करने के लिए भाषा चुनें",
+    "subNative": "बोलने के लिए कोई दूसरी भाषा चुनें",
+    "tooltipNoLang": "माइक चालू करने के लिए भाषा चुनें",
+    "tooltipNative": "मूल भाषा के लिए माइक बंद है",
+    "filter": "भाषाएँ खोजें…"
+  },
+  "orText": "या अपने शब्द टाइप या पेस्ट करें",
+  "textarea": {
+    "label": "आपके शब्द",
+    "placeholder": "बोलें या अपना संदेश टाइप करें..."
+  },
+  "resetBtn": "सब रीसेट करें",
+  "nameRow": {
+    "label": "की ओर से",
+    "placeholder": "जैसे: मां, दुर्गा, टेलर, सेन्सेई, अबुएला, Pi Lisa, एला..."
+  },
+  "examples": {
+    "label": "प्रेरणा चाहिए? एक उदाहरण पर क्लिक करें"
+  },
+  "customize": {
+    "summary": "अपना बनाएं",
+    "hint": "लहजा · रंग · आकार"
+  },
+  "tone": {
+    "label": "लहजा",
+    "original": "मूल",
+    "warm": "कोमल",
+    "bold": "बोल्ड",
+    "poetic": "काव्यात्मक",
+    "playful": "खेलने वाला",
+    "reflective": "चिंतनशील",
+    "honest": "ईमानदार",
+    "rewriting": "फिर से लिख रहा है..."
+  },
+  "color": {
+    "label": "कार्ड का रंग",
+    "violet": "बैंगनी",
+    "amber": "एम्बर",
+    "crimson": "गहरा लाल",
+    "emerald": "पन्ना",
+    "ocean": "महासागर",
+    "rose": "गुलाब",
+    "orange": "नारंगी",
+    "teal": "टील",
+    "fuchsia": "फ्यूशिया",
+    "indigo": "इंडिगो"
+  },
+  "shape": {
+    "label": "आकार",
+    "sharp": "तेज किनारे",
+    "rounded": "गोल कोने"
+  },
+  "fontSize": {
+    "label": "फ़ॉन्ट आकार",
+    "info": "केवल तभी उपलब्ध जब आपके कार्ड का टेक्स्ट 85 अक्षरों से कम हो",
+    "infoOn": "आपके कार्ड का टेक्स्ट छोटा है: आकार समायोजित करने के लिए + या − दबाएँ"
+  },
+  "actions": {
+    "create": "कार्ड बनाएं",
+    "share": "कार्ड साझा करें",
+    "createTone": "{tone} कार्ड बनाएं"
+  },
+  "rewrite": {
+    "left": "{n} {tone} पुनर्लेखन आज बाकी",
+    "plural": "{n} {tone} पुनर्लेखन आज बाकी",
+    "exhausted": "0 {tone} पुनर्लेखन आज बाकी। दूसरा टोन आज़माएँ"
+  },
+  "closing": "आपकी आवाज, सुंदरता से साझा की गई",
+  "preview": {
+    "label": "लाइव पूर्वावलोकन"
+  },
+  "upgrade": "अपग्रेड",
+  "download": "कार्ड डाउनलोड करें",
+  "cardEmpty": "विवरण भरें,<br />आपका कार्ड यहां दिखेगा",
+  "cardPlaceholder": "आपकी कहानी आपके बोलने या टाइप करने पर यहां दिखाई देती है।",
+  "wcta": {
+    "text": "जहां भी आप टाइप करते हैं अपनी आवाज का उपयोग करें: WhatsApp, Gmail, Slack, कोई भी ऐप।",
+    "link": "Wispr Flow मुफ्त आज़माएं →"
+  },
+  "footer": {
+    "text": "<a href=\"#top\" class=\"footer-wave wave-on-hover\">Wibe Stories</a>",
+    "independent": "स्वतंत्र परियोजना · Wispr Flow से संबद्ध नहीं",
+    "copyright": "© 2026",
+    "about": "About",
+    "langStats": "Lang Stats",
+    "support": "Support Here",
+    "articles": "Read Articles",
+    "issues": "Submit Issues",
+    "help": "How to Use",
+    "license": "License & Terms"
+  },
+  "shareModal": {
+    "title": "अपना कार्ड साझा करें",
+    "sub": "छवि सीधे पोस्ट करें, या ऐप लिंक साझा करें ताकि दूसरे अपने कार्ड बना सकें।",
+    "native": "ऐप्स पर साझा करें",
+    "download": "कार्ड छवि डाउनलोड करें",
+    "copyLink": "छवि लिंक कॉपी करें",
+    "copyImage": "छवि कॉपी करें"
+  },
+  "upgradeModal": {
+    "title": "Pro में अपग्रेड करें",
+    "sub": "असीमित लहजा पुनर्लेखन। कोई दैनिक सीमा नहीं।",
+    "buyCoffee": "☕ मुझे कॉफी खिलाएं",
+    "or": "या",
+    "haveKey": "पहले से सपोर्टर्स की है?",
+    "keyPlaceholder": "अपनी की पेस्ट करें...",
+    "continue": "जारी रखें",
+    "lostKey": "अपनी की खो दी?",
+    "emailPlaceholder": "अपना ईमेल दर्ज करें",
+    "emailSend": "सबमिट करें",
+    "disclaimer": "Wibe Stories — made for Wispr Flow"
+  },
+  "capacity": {
+    "title": "हम प्रेम से अभिभूत हैं!",
+    "text": "अविश्वसनीय प्रतिक्रिया के लिए धन्यवाद। हम अपनी दैनिक क्षमता तक पहुंच गए हैं और अपने सर्वर को थोड़ा आराम देने की जरूरत है।",
+    "reset": "हम मध्यरात्रि UTC पर वापस आएंगे।",
+    "btn": "जांचें कि हम वापस आए हैं या नहीं"
+  },
+  "onboarding": {
+    "title": "Wibe Stories में आपका स्वागत है",
+    "step1": "अपना संदेश <strong>बोलें या टाइप करें</strong>। माइक्रोफ़ोन टैप करें या टेक्स्ट पेस्ट करें।",
+    "step2": "अपने कार्ड को <strong>अनुकूलित</strong> करें: लहजा, रंग और कोने का स्टाइल चुनें।",
+    "step3": "<strong>बनाएं और साझा करें</strong>: PNG के रूप में डाउनलोड करें या सोशल प्लेटफ़ॉर्म पर सीधे साझा करें।",
+    "gotIt": "समझ गया, चलिए शुरू करते हैं!",
+    "hint": "बाद में मदद चाहिए? फ़ुटर मेनू में <em>उपयोग कैसे करें</em> खोलें।",
+    "refTitle": "त्वरित संदर्भ",
+    "refToggle": "<strong>मोड स्विच करें</strong>: रिकॉर्ड और टेक्स्ट मोड के बीच टॉगल करने के लिए माइक आइकन टैप करें।",
+    "refVoice": "<strong>वॉइस भाषाएँ</strong>: 44 भाषाएँ + ऑटो-डिटेक्ट। भाषा बटन से चुनें।",
+    "refText": "<strong>टेक्स्ट एडिटिंग</strong>: टेक्स्ट एरिया 150 अक्षर तक स्वीकार करता है। स्वतंत्र रूप से संपादित करें।",
+    "refTone": "<strong>टोन रीराइटिंग</strong>: 6 टोन। मुफ्त उपयोगकर्ताओं को प्रति टोन प्रति दिन 5 मिलते हैं। Pro उपयोगकर्ताओं को असीमित मिलता है।",
+    "refColor": "<strong>रंग</strong>: कार्ड पृष्ठभूमि सेट करने के लिए एक पैलेट चुनें।",
+    "refShape": "<strong>आकार</strong>: मैसेजिंग के लिए तेज किनारे, गैलरी के लिए गोल।",
+    "refFontSize": "<strong>फ़ॉन्ट आकार</strong>: छोटे संदेशों के लिए कार्ड टेक्स्ट बढ़ाएँ।"
+  },
+  "mobileBar": {
+    "create": "बनाएं",
+    "share": "साझा करें",
+    "upgrade": "अपग्रेड"
+  },
+  "toasts": {
+    "welcomePro": "Welcome to Pro 💛",
+    "proUnlocked": "Pro unlocked 💛",
+    "invalidKey": "Key invalid",
+    "verifyFailed": "Verify failed",
+    "enterKey": "Enter your key",
+    "checking": "Checking...",
+    "micDenied": "Allow mic to record",
+    "micAccessDenied": "Allow mic in browser",
+    "noMicFound": "No mic found",
+    "micUnavailable": "Mic unavailable",
+    "couldNotStartMic": "Mic failed",
+    "micSlow": "Mic slow — try again",
+    "voiceUnavailable": "Voice off — type instead",
+    "maxTime": "Max {max}s",
+    "noSpeech": "Speak louder",
+    "silence": "Didn’t catch that",
+    "speechUnavailable": "Speech off — try later",
+    "speechNotResponding": "Speech off — type instead",
+    "speechError": "Speech error",
+    "noMatch": "Speak more clearly",
+    "sttFailed": "Couldn’t transcribe",
+    "recordingStopped": "Recording stopped",
+    "dailyRewritesUsed": "Out of {tone} today",
+    "rewriteFailed": "Rewrite failed",
+    "rewriteTimedOut": "Rewrite timed out",
+    "cumulativeLimit": "More tomorrow 💛",
+    "tooLong": "Max {max}s. Tap Done",
+    "freeLimit": "Free limit hit 💛",
+    "proLimit": "More tomorrow 💛",
+    "downloaded": "Saved ✓",
+    "voiceEmpty": "Voice empty",
+    "webmDone": "Voice saved ✓",
+    "webmFailed": "Voice export failed",
+    "shared": "Shared ✓",
+    "uploadFailed": "Upload failed",
+    "linkCopied": "Copied ✓",
+    "copyFailed": "Copy failed",
+    "imageCopied": "Copied ✓",
+    "imageSaved": "Saved to Photos",
+    "imageSavedDownloads": "Saved ✓",
+    "downloadFailed": "Save failed",
+    "copyNotSupported": "Copy unavailable",
+    "exportFailed": "Export failed",
+    "playbackFailed": "Can’t play",
+    "thankYouEmail": "Sent! 💛",
+    "validEmail": "Enter a valid email",
+    "updateAvailable": "Update ready — tap to refresh",
+    "setSpeechLang": "Choose language"
+  },
+  "voice": {
+    "attach": "Attach voice",
+    "attached": "Voice added",
+    "detached": "Voice removed",
+    "textChanged": "Voice removed",
+    "webmDone": "Voice saved ✓",
+    "webmFailed": "Voice export failed",
+    "listen": "Listen to voice",
+    "playing": "Playing..."
+  },
+  "exportProgress": {
+    "generating": "कार्ड बन रहा है…"
+  },
+  "dlChoice": {
+    "title": "अपना कार्ड डाउनलोड करें",
+    "png": "<i class=\"fa-solid fa-file-image\"></i> PNG डाउनलोड करें",
+    "webm": "<i class=\"fa-solid fa-video\"></i> WebM डाउनलोड करें"
+  }
+}

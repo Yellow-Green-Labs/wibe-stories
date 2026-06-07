@@ -1,0 +1,43 @@
+{
+  "republic-day": {
+    "id": "republic-day",
+    "type": "date-aware",
+    "displayType": "country-flag",
+    "triggers": [
+      "republic day",
+      "happy republic day",
+      "republic day wishes",
+      "republic day greetings"
+    ],
+    "dateMap": {
+      "India": "01-26"
+    }
+  },
+  "independence-day": {
+    "id": "independence-day",
+    "type": "date-aware",
+    "displayType": "country-flag",
+    "triggers": [
+      "independence day",
+      "happy independence day",
+      "independence",
+      "independence celebration",
+      "national independence day",
+      "/\\d+(st|nd|rd|th)\\s+independence day/i",
+      "/happy\\s+\\d+(st|nd|rd|th)\\s+independence day/i",
+      "/independence day\\s+\\d+(st|nd|rd|th)/i"
+    ],
+    "dateMap": {
+      "Canada": "07-01",
+      "USA": "07-04",
+      "Philippines": "06-12",
+      "Indonesia": "08-17",
+      "Pakistan": "08-14",
+      "India": "08-15",
+      "Malaysia": "08-31",
+      "Mexico": "09-16",
+      "Brazil": "09-07",
+      "Vietnam": "09-02"
+    }
+  }
+}

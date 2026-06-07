@@ -1,0 +1,245 @@
+{
+  "nav": {
+    "tagline": "speak · scribe · share",
+    "help": "How to use",
+    "theme": "Toggle dark mode"
+  },
+  "hero": {
+    "title": "Say it once, share it forever",
+    "subtitle": "Record with the mic or dictate with <a href=\"https://wisprflow.ai/r?BEST76\" target=\"_blank\" rel=\"noopener\" class=\"wispr-flow-link\"><strong><em>Wispr Flow</em></strong></a>. Style and share with love.",
+    "quote": "\"Hold onto memories; they will hold onto you.\""
+  },
+  "sharedCta": "✨ <strong>You received a Wibe Story!</strong> Tap <em>Create my card</em> to make your own.",
+  "record": {
+    "label": "Your voice",
+    "status": "Tap to speak",
+    "sub": "",
+    "generating": "Generating…",
+    "processing": "Processing your audio…",
+    "cancel": "Cancel",
+    "couldntRetry": "Couldn't transcribe. Tap to retry",
+    "listening": "Listening and processing your words",
+    "paused": "Paused \u2014 tap the mic to resume",
+    "pausedHint": "Tap Done to transcribe",
+    "ended": "Recording ended",
+    "done": "Done",
+    "softHint": "A few more today \ud83d\udc9b",
+    "softHintDone": "More tomorrow \ud83d\udc9b"
+  },
+  "speechLang": {
+    "title": "Select speech language",
+    "sub": "Choose your speaking language: 44 options",
+    "triggerLabel": "Set language",
+    "reminderEmpty": "Select a language for speech detection",
+    "reminderNative": "Unsupported languages are treated as the native language",
+    "micDisabledNoLang": "Mic disabled",
+    "micDisabledNative": "Mic disabled",
+    "subNoLang": "Select a language to enable the mic",
+    "subNative": "Choose a different language to speak",
+    "tooltipNoLang": "Select a language to enable the mic",
+    "tooltipNative": "Mic is currently disabled for native language",
+    "filter": "Search languages…"
+  },
+  "orText": "or type or paste your words",
+  "textarea": {
+    "label": "Your words",
+    "placeholder": "Speak or type your message..."
+  },
+  "resetBtn": "Start over",
+  "nameRow": {
+    "label": "From",
+    "placeholder": "e.g. Mom, Durga, Taylor, Sensei, Abuela, Pi Lisa, Ella..."
+  },
+  "examples": {
+    "label": "Need inspiration? Click an example"
+  },
+  "customize": {
+    "summary": "Style",
+    "hint": "Tone · color · shape"
+  },
+  "tone": {
+    "label": "Tone",
+    "original": "Original",
+    "warm": "Warm",
+    "bold": "Bold",
+    "poetic": "Poetic",
+    "playful": "Playful",
+    "reflective": "Reflective",
+    "honest": "Honest",
+    "rewriting": "Rewriting…"
+  },
+  "color": {
+    "label": "Card color",
+    "violet": "Violet",
+    "amber": "Amber",
+    "crimson": "Crimson",
+    "emerald": "Emerald",
+    "ocean": "Ocean",
+    "rose": "Rose",
+    "orange": "Orange",
+    "teal": "Teal",
+    "fuchsia": "Fuchsia",
+    "indigo": "Indigo"
+  },
+  "shape": {
+    "label": "Shape",
+    "sharp": "Sharp corners",
+    "rounded": "Rounded corners"
+  },
+  "fontSize": {
+    "label": "Font size",
+    "info": "Available only when your card text is under 85 characters",
+    "infoOn": "Your card text is short: tap + or − to adjust the size"
+  },
+  "actions": {
+    "create": "Create card",
+    "share": "Share card",
+    "createTone": "Create {tone} card"
+  },
+  "rewrite": {
+    "left": "{n} {tone} rewrite left today",
+    "plural": "{n} {tone} rewrites left today",
+    "exhausted": "0 {tone} rewrites left today. Try another tone"
+  },
+  "closing": "Your voice, beautifully shared",
+  "preview": {
+    "label": "Live preview"
+  },
+  "upgrade": "Upgrade",
+  "download": "Download card",
+  "exportProgress": {
+    "generating": "Generating card&hellip;"
+  },
+  "dlChoice": {
+    "title": "Download your card",
+    "png": "<i class=\"fa-solid fa-file-image\"></i> Download PNG",
+    "webm": "<i class=\"fa-solid fa-video\"></i> Download WebM"
+  },
+  "cardEmpty": "Fill the details,<br />your card appears here",
+  "cardPlaceholder": "Your story appears here as you speak or type.",
+  "wcta": {
+    "text": "Use your voice anywhere you type: WhatsApp, Gmail, Slack, any app.",
+    "link": "Try Wispr Flow free →"
+  },
+  "footer": {
+    "text": "<a href=\"#top\" class=\"footer-wave wave-on-hover\">Wibe Stories</a>",
+    "independent": "Independent project · Not affiliated with Wispr Flow",
+    "copyright": "© 2026",
+    "about": "About",
+    "langStats": "Lang Stats",
+    "support": "Support Here",
+    "articles": "Read Articles",
+    "issues": "Submit Issues",
+    "help": "How to Use",
+    "license": "License & Terms"
+  },
+  "shareModal": {
+    "title": "Share your card",
+    "sub": "Post the image directly, or share the app link so others can make their own cards.",
+    "native": "Share to apps",
+    "download": "Download card image",
+    "copyLink": "Copy image link",
+    "copyImage": "Copy image"
+  },
+  "upgradeModal": {
+    "title": "Upgrade to Pro",
+    "sub": "Unlimited tone rewrites. No more daily limits.",
+    "buyCoffee": "☕ Buy me a coffee",
+    "or": "or",
+    "haveKey": "Already have a supporter key?",
+    "keyPlaceholder": "Paste your key...",
+    "continue": "Continue",
+    "lostKey": "Lost your key?",
+    "emailPlaceholder": "Enter your email",
+    "emailSend": "Submit",
+    "disclaimer": "Wibe Stories — made for Wispr Flow"
+  },
+  "capacity": {
+    "title": "We're overwhelmed with love!",
+    "text": "Thank you for the incredible response. We've reached our daily capacity and need to give our servers a little rest.",
+    "reset": "We'll be back at midnight UTC.",
+    "btn": "Check if we're back"
+  },
+  "onboarding": {
+    "title": "Welcome to Wibe Stories",
+    "step1": "<strong>Speak or type</strong> your message. Tap the microphone or paste text.",
+    "step2": "<strong>Customize</strong> your card: choose a tone, color, and corner style.",
+    "step3": "<strong>Create &amp; share</strong>: download as PNG or share directly on social platforms.",
+    "gotIt": "Got it, let's go!",
+    "hint": "Need help later? Open <em>How to Use</em> in the footer menu.",
+    "refTitle": "Quick reference",
+    "refToggle": "<strong>Switch modes</strong>: tap the mic icon to toggle between record and text mode.",
+    "refVoice": "<strong>Voice languages</strong>: 44 languages + auto-detect. Pick from the language button.",
+    "refText": "<strong>Text editing</strong>: the textarea accepts up to 150 characters. Edit freely.",
+    "refTone": "<strong>Tone rewriting</strong>: 6 tones. Free users get 5 per tone per day. Pro users get unlimited.",
+    "refColor": "<strong>Color</strong>: choose a palette to set the card background.",
+    "refShape": "<strong>Shape</strong>: sharp edges for messaging, rounded for galleries.",
+    "refFontSize": "<strong>Font size</strong>: bump the card text up for short messages."
+  },
+  "mobileBar": {
+    "create": "Create",
+    "share": "Share",
+    "upgrade": "Upgrade"
+  },
+  "toasts": {
+    "welcomePro": "Welcome to Pro \ud83d\udc9b",
+    "proUnlocked": "Pro unlocked \ud83d\udc9b",
+    "invalidKey": "Key invalid",
+    "verifyFailed": "Verify failed",
+    "enterKey": "Enter your key",
+    "checking": "Checking...",
+    "micDenied": "Allow mic to record",
+    "micAccessDenied": "Allow mic in browser",
+    "noMicFound": "No mic found",
+    "micUnavailable": "Mic unavailable",
+    "couldNotStartMic": "Mic failed",
+    "micSlow": "Mic slow \u2014 try again",
+    "voiceUnavailable": "Voice off \u2014 type instead",
+    "maxTime": "Max {max}s",
+    "noSpeech": "Speak louder",
+    "silence": "Didn\u2019t catch that",
+    "speechUnavailable": "Speech off \u2014 try later",
+    "speechNotResponding": "Speech off \u2014 type instead",
+    "speechError": "Speech error",
+    "noMatch": "Speak more clearly",
+    "sttFailed": "Couldn\u2019t transcribe",
+    "recordingStopped": "Recording stopped",
+    "dailyRewritesUsed": "Out of {tone} today",
+    "rewriteFailed": "Rewrite failed",
+    "rewriteTimedOut": "Rewrite timed out",
+    "cumulativeLimit": "More tomorrow \ud83d\udc9b",
+    "tooLong": "Max {max}s. Tap Done",
+    "freeLimit": "Free limit hit \ud83d\udc9b",
+    "proLimit": "More tomorrow \ud83d\udc9b",
+    "downloaded": "Saved \u2713",
+    "voiceEmpty": "Voice empty",
+    "webmDone": "Voice saved \u2713",
+    "webmFailed": "Voice export failed",
+    "shared": "Shared \u2713",
+    "uploadFailed": "Upload failed",
+    "linkCopied": "Copied \u2713",
+    "copyFailed": "Copy failed",
+    "imageCopied": "Copied \u2713",
+    "imageSaved": "Saved to Photos",
+    "imageSavedDownloads": "Saved \u2713",
+    "downloadFailed": "Save failed",
+    "copyNotSupported": "Copy unavailable",
+    "exportFailed": "Export failed",
+    "playbackFailed": "Can\u2019t play",
+    "thankYouEmail": "Sent! \ud83d\udc9b",
+    "validEmail": "Enter a valid email",
+    "updateAvailable": "Update ready — tap to refresh",
+    "setSpeechLang": "Choose language",
+    "grace": "Grace"
+  },
+  "voice": {
+    "attach": "Attach voice",
+    "attached": "Voice added",
+    "detached": "Voice removed",
+    "textChanged": "Voice removed",
+    "webmDone": "Voice saved \u2713",
+    "webmFailed": "Voice export failed",
+    "listen": "Listen to voice",
+    "playing": "Playing..."
+  }
+}

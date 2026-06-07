@@ -1,0 +1,244 @@
+{
+  "nav": {
+    "tagline": "말하기 · 스타일링 · 공유하기",
+    "help": "사용 방법",
+    "theme": "다크 모드 전환"
+  },
+  "hero": {
+    "title": "한 번 말하고, 영원히 공유하세요",
+    "subtitle": "마이크로 녹음하거나 <a href=\"https://wisprflow.ai/r?BEST76\" target=\"_blank\" rel=\"noopener\" class=\"wispr-flow-link\"><strong><em>Wispr Flow</em></strong></a>로 받아쓰기. 스타일링하고 사랑으로 공유하기.",
+    "quote": "\"기억을 붙잡으세요; 기억이 당신을 붙잡아 줄 것입니다.\""
+  },
+  "sharedCta": "✨ <strong>Wibe Story를 받았습니다!</strong> <em>내 카드 만들기</em>를 탭하여 자신만의 카드를 만드세요.",
+  "record": {
+    "label": "내 음성",
+    "status": "말하려면 탭",
+    "sub": "멈추면 단어가 나타납니다",
+    "generating": "생성 중…",
+    "processing": "오디오 처리 중…",
+    "cancel": "취소",
+    "couldntRetry": "텍스트 변환에 실패했습니다. 탭하여 다시 시도",
+    "listening": "말을 쓰고 처리하고 있어요",
+    "paused": "일시정지 — 리줌마는 마이크를 누르세요",
+    "pausedHint": "트랜스크립트는 완료를 누르세요",
+    "ended": "Recording ended",
+    "done": "완료",
+    "softHint": "오늘 조금 더 💛",
+    "softHintDone": "내일 또 💛"
+  },
+  "speechLang": {
+    "title": "음성 언어 선택",
+    "sub": "말하기 언어 선택: 44개 옵션",
+    "triggerLabel": "언어 설정",
+    "reminderEmpty": "음성 인식 언어 선택",
+    "reminderNative": "지원되지 않는 언어는 모국어로 처리됩니다",
+    "micDisabledNoLang": "마이크 비활성화",
+    "micDisabledNative": "마이크 비활성화",
+    "subNoLang": "마이크를 사용하려면 언어를 선택하세요",
+    "subNative": "다른 언어를 선택하여 말하세요",
+    "tooltipNoLang": "마이크를 사용하려면 언어를 선택하세요",
+    "tooltipNative": "모국어에 대해 마이크가 비활성화되었습니다",
+    "filter": "언어 검색…"
+  },
+  "orText": "또는 단어를 입력하거나 붙여넣기",
+  "textarea": {
+    "label": "당신의 단어",
+    "placeholder": "말하거나 메시지를 입력하세요..."
+  },
+  "resetBtn": "모두 초기화",
+  "nameRow": {
+    "label": "보내는 사람",
+    "placeholder": "예: 엄마, 두르가, 테일러, 선생님, 아부엘라, Pi Lisa, 엘라..."
+  },
+  "examples": {
+    "label": "영감이 필요하신가요? 예시를 클릭하세요"
+  },
+  "customize": {
+    "summary": "나만의 것으로 만들기",
+    "hint": "톤 · 색상 · 모양"
+  },
+  "tone": {
+    "label": "톤",
+    "original": "원본",
+    "warm": "따뜻함",
+    "bold": "대담함",
+    "poetic": "시적임",
+    "playful": "장난스러움",
+    "reflective": "사색적임",
+    "honest": "정직함",
+    "rewriting": "다시 쓰는 중..."
+  },
+  "color": {
+    "label": "카드 색상",
+    "violet": "바이올렛",
+    "amber": "앰버",
+    "crimson": "크림슨",
+    "emerald": "에메랄드",
+    "ocean": "오션",
+    "rose": "로즈",
+    "orange": "오렌지",
+    "teal": "틸",
+    "fuchsia": "퓨시아",
+    "indigo": "인디고"
+  },
+  "shape": {
+    "label": "모양",
+    "sharp": "날카로운 모서리",
+    "rounded": "둥근 모서리"
+  },
+  "fontSize": {
+    "label": "글자 크기",
+    "info": "카드 텍스트가 85자 미만일 때만 사용할 수 있습니다",
+    "infoOn": "카드 텍스트가 짧습니다: + 또는 −를 눌러 크기를 조정하세요"
+  },
+  "actions": {
+    "create": "카드 만들기",
+    "share": "카드 공유",
+    "createTone": "{tone} 톤으로 카드 만들기"
+  },
+  "rewrite": {
+    "left": "오늘 {tone} 재작성 {n}회 남음",
+    "plural": "오늘 {tone} 재작성 {n}회 남음",
+    "exhausted": "오늘 {tone} 재작성 0회 남음. 다른 톤을 시도하세요"
+  },
+  "closing": "당신의 목소리, 아름답게 공유되었습니다",
+  "preview": {
+    "label": "실시간 미리보기"
+  },
+  "upgrade": "업그레이드",
+  "download": "카드 다운로드",
+  "cardEmpty": "세부정보를 입력하세요,<br />카드가 여기에 표시됩니다",
+  "cardPlaceholder": "말하거나 입력하는 동안 여기에 이야기가 표시됩니다.",
+  "wcta": {
+    "text": "입력하는 곳 어디에서나 음성을 사용하세요: WhatsApp, Gmail, Slack, 어떤 앱이든.",
+    "link": "Wispr Flow를 무료로 사용해 보세요 →"
+  },
+  "footer": {
+    "text": "<a href=\"#top\" class=\"footer-wave wave-on-hover\">Wibe Stories</a>",
+    "independent": "독립 프로젝트 · Wispr Flow와 제휴하지 않음",
+    "copyright": "© 2026",
+    "about": "About",
+    "langStats": "Lang Stats",
+    "support": "Support Here",
+    "articles": "Read Articles",
+    "issues": "Submit Issues",
+    "help": "How to Use",
+    "license": "License & Terms"
+  },
+  "shareModal": {
+    "title": "카드 공유하기",
+    "sub": "이미지를 직접 게시하거나, 다른 사람이 자신의 카드를 만들 수 있도록 앱 링크를 공유하세요.",
+    "native": "앱에 공유",
+    "download": "카드 이미지 다운로드",
+    "copyLink": "이미지 링크 복사",
+    "copyImage": "이미지 복사"
+  },
+  "upgradeModal": {
+    "title": "Pro로 업그레이드",
+    "sub": "무제한 톤 다시 쓰기. 더 이상 일일 제한 없음.",
+    "buyCoffee": "☕ 커피 한 잔 사주세요",
+    "or": "또는",
+    "haveKey": "이미 서포터 키를 가지고 계신가요?",
+    "keyPlaceholder": "키를 붙여넣으세요...",
+    "continue": "계속",
+    "lostKey": "키를 잃어버리셨나요?",
+    "emailPlaceholder": "이메일 입력",
+    "emailSend": "제출",
+    "disclaimer": "Wibe Stories — made for Wispr Flow"
+  },
+  "capacity": {
+    "title": "사랑이 넘쳐납니다!",
+    "text": "놀라운 반응에 감사드립니다. 일일 용량에 도달하여 서버를 잠시 쉬게 해야 합니다.",
+    "reset": "UTC 자정에 돌아옵니다.",
+    "btn": "돌아왔는지 확인"
+  },
+  "onboarding": {
+    "title": "Wibe Stories에 오신 것을 환영합니다",
+    "step1": "메시지를 <strong>말하거나 입력</strong>하세요. 마이크를 탭하거나 텍스트를 붙여넣으세요.",
+    "step2": "카드를 <strong>맞춤 설정</strong>하세요: 톤, 색상, 모서리 스타일을 선택하세요.",
+    "step3": "<strong>만들고 공유</strong>하세요: PNG로 다운로드하거나 소셜 플랫폼에서 직접 공유하세요.",
+    "gotIt": "알겠습니다, 시작해요!",
+    "hint": "나중에 도움이 필요하신가요? 푸터 메뉴에서 <em>사용 방법</em>을 여세요.",
+    "refTitle": "빠른 참조",
+    "refToggle": "<strong>모드 전환</strong>: 마이크 아이콘을 탭하여 녹음 모드와 텍스트 모드 사이를 전환합니다.",
+    "refVoice": "<strong>음성 언어</strong>: 44개 언어 + 자동 감지. 언어 버튼에서 선택하세요.",
+    "refText": "<strong>텍스트 편집</strong>: 텍스트 영역은 최대 150자까지 허용합니다. 자유롭게 편집하세요.",
+    "refTone": "<strong>톤 다시 쓰기</strong>: 6가지 톤. 무료 사용자는 톤당 하루 5회. Pro 사용자는 무제한.",
+    "refColor": "<strong>색상</strong>: 팔레트를 선택하여 카드 배경을 설정하세요.",
+    "refShape": "<strong>모양</strong>: 메시지에는 날카로운 모서리, 갤러리에는 둥근 모서리.",
+    "refFontSize": "<strong>글자 크기</strong>: 짧은 메시지의 경우 카드 텍스트를 키우세요."
+  },
+  "mobileBar": {
+    "create": "만들기",
+    "share": "공유",
+    "upgrade": "업그레이드"
+  },
+  "toasts": {
+    "welcomePro": "Welcome to Pro 💛",
+    "proUnlocked": "Pro unlocked 💛",
+    "invalidKey": "Key invalid",
+    "verifyFailed": "Verify failed",
+    "enterKey": "Enter your key",
+    "checking": "Checking...",
+    "micDenied": "Allow mic to record",
+    "micAccessDenied": "Allow mic in browser",
+    "noMicFound": "No mic found",
+    "micUnavailable": "Mic unavailable",
+    "couldNotStartMic": "Mic failed",
+    "micSlow": "Mic slow — try again",
+    "voiceUnavailable": "Voice off — type instead",
+    "maxTime": "Max {max}s",
+    "noSpeech": "Speak louder",
+    "silence": "Didn’t catch that",
+    "speechUnavailable": "Speech off — try later",
+    "speechNotResponding": "Speech off — type instead",
+    "speechError": "Speech error",
+    "noMatch": "Speak more clearly",
+    "sttFailed": "Couldn’t transcribe",
+    "recordingStopped": "Recording stopped",
+    "dailyRewritesUsed": "Out of {tone} today",
+    "rewriteFailed": "Rewrite failed",
+    "rewriteTimedOut": "Rewrite timed out",
+    "cumulativeLimit": "More tomorrow 💛",
+    "tooLong": "Max {max}s. Tap Done",
+    "freeLimit": "Free limit hit 💛",
+    "proLimit": "More tomorrow 💛",
+    "downloaded": "Saved ✓",
+    "voiceEmpty": "Voice empty",
+    "webmDone": "Voice saved ✓",
+    "webmFailed": "Voice export failed",
+    "shared": "Shared ✓",
+    "uploadFailed": "Upload failed",
+    "linkCopied": "Copied ✓",
+    "copyFailed": "Copy failed",
+    "imageCopied": "Copied ✓",
+    "imageSaved": "Saved to Photos",
+    "imageSavedDownloads": "Saved ✓",
+    "downloadFailed": "Save failed",
+    "copyNotSupported": "Copy unavailable",
+    "exportFailed": "Export failed",
+    "playbackFailed": "Can’t play",
+    "thankYouEmail": "Sent! 💛",
+    "validEmail": "Enter a valid email",
+    "updateAvailable": "Update ready — tap to refresh",
+    "setSpeechLang": "Choose language"
+  },
+  "voice": {
+    "attach": "Attach voice",
+    "attached": "Voice added",
+    "detached": "Voice removed",
+    "textChanged": "Voice removed",
+    "webmDone": "Voice saved ✓",
+    "webmFailed": "Voice export failed",
+    "listen": "Listen to voice",
+    "playing": "Playing..."
+  },
+  "exportProgress": {
+    "generating": "카드 생성 중…"
+  },
+  "dlChoice": {
+    "title": "카드 다운로드",
+    "png": "<i class=\"fa-solid fa-file-image\"></i> PNG 다운로드",
+    "webm": "<i class=\"fa-solid fa-video\"></i> WebM 다운로드"
+  }
+}

@@ -1,0 +1,103 @@
+/* TYPOGRAPHY */
+.hl-h1 {
+  font-family: var(--serif);
+  font-size: clamp(30px, 3vw, 45px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--ink);
+  margin-top: 6px;
+}
+.hl-h2 {
+  font-family: var(--sans);
+  font-size: clamp(13px, 1.4vw, 16px);
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0.01em;
+  color: var(--ink2);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+.wispr-flow-link {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--ink3);
+  transition: border-color 0.2s;
+}
+.wispr-flow-link:hover {
+  border-bottom-color: var(--ink);
+}
+/* UNIFIED NOTICE SLOT — replaces the old .shared-cta and .ff-notice
+   stacks. Shows one banner at a time (priority handled in JS), with a ×
+   dismiss button. Hidden by default via the `hidden` attribute; JS toggles
+   it on. Dismissal persists in localStorage per notice type. */
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: clamp(13px, 0.3vw + 12px, 14px);
+  color: var(--ink2);
+  background: var(--cream2);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 10px 12px 10px 14px;
+  line-height: 1.5;
+}
+.notice[hidden] {
+  display: none;
+}
+.notice-text {
+  flex: 1;
+  min-width: 0;
+}
+.notice-text strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.notice-text em {
+  font-style: normal;
+  color: var(--ink);
+  font-weight: 500;
+}
+.notice-dismiss {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(18px, 0.5vw + 16px, 20px);
+  line-height: 1;
+  color: var(--ink3);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s, background 0.15s;
+}
+.notice-dismiss:hover {
+  color: var(--ink);
+  background: rgba(26, 26, 26, 0.06);
+}
+:root.dark .notice-dismiss:hover {
+  background: rgba(255, 255, 235, 0.08);
+}
+
+/* SECTION LABEL — sentence-case, readable at every age. Replaces the prior
+   11px tracked-uppercase treatment so labels read as natural headings rather
+   than legal fine-print. Reversible: revert this block to restore the
+   uppercase tracking. */
+.lbl {
+  font-size: clamp(14px, 0.3vw + 13px, 15px);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow: visible;
+  position: relative;
+}
+

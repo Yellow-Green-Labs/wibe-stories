@@ -1,0 +1,244 @@
+{
+  "nav": {
+    "tagline": "பேசு · வடிவமை · பகிர்",
+    "help": "எப்படி பயன்படுத்துவது",
+    "theme": "டார்க் மோட் மாற்று"
+  },
+  "hero": {
+    "title": "ஒருமுறை சொல்லு, எப்போதும் பகிர்",
+    "subtitle": "மைக்ரோஃபோனில் பதிவு செய்யவும் அல்லது <a href=\"https://wisprflow.ai/r?BEST76\" target=\"_blank\" rel=\"noopener\" class=\"wispr-flow-link\"><strong><em>Wispr Flow</em></strong></a> உடன் சொல். ஸ்டைல் செய்து அன்புடன் பகிர்.",
+    "quote": "\"நினைவுகளைப் பிடித்துக்கொள்; அவை உன்னைப் பிடித்துக்கொள்ளும்.\""
+  },
+  "sharedCta": "✨ <strong>உங்களுக்கு ஒரு Wibe Story கிடைத்தது!</strong> உங்கள் சொந்தத்தை உருவாக்க <em>எனது கார்டை உருவாக்கு</em> தட்டவும்.",
+  "record": {
+    "label": "உங்கள் குரல்",
+    "status": "பேச தட்டவும்",
+    "sub": "நீங்கள் நிறுத்தும்போது வார்த்தைகள் தோன்றும்",
+    "generating": "உருவாக்குகிறது…",
+    "processing": "உங்கள் ஒலியை செயலாக்குகிறது…",
+    "cancel": "ரத்துசெய்",
+    "couldntRetry": "மாற்ற முடியவில்லை. மீண்டும் முயற்சிக்க தட்டவும்",
+    "listening": "உங்கள் வார்த்தைகளை கேட்டுப் பதிவு செய்கிறது",
+    "paused": "நிறுத்தப்பட்டது — மீண்டும் தொடர மைக் சொடுக்கவும்",
+    "pausedHint": "மொழிபெயர்க்க முடிவை சொடுக்கவும்",
+    "ended": "Recording ended",
+    "done": "முடிந்தது",
+    "softHint": "இன்று இன்னும் கொஞ்சம் 💛",
+    "softHintDone": "நாளை மீண்டும் 💛"
+  },
+  "speechLang": {
+    "title": "பேச்சு மொழியைத் தேர்ந்தெடுக்கவும்",
+    "sub": "உங்கள் பேச்சு மொழியைத் தேர்ந்தெடுக்கவும்: 44 விருப்பங்கள்",
+    "triggerLabel": "மொழியை அமைக்கவும்",
+    "reminderEmpty": "குரல் அங்கீகாரத்திற்கான மொழியைத் தேர்ந்தெடுக்கவும்",
+    "reminderNative": "ஆதரிக்கப்படாத மொழிகள் தாய்மொழியாக கருதப்படும்",
+    "micDisabledNoLang": "மைக் முடக்கப்பட்டுள்ளது",
+    "micDisabledNative": "மைக் முடக்கப்பட்டுள்ளது",
+    "subNoLang": "மைக்கை இயக்க ஒரு மொழியைத் தேர்ந்தெடுக்கவும்",
+    "subNative": "பேச வேறு மொழியைத் தேர்ந்தெடுக்கவும்",
+    "tooltipNoLang": "மைக்கை இயக்க ஒரு மொழியைத் தேர்ந்தெடுக்கவும்",
+    "tooltipNative": "தாய்மொழிக்கு மைக் முடக்கப்பட்டுள்ளது",
+    "filter": "மொழிகளைத் தேடு…"
+  },
+  "orText": "அல்லது உங்கள் வார்த்தைகளை தட்டச்சு செய்யுங்கள் அல்லது ஒட்டவும்",
+  "textarea": {
+    "label": "உங்கள் வார்த்தைகள்",
+    "placeholder": "பேசுங்கள் அல்லது உங்கள் செய்தியை தட்டச்சு செய்யுங்கள்..."
+  },
+  "resetBtn": "அனைத்தையும் மீட்டமை",
+  "nameRow": {
+    "label": "இலிருந்து",
+    "placeholder": "எ.கா: அம்மா, துர்கா, டெய்லர், சென்சே, அபுவேலா, Pi Lisa, எல்லா..."
+  },
+  "examples": {
+    "label": "உத்வேகம் தேவையா? ஒரு எடுத்துக்காட்டை கிளிக் செய்யவும்"
+  },
+  "customize": {
+    "summary": "உங்களுடையதாக்குங்கள்",
+    "hint": "தொனி · நிறம் · வடிவம்"
+  },
+  "tone": {
+    "label": "தொனி",
+    "original": "அசல்",
+    "warm": "இதமான",
+    "bold": "தைரியம்",
+    "poetic": "கவிதை",
+    "playful": "விளையாட்டுத்தனம்",
+    "reflective": "சிந்தனை",
+    "honest": "நேர்மை",
+    "rewriting": "மீண்டும் எழுதுகிறது..."
+  },
+  "color": {
+    "label": "கார்டு நிறம்",
+    "violet": "ஊதா",
+    "amber": "ஆம்பர்",
+    "crimson": "சிவப்பு",
+    "emerald": "பச்சை",
+    "ocean": "கடல்",
+    "rose": "ரோஜா",
+    "orange": "ஆரஞ்சு",
+    "teal": "நீலம்-பச்சை",
+    "fuchsia": "ஃப்யூஷியா",
+    "indigo": "இண்டிகோ"
+  },
+  "shape": {
+    "label": "வடிவம்",
+    "sharp": "கூர்மையான விளிம்புகள்",
+    "rounded": "வட்ட மூலைகள்"
+  },
+  "fontSize": {
+    "label": "எழுத்துரு அளவு",
+    "info": "உங்கள் அட்டை உரை 85 எழுத்துகளுக்கு குறைவாக இருக்கும்போது மட்டுமே கிடைக்கும்",
+    "infoOn": "உங்கள் அட்டை உரை சிறியது: அளவை சரிசெய்ய + அல்லது − ஐ அழுத்தவும்"
+  },
+  "actions": {
+    "create": "கார்டு உருவாக்கு",
+    "share": "கார்டு பகிர்",
+    "createTone": "{tone} கார்டை உருவாக்கு"
+  },
+  "rewrite": {
+    "left": "இன்று {n} {tone} மறுஎழுத்து மீதமுள்ளது",
+    "plural": "இன்று {n} {tone} மறுஎழுத்துக்கள் மீதமுள்ளன",
+    "exhausted": "இன்று 0 {tone} மறுஎழுத்துக்கள் மீதமுள்ளன. வேறு டோனை முயற்சிக்கவும்"
+  },
+  "closing": "உங்கள் குரல், அழகாக பகிரப்பட்டது",
+  "preview": {
+    "label": "நேரடி முன்னோட்டம்"
+  },
+  "upgrade": "மேம்படுத்தல்",
+  "download": "கார்டு பதிவிறக்கு",
+  "cardEmpty": "விவரங்களை நிரப்பவும்,<br />உங்கள் கார்டு இங்கே தோன்றும்",
+  "cardPlaceholder": "நீங்கள் பேசும்போது அல்லது தட்டச்சு செய்யும்போது உங்கள் கதை இங்கே தோன்றும்.",
+  "wcta": {
+    "text": "நீங்கள் தட்டச்சு செய்யும் எங்கும் உங்கள் குரலை பயன்படுத்துங்கள்: WhatsApp, Gmail, Slack, எந்த செயலியும்.",
+    "link": "Wispr Flow-ஐ இலவசமாக முயற்சிக்கவும் →"
+  },
+  "footer": {
+    "text": "<a href=\"#top\" class=\"footer-wave wave-on-hover\">Wibe Stories</a>",
+    "independent": "சுயாதீன திட்டம் · Wispr Flow உடன் இணைக்கப்படவில்லை",
+    "copyright": "© 2026",
+    "about": "About",
+    "langStats": "Lang Stats",
+    "support": "Support Here",
+    "articles": "Read Articles",
+    "issues": "Submit Issues",
+    "help": "How to Use",
+    "license": "License & Terms"
+  },
+  "shareModal": {
+    "title": "உங்கள் கார்டை பகிர்",
+    "sub": "படத்தை நேரடியாக பதிவிடவும், அல்லது மற்றவர்கள் தங்கள் கார்டுகளை உருவாக்க செயலி இணைப்பை பகிர்.",
+    "native": "செயலிகளுக்கு பகிர்",
+    "download": "கார்டு படம் பதிவிறக்கு",
+    "copyLink": "பட இணைப்பு நகலெடு",
+    "copyImage": "படம் நகலெடு"
+  },
+  "upgradeModal": {
+    "title": "Proக்கு மேம்படுத்தவும்",
+    "sub": "வரம்பற்ற தொனி மீண்டும் எழுதுதல். இனி தினசரி வரம்புகள் இல்லை.",
+    "buyCoffee": "☕ எனக்கு காபி வாங்கு",
+    "or": "அல்லது",
+    "haveKey": "ஏற்கனவே ஆதரவாளர் விசை உள்ளதா?",
+    "keyPlaceholder": "உங்கள் விசையை ஒட்டவும்...",
+    "continue": "தொடரவும்",
+    "lostKey": "உங்கள் விசையை இழந்தீர்களா?",
+    "emailPlaceholder": "உங்கள் மின்னஞ்சலை உள்ளிடுங்கள்",
+    "emailSend": "சமர்ப்பிக்கவும்",
+    "disclaimer": "Wibe Stories — made for Wispr Flow"
+  },
+  "capacity": {
+    "title": "நாங்கள் அன்பால் நிரம்பி வழிகிறோம்!",
+    "text": "அற்புதமான பதிலுக்கு நன்றி. நாங்கள் எங்கள் தினசரி திறனை அடைந்துவிட்டோம் மற்றும் எங்கள் சர்வர்களுக்கு சிறிது ஓய்வு தேவை.",
+    "reset": "நாங்கள் UTC நள்ளிரவில் திரும்புவோம்.",
+    "btn": "நாங்கள் திரும்பிவிட்டோமாவென்று சரிபார்க்கவும்"
+  },
+  "onboarding": {
+    "title": "Wibe Storiesக்கு வரவேற்கிறோம்",
+    "step1": "உங்கள் செய்தியை <strong>பேசுங்கள் அல்லது தட்டச்சு செய்யுங்கள்</strong>. மைக்ரோஃபோனை தட்டவும் அல்லது உரையை ஒட்டவும்.",
+    "step2": "உங்கள் கார்டை <strong>தனிப்பயனாக்குங்கள்</strong>: தொனி, நிறம் மற்றும் மூலை பாணி தேர்வு செய்யுங்கள்.",
+    "step3": "<strong>உருவாக்கி பகிர்</strong>ங்கள்: PNGஆக பதிவிறக்குங்கள் அல்லது சமூக தளங்களில் நேரடியாக பகிர்.",
+    "gotIt": "புரிந்தது, தொடங்குவோம்!",
+    "hint": "பின்னர் உதவி தேவையா? ஃபுட்டர் மெனுவில் <em>பயன்படுத்தும் முறை</em> திறக்கவும்.",
+    "refTitle": "விரைவு குறிப்பு",
+    "refToggle": "<strong>முறைகளை மாற்று</strong>: பதிவு மற்றும் உரை முறைக்கு இடையில் மாற மைக் ஐகானை தட்டவும்.",
+    "refVoice": "<strong>குரல் மொழிகள்</strong>: 44 மொழிகள் + தானியங்கு கண்டறிதல். மொழி பொத்தானில் இருந்து தேர்ந்தெடுக்கவும்.",
+    "refText": "<strong>உரை திருத்துதல்</strong>: உரை பகுதி 150 எழுத்துகள் வரை ஏற்றுக்கொள்கிறது. சுதந்திரமாக திருத்தவும்.",
+    "refTone": "<strong>தொனி மீண்டும் எழுதுதல்</strong>: 6 தொனிகள். இலவச பயனர்களுக்கு ஒரு தொனிக்கு நாளொன்றுக்கு 5. Pro பயனர்களுக்கு வரம்பற்றது.",
+    "refColor": "<strong>நிறம்</strong>: கார்டு பின்னணியை அமைக்க ஒரு தட்டு தேர்ந்தெடுக்கவும்.",
+    "refShape": "<strong>வடிவம்</strong>: செய்திகளுக்கு கூர்மையான விளிம்புகள், கேலரிகளுக்கு வட்டமானவை.",
+    "refFontSize": "<strong>எழுத்துரு அளவு</strong>: குறுகிய செய்திகளுக்கு கார்டு உரையை அதிகரிக்கவும்."
+  },
+  "mobileBar": {
+    "create": "உருவாக்கு",
+    "share": "பகிர்",
+    "upgrade": "மேம்படுத்தல்"
+  },
+  "toasts": {
+    "welcomePro": "Welcome to Pro 💛",
+    "proUnlocked": "Pro unlocked 💛",
+    "invalidKey": "Key invalid",
+    "verifyFailed": "Verify failed",
+    "enterKey": "Enter your key",
+    "checking": "Checking...",
+    "micDenied": "Allow mic to record",
+    "micAccessDenied": "Allow mic in browser",
+    "noMicFound": "No mic found",
+    "micUnavailable": "Mic unavailable",
+    "couldNotStartMic": "Mic failed",
+    "micSlow": "Mic slow — try again",
+    "voiceUnavailable": "Voice off — type instead",
+    "maxTime": "Max {max}s",
+    "noSpeech": "Speak louder",
+    "silence": "Didn’t catch that",
+    "speechUnavailable": "Speech off — try later",
+    "speechNotResponding": "Speech off — type instead",
+    "speechError": "Speech error",
+    "noMatch": "Speak more clearly",
+    "sttFailed": "Couldn’t transcribe",
+    "recordingStopped": "Recording stopped",
+    "dailyRewritesUsed": "Out of {tone} today",
+    "rewriteFailed": "Rewrite failed",
+    "rewriteTimedOut": "Rewrite timed out",
+    "cumulativeLimit": "More tomorrow 💛",
+    "tooLong": "Max {max}s. Tap Done",
+    "freeLimit": "Free limit hit 💛",
+    "proLimit": "More tomorrow 💛",
+    "downloaded": "Saved ✓",
+    "voiceEmpty": "Voice empty",
+    "webmDone": "Voice saved ✓",
+    "webmFailed": "Voice export failed",
+    "shared": "Shared ✓",
+    "uploadFailed": "Upload failed",
+    "linkCopied": "Copied ✓",
+    "copyFailed": "Copy failed",
+    "imageCopied": "Copied ✓",
+    "imageSaved": "Saved to Photos",
+    "imageSavedDownloads": "Saved ✓",
+    "downloadFailed": "Save failed",
+    "copyNotSupported": "Copy unavailable",
+    "exportFailed": "Export failed",
+    "playbackFailed": "Can’t play",
+    "thankYouEmail": "Sent! 💛",
+    "validEmail": "Enter a valid email",
+    "updateAvailable": "Update ready — tap to refresh",
+    "setSpeechLang": "Choose language"
+  },
+  "voice": {
+    "attach": "Attach voice",
+    "attached": "Voice added",
+    "detached": "Voice removed",
+    "textChanged": "Voice removed",
+    "webmDone": "Voice saved ✓",
+    "webmFailed": "Voice export failed",
+    "listen": "Listen to voice",
+    "playing": "Playing..."
+  },
+  "exportProgress": {
+    "generating": "அட்டை உருவாக்கப்படுகிறது…"
+  },
+  "dlChoice": {
+    "title": "உங்கள் அட்டையைப் பதிவிறக்கவும்",
+    "png": "<i class=\"fa-solid fa-file-image\"></i> PNG பதிவிறக்கம்",
+    "webm": "<i class=\"fa-solid fa-video\"></i> WebM பதிவிறக்கம்"
+  }
+}
