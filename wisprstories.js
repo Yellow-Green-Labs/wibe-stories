@@ -1,4 +1,4 @@
-console.log("%c[Build] Wibe Stories v0.11.0.7 (2026-06-05)", "color:#ec4899;font-weight:bold;font-size:14px");
+console.log("%c[Build] Wibe Stories v0.11.0.8 (2026-06-08)", "color:#ec4899;font-weight:bold;font-size:14px");
 const PALS = [
   "#7c3aed",
   "#f59e0b",
@@ -139,26 +139,36 @@ let _lastKnownRecordingsUsed = -1;
 let _lastKnownRecordingsDate = "";
 
 // Service Worker update detection & version polling
-let _swUpdateToastShown = false;
+let _updatePending = false;
 let _versionPollTimer = null;
 const VERSION_POLL_INTERVAL_MS = 60 * 1000; // 60 seconds
-const CURRENT_VERSION = "v0.11.0.7";
+const CURRENT_VERSION = "v0.11.0.8";
+
+// Shows the "new version available" notice. Transient (it does not block other
+// toasts) and re-shown when the user returns to the tab while an update is
+// pending, so it is hard to miss — without ever auto-reloading and interrupting
+// the user's work (e.g. a recording in progress or a half-typed card).
+function showUpdateToast() {
+  const msg = getI18nSync("toasts.updateAvailable") || "A new version is ready — tap to refresh.";
+  showToast(msg);
+  const toastEl = document.getElementById("toast");
+  if (toastEl) {
+    toastEl.style.cursor = "pointer";
+    toastEl.onclick = function () { location.reload(); };
+  }
+}
 
 function initSWUpdateDetection() {
   if (!("serviceWorker" in navigator)) return;
-  if (location.hostname !== "wisprstories.vercel.app") return;
+  // Run only in production, not local dev. Domain-agnostic on purpose, so a
+  // future domain change can't silently disable update detection again.
+  if (location.hostname === "localhost" || location.hostname === "127.0.0.1") return;
 
   // controllerchange fires when a new SW takes over the page
   navigator.serviceWorker.addEventListener("controllerchange", function () {
-    if (_swUpdateToastShown) return;
-    _swUpdateToastShown = true;
-const msg = getI18nSync("toasts.updateAvailable") || "Update ready — tap to refresh";
-    showToast(msg);
-    const toastEl = document.getElementById("toast");
-    if (toastEl) {
-      toastEl.style.cursor = "pointer";
-      toastEl.onclick = function () { location.reload(); };
-    }
+    if (_updatePending) return;
+    _updatePending = true;
+    showUpdateToast();
   });
 
   // updatefound fires when a new SW is being installed
@@ -180,15 +190,9 @@ async function checkVersion() {
     if (!resp.ok) return;
     const data = await resp.json();
     if (data.version && data.version !== CURRENT_VERSION) {
-      if (_swUpdateToastShown) return;
-      _swUpdateToastShown = true;
-const msg = getI18nSync("toasts.updateAvailable") || "Update ready — tap to refresh";
-      showToast(msg);
-      const toastEl = document.getElementById("toast");
-      if (toastEl) {
-        toastEl.style.cursor = "pointer";
-        toastEl.onclick = function () { location.reload(); };
-      }
+      if (_updatePending) return;   // already flagged; visibilitychange re-shows it
+      _updatePending = true;
+      showUpdateToast();
     }
   } catch (_e) {
     // Silent fail — network issues, offline, etc.
@@ -210,9 +214,11 @@ function stopVersionPolling() {
 
 // Poll on visibility change (tab becomes active)
 document.addEventListener("visibilitychange", function () {
-  if (document.visibilityState === "visible") {
-    checkVersion();
-  }
+  if (document.visibilityState !== "visible") return;
+  // If an update is already pending, re-show the gentle reminder (the user is
+  // back on the tab — the right moment to act). Otherwise, check for one.
+  if (_updatePending) showUpdateToast();
+  else checkVersion();
 });
 
 // Initialize on load
@@ -606,7 +612,7 @@ function getCardsLeft() {
 function trackCardUsage() {
   var effectiveSpeechLang = (speechLang && speechLang !== "__native__") ? speechLang : null;
   var effectiveCurLang = (typeof curLang !== "undefined" && curLang) ? curLang : null;
-  var source = inputSource || "story";
+  var source = (inputSource === "voice" && voiceAttached && audioBlob) ? "voice" : "story";
   var lang = source === "voice"
     ? (effectiveSpeechLang || effectiveCurLang || "en")
     : (effectiveCurLang || effectiveSpeechLang || "en");
@@ -3415,7 +3421,7 @@ document.getElementById("shareNative").addEventListener("click", async function 
         try { await fetch("/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Voice] Upload failed:", ve); }
       }
     }
-    var shareUrl = "https://wisprstories.vercel.app/c/" + _shortId;
+    var shareUrl = location.origin + "/c/" + _shortId;
     var sharerName = document.getElementById("nin").value || "";
     var shareTitle = sharerName ? "A Wibe Story by " + sharerName : "A Wibe Story";
     // Auto-copy the link to the clipboard. A Story image cannot carry a
@@ -3493,7 +3499,7 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
         try { await fetch("/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Voice] Upload failed:", ve); }
       }
     }
-    var url = "https://wisprstories.vercel.app/c/" + _shortId;
+    var url = location.origin + "/c/" + _shortId;
     navigator.clipboard.writeText(url).then(function () { showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓"); }).catch(function () { showToast((typeof getI18nSync === "function" && getI18nSync("toasts.copyFailed")) || "Copy failed"); });
   } catch (e) {
     showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed");

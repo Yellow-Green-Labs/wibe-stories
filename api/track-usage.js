@@ -26,14 +26,20 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'source must be "voice" or "story"' });
     }
 
-    try {
-      const redis = getLangStatsRedis();
-      const field = source + ':' + lang;
-      console.log('[TrackUsage] Incrementing field=' + field);
-      await redis.hincrby('wispr:langstats', field, 1);
-      console.log('[TrackUsage] Redis increment succeeded');
-    } catch (redisErr) {
-      console.warn('[TrackUsage] Redis unavailable:', redisErr.message);
+    // Only count stats on production Vercel deployments.
+    // Localhost (vercel dev) and preview branches must not pollute production data.
+    if (process.env.VERCEL_ENV === 'production') {
+      try {
+        const redis = getLangStatsRedis();
+        const field = source + ':' + lang;
+        console.log('[TrackUsage] Incrementing field=' + field);
+        await redis.hincrby('wispr:langstats', field, 1);
+        console.log('[TrackUsage] Redis increment succeeded');
+      } catch (redisErr) {
+        console.warn('[TrackUsage] Redis unavailable:', redisErr.message);
+      }
+    } else {
+      console.log('[TrackUsage] Skipped — VERCEL_ENV=' + process.env.VERCEL_ENV);
     }
 
     return res.status(200).json({ ok: true });

@@ -332,8 +332,12 @@ The app is an installable Progressive Web App.
   - Same-origin dynamic (`/api/*`, `/c/*`): network-only.
   - Cross-origin (fonts, CDNs): stale-while-revalidate.
   - Same-origin static: cache-first, with an offline navigation fallback.
-- Cache name: `wispr-stories-shell`.
+- Cache name: `wispr-stories-shell-v12`.
 - Offline: typing still works. Recording, font loading, and image export need connectivity.
+
+### Update behavior
+
+The app never reloads itself out from under the user. It polls `version.json` every 60 seconds and whenever the tab is re-focused; when the deployed version differs from the version baked into the running code, it shows a gentle, tappable toast ("A new version is ready — tap to refresh"). The notice re-appears each time the user returns to the tab, so it is hard to miss, but the user keeps working uninterrupted until they tap it. A bookmark to `wibestories.vercel.app` always loads the latest deployment.
 
 ---
 
@@ -372,6 +376,13 @@ API keys and tokens are server-side environment variables only (see [Section 15]
 - **Platform:** Vercel.
 - **URL:** `wibestories.vercel.app` (production).
 - **Command:** `vercel --prod` from the project root. This applies `vercel.json` (rewrites, redirects, security headers, cron). A dashboard drag-and-drop deploy serves static files but does **not** apply `vercel.json` headers.
+
+### When you deploy a change
+
+Two rules keep the update notice and caching honest:
+
+1. **Bump the version in lockstep.** Update `version.json`, the `CURRENT_VERSION` constant in `wisprstories.js`, and the build banner (`wisprstories.js:1`) to the same value. If `version.json` and `CURRENT_VERSION` differ at build time, the "new version" toast either never fires or fires forever.
+2. **Bump `CACHE_NAME` in `sw.js` when CSS or static assets change** (e.g. `wispr-stories-shell-v12` → `-v13`). CSS and images are served cache-first, so without a bump returning users keep the old styling. HTML and JS are network-first and refresh on their own — no bump needed for those.
 
 ### Run locally
 
