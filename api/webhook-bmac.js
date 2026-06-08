@@ -157,12 +157,12 @@ export default async function handler(req) {
   }
 
   const eventType = (req.headers.get('X-Bmc-Event') || '').trim();
-  const data = payload.response || {};
+  const data = payload.response || payload.data || {};
 
   console.log(`[BMAC] Event received: "${eventType}"`);
 
   // Skip test webhooks — signature is not required for test pings
-  if (payload.test === true || (data.supporter_email || '').includes('test@buymeacoffee')) {
+  if (payload.live_mode === false || payload.test === true || (data.supporter_email || '').includes('test@buymeacoffee')) {
     console.log('[BMAC] Test event detected, skipping');
     return new Response('OK', { status: 200 });
   }
