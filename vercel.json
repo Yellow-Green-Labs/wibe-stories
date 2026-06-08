@@ -8,7 +8,8 @@
   ],
   "redirects": [
     { "source": "/about.html", "destination": "/about", "statusCode": 301 },
-    { "source": "/language-stats.html", "destination": "/language-stats", "statusCode": 301 }
+    { "source": "/language-stats.html", "destination": "/language-stats", "statusCode": 301 },
+    { "source": "/(.*)", "has": [{ "type": "host", "value": "wisprstories.vercel.app" }], "destination": "https://wibestories.vercel.app/:1", "statusCode": 301 }
   ],
   "crons": [
     { "path": "/api/cleanup", "schedule": "0 3 * * *" }

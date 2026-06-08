@@ -106,21 +106,43 @@ async function sendProKeyEmail(brevoApiKey, { toEmail, toName, proKey }) {
       body: JSON.stringify({
         sender: { email: SENDER_EMAIL, name: SENDER_NAME },
         to: [{ email: toEmail, name: safeName }],
-        subject: 'Your Wibe Stories Pro Key 🎉',
+        subject: 'You\'re Pro now — here\'s your key 🎉',
         htmlContent: `
-          <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;background:#fff">
-            <h2 style="margin:0 0 8px;color:#1a1a1a;font-size:1.4rem">Thank you, ${safeName}! 🙏</h2>
-            <p style="color:#444;margin:0 0 24px">Your support keeps Wibe Stories growing. Here's your Pro key:</p>
-            <div style="background:#f4f4f4;border-radius:10px;padding:20px;text-align:center;margin-bottom:24px">
-              <span style="font-family:monospace;font-size:1.5rem;font-weight:700;letter-spacing:3px;color:#222">${safeKey}</span>
+          <div style="font-family:Inter,'Noto Sans',system-ui,sans-serif;max-width:480px;margin:0 auto">
+            <div style="background:#ffffeb;border-radius:12px 12px 0 0;border-left:1px solid rgba(26,26,26,0.1);border-right:1px solid rgba(26,26,26,0.1);border-top:1px solid rgba(26,26,26,0.1);padding:28px 28px 20px;text-align:center">
+              <img src="https://wibestories.vercel.app/assets/ws-logo-blwbg.png" alt="" style="height:28px;width:auto;display:block;margin:0 auto 8px" />
+              <h1 style="margin:0;font-size:17px;font-weight:700;color:#1a1a1a;letter-spacing:-0.3px">Wibe Stories</h1>
+              <p style="margin:4px 0 0;font-size:13px;color:#77776a">Turn your voice into shareable cards</p>
             </div>
-            <p style="color:#444;margin:0 0 12px"><strong>How to activate:</strong></p>
-            <ol style="color:#444;padding-left:20px;margin:0 0 24px">
-              <li style="margin-bottom:6px">Open <a href="https://wibestories.vercel.app" style="color:#6b6bff">Wibe Stories</a></li>
-              <li style="margin-bottom:6px">Tap the ✨ or key icon in the app</li>
-              <li>Enter your Pro key and tap <strong>Activate</strong></li>
-            </ol>
-            <p style="color:#888;font-size:0.8rem;margin:0">Save this email. If you lose your key, reply here and we'll resend it.</p>
+            <div style="background:#ffffeb;padding:24px 28px 28px;border-left:1px solid rgba(26,26,26,0.1);border-right:1px solid rgba(26,26,26,0.1)">
+              <p style="margin:0 0 10px;color:#1a1a1a;font-size:0.95rem;font-weight:600">You are Pro now, ${safeName}! &#127881;</p>
+              <p style="margin:0 0 24px;color:#555548;font-size:0.85rem;line-height:1.5">
+                Thank you for supporting Wibe Stories! You now have unlimited access to higher recording limits, more tones, and everything we build next.
+              </p>
+              <div style="background:#f0f0df;border-radius:10px;padding:24px;text-align:center;margin-bottom:24px;border:1px solid rgba(26,26,26,0.08)">
+                <p style="margin:0 0 12px;font-size:0.8rem;color:#77776a;text-transform:uppercase;letter-spacing:1.5px">Your Pro Key</p>
+                <span style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1.3rem;font-weight:800;letter-spacing:5px;color:#1a1a1a;background:#ffffeb;border:2px dashed rgba(26,26,26,0.15);border-radius:8px;padding:12px 20px;display:inline-block">${safeKey}</span>
+              </div>
+              <p style="margin:0 0 6px;font-size:0.8rem;color:#1a1a1a;font-weight:600">How to activate</p>
+              <ol style="margin:0 0 20px;padding-left:16px;font-size:0.8rem;color:#555548;line-height:1.8">
+                <li>Open <a href="https://wibestories.vercel.app" style="color:#d97706;font-weight:600">Wibe Stories</a> and create a card</li>
+                <li>Tap the <span style="font-weight:600">Upgrade</span> button that appears, or tap <span style="font-weight:600">?</span> in the footer then <span style="font-weight:600">Support</span></li>
+                <li>Paste your Pro key and tap <span style="font-weight:600">Activate</span></li>
+              </ol>
+              <p style="margin:0 0 20px;font-size:0.8rem;color:#77776a;line-height:1.5">
+                &#128273; Lost your key? Open the upgrade modal and tap <span style="font-weight:600">"Get my key"</span> - we will resend it to this email.
+              </p>
+              <hr style="border:none;border-top:1px solid rgba(26,26,26,0.1);margin:0 0 16px" />
+              <p style="margin:0;font-size:0.8rem;color:#77776a;line-height:1.5">
+                Questions? <a href="mailto:yellowgreenlabs@proton.me" style="color:#d97706">yellowgreenlabs@proton.me</a>
+              </p>
+            </div>
+            <div style="background:#f0f0df;padding:16px 28px;text-align:center;border-radius:0 0 12px 12px;border:1px solid rgba(26,26,26,0.1);border-top:0">
+              <p style="margin:0;font-size:0.7rem;color:#77776a;line-height:1.6">
+                Made with &#128155; by <a href="https://wibestories.vercel.app" style="color:#d97706;text-decoration:none">Wibe Stories</a>
+                <br>You are receiving this because you purchased a Pro membership.
+              </p>
+            </div>
           </div>
         `,
       }),
@@ -191,11 +213,11 @@ export default async function handler(req) {
   }
 
   // ── Support Created (new membership) ────────────────────────────────────────
-  const isSupportCreated = ['support_created', 'Support created'].includes(eventType);
+  const isSupportCreated = ['support_created', 'Support created', 'recurring_donation.started'].includes(eventType);
 
   if (isSupportCreated) {
     // Idempotency: SET NX so duplicate webhook deliveries are no-ops
-    const eventId = data.support_id || data.payment_id || `${email}:${data.support_created_on}`;
+    const eventId = data.support_id || data.payment_id || data.id || `${email}:${data.support_created_on || data.started_at}`;
     const idempKey = `wispr:bmac-events:${eventId}`;
     const isNew = await redis.set(idempKey, '1', { nx: true, ex: 86400 });
 
@@ -273,6 +295,7 @@ export default async function handler(req) {
   const isCancelled = [
     'subscription_cancelled', 'Subscription cancelled',
     'support_cancelled', 'Support cancelled',
+    'recurring_donation.cancelled',
   ].includes(eventType);
 
   if (isCancelled) {
@@ -311,7 +334,7 @@ export default async function handler(req) {
 
   // ── Support Updated (membership level change) ────────────────────────────────
   // e.g. monthly → annual: set expiresAt. Annual → monthly: remove expiresAt.
-  const isUpdated = ['support_updated', 'Support updated'].includes(eventType);
+  const isUpdated = ['support_updated', 'Support updated', 'recurring_donation.updated'].includes(eventType);
 
   if (isUpdated) {
     const existingKey = await redis.get(KEYS.emailLookup(email));

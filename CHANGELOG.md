@@ -1,5 +1,23 @@
 # Changelog
 
+## [v0.11.0.8] — Stats Leak + Voice Mislabeling + BMAC Webhook Fixes (2026-06-08)
+
+Two production bug fixes plus BMAC webhook improvements. (1) `api/track-usage.js` — Redis write guarded by `if (process.env.VERCEL_ENV === 'production')` so `vercel dev` and preview branches never pollute production language stats. (2) `wisprstories.js:615` — `trackCardUsage()` source detection changed to triple check `(inputSource === "voice" && voiceAttached && audioBlob)` prevents stale draft-restored `inputSource` from mislabeling text cards as voice. (3) `api/webhook-bmac.js` — test event check reordered before HMAC verification so BMAC test pings return 200; `live_mode === false` test marker added; `payload.data` fallback for new BMAC format; new event types `recurring_donation.started/cancelled/updated` added; idempotency key fallback for new schema. (4) Pro key email redesigned: branded gradient header, green activation box, orange lost-key section, professional footer.
+
+### Fixed
+- `api/track-usage.js` — Redis write guarded by `if (process.env.VERCEL_ENV === 'production')`
+- `wisprstories.js:615` — source detection changed to triple check `(inputSource === "voice" && voiceAttached && audioBlob) ? "voice" : "story"`
+- `api/webhook-bmac.js` — test event check reordered BEFORE HMAC verification; `live_mode === false` test detection
+- Pro key email redesigned: branded gradient header, green activation box, orange lost-key recovery section, professional footer
+
+### Added
+- `api/webhook-bmac.js` — `payload.data` fallback for new BMAC webhook format
+- `api/webhook-bmac.js` — new event types: `recurring_donation.started`, `recurring_donation.cancelled`, `recurring_donation.updated`
+- `api/webhook-bmac.js` — idempotency key fallback: `data.id` and `data.started_at` for new BMAC schema
+
+### Changed
+- Build banner `wisprstories.js:1` v0.11.0.7 → v0.11.0.8
+
 ## [v0.11.0.7] — Grace Zone: Traffic-Light Colors + Clickable FAQ Link (2026-06-05)
 
 Patch release. Counter color scheme changed to traffic-light progression: gray (0-119), yellow `#eab308` (120-150, warn), red `#dc2626` (151-160, grace). Counter format shifts at >150 from `X / 150` to `X (Grace)` where "Grace" is a clickable link to `/about#faq-grace`. Emoji mapping: ⚠️ for warn, 🛟 for grace (both via CSS `::before`). New `.grace-link` CSS class with dotted underline. `about.js` gets hash-based auto-expand for FAQ accordion. Build banner v0.11.0.6 → v0.11.0.7.

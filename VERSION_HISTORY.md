@@ -1,5 +1,21 @@
 # Version History
 
+## v0.11.0.8 — Stats Leak + Voice Mislabeling + BMAC Webhook Fixes (2026-06-08)
+
+Two production bug fixes plus BMAC webhook improvements. `api/track-usage.js` Redis write guarded by `VERCEL_ENV === 'production'` so dev/preview branches never pollute production stats. `wisprstories.js:615` source detection triple-check prevents stale `inputSource` from mislabeling text cards as voice. `api/webhook-bmac.js` reordered test check before HMAC; added `live_mode === false` detection, `payload.data` fallback, new `recurring_donation.*` event types, idempotency key fallback. Pro key email redesigned with branding.
+
+### Fixed
+- `api/track-usage.js` — `VERCEL_ENV === 'production'` guard around Redis writes
+- `wisprstories.js:615` — triple check `(inputSource === "voice" && voiceAttached && audioBlob) ? "voice" : "story"`
+- `api/webhook-bmac.js` — test check reordered before HMAC verification
+- Pro key email redesigned with branded header, activation box, lost-key section
+
+### Added
+- `api/webhook-bmac.js` — `payload.data` fallback, new event types, idempotency key fallback
+
+### Changed
+- Build banner — v0.11.0.7 → v0.11.0.8
+
 ## v0.11.0.7 — Grace Zone: Traffic-Light Colors + Clickable FAQ Link (2026-06-05)
 
 Patch release: counter color scheme changed to traffic-light progression (gray 0-119, yellow 120-150, red 151-160). Counter shifts at >150 from `X / 150` to `X (Grace)` where "Grace" links to `/about#faq-grace`. Emoji: ⚠️ for warn, 🛟 for grace (CSS `::before`). New `.grace-link` CSS class. `about.js` gets hash-based FAQ auto-expand. Build banner v0.11.0.6 → v0.11.0.7.
