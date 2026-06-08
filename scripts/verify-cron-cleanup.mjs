@@ -7,7 +7,7 @@
 //
 // Usage:
 //   node scripts/verify-cron-cleanup.mjs
-//   node scripts/verify-cron-cleanup.mjs --base=https://wisprstories.vercel.app
+//   node scripts/verify-cron-cleanup.mjs --base=https://wibestories.vercel.app
 //   CRON_SECRET=xxx node scripts/verify-cron-cleanup.mjs
 //
 // The script reads CRON_SECRET from (in order):

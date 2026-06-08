@@ -31,7 +31,7 @@
 
   // Include Pro key header (server validates it — no separate /api/pro-status call needed)
   var storedKey;
-  try { storedKey = sessionStorage.getItem('wsProKey'); } catch (_e) {}
+  try { storedKey = localStorage.getItem('wsProKey'); } catch (_e) {}
   var isPro = !!storedKey;
   if (storedKey) {
     headers['X-Pro-Key'] = storedKey;

@@ -10,7 +10,7 @@
 
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', 'https://wisprstories.vercel.app');
+    res.setHeader('Access-Control-Allow-Origin', 'https://wibestories.vercel.app');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Short-Id');
     res.statusCode = 204;
@@ -67,7 +67,7 @@ export default async function handler(req, res) {
     });
 
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', 'https://wisprstories.vercel.app');
+    res.setHeader('Access-Control-Allow-Origin', 'https://wibestories.vercel.app');
     res.end(JSON.stringify({ ok: true }));
   } catch (e) {
     res.statusCode = 500;

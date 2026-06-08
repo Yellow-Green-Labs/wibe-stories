@@ -11,6 +11,7 @@
 export const config = { runtime: 'edge' };
 
 import { getRedis, KEYS } from '../lib/redis.js';
+import { validateProKey } from '../lib/pro-key.js';
 
 const REWRITE_TONES = ["warm", "bold", "poetic", "playful", "reflective", "honest"];
 const FREE_MAX_PER_TONE = 5;
@@ -35,13 +36,14 @@ export default async function handler(req) {
       });
     }
 
-    // Validate pro status server-side. Never trust client-sent isPro.
+    // Validate pro status server-side — checks revoked and expiresAt.
+    // Never trust client-sent isPro.
     let isPro = false;
     if (proKey) {
       try {
         const redis = getRedis();
-        const keyData = await redis.get(KEYS.upgradeKey(proKey.trim()));
-        isPro = !!keyData;
+        const result = await validateProKey(redis, proKey);
+        isPro = result.valid;
       } catch (proErr) {
         console.warn('[RewriteStatus] Pro key check failed, treating as free:', proErr.message);
       }

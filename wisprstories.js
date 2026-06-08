@@ -115,6 +115,7 @@ let recog = null,
   isRec = false,
   fullTx = "";
 let cardReady = false;
+let _exampleLang = null;
 let recogTimeout = null,
   recogRestartCount = 0;
 const RECOG_MAX_RESTARTS = 5;
@@ -662,7 +663,7 @@ document.getElementById("mobileBtnUpgrade")?.addEventListener("click", openUpgra
 async function handleUpgradeKey() {
   const input = document.getElementById("upgradeKeyInput");
   const msg = document.getElementById("upgradeKeyMsg");
-  const key = input.value.trim();
+  const key = input.value.trim().toUpperCase();
   if (!key) { msg.textContent = "Enter your key"; msg.className = "upgrade-modal-msg err"; return; }
 
   msg.textContent = "Checking...";
@@ -678,7 +679,8 @@ async function handleUpgradeKey() {
 
     if (data.isPro) {
       localStorage.setItem("wsSupporter", "true");
-      sessionStorage.setItem("wsProKey", key);
+      localStorage.setItem("wsProKey", key);
+      localStorage.setItem("wsSupporterVerifiedAt", Date.now().toString());
       updateSupporterBadge();
       msg.textContent = "Pro unlocked! Enjoy unlimited everything.";
       msg.className = "upgrade-modal-msg ok";
@@ -687,7 +689,15 @@ async function handleUpgradeKey() {
         showToast((typeof getI18nSync === "function" && getI18nSync("toasts.welcomePro")) || "Welcome to Pro 💛");
       }, 1500);
     } else {
-      msg.textContent = "Invalid key. Try again or buy a coffee.";
+      if (data.reason === "revoked") {
+        msg.textContent = "This key has been revoked. Contact support to resolve.";
+      } else if (data.reason === "expired") {
+        msg.textContent = "Your subscription has expired. Renew on Buy Me a Coffee.";
+      } else if (data.reason === "rate_limited") {
+        msg.textContent = "Too many attempts. Please wait a minute and try again.";
+      } else {
+        msg.textContent = "Invalid key. Try again or buy a coffee.";
+      }
       msg.className = "upgrade-modal-msg err";
     }
   } catch (e) {
@@ -968,7 +978,7 @@ async function confirmRewrite(tone) {
       body: JSON.stringify({
         tone,
         sessionId,
-        proKey: sessionStorage.getItem("wsProKey") || null,
+        proKey: localStorage.getItem("wsProKey") || null,
       }),
     });
     if (!res.ok) {
@@ -1030,9 +1040,12 @@ function updateCard(preserveText) {
     tx.style.fontStyle = t.fi;
     tx.style.fontWeight = t.fw;
     tx.style.letterSpacing = t.ls;
-    // Label: use ONLY speechLang (Task A + Task B Change 1)
+    // Label: use _exampleLang when card is from an example, otherwise speechLang
     var langName = "";
-    if (speechLang && speechLang !== "__native__") {
+    var _labelLang = _exampleLang || null;
+    if (_labelLang) {
+      langName = getLanguageName(_labelLang) || _labelLang;
+    } else if (speechLang && speechLang !== "__native__") {
       langName = getLanguageName(speechLang) || speechLang;
     } else if (speechLang === "__native__") {
       langName = "Native";
@@ -1741,6 +1754,7 @@ function finishRec() {
   if (fullTx.trim()) {
     document.getElementById("sta").value = fullTx.trim().slice(0, 150);
     inputSource = "voice";
+    _exampleLang = null;
     userOverride = false;
     updateCard();
     saveDraft();
@@ -2487,7 +2501,7 @@ document.getElementById("toneRow").addEventListener("click", async (e) => {
     const res = await fetch("/api/rewrite", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, tone, sessionId, proKey: sessionStorage.getItem("wsProKey") || null }),
+      body: JSON.stringify({ text, tone, sessionId, proKey: localStorage.getItem("wsProKey") || null }),
       signal: controller.signal,
     });
     clearTimeout(timeoutId);
@@ -2612,6 +2626,7 @@ function _stopPlaceholderCycle() {
 let _dc;
 document.getElementById("sta").addEventListener("input", (e) => {
   rewriteCache = {};
+  _exampleLang = null;
   // No auto-switch to "voice" for text input (paste, type, dictate).
   // Only the mic recording path in finishRec() sets inputSource = "voice".
   // User can manually toggle via the source label.
@@ -2638,6 +2653,7 @@ document.getElementById("sta").addEventListener("paste", () => {
   _webmCache = null;
   _pngCache = null;
   inputSource = "story";
+  _exampleLang = null;
   setTimeout(function() { autoDetectLangFromText(document.getElementById("sta").value); updateCard(); saveDraft(); updateSlNudge(); updateMicState(); _updateResetBtnVisibility(); }, 50);
 });
 document.getElementById("nin").addEventListener("input", function() {
@@ -2813,7 +2829,7 @@ syncToneCountsFromServer();
 function syncToneCountsFromServer() {
   var sessionId = localStorage.getItem("wsSessionId");
   if (!sessionId) return;
-  var proKey = sessionStorage.getItem("wsProKey") || "";
+  var proKey = localStorage.getItem("wsProKey") || "";
   var url = "/api/rewrite-status?sessionId=" + encodeURIComponent(sessionId);
   if (proKey) url += "&proKey=" + encodeURIComponent(proKey);
   fetch(url).then(function(r) { return r.json(); }).then(function(data) {
@@ -2922,10 +2938,36 @@ function tryAutoDetectLang() {
 tryAutoDetectLang();
 document.addEventListener("languagesReady", tryAutoDetectLang);
 
-// Re-validate Pro key on load
+// Re-validate Pro key on load.
+// Guards against:
+//   1. Manual localStorage bypass (wsSupporter=true set in DevTools, no real key)
+//   2. Revoked or expired keys that were valid at activation time
+// Throttled to once per 24h so normal page loads have zero extra latency.
 async function revalidateProKey() {
-  const storedKey = sessionStorage.getItem("wsProKey");
-  if (!storedKey) return;
+  const isMarkedPro = localStorage.getItem("wsSupporter") === "true";
+  if (!isMarkedPro) return;
+
+  // One-time migration: wsProKey moved from sessionStorage → localStorage.
+  // Run before the bypass check so existing supporters aren't logged out on first load.
+  try {
+    const legacyKey = sessionStorage.getItem("wsProKey");
+    if (legacyKey && !localStorage.getItem("wsProKey")) {
+      localStorage.setItem("wsProKey", legacyKey);
+      sessionStorage.removeItem("wsProKey");
+    }
+  } catch (_e) {}
+
+  const storedKey = localStorage.getItem("wsProKey");
+  if (!storedKey) {
+    // wsSupporter=true but no key stored — clear the flag (manual bypass attempt)
+    localStorage.removeItem("wsSupporter");
+    updateSupporterBadge();
+    return;
+  }
+
+  const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+  const verifiedAt = parseInt(localStorage.getItem("wsSupporterVerifiedAt") || "0", 10);
+  if (Date.now() - verifiedAt < TWENTY_FOUR_HOURS) return; // Still fresh — skip network call
 
   try {
     const res = await fetch("/api/pro-status", {
@@ -2937,14 +2979,20 @@ async function revalidateProKey() {
 
     if (data.isPro) {
       localStorage.setItem("wsSupporter", "true");
+      localStorage.setItem("wsSupporterVerifiedAt", Date.now().toString());
       updateSupporterBadge();
     } else {
       localStorage.removeItem("wsSupporter");
-      sessionStorage.removeItem("wsProKey");
+      localStorage.removeItem("wsProKey");
+      localStorage.removeItem("wsSupporterVerifiedAt");
       updateSupporterBadge();
+      if (data.reason === "revoked" || data.reason === "expired") {
+        showToast("Pro access is no longer active. Visit Buy Me a Coffee to renew.");
+      }
     }
   } catch (e) {
-    console.warn("[Pro] Re-validation failed:", e.message);
+    // Network failure — fail open. Never revoke on connectivity issues.
+    console.warn("[Pro] Re-validation failed, keeping current status:", e.message);
   }
 }
 revalidateProKey();
@@ -3123,6 +3171,7 @@ document.getElementById("exGrid").addEventListener("click", (e) => {
     // user's chosen locale; only the card display language follows the example.
     curLang = c.dataset.lang;
     isRTL = false;
+    _exampleLang = c.dataset.lang;
   }
   updateCard();
   updateMicState();

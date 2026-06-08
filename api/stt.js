@@ -102,7 +102,7 @@ export default async function handler(req) {
           headers: {
             'Authorization': 'Bearer ' + orKey,
             'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://wisprstories.vercel.app',
+            'HTTP-Referer': 'https://wibestories.vercel.app',
             'X-OpenRouter-Title': 'Wispr Stories',
           },
           body: JSON.stringify({

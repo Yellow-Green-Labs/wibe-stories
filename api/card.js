@@ -47,7 +47,7 @@ function safePalette(value) {
 }
 
 export default function handler(req, res) {
-  const host = req.headers.host || 'wisprstories.vercel.app';
+  const host = req.headers.host || 'wibestories.vercel.app';
   const proto = req.headers['x-forwarded-proto'] || 'https';
   const origin = `${proto}://${host}`;
   const url = new URL(req.url, origin);

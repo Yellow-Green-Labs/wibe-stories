@@ -1,9 +1,17 @@
 export const config = { runtime: 'edge' };
 
-import { getRedis, KEYS } from '../lib/redis.js';
+import { getRedis } from '../lib/redis.js';
+import { validateProKey } from '../lib/pro-key.js';
 
-// Validate Pro status server-side
-// Returns { isPro, keyData } or { isPro: false }
+const RATE_LIMIT_MAX = 10;
+const RATE_LIMIT_WINDOW_SEC = 60;
+
+function getClientIP(req) {
+  return (req.headers.get('x-forwarded-for') || '').split(',')[0].trim()
+    || req.headers.get('x-real-ip')
+    || 'unknown';
+}
+
 export default async function handler(req) {
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
@@ -16,36 +24,50 @@ export default async function handler(req) {
     const { key } = await req.json();
 
     if (!key) {
-      return new Response(JSON.stringify({ isPro: false }), {
+      return new Response(JSON.stringify({ isPro: false, reason: 'missing_key' }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
     const redis = getRedis();
-    const redisKey = KEYS.upgradeKey(key.trim());
-    const data = await redis.get(redisKey);
 
-    if (!data) {
-      return new Response(JSON.stringify({ isPro: false }), {
+    // Rate limit: 10 activation attempts per IP per minute
+    const ip = getClientIP(req);
+    try {
+      const rlKey = `wispr:ratelimit:keycheck:${ip}`;
+      const count = await redis.incr(rlKey);
+      if (count === 1) await redis.expire(rlKey, RATE_LIMIT_WINDOW_SEC);
+      if (count > RATE_LIMIT_MAX) {
+        return new Response(JSON.stringify({ isPro: false, reason: 'rate_limited' }), {
+          status: 429,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    } catch {
+      // Fail open on rate limit — never block a legitimate user due to Redis hiccup
+    }
+
+    const result = await validateProKey(redis, key);
+
+    if (!result.valid) {
+      return new Response(JSON.stringify({ isPro: false, reason: result.reason }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    const keyData = typeof data === 'string' ? JSON.parse(data) : data;
-
+    // Never return PII — email and purchase date stay server-side only
     return new Response(JSON.stringify({
       isPro: true,
-      tier: keyData.tier || 'pro',
-      email: keyData.email || '',
+      tier: result.keyData.tier || 'pro',
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (e) {
     console.error('[ProStatus] Error:', e.message);
-    return new Response(JSON.stringify({ isPro: false, error: e.message }), {
+    return new Response(JSON.stringify({ isPro: false, reason: 'server_error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });

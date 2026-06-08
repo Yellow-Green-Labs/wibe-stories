@@ -1,6 +1,7 @@
 export const config = { runtime: 'edge' };
 
 import { getRedis, KEYS } from '../lib/redis.js';
+import { validateProKey } from '../lib/pro-key.js';
 
 // Free-tier quota is enforced per tone, per day.
 // Each tone has its own 5-rewrite daily budget (5 x 6 tones = 30 max/day).
@@ -121,15 +122,15 @@ export default async function handler(req) {
       });
     }
 
-    // Validate pro status server-side via Redis.
+    // Validate pro status server-side — checks revoked and expiresAt.
     // Never trust the client-sent isPro flag — proKey is validated here directly.
     // Fail closed: if Redis is unavailable, treat as free user.
     let isPro = false;
     if (proKey) {
       try {
         const redis = getRedis();
-        const keyData = await redis.get(KEYS.upgradeKey(proKey.trim()));
-        isPro = !!keyData;
+        const result = await validateProKey(redis, proKey);
+        isPro = result.valid;
       } catch (proErr) {
         console.warn('[Rewrite] Pro key check failed, treating as free:', proErr.message);
       }
@@ -216,7 +217,7 @@ export default async function handler(req) {
         headers: {
           'Authorization': `Bearer ${openrouterKey}`,
           'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://wisprstories.vercel.app',
+          'HTTP-Referer': 'https://wibestories.vercel.app',
           'X-Title': 'Wispr Stories',
         },
         body: JSON.stringify({

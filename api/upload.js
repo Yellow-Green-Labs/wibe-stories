@@ -131,7 +131,7 @@ export default async function handler(req, res) {
 
     res.setHeader('Content-Type', 'application/json');
     // Restrict CORS to own origin — upload should only be callable from the app itself.
-    res.setHeader('Access-Control-Allow-Origin', 'https://wisprstories.vercel.app');
+    res.setHeader('Access-Control-Allow-Origin', 'https://wibestories.vercel.app');
     res.end(JSON.stringify({ shortId }));
   } catch (e) {
     res.statusCode = 500;

@@ -9,7 +9,7 @@
 //
 // Usage:
 //   node scripts/stress-test-99-cap.mjs                 # localhost:3000
-//   node scripts/stress-test-99-cap.mjs --base=https://wisprstories.vercel.app
+//   node scripts/stress-test-99-cap.mjs --base=https://wibestories.vercel.app
 //   node scripts/stress-test-99-cap.mjs --count=120     # override 100 default
 //
 // What "pass" means:

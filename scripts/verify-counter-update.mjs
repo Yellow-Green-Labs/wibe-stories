@@ -12,7 +12,7 @@
 //
 // Usage:
 //   node scripts/verify-counter-update.mjs
-//   node scripts/verify-counter-update.mjs --base=https://wisprstories.vercel.app
+//   node scripts/verify-counter-update.mjs --base=https://wibestories.vercel.app
 
 const BASE = (process.argv.find(a => a.startsWith("--base=")) || "").slice("--base=".length) || "http://localhost:3000";
 

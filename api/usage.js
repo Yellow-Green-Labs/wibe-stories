@@ -1,6 +1,7 @@
 export const config = { runtime: 'edge' };
 
 import { getRedis, KEYS, secondsUntilMidnightUTC } from '../lib/redis.js';
+import { validateProKey } from '../lib/pro-key.js';
 
 const DAILY_USER_CAP = 99;
 
@@ -24,14 +25,14 @@ export default async function handler(req) {
       });
     }
 
-    // Server-side Pro key validation
+    // Server-side Pro key validation — checks revoked and expiresAt
     let validatedPro = false;
     const proKey = req.headers.get('x-pro-key');
     if (proKey) {
       try {
         const redis = getRedis();
-        const keyData = await redis.get(KEYS.upgradeKey(proKey.trim()));
-        validatedPro = !!keyData;
+        const result = await validateProKey(redis, proKey);
+        validatedPro = result.valid;
       } catch (e) {
         console.warn('[Usage] Pro key check failed, treating as free:', e.message);
       }

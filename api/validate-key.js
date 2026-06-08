@@ -1,6 +1,16 @@
 export const config = { runtime: 'edge' };
 
-import { getRedis, KEYS } from '../lib/redis.js';
+import { getRedis } from '../lib/redis.js';
+import { validateProKey } from '../lib/pro-key.js';
+
+const RATE_LIMIT_MAX = 10;
+const RATE_LIMIT_WINDOW_SEC = 60;
+
+function getClientIP(req) {
+  return (req.headers.get('x-forwarded-for') || '').split(',')[0].trim()
+    || req.headers.get('x-real-ip')
+    || 'unknown';
+}
 
 export default async function handler(req) {
   if (req.method !== 'POST') {
@@ -21,30 +31,36 @@ export default async function handler(req) {
     }
 
     const redis = getRedis();
-    const redisKey = KEYS.upgradeKey(key.trim());
-    const data = await redis.get(redisKey);
 
-    if (!data) {
-      return new Response(JSON.stringify({ valid: false, reason: 'invalid_key' }), {
+    // Rate limit: 10 attempts per IP per minute
+    const ip = getClientIP(req);
+    try {
+      const rlKey = `wispr:ratelimit:keycheck:${ip}`;
+      const count = await redis.incr(rlKey);
+      if (count === 1) await redis.expire(rlKey, RATE_LIMIT_WINDOW_SEC);
+      if (count > RATE_LIMIT_MAX) {
+        return new Response(JSON.stringify({ valid: false, reason: 'rate_limited' }), {
+          status: 429,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    } catch {
+      // Fail open — don't block legitimate users if Redis is unavailable
+    }
+
+    const result = await validateProKey(redis, key);
+
+    if (!result.valid) {
+      return new Response(JSON.stringify({ valid: false, reason: result.reason }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    const keyData = typeof data === 'string' ? JSON.parse(data) : data;
-
-    // Revoked keys (refunded supporters) get a clear reason, not a generic 'invalid_key'
-    if (keyData.revoked) {
-      return new Response(JSON.stringify({ valid: false, reason: 'revoked' }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Never return PII — email and purchase date stay server-side only.
+    // Never return PII
     return new Response(JSON.stringify({
       valid: true,
-      tier: keyData.tier || 'pro',
+      tier: result.keyData.tier || 'pro',
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
