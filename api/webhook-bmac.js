@@ -149,13 +149,6 @@ export default async function handler(req) {
 
   const rawBody = await req.text();
 
-  const incomingSignature = req.headers.get('X-Bmc-Signature') || '';
-  const signatureValid = await verifySignature(BMAC_SECRET, rawBody, incomingSignature);
-  if (!signatureValid) {
-    console.warn('[BMAC] Signature verification failed');
-    return new Response('Unauthorized', { status: 401 });
-  }
-
   let payload;
   try {
     payload = JSON.parse(rawBody);
@@ -168,10 +161,17 @@ export default async function handler(req) {
 
   console.log(`[BMAC] Event received: "${eventType}"`);
 
-  // Skip test webhooks
+  // Skip test webhooks — signature is not required for test pings
   if (payload.test === true || (data.supporter_email || '').includes('test@buymeacoffee')) {
     console.log('[BMAC] Test event detected, skipping');
     return new Response('OK', { status: 200 });
+  }
+
+  const incomingSignature = req.headers.get('X-Bmc-Signature') || '';
+  const signatureValid = await verifySignature(BMAC_SECRET, rawBody, incomingSignature);
+  if (!signatureValid) {
+    console.warn('[BMAC] Signature verification failed');
+    return new Response('Unauthorized', { status: 401 });
   }
 
   const email = (data.supporter_email || '').toLowerCase().trim();
