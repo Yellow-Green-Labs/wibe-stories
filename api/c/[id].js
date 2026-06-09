@@ -229,6 +229,16 @@ html,body{
   .branding-logo{width:24px;height:24px}
   .card-img{max-width:100%}
 }
+.flow-hook{text-align:center;margin-top:20px}
+.hook-line{font-size:clamp(12px,2vw,14px);color:#a5a596;margin-bottom:4px}
+.hook-flow{display:inline-block;font-size:clamp(14px,2.2vw,16px);font-weight:700;color:#f59e0b;text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
+.hook-flow:hover{border-bottom-color:#f59e0b}
+.hook-flow span{display:inline-block;animation:wave-letter-auto 2.5s ease-in-out infinite}
+.hook-flow.pulse{animation:pulse-glow 3s ease-in-out infinite}
+@keyframes wave-letter-auto{0%,70%{transform:translateY(0)}80%{transform:translateY(-4px)}90%,100%{transform:translateY(0)}}
+@keyframes pulse-glow{0%,100%{text-shadow:0 0 4px rgba(245,158,11,.2)}50%{text-shadow:0 0 16px rgba(245,158,11,.5)}}
+@media(prefers-reduced-motion:reduce){.hook-flow span{animation:none!important}.hook-flow.pulse{animation:none!important}}
+@media(max-width:720px){.hook-flow span{animation:none!important}.hook-flow.pulse{animation:none!important}}
 </style>
 </head>
 <body>
@@ -247,8 +257,13 @@ html,body{
   ${hasVoice ? '<div class="voice-player"><button class="voice-btn" id="playVoice" onclick="var a=document.getElementById(\'voiceAudio\');if(a.paused){a.play();this.innerHTML=\'<span>⏸</span> Playing\u2026\';this.classList.add(\'playing\')}else{a.pause();this.innerHTML=\'<span>▶</span> Listen to voice\';this.classList.remove(\'playing\')}"><span>▶</span> Listen to voice</button><audio id="voiceAudio" src="' + safeVoiceUrl + '" preload="none" onended="var b=document.getElementById(\'playVoice\');b.innerHTML=\'<span>▶</span> Listen to voice\';b.classList.remove(\'playing\')"></audio></div>' : ''}
   ${captionHtml}
   <a class="cta" href="${safeAppUrl}">Create your own &rarr;</a>
+  <div class="flow-hook">
+    <p class="hook-line">Your voice, everywhere.</p>
+    <a class="hook-flow pulse" href="https://wisprflow.ai/r?BEST76" target="_blank" rel="noopener">Wispr Flow</a>
+  </div>
   <br>
 </main>
+<script>(function(){var e=document.querySelector('.hook-flow');if(!e||window.matchMedia('(prefers-reduced-motion:reduce)').matches||innerWidth<=720)return;var t=e.textContent;e.innerHTML='';var c=0;for(var i=0;i<t.length;i++){if(t[i]===' '){e.appendChild(document.createTextNode(' '))}else{var s=document.createElement('span');s.textContent=t[i];s.style.animationDelay=(c*0.06)+'s';e.appendChild(s);c++}}})()</script>
 </body>
 </html>`;
 
