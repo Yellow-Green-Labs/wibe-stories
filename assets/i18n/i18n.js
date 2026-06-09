@@ -1,4 +1,4 @@
-// i18n.js — Internationalization loader for Wispr Stories
+// i18n.js — Internationalization loader for Wibe Stories
 // Loads translations from assets/i18n/{code}.json and applies to [data-i18n] elements.
 
 (function() {

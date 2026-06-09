@@ -1,5 +1,44 @@
 # Version History
 
+## v0.11.0.10 — Share Polish: robots.txt + Mobile Share Merge + Wispr Flow CTAs (2026-06-09)
+
+Three share-related fixes. (1) `robots.txt` allowlist-based: social media crawlers allowed `/c/`, search engines blocked. (2) Mobile share merged: "Copy Image Link" copies both image + URL; "Copy Image" button removed. (3) 13 rotating Wispr Flow CTA lines appended to share captions, each ending with `→ wisprflow.ai`.
+
+### Added
+- 13 Wispr Flow CTA lines for share captions
+- `robots.txt` — social media crawlers allowed for `/c/` paths
+
+### Changed
+- `shareCopyLink` handler — copies both image blob and URL via `ClipboardItem`
+- `responsive.css` — hides only `#shareDownload` on mobile (was `#shareDownload` + `#shareCopyImage`)
+- Brand name cleanup — "Wispr Stories" renamed to "Wibe Stories" in 11 code files
+- Build banner v0.11.0.9 → v0.11.0.10
+
+### Removed
+- `#shareCopyImage` button from HTML
+- `shareCopyImage` JS handler (merged into `shareCopyLink`)
+
+---
+
+## v0.11.0.9 — Documentation Restructuring (2026-06-09)
+
+Documentation restructured for clarity. Public docs moved to `documentation/` folder; `docs/` reserved for internal reference only. `WIBE_STORIES_CANONICAL_BLUEPRINT.md` renamed to `documentation/WIBE_STORIES.md`. README.md trimmed (removed 4 sections, 114→82 lines). Two new docs: `documentation/DEVELOPER.md` (developer guide) and `documentation/API.md` (API reference). WIBE_STORIES.md restructured: added Product Vision, User Personas, Success Metrics, Requirements; trimmed implementation details (hex values, file paths, API tables, env vars, bash commands); added Alt+F1 reference; removed Repository map (moved to DEVELOPER.md); added branding note. Code comments fixed in `api/rewrite.js` and `api/card.js`. All 31 blueprint discrepancies verified and fixed.
+
+### Added
+- `DEVELOPER.md` — developer guide
+- `API.md` — API reference
+- `WIBE_STORIES.md` — Product Vision, User Personas, Success Metrics, Requirements, branding note, Alt+F1 reference, design principles
+
+### Changed
+- `README.md` — trimmed 114→82 lines, Documentation links updated
+- `WIBE_STORIES_CANONICAL_BLUEPRINT.md` → `documentation/WIBE_STORIES.md`
+- `documentation/WIBE_STORIES.md` — trimmed implementation details across 12 sections
+- `AGENTS.md` — 3 references updated, DEVELOPER.md + API.md added, Key files section updated
+- `docs/project-structure.md` — 7 stale errors fixed (og.js, upload.js, locale count, webhook filename, CSP claim, CSS count)
+- `global/footer-menu.js` — VERSION_HISTORY.md fetch path updated
+
+---
+
 ## v0.11.0.8 — Stats Leak + Voice Mislabeling + BMAC Webhook Fixes (2026-06-08)
 
 Two production bug fixes plus BMAC webhook improvements. `api/track-usage.js` Redis write guarded by `VERCEL_ENV === 'production'` so dev/preview branches never pollute production stats. `wisprstories.js:615` source detection triple-check prevents stale `inputSource` from mislabeling text cards as voice. `api/webhook-bmac.js` reordered test check before HMAC; added `live_mode === false` detection, `payload.data` fallback, new `recurring_donation.*` event types, idempotency key fallback. Pro key email redesigned with branding.

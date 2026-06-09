@@ -1,4 +1,4 @@
-/* Wispr Stories — About page scripts */
+/* Wibe Stories — About page scripts */
 (function() {
   /* --- Theme --- */
   var saved = localStorage.getItem('theme');

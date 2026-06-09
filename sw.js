@@ -1,4 +1,4 @@
-// Wispr Stories — service worker
+// Wibe Stories — service worker
 //
 // Goal: make the app installable and usable offline. Voice recording,
 // rewrites, uploads, and STT all need the network — those requests bypass

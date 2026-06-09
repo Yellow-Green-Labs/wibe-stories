@@ -93,7 +93,7 @@ export default async function handler(req, res) {
     // bars on top/bottom. A 1:1 OG triggers a smaller preview on some
     // platforms (WhatsApp/Twitter), but the user's reported bug was the
     // 16:9 image being visibly wrong. The native aspect is the correct
-    // trade-off for Wispr Stories' card-shaped content.
+    // trade-off for Wibe Stories' card-shaped content.
     // mozjpeg + quality 82 typically lands ~50–100 KB.
     const ogBuffer = await sharp(pngBuffer)
       .flatten({ background: '#ffffff' }) // strip alpha so JPEG bg is predictable

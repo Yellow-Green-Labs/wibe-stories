@@ -5,8 +5,7 @@
 //      card pre-loaded — bots ignore JS so they still get the OG meta.
 //
 // Runtime is Node.js (default for `/api/*.js`). The companion `/api/og.js`
-// runs on Edge with @vercel/og. They MUST be on different runtimes —
-// otherwise Vercel bundles them together and @vercel/og fails to load.
+// also runs on Node.js with sharp + SVG for image generation.
 
 const PALS = [
   '#7c3aed', '#f59e0b', '#dc2626', '#059669', '#0284c7',

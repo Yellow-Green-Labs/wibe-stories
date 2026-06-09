@@ -103,7 +103,7 @@ export default async function handler(req) {
             'Authorization': 'Bearer ' + orKey,
             'Content-Type': 'application/json',
             'HTTP-Referer': 'https://wibestories.vercel.app',
-            'X-OpenRouter-Title': 'Wispr Stories',
+            'X-OpenRouter-Title': 'Wibe Stories',
           },
           body: JSON.stringify({
             model: 'openai/whisper-large-v3-turbo',

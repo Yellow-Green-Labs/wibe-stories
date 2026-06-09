@@ -199,7 +199,7 @@
   function getVoice(lang) { return USAGE.voice[lang] || 0; }
   function getStory(lang) { return USAGE.story[lang] || 0; }
 
-  // Ranking comparator (for top-3 badges and the chart). Wispr Stories is a
+  // Ranking comparator (for top-3 badges and the chart). Wibe Stories is a
   // voice-first product, so ties on total cards are broken by voice cards
   // (more spoken cards ranks higher), then alphabetically for stability.
   // Each item must expose { total, voice, lang:{ label } }.

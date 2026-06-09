@@ -1,10 +1,30 @@
-# Wispr Stories — robots policy
+# Wibe Stories — robots policy
 # Public app; everything indexable except API endpoints and ephemeral share blobs.
+# Social media crawlers are allowed /c/ for WhatsApp/Twitter link previews.
 
 User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /c/
 Disallow: /.well-known/
+
+# Allow social media crawlers for link previews on /c/ card pages
+User-agent: facebookexternalhit
+Allow: /c/
+
+User-agent: WhatsApp
+Allow: /c/
+
+User-agent: Facebot
+Allow: /c/
+
+User-agent: Twitterbot
+Allow: /c/
+
+# Block search engines from indexing ephemeral card pages
+User-agent: Googlebot
+Disallow: /c/
+
+User-agent: Bingbot
+Disallow: /c/
 
 Sitemap: https://wibestories.vercel.app/sitemap.xml

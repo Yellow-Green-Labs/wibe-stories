@@ -1,5 +1,51 @@
 # Changelog
 
+## [v0.11.0.10] — Share Polish: robots.txt + Mobile Share Merge + Wispr Flow CTAs (2026-06-09)
+
+Three share-related fixes to improve WhatsApp/Telegram previews, mobile share UX, and organic promotion of Wispr Flow.
+
+### Fixed
+- `robots.txt` — allowlist-based: empty block at top for clean defaults, explicit `Allow: /c/` for `facebookexternalhit`, `WhatsApp`, `Facebot`, `Twitterbot` so WhatsApp/Telegram OG previews work; `Disallow: /c/` for `Googlebot`, `Bingbot` keeps ephemeral cards out of search indices
+- Mobile share merge — `shareCopyLink` handler rewritten to copy both image blob and URL to clipboard via `ClipboardItem` with `image/png` + `text/plain` MIME types; falls back to URL-only on iOS Safari (no image clipboard support)
+- `#shareCopyImage` button removed from HTML and JS handler deleted; `responsive.css` updated to hide only `#shareDownload`
+
+### Added
+- 13 rotating Wispr Flow CTA lines appended to every share caption (`shareNative` handler), each ending with `→ wisprflow.ai`; lines describe what Flow does, not what it is
+
+### Changed
+- Brand name cleanup — "Wispr Stories" renamed to "Wibe Stories" in 11 code files (comments, API headers, sitemap)
+- Build banner `wisprstories.js:1` v0.11.0.9 → v0.11.0.10
+
+---
+
+## [v0.11.0.9] — Documentation Restructuring (2026-06-09)
+
+Documentation restructured for clarity and maintainability. Public docs moved to `documentation/` folder; `docs/` reserved for internal reference only. `WIBE_STORIES_CANONICAL_BLUEPRINT.md` renamed to `documentation/WIBE_STORIES.md`. README.md trimmed (removed "Built with", "Run it locally", "Browser support", "Acknowledgments"). Two new docs created: `documentation/DEVELOPER.md` (developer guide, ~324 lines) and `documentation/API.md` (API reference, ~456 lines). WIBE_STORIES.md restructured: added Product Vision (§1), User Personas (§4), Success Metrics (§19), Requirements (§20); trimmed implementation details (hex values, file paths, API route tables, LLM chains, env var tables, bash commands, HTTP headers); added Alt+F1 reference to Known Limitations; removed Repository map (moved to DEVELOPER.md); added branding note. Code comments fixed in `api/rewrite.js:186` (Qwen→Gemma/Kimi) and `api/card.js:7-8` (Edge/@vercel/og→Node.js/sharp). All 31 blueprint discrepancies verified and fixed.
+
+### Added
+- `DEVELOPER.md` — developer guide (getting started, architecture, code structure, development workflow, deployment, testing, troubleshooting)
+- `API.md` — API reference (19 endpoints, error codes, webhooks)
+- `WIBE_STORIES.md` §1 — Product Vision (one-line description, why it exists, north star metric)
+- `WIBE_STORIES.md` §4 — User Personas (Kamala, Priya, Marcus)
+- `WIBE_STORIES.md` §17 — Alt+F1 reference for known limitations
+- `WIBE_STORIES.md` §19 — Success Metrics (share rate, first-card time, voice-first usage, etc.)
+- `WIBE_STORIES.md` §20 — Requirements (must-have, should-have, nice-to-have)
+- `WIBE_STORIES.md` — branding note (top of file)
+- `WIBE_STORIES.md` §7 — Design principles (warmth, simplicity, accessibility)
+- `api/rewrite.js:186` — comment corrected (Qwen→Gemma/Kimi)
+- `api/card.js:7-8` — comment corrected (Edge/@vercel/og→Node.js/sharp)
+
+### Changed
+- `README.md` — trimmed from 114→82 lines, removed 4 sections, Documentation links updated to 3 docs
+- `WIBE_STORIES_CANONICAL_BLUEPRINT.md` → `documentation/WIBE_STORIES.md` (renamed via `git mv`)
+- `documentation/WIBE_STORIES.md` — TOC updated (new sections, removed Repository map)
+- `documentation/WIBE_STORIES.md` — §5, §7, §8, §9, §10, §11, §12, §13, §14, §15, §16 trimmed (removed file paths, hex values, code refs, bash commands, env var tables, HTTP headers)
+- `AGENTS.md` — 3 references updated from `WIBE_STORIES_CANONICAL_BLUEPRINT.md` to `documentation/WIBE_STORIES.md`; DEVELOPER.md + API.md added to "Documents referenced every session"; Key files section updated with documentation/ entries
+- `docs/project-structure.md` — `WISPR_STORIES_CANONICAL_BLUEPRINT.md` replaced with `documentation/WIBE_STORIES.md`, `documentation/DEVELOPER.md`, `documentation/API.md`; 7 stale errors fixed (og.js `@vercel/og`→`sharp`, upload.js OG dimensions 1200×630→1200×1200, script count 19→10→19, locale count 21→11, webhook filename `webhook/bmc.js`→`webhook-bmac.js`, CSP claim corrected, CSS module count 13→14)
+- `global/footer-menu.js` — VERSION_HISTORY.md fetch path updated (cache buster bumped)
+
+---
+
 ## [v0.11.0.8] — Stats Leak + Voice Mislabeling + BMAC Webhook Fixes (2026-06-08)
 
 Two production bug fixes plus BMAC webhook improvements. (1) `api/track-usage.js` — Redis write guarded by `if (process.env.VERCEL_ENV === 'production')` so `vercel dev` and preview branches never pollute production language stats. (2) `wisprstories.js:615` — `trackCardUsage()` source detection changed to triple check `(inputSource === "voice" && voiceAttached && audioBlob)` prevents stale draft-restored `inputSource` from mislabeling text cards as voice. (3) `api/webhook-bmac.js` — test event check reordered before HMAC verification so BMAC test pings return 200; `live_mode === false` test marker added; `payload.data` fallback for new BMAC format; new event types `recurring_donation.started/cancelled/updated` added; idempotency key fallback for new schema. (4) Pro key email redesigned: branded gradient header, green activation box, orange lost-key section, professional footer.

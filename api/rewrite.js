@@ -183,7 +183,7 @@ export default async function handler(req) {
       }
     }
 
-    // Call OpenRouter — Qwen 3 14B (free) / Ling 2.6 Flash (pro)
+    // Call OpenRouter — Gemma/Kimi/Gemma (free chain) or Ling/Lunaris (pro chain)
     const openrouterKey = process.env.OPENROUTER_API_KEY;
     if (!openrouterKey) {
       return new Response(JSON.stringify({ error: 'Server not configured' }), {
@@ -218,7 +218,7 @@ export default async function handler(req) {
           'Authorization': `Bearer ${openrouterKey}`,
           'Content-Type': 'application/json',
           'HTTP-Referer': 'https://wibestories.vercel.app',
-          'X-Title': 'Wispr Stories',
+          'X-Title': 'Wibe Stories',
         },
         body: JSON.stringify({
           model,

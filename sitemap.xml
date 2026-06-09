@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Wispr Stories — sitemap
+  Wibe Stories — sitemap
   Single-page app at /. Ephemeral share routes under /c/{id} are not listed
   because they expire (~36h, see api/cleanup.js) and are user-private. If a
   curated examples archive ships, add it as a separate <url> entry below.

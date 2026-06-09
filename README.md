@@ -65,47 +65,15 @@ No account, no install, no build step. The front end is plain HTML, CSS, and Jav
 - 🌙 **Dark mode** — follows your system preference
 - 🔒 **No accounts, no audio storage** — shared-link cards auto-expire after 36 hours
 
-## Built with
-
-| Tech | Role |
-|---|---|
-| HTML, CSS, JavaScript | The whole front end — no framework, no build step |
-| Vercel | Hosting + serverless functions |
-| Web Speech API | In-browser voice transcription |
-| Deepgram + OpenRouter (Whisper) | Server-side STT fallback |
-| OpenRouter | AI tone rewriting |
-| Upstash Redis | Rate limiting and caches |
-| Vercel Blob | Card image storage for shareable links |
-| PWA | Installable; typing works offline |
-
-## Run it locally
-
-```bash
-# Requires Node.js 18+ and the Vercel CLI (npm i -g vercel)
-vercel dev          # full app, including the serverless API routes
-```
-
-For a quick static-only preview without the API routes, open `wisprstories.html` directly in a browser.
-
-The serverless routes need environment variables (Deepgram, OpenRouter, Upstash Redis, Vercel Blob, and others). See **[the project documentation](WIBE_STORIES_CANONICAL_BLUEPRINT.md#15-deployment-and-local-development)** for the full list and the architecture.
-
-## Browser support
-
-Works in Chrome, Edge, and Safari. Firefox supports typing and paste only — voice recording is not available there.
-
 ## Documentation
 
-- **[Project documentation](WIBE_STORIES_CANONICAL_BLUEPRINT.md)** — product, architecture, design system, deployment, and limits.
+- **[Product documentation](documentation/WIBE_STORIES.md)** — product vision, features, design system, architecture, and roadmap.
+- **[Developer guide](documentation/DEVELOPER.md)** — technical onboarding, code structure, deployment, and development workflow.
+- **[API reference](documentation/API.md)** — all 19 serverless endpoints, request/response specs, and error codes.
 
 ## License
 
 **All rights reserved.** This is a personal prototype, shared publicly for demonstration and evaluation only. No permission is granted to use, copy, modify, or redistribute the code — see [LICENSE](LICENSE). "Wibe Stories" is independent and not affiliated with Wispr Flow.
-
-## Acknowledgments
-
-- **[Wispr Flow](https://wisprflow.ai)** — the voice-input product this project complements
-- **[Vercel](https://vercel.com/)** — hosting
-- **[Google Fonts](https://fonts.google.com/)** — typography
 
 ---
 

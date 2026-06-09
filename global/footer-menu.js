@@ -238,7 +238,7 @@
   const versionDiv = wrapper.querySelector("#fmenu-version");
   const versionSpan = wrapper.querySelector("#fmenu-version-number");
 
-  fetch("VERSION_HISTORY.md?v=20260603")
+  fetch("VERSION_HISTORY.md?v=20260609")
     .then(r => r.ok ? r.text() : Promise.reject())
     .then(text => {
       const match = text.match(/^## (v\d+(?:\.\d+)+)/m);

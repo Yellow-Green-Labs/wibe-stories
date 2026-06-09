@@ -1,4 +1,4 @@
-console.log("%c[Build] Wibe Stories v0.11.0.8 (2026-06-08)", "color:#ec4899;font-weight:bold;font-size:14px");
+console.log("%c[Build] Wibe Stories v0.11.0.10 (2026-06-09)", "color:#ec4899;font-weight:bold;font-size:14px");
 const PALS = [
   "#7c3aed",
   "#f59e0b",
@@ -3454,6 +3454,22 @@ document.getElementById("btnS").addEventListener("click", async () => {
 });
 document.getElementById("shareClose").addEventListener("click", function () { _deactivateModal(); document.getElementById("shareModal").classList.remove("open"); document.body.classList.remove("modal-open"); });
 document.getElementById("shareBackdrop").addEventListener("click", function () { _deactivateModal(); document.getElementById("shareModal").classList.remove("open"); document.body.classList.remove("modal-open"); });
+// Wispr Flow CTA lines — one is appended to every share caption
+var _flowCTAs = [
+  "Speak anywhere you type. \u2192 wisprflow.ai",
+  "Take your voice beyond cards. \u2192 wisprflow.ai",
+  "Don't type. Just speak. \u2192 wisprflow.ai",
+  "Polished voice writing in every app. \u2192 wisprflow.ai",
+  "4\u00d7 faster than typing. \u2192 wisprflow.ai",
+  "One tool. Adapts to how you work. \u2192 wisprflow.ai",
+  "Speak naturally. Flow writes it perfectly, instantly. \u2192 wisprflow.ai",
+  "Speak into any app with a text field. \u2192 wisprflow.ai",
+  "Flow even works when you're whispering. \u2192 wisprflow.ai",
+  "Flow detects your language automatically. \u2192 wisprflow.ai",
+  "Flow, wherever you work. \u2192 wisprflow.ai",
+  "Flow edits while you speak. Goes beyond basic dictation. \u2192 wisprflow.ai",
+  "Effortless voice dictation. Ready to Flow? \u2192 wisprflow.ai"
+];
 document.getElementById("shareNative").addEventListener("click", async function () {
   if (!_shareBlob) return;
   var btn = document.getElementById("shareNative");
@@ -3491,7 +3507,7 @@ document.getElementById("shareNative").addEventListener("click", async function 
     // beneath the big image. This is how Spotify's mobile share behaves.
     // The card image is a real attachment, so it always renders large — it is
     // NOT a scraped link preview, which is the flaky path.
-    var shareCaption = shareTitle + "\n" + shareUrl;
+    var shareCaption = shareTitle + "\n" + shareUrl + "\n\n" + _flowCTAs[Math.floor(Math.random() * _flowCTAs.length)];
     if (navigator.canShare && navigator.canShare({ files: [shareFile] })) {
       navigator.share({ files: [shareFile], text: shareCaption }).catch(function () {});
     } else {
@@ -3549,7 +3565,24 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
       }
     }
     var url = location.origin + "/c/" + _shortId;
-    navigator.clipboard.writeText(url).then(function () { showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓"); }).catch(function () { showToast((typeof getI18nSync === "function" && getI18nSync("toasts.copyFailed")) || "Copy failed"); });
+    // Copy both image and URL to clipboard. When pasting in WhatsApp/Telegram,
+    // the image appears. When pasting in a text editor, the URL appears.
+    try {
+      var item = new ClipboardItem({
+        "image/png": _shareBlob,
+        "text/plain": new Blob([url], { type: "text/plain" })
+      });
+      await navigator.clipboard.write([item]);
+      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓");
+    } catch (clipErr) {
+      // Fallback: just copy the URL (iOS Safari doesn't support image clipboard)
+      try {
+        await navigator.clipboard.writeText(url);
+        showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓");
+      } catch (e2) {
+        showToast((typeof getI18nSync === "function" && getI18nSync("toasts.copyFailed")) || "Copy failed");
+      }
+    }
   } catch (e) {
     showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed");
   }
@@ -3559,54 +3592,6 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
 // Platform detection for mobile clipboard limitations
 var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 var isAndroid = /Android/.test(navigator.userAgent);
-
-document.getElementById("shareCopyImage").addEventListener("click", async function () {
-  if (!_shareBlob) return;
-  var btn = document.getElementById("shareCopyImage");
-  var origHTML = btn.innerHTML;
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-  btn.disabled = true;
-
-  // iOS Safari does not support image clipboard — trigger download instead
-  if (isIOS) {
-    try {
-      var a = document.createElement("a");
-      a.download = "wibe-story.png";
-      a.href = URL.createObjectURL(_shareBlob);
-      a.click();
-      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.imageSaved")) || "Saved to Photos");
-    } catch (e) {
-      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.downloadFailed")) || "Save failed");
-    }
-    btn.innerHTML = origHTML;
-    btn.disabled = false;
-    return;
-  }
-
-  try {
-    // Copy image to clipboard using Clipboard API
-    var item = new ClipboardItem({ "image/png": _shareBlob });
-    await navigator.clipboard.write([item]);
-    showToast((typeof getI18nSync === "function" && getI18nSync("toasts.imageCopied")) || "Copied ✓");
-  } catch (e) {
-    // Android fallback: download to device
-    if (isAndroid) {
-      try {
-        var a = document.createElement("a");
-        a.download = "wibe-story.png";
-        a.href = URL.createObjectURL(_shareBlob);
-        a.click();
-        showToast((typeof getI18nSync === "function" && getI18nSync("toasts.imageSavedDownloads")) || "Saved ✓");
-      } catch (e2) {
-        showToast((typeof getI18nSync === "function" && getI18nSync("toasts.downloadFailed")) || "Save failed");
-      }
-    } else {
-      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.copyNotSupported")) || "Copy unavailable");
-    }
-  }
-  btn.innerHTML = origHTML;
-  btn.disabled = false;
-});
 
 var _toastQueue = [], _toastShowing = false;
 function showToast(msg) {
