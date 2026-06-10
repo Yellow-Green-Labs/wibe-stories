@@ -28,7 +28,7 @@ export default async function handler(req, res) {
   const url = new URL(req.url, origin);
   const id = url.pathname.replace(/^\/c\//, '');
 
-  if (!id || id.length < 4) {
+  if (!id || id.length < 4 || id.length > 12 || !/^[a-zA-Z0-9]+$/.test(id)) {
     res.statusCode = 404;
     res.setHeader('Content-Type', 'text/plain');
     res.end('Card not found');

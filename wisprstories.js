@@ -3486,6 +3486,12 @@ document.getElementById("shareNative").addEventListener("click", async function 
         try { await fetch("/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Voice] Upload failed:", ve); }
       }
     }
+    if (!/^[a-zA-Z0-9]{4,12}$/.test(_shortId)) {
+      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed");
+      btn.innerHTML = origHTML;
+      btn.disabled = false;
+      return;
+    }
     var shareUrl = location.origin + "/c/" + _shortId;
     var sharerName = document.getElementById("nin").value || "";
     var shareTitle = sharerName ? "A Wibe Story by " + sharerName : "A Wibe Story";
@@ -3493,7 +3499,7 @@ document.getElementById("shareNative").addEventListener("click", async function 
     // clickable link automatically (platform limit), so we pre-load the link
     // into the clipboard — the user taps Instagram's Link sticker and pastes
     // it in one step. Fire-and-forget so it never blocks the share gesture.
-    try { if (navigator.clipboard) navigator.clipboard.writeText(shareUrl); } catch (ce) {}
+    try { if (navigator.clipboard) navigator.clipboard.writeText(shareUrl + "\u200B"); } catch (ce) {}
     // Share the native 1:1 card, not the 9:16 social variant. The user-reported
     // bug was the 9:16 padded image being visibly wrong — they want the
     // shared image to match the card they created. The 9:16 social blob is
@@ -3507,7 +3513,7 @@ document.getElementById("shareNative").addEventListener("click", async function 
     // beneath the big image. This is how Spotify's mobile share behaves.
     // The card image is a real attachment, so it always renders large — it is
     // NOT a scraped link preview, which is the flaky path.
-    var shareCaption = shareTitle + "\n" + shareUrl + "\n\n" + _flowCTAs[Math.floor(Math.random() * _flowCTAs.length)];
+    var shareCaption = shareTitle + "\n" + shareUrl + "\u200B\n\n" + _flowCTAs[Math.floor(Math.random() * _flowCTAs.length)];
     if (navigator.canShare && navigator.canShare({ files: [shareFile] })) {
       navigator.share({ files: [shareFile], text: shareCaption }).catch(function () {});
     } else {
@@ -3564,9 +3570,15 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
         try { await fetch("/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Voice] Upload failed:", ve); }
       }
     }
+    if (!/^[a-zA-Z0-9]{4,12}$/.test(_shortId)) {
+      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed");
+      btn.innerHTML = origHTML;
+      btn.disabled = false;
+      return;
+    }
     var url = location.origin + "/c/" + _shortId;
     var ctaText = _flowCTAs[Math.floor(Math.random() * _flowCTAs.length)];
-    var clipboardText = url + "\n\n" + ctaText;
+    var clipboardText = url + "\u200B\n\n" + ctaText;
     try {
       await navigator.clipboard.writeText(clipboardText);
       showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓");
