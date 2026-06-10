@@ -107,12 +107,28 @@ export default async function handler(req, res) {
     ? `${safeName} shared a Wibe Story with you. Make your own at Wibe Stories.`
     : 'Created with Wibe Stories. Tap to make your own.';
 
+  const punchLines = [
+    "Stop typing. Start talking.",
+    "Your voice is the new keyboard.",
+    "Write at the speed of thought.",
+    "Give your hands a break.",
+    "The fastest way to write.",
+    "Just talk. We'll do the typing.",
+    "Why type when you can talk?",
+    "Writing, without the keyboard.",
+    "Finally, writing that keeps up with you.",
+    "Write 4× faster. Just talk.",
+    "Talk, Say it. Don't type, Send it.",
+    "Write by talking."
+  ];
+  const hookLine = punchLines[Math.floor(Math.random() * punchLines.length)];
+
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="${safeHomeUrl}assets/ws-logo-wh.png" type="image/png">
+<link rel="icon" href="${safeHomeUrl}assets/ws-logo-blwbg.png" type="image/png">
 <title>${ogTitle}</title>
 <meta property="og:title" content="${ogTitle}">
 <meta property="og:description" content="${ogDesc}">
@@ -229,8 +245,7 @@ html,body{
   .branding-logo{width:24px;height:24px}
   .card-img{max-width:100%}
 }
-.flow-hook{text-align:center;margin-top:20px}
-.hook-line{font-size:clamp(12px,2vw,14px);color:#a5a596;margin-bottom:4px}
+.hook-line{font-size:clamp(12px,2vw,14px);color:#a5a596;margin-top:20px;text-align:center}
 .hook-flow{display:inline-block;font-size:clamp(14px,2.2vw,16px);font-weight:700;color:#f59e0b;text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
 .hook-flow:hover{border-bottom-color:#f59e0b}
 .hook-flow span{display:inline-block;animation:wave-letter-auto 2.5s ease-in-out infinite}
@@ -245,7 +260,7 @@ html,body{
 <main class="landing-wrap">
   <div class="branding">
     <div class="branding-row">
-      <img class="branding-logo" src="${safeHomeUrl}assets/ws-logo-wh.png" alt="Wibe Stories">
+      <img class="branding-logo" src="${safeHomeUrl}assets/ws-logo-blwbg.png" alt="Wibe Stories">
       <span class="branding-name">Wibe Stories</span>
     </div>
     <p class="branding-sub">Turn your voice into something beautiful</p>
@@ -257,10 +272,7 @@ html,body{
   ${hasVoice ? '<div class="voice-player"><button class="voice-btn" id="playVoice" onclick="var a=document.getElementById(\'voiceAudio\');if(a.paused){a.play();this.innerHTML=\'<span>⏸</span> Playing\u2026\';this.classList.add(\'playing\')}else{a.pause();this.innerHTML=\'<span>▶</span> Listen to voice\';this.classList.remove(\'playing\')}"><span>▶</span> Listen to voice</button><audio id="voiceAudio" src="' + safeVoiceUrl + '" preload="none" onended="var b=document.getElementById(\'playVoice\');b.innerHTML=\'<span>▶</span> Listen to voice\';b.classList.remove(\'playing\')"></audio></div>' : ''}
   ${captionHtml}
   <a class="cta" href="${safeAppUrl}">Create your own &rarr;</a>
-  <div class="flow-hook">
-    <p class="hook-line">Your voice, everywhere.</p>
-    <a class="hook-flow pulse" href="https://wisprflow.ai/r?BEST76" target="_blank" rel="noopener">Wispr Flow</a>
-  </div>
+  <p class="hook-line">${hookLine} <a class="hook-flow pulse" href="https://wisprflow.ai/r?BEST76" target="_blank" rel="noopener">→Wispr Flow</a></p>
   <br>
 </main>
 <script>(function(){var e=document.querySelector('.hook-flow');if(!e||window.matchMedia('(prefers-reduced-motion:reduce)').matches||innerWidth<=720)return;var t=e.textContent;e.innerHTML='';var c=0;for(var i=0;i<t.length;i++){if(t[i]===' '){e.appendChild(document.createTextNode(' '))}else{var s=document.createElement('span');s.textContent=t[i];s.style.animationDelay=(c*0.06)+'s';e.appendChild(s);c++}}})()</script>

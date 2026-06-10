@@ -6,11 +6,14 @@ Three share-related fixes to improve WhatsApp/Telegram previews, mobile share UX
 
 ### Fixed
 - `robots.txt` — allowlist-based: empty block at top for clean defaults, explicit `Allow: /c/` for `facebookexternalhit`, `WhatsApp`, `Facebot`, `Twitterbot` so WhatsApp/Telegram OG previews work; `Disallow: /c/` for `Googlebot`, `Bingbot` keeps ephemeral cards out of search indices
-- Mobile share merge — `shareCopyLink` handler rewritten to copy both image blob and URL to clipboard via `ClipboardItem` with `image/png` + `text/plain` MIME types; falls back to URL-only on iOS Safari (no image clipboard support)
-- `#shareCopyImage` button removed from HTML and JS handler deleted; `responsive.css` updated to hide only `#shareDownload`
+- "Copy image link" — copies URL + CTA text to clipboard (was incorrectly copying image blob, which WhatsApp prioritized over the URL)
+- "Copy image" button restored — copies just the image to clipboard (hidden on mobile, visible on desktop)
+- Landing page logo — `ws-logo-wh.png` (404) replaced with `ws-logo-blwbg.png` in favicon and branding logo (`api/c/[id].js`); service worker cache updated
+- Card tooltip — removed `.card-logo:hover .custom-tip` so "Just vibes 💛" tooltip only appears on nav header, not on card preview
 
 ### Added
-- 13 rotating Wispr Flow CTA lines appended to every share caption (`shareNative` handler), each ending with `→ wisprflow.ai`; lines describe what Flow does, not what it is
+- 13 rotating Wispr Flow CTA lines appended to every share caption (`shareNative` handler + `shareCopyLink` handler), each ending with `→ wisprflow.ai`; lines describe what Flow does, not what it is
+- 12 rotating punch lines on card landing page (`api/c/[id].js`), randomly picked per page load, single-line format with `→Wispr Flow` link
 
 ### Changed
 - Brand name cleanup — "Wispr Stories" renamed to "Wibe Stories" in 11 code files (comments, API headers, sitemap)

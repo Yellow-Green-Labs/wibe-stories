@@ -29,7 +29,6 @@ const PRECACHE_URLS = [
   '/wisprstories.js',
   '/site.webmanifest',
   '/assets/ws-logo-blwbg.png',
-  '/assets/ws-logo-wh.png',
   '/global/styles/main.css',
 ];
 

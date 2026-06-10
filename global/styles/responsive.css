@@ -418,8 +418,9 @@
     top: max(16px, env(safe-area-inset-top) + 16px);
   }
 
-  /* Share modal: hide download button on mobile */
-  #shareDownload {
+  /* Share modal: hide redundant buttons on mobile */
+  #shareDownload,
+  #shareCopyImage {
     display: none !important;
   }
 

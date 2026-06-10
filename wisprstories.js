@@ -3565,23 +3565,13 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
       }
     }
     var url = location.origin + "/c/" + _shortId;
-    // Copy both image and URL to clipboard. When pasting in WhatsApp/Telegram,
-    // the image appears. When pasting in a text editor, the URL appears.
+    var ctaText = _flowCTAs[Math.floor(Math.random() * _flowCTAs.length)];
+    var clipboardText = url + "\n\n" + ctaText;
     try {
-      var item = new ClipboardItem({
-        "image/png": _shareBlob,
-        "text/plain": new Blob([url], { type: "text/plain" })
-      });
-      await navigator.clipboard.write([item]);
+      await navigator.clipboard.writeText(clipboardText);
       showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓");
-    } catch (clipErr) {
-      // Fallback: just copy the URL (iOS Safari doesn't support image clipboard)
-      try {
-        await navigator.clipboard.writeText(url);
-        showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓");
-      } catch (e2) {
-        showToast((typeof getI18nSync === "function" && getI18nSync("toasts.copyFailed")) || "Copy failed");
-      }
+    } catch (e2) {
+      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.copyFailed")) || "Copy failed");
     }
   } catch (e) {
     showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed");
@@ -3592,6 +3582,48 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
 // Platform detection for mobile clipboard limitations
 var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 var isAndroid = /Android/.test(navigator.userAgent);
+document.getElementById("shareCopyImage").addEventListener("click", async function () {
+  if (!_shareBlob) return;
+  var btn = document.getElementById("shareCopyImage");
+  var origHTML = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  btn.disabled = true;
+  if (isIOS) {
+    try {
+      var a = document.createElement("a");
+      a.download = "wibe-story.png";
+      a.href = URL.createObjectURL(_shareBlob);
+      a.click();
+      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.imageSaved")) || "Saved to Photos");
+    } catch (e) {
+      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.downloadFailed")) || "Save failed");
+    }
+    btn.innerHTML = origHTML;
+    btn.disabled = false;
+    return;
+  }
+  try {
+    var item = new ClipboardItem({ "image/png": _shareBlob });
+    await navigator.clipboard.write([item]);
+    showToast((typeof getI18nSync === "function" && getI18nSync("toasts.imageCopied")) || "Copied ✓");
+  } catch (e) {
+    if (isAndroid) {
+      try {
+        var a = document.createElement("a");
+        a.download = "wibe-story.png";
+        a.href = URL.createObjectURL(_shareBlob);
+        a.click();
+        showToast((typeof getI18nSync === "function" && getI18nSync("toasts.imageSavedDownloads")) || "Saved ✓");
+      } catch (e2) {
+        showToast((typeof getI18nSync === "function" && getI18nSync("toasts.downloadFailed")) || "Save failed");
+      }
+    } else {
+      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.copyNotSupported")) || "Copy unavailable");
+    }
+  }
+  btn.innerHTML = origHTML;
+  btn.disabled = false;
+});
 
 var _toastQueue = [], _toastShowing = false;
 function showToast(msg) {

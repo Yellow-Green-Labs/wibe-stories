@@ -2,21 +2,25 @@
 
 ## v0.11.0.10 — Share Polish: robots.txt + Mobile Share Merge + Wispr Flow CTAs (2026-06-09)
 
-Three share-related fixes. (1) `robots.txt` allowlist-based: social media crawlers allowed `/c/`, search engines blocked. (2) Mobile share merged: "Copy Image Link" copies both image + URL; "Copy Image" button removed. (3) 13 rotating Wispr Flow CTA lines appended to share captions, each ending with `→ wisprflow.ai`.
+Three share-related fixes plus landing page improvements. (1) `robots.txt` allowlist-based: social media crawlers allowed `/c/`, search engines blocked. (2) "Copy Image Link" copies URL + CTA text; "Copy Image" button restored (hidden on mobile). (3) 13 rotating Wispr Flow CTA lines appended to share captions. (4) Landing page logo 404 fixed; 12 rotating punch lines on card landing page; card tooltip removed.
 
 ### Added
-- 13 Wispr Flow CTA lines for share captions
+- 13 Wispr Flow CTA lines for share captions (native share + clipboard copy)
+- 12 rotating punch lines on card landing page (`api/c/[id].js`), randomly picked per page load
 - `robots.txt` — social media crawlers allowed for `/c/` paths
 
+### Fixed
+- Landing page logo — `ws-logo-wh.png` (404) replaced with `ws-logo-blwbg.png`
+- Card tooltip — "Just vibes 💛" no longer appears on card preview hover
+- "Copy image link" — copies URL + CTA text (was incorrectly copying image blob)
+
 ### Changed
-- `shareCopyLink` handler — copies both image blob and URL via `ClipboardItem`
-- `responsive.css` — hides only `#shareDownload` on mobile (was `#shareDownload` + `#shareCopyImage`)
+- `shareCopyLink` handler — copies URL + CTA text to clipboard
+- `shareCopyImage` handler restored — copies just the image to clipboard (hidden on mobile)
+- `responsive.css` — hides `#shareDownload` + `#shareCopyImage` on mobile
+- `card.css` — removed `.card-logo:hover .custom-tip` (nav header tooltip preserved)
 - Brand name cleanup — "Wispr Stories" renamed to "Wibe Stories" in 11 code files
 - Build banner v0.11.0.9 → v0.11.0.10
-
-### Removed
-- `#shareCopyImage` button from HTML
-- `shareCopyImage` JS handler (merged into `shareCopyLink`)
 
 ---
 
