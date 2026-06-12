@@ -1,9 +1,4 @@
 {
-  "nav": {
-    "tagline": "பேசு · வடிவமை · பகிர்",
-    "help": "எப்படி பயன்படுத்துவது",
-    "theme": "டார்க் மோட் மாற்று"
-  },
   "hero": {
     "title": "ஒருமுறை சொல்லு, எப்போதும் பகிர்",
     "subtitle": "மைக்ரோஃபோனில் பதிவு செய்யவும் அல்லது <a href=\"https://wisprflow.ai/r?BEST76\" target=\"_blank\" rel=\"noopener\" class=\"wispr-flow-link\"><strong><em>Wispr Flow</em></strong></a> உடன் சொல். ஸ்டைல் செய்து அன்புடன் பகிர்.",
@@ -16,12 +11,10 @@
     "sub": "நீங்கள் நிறுத்தும்போது வார்த்தைகள் தோன்றும்",
     "generating": "உருவாக்குகிறது…",
     "processing": "உங்கள் ஒலியை செயலாக்குகிறது…",
-    "cancel": "ரத்துசெய்",
     "couldntRetry": "மாற்ற முடியவில்லை. மீண்டும் முயற்சிக்க தட்டவும்",
     "listening": "உங்கள் வார்த்தைகளை கேட்டுப் பதிவு செய்கிறது",
     "paused": "நிறுத்தப்பட்டது — மீண்டும் தொடர மைக் சொடுக்கவும்",
-    "pausedHint": "மொழிபெயர்க்க முடிவை சொடுக்கவும்",
-    "ended": "Recording ended",
+    "ended": "பதிவு முடிந்தது",
     "done": "முடிந்தது",
     "softHint": "இன்று இன்னும் கொஞ்சம் 💛",
     "softHintDone": "நாளை மீண்டும் 💛"
@@ -40,7 +33,6 @@
     "tooltipNative": "தாய்மொழிக்கு மைக் முடக்கப்பட்டுள்ளது",
     "filter": "மொழிகளைத் தேடு…"
   },
-  "orText": "அல்லது உங்கள் வார்த்தைகளை தட்டச்சு செய்யுங்கள் அல்லது ஒட்டவும்",
   "textarea": {
     "label": "உங்கள் வார்த்தைகள்",
     "placeholder": "பேசுங்கள் அல்லது உங்கள் செய்தியை தட்டச்சு செய்யுங்கள்..."
@@ -54,8 +46,7 @@
     "label": "உத்வேகம் தேவையா? ஒரு எடுத்துக்காட்டை கிளிக் செய்யவும்"
   },
   "customize": {
-    "summary": "உங்களுடையதாக்குங்கள்",
-    "hint": "தொனி · நிறம் · வடிவம்"
+    "summary": "உங்களுடையதாக்குங்கள்"
   },
   "tone": {
     "label": "தொனி",
@@ -175,11 +166,6 @@
   },
   "toasts": {
     "welcomePro": "Welcome to Pro 💛",
-    "proUnlocked": "Pro unlocked 💛",
-    "invalidKey": "Key invalid",
-    "verifyFailed": "Verify failed",
-    "enterKey": "Enter your key",
-    "checking": "Checking...",
     "micDenied": "Allow mic to record",
     "micAccessDenied": "Allow mic in browser",
     "noMicFound": "No mic found",
@@ -229,9 +215,7 @@
     "detached": "Voice removed",
     "textChanged": "Voice removed",
     "webmDone": "Voice saved ✓",
-    "webmFailed": "Voice export failed",
-    "listen": "Listen to voice",
-    "playing": "Playing..."
+    "webmFailed": "Voice export failed"
   },
   "exportProgress": {
     "generating": "அட்டை உருவாக்கப்படுகிறது…"

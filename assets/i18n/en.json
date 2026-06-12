@@ -1,9 +1,4 @@
 {
-  "nav": {
-    "tagline": "speak · scribe · share",
-    "help": "How to use",
-    "theme": "Toggle dark mode"
-  },
   "hero": {
     "title": "Say it once, share it forever",
     "subtitle": "Record with the mic or dictate with <a href=\"https://wisprflow.ai/r?BEST76\" target=\"_blank\" rel=\"noopener\" class=\"wispr-flow-link\"><strong><em>Wispr Flow</em></strong></a>. Style and share with love.",
@@ -16,15 +11,13 @@
     "sub": "",
     "generating": "Generating…",
     "processing": "Processing your audio…",
-    "cancel": "Cancel",
     "couldntRetry": "Couldn't transcribe. Tap to retry",
     "listening": "Listening and processing your words",
-    "paused": "Paused \u2014 tap the mic to resume",
-    "pausedHint": "Tap Done to transcribe",
+    "paused": "Paused — tap the mic to resume",
     "ended": "Recording ended",
     "done": "Done",
-    "softHint": "A few more today \ud83d\udc9b",
-    "softHintDone": "More tomorrow \ud83d\udc9b"
+    "softHint": "A few more today 💛",
+    "softHintDone": "More tomorrow 💛"
   },
   "speechLang": {
     "title": "Select speech language",
@@ -40,7 +33,6 @@
     "tooltipNative": "Mic is currently disabled for native language",
     "filter": "Search languages…"
   },
-  "orText": "or type or paste your words",
   "textarea": {
     "label": "Your words",
     "placeholder": "Speak or type your message..."
@@ -54,8 +46,7 @@
     "label": "Need inspiration? Click an example"
   },
   "customize": {
-    "summary": "Style",
-    "hint": "Tone · color · shape"
+    "summary": "Style"
   },
   "tone": {
     "label": "Tone",
@@ -182,51 +173,46 @@
     "upgrade": "Upgrade"
   },
   "toasts": {
-    "welcomePro": "Welcome to Pro \ud83d\udc9b",
-    "proUnlocked": "Pro unlocked \ud83d\udc9b",
-    "invalidKey": "Key invalid",
-    "verifyFailed": "Verify failed",
-    "enterKey": "Enter your key",
-    "checking": "Checking...",
+    "welcomePro": "Welcome to Pro 💛",
     "micDenied": "Allow mic to record",
     "micAccessDenied": "Allow mic in browser",
     "noMicFound": "No mic found",
     "micUnavailable": "Mic unavailable",
     "couldNotStartMic": "Mic failed",
-    "micSlow": "Mic slow \u2014 try again",
-    "voiceUnavailable": "Voice off \u2014 type instead",
+    "micSlow": "Mic slow — try again",
+    "voiceUnavailable": "Voice off — type instead",
     "maxTime": "Max {max}s",
     "noSpeech": "Speak louder",
-    "silence": "Didn\u2019t catch that",
-    "speechUnavailable": "Speech off \u2014 try later",
-    "speechNotResponding": "Speech off \u2014 type instead",
+    "silence": "Didn’t catch that",
+    "speechUnavailable": "Speech off — try later",
+    "speechNotResponding": "Speech off — type instead",
     "speechError": "Speech error",
     "noMatch": "Speak more clearly",
-    "sttFailed": "Couldn\u2019t transcribe",
+    "sttFailed": "Couldn’t transcribe",
     "recordingStopped": "Recording stopped",
     "dailyRewritesUsed": "Out of {tone} today",
     "rewriteFailed": "Rewrite failed",
     "rewriteTimedOut": "Rewrite timed out",
-    "cumulativeLimit": "More tomorrow \ud83d\udc9b",
+    "cumulativeLimit": "More tomorrow 💛",
     "tooLong": "Max {max}s. Tap Done",
-    "freeLimit": "Free limit hit \ud83d\udc9b",
-    "proLimit": "More tomorrow \ud83d\udc9b",
-    "downloaded": "Saved \u2713",
+    "freeLimit": "Free limit hit 💛",
+    "proLimit": "More tomorrow 💛",
+    "downloaded": "Saved ✓",
     "voiceEmpty": "Voice empty",
-    "webmDone": "Voice saved \u2713",
+    "webmDone": "Voice saved ✓",
     "webmFailed": "Voice export failed",
-    "shared": "Shared \u2713",
+    "shared": "Shared ✓",
     "uploadFailed": "Upload failed",
-    "linkCopied": "Copied \u2713",
+    "linkCopied": "Copied ✓",
     "copyFailed": "Copy failed",
-    "imageCopied": "Copied \u2713",
+    "imageCopied": "Copied ✓",
     "imageSaved": "Saved to Photos",
-    "imageSavedDownloads": "Saved \u2713",
+    "imageSavedDownloads": "Saved ✓",
     "downloadFailed": "Save failed",
     "copyNotSupported": "Copy unavailable",
     "exportFailed": "Export failed",
-    "playbackFailed": "Can\u2019t play",
-    "thankYouEmail": "Sent! \ud83d\udc9b",
+    "playbackFailed": "Can’t play",
+    "thankYouEmail": "Sent! 💛",
     "validEmail": "Enter a valid email",
     "updateAvailable": "A new version is ready — tap to refresh.",
     "setSpeechLang": "Choose language",
@@ -237,9 +223,7 @@
     "attached": "Voice added",
     "detached": "Voice removed",
     "textChanged": "Voice removed",
-    "webmDone": "Voice saved \u2713",
-    "webmFailed": "Voice export failed",
-    "listen": "Listen to voice",
-    "playing": "Playing..."
+    "webmDone": "Voice saved ✓",
+    "webmFailed": "Voice export failed"
   }
 }

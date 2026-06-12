@@ -1,9 +1,4 @@
 {
-  "nav": {
-    "tagline": "Parla · Stila · Condividi",
-    "help": "Come usare",
-    "theme": "Attiva modalità scura"
-  },
   "hero": {
     "title": "Dillo una volta, condividilo per sempre",
     "subtitle": "Registra con il microfono o detta con <a href=\"https://wisprflow.ai/r?BEST76\" target=\"_blank\" rel=\"noopener\" class=\"wispr-flow-link\"><strong><em>Wispr Flow</em></strong></a>. Stilizza e condividi con amore.",
@@ -16,12 +11,10 @@
     "sub": "Le tue parole appaiono quando ti fermi",
     "generating": "Generazione…",
     "processing": "Elaborazione del tuo audio…",
-    "cancel": "Annulla",
     "couldntRetry": "Impossibile trascrivere. Tocca per riprovare",
     "listening": "Sto ascoltando e trascrivendo le tue parole",
     "paused": "In pausa — tocca il mic per riprendere",
-    "pausedHint": "Tocca Fatto per trascrivere",
-    "ended": "Recording ended",
+    "ended": "Registrazione terminata",
     "done": "Fatto",
     "softHint": "Ancora qualcuna oggi 💛",
     "softHintDone": "Domani ancora 💛"
@@ -40,7 +33,6 @@
     "tooltipNative": "Microfono disattivato per la lingua nativa",
     "filter": "Cerca lingue…"
   },
-  "orText": "o digita o incolla le tue parole",
   "textarea": {
     "label": "Le tue parole",
     "placeholder": "Parla o digita il tuo messaggio..."
@@ -54,8 +46,7 @@
     "label": "Hai bisogno di ispirazione? Clicca su un esempio"
   },
   "customize": {
-    "summary": "Rendila tua",
-    "hint": "Tono · colore · forma"
+    "summary": "Rendila tua"
   },
   "tone": {
     "label": "Tono",
@@ -175,11 +166,6 @@
   },
   "toasts": {
     "welcomePro": "Welcome to Pro 💛",
-    "proUnlocked": "Pro unlocked 💛",
-    "invalidKey": "Key invalid",
-    "verifyFailed": "Verify failed",
-    "enterKey": "Enter your key",
-    "checking": "Checking...",
     "micDenied": "Allow mic to record",
     "micAccessDenied": "Allow mic in browser",
     "noMicFound": "No mic found",
@@ -229,9 +215,7 @@
     "detached": "Voice removed",
     "textChanged": "Voice removed",
     "webmDone": "Voice saved ✓",
-    "webmFailed": "Voice export failed",
-    "listen": "Listen to voice",
-    "playing": "Playing..."
+    "webmFailed": "Voice export failed"
   },
   "exportProgress": {
     "generating": "Generazione card…"

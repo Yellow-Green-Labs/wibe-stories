@@ -165,27 +165,25 @@ Upload a card PNG and generate an OG image.
 **Runtime:** Node.js
 
 **Headers:**
-- `Content-Type: multipart/form-data`
+- `Content-Type: image/png` — raw PNG bytes in request body
+- `x-card-text` — card text
+- `x-card-name` — card name (optional)
+- `x-card-tone` — tone used
+- `x-card-p` — palette
+- `x-card-r` — corner style
 
-**Request body:**
-- `file` — PNG image
-- `text` — card text
-- `name` — card name (optional)
-- `tone` — tone used
-- `p` — palette
-- `r` — corner style
+**Request body:** Raw PNG bytes (no multipart parsing)
 
 **Response:**
 ```json
 {
-  "shortId": "a1b2c3d4",
-  "url": "wibestories.vercel.app/c/a1b2c3d4"
+  "shortId": "a1b2c3d4"
 }
 ```
 
 **Process:**
 1. Store PNG in Vercel Blob (`cards/`)
-2. Generate 1200×1200 cover-fit OG JPEG via sharp (`og/`)
+2. Generate 1200×630 OG PNG via sharp (`og/`)
 3. Write metadata sidecar (`meta/<shortId>.json`)
 4. Return 8-character `shortId`
 
@@ -226,7 +224,7 @@ Dynamic OG image renderer.
 - `tone` — tone used
 - `bg` — background colour
 
-**Response:** JPEG image (1200×1200)
+**Response:** PNG image (1200×630)
 
 ---
 
@@ -300,8 +298,7 @@ Tracks a card creation event.
 ```json
 {
   "source": "voice",
-  "language": "en",
-  "occasion": "birthday"
+  "lang": "en"
 }
 ```
 
@@ -417,7 +414,7 @@ Revokes a Pro key (for chargebacks, fraud).
 
 ### `GET /api/beacon`
 
-Internal redirect helper. Reads `WS_EP` env var for redirect target.
+Internal redirect helper. Reads `WS_Acknowledged_Logs` env var for redirect target.
 
 **Headers:**
 - `x-admin-secret` — required
@@ -430,7 +427,7 @@ Internal redirect helper. Reads `WS_EP` env var for redirect target.
 
 Daily blob cleanup (Vercel Cron, 03:00 UTC).
 
-**Auth:** `CRON_SECRET` query param.
+**Auth:** `Authorization: Bearer ${CRON_SECRET}` header.
 
 **Process:**
 1. List all blobs in `cards/`, `og/`, `voice/`, `meta/`

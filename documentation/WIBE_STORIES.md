@@ -342,7 +342,7 @@ Two rules keep the update notice and caching honest:
 
 ### Key environment variables
 
-14 env vars configured in Vercel. Routes degrade gracefully when a key is missing. The full list is in `docs/existing-redis.md` and `docs/daily-capacity-system.md`.
+13 env vars configured in Vercel. Routes degrade gracefully when a key is missing. The full list is in `docs/existing-redis.md` and `docs/daily-capacity-system.md`.
 
 ---
 

@@ -1,9 +1,4 @@
 {
-  "nav": {
-    "tagline": "พูด · จัดสไตล์ · แชร์",
-    "help": "วิธีใช้งาน",
-    "theme": "สลับโหมดมืด"
-  },
   "hero": {
     "title": "พูดครั้งเดียว แชร์ตลอดไป",
     "subtitle": "บันทึกด้วยไมค์หรือบอกด้วย <a href=\"https://wisprflow.ai/r?BEST76\" target=\"_blank\" rel=\"noopener\" class=\"wispr-flow-link\"><strong><em>Wispr Flow</em></strong></a>. จัดสไตล์และแชร์ด้วยความรัก",
@@ -16,12 +11,10 @@
     "sub": "คำของคุณจะปรากฏเมื่อคุณหยุด",
     "generating": "กำลังสร้าง…",
     "processing": "กำลังประมวลผลเสียงของคุณ…",
-    "cancel": "ยกเลิก",
     "couldntRetry": "ถอดเทปไม่สำเร็จ แตะเพื่อลองอีกครั้ง",
     "listening": "กำลังฟังและประมวลผลคำของคุณ",
     "paused": "หยุดชั่วคราว — แตะไมค์เพื่อฟังต่อ",
-    "pausedHint": "แตะปุ่มเสร็จเพื่อถอดเทป",
-    "ended": "Recording ended",
+    "ended": "การบันทึกเสร็จสิ้น",
     "done": "เสร็จ",
     "softHint": "วันนี้อีกสักหน่อย 💛",
     "softHintDone": "พรุ่งนี้อีก 💛"
@@ -40,7 +33,6 @@
     "tooltipNative": "ไมค์ปิดอยู่สำหรับภาษาแม่",
     "filter": "ค้นหาภาษา…"
   },
-  "orText": "หรือพิมพ์หรือวางคำของคุณ",
   "textarea": {
     "label": "คำของคุณ",
     "placeholder": "พูดหรือพิมพ์ข้อความของคุณ..."
@@ -54,8 +46,7 @@
     "label": "ต้องการแรงบันดาลใจ? คลิกตัวอย่าง"
   },
   "customize": {
-    "summary": "ทำให้เป็นของคุณ",
-    "hint": "น้ำเสียง · สี · รูปทรง"
+    "summary": "ทำให้เป็นของคุณ"
   },
   "tone": {
     "label": "น้ำเสียง",
@@ -175,11 +166,6 @@
   },
   "toasts": {
     "welcomePro": "Welcome to Pro 💛",
-    "proUnlocked": "Pro unlocked 💛",
-    "invalidKey": "Key invalid",
-    "verifyFailed": "Verify failed",
-    "enterKey": "Enter your key",
-    "checking": "Checking...",
     "micDenied": "Allow mic to record",
     "micAccessDenied": "Allow mic in browser",
     "noMicFound": "No mic found",
@@ -229,9 +215,7 @@
     "detached": "Voice removed",
     "textChanged": "Voice removed",
     "webmDone": "Voice saved ✓",
-    "webmFailed": "Voice export failed",
-    "listen": "Listen to voice",
-    "playing": "Playing..."
+    "webmFailed": "Voice export failed"
   },
   "exportProgress": {
     "generating": "กำลังสร้างการ์ด…"

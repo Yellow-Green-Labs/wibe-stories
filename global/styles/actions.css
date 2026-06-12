@@ -217,14 +217,7 @@
   0%, 100% { opacity: 0.4; }
   50% { opacity: 0.8; }
 }
-.ex-hint {
-  display: none;
-  font-size: clamp(11px, 0.3vw + 10px, 12px);
-  color: var(--ink3);
-  text-align: center;
-  margin-top: 16px;
-  font-style: italic;
-}
+
 
 .left-closing {
   text-align: center;

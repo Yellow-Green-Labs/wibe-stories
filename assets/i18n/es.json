@@ -1,9 +1,4 @@
 {
-  "nav": {
-    "tagline": "Habla · Estiliza · Comparte",
-    "help": "Cómo usar",
-    "theme": "Cambiar modo oscuro"
-  },
   "hero": {
     "title": "Dilo una vez, compártelo para siempre",
     "subtitle": "Graba con el micrófono o dicta con <a href=\"https://wisprflow.ai/r?BEST76\" target=\"_blank\" rel=\"noopener\" class=\"wispr-flow-link\"><strong><em>Wispr Flow</em></strong></a>. Estiliza y comparte con amor.",
@@ -16,12 +11,10 @@
     "sub": "Tus palabras aparecen cuando paras",
     "generating": "Generando…",
     "processing": "Procesando tu audio…",
-    "cancel": "Cancelar",
     "couldntRetry": "No se pudo transcribir. Toca para reintentar",
     "listening": "Escuchando y procesando tus palabras",
     "paused": "En pausa — toca el mic para continuar",
-    "pausedHint": "Toca Listo para transcribir",
-    "ended": "Recording ended",
+    "ended": "Grabación finalizada",
     "done": "Listo",
     "softHint": "Unas más hoy 💛",
     "softHintDone": "Mañana más 💛"
@@ -40,7 +33,6 @@
     "tooltipNative": "Micrófono desactivado para idioma nativo",
     "filter": "Buscar idiomas…"
   },
-  "orText": "o escribe o pega tus palabras",
   "textarea": {
     "label": "Tus palabras",
     "placeholder": "Habla o escribe tu mensaje..."
@@ -54,8 +46,7 @@
     "label": "¿Necesitas inspiración? Haz clic en un ejemplo"
   },
   "customize": {
-    "summary": "Hazla tuya",
-    "hint": "Tono · color · forma"
+    "summary": "Hazla tuya"
   },
   "tone": {
     "label": "Tono",
@@ -175,11 +166,6 @@
   },
   "toasts": {
     "welcomePro": "Welcome to Pro 💛",
-    "proUnlocked": "Pro unlocked 💛",
-    "invalidKey": "Key invalid",
-    "verifyFailed": "Verify failed",
-    "enterKey": "Enter your key",
-    "checking": "Checking...",
     "micDenied": "Allow mic to record",
     "micAccessDenied": "Allow mic in browser",
     "noMicFound": "No mic found",
@@ -229,9 +215,7 @@
     "detached": "Voice removed",
     "textChanged": "Voice removed",
     "webmDone": "Voice saved ✓",
-    "webmFailed": "Voice export failed",
-    "listen": "Listen to voice",
-    "playing": "Playing..."
+    "webmFailed": "Voice export failed"
   },
   "exportProgress": {
     "generating": "Generando tarjeta…"

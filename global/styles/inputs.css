@@ -872,25 +872,3 @@ details.customize:not([open]) > *:not(summary.customize-summary) {
   border-color: var(--ink);
 }
 
-/* Customize section header (no longer a <details> toggle) */
-.customize-header {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--rule);
-}
-.customize-header-label {
-  font-size: clamp(12px, 0.3vw + 11px, 13px);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--ink);
-}
-.customize-header-hint {
-  font-size: clamp(11px, 0.3vw + 10px, 12px);
-  color: var(--ink3);
-  font-weight: 400;
-  letter-spacing: 0.01em;
-}

@@ -46,7 +46,7 @@
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data && !data.allowed) {
-        var resetMsg = 'Check back at midnight UTC.';
+        var resetMsg = (typeof getI18nSync === 'function' && getI18nSync('capacity.reset')) || 'We\u2019ll be back at midnight UTC.';
         if (data.resetsAt) {
           var diff = new Date(data.resetsAt) - new Date();
           if (diff > 0 && diff < 3600000) {
@@ -71,11 +71,11 @@
     el.innerHTML =
       '<div class="capacity-page-content">' +
         '<div class="capacity-page-icon"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Growing%20Heart.png" alt="" width="72" height="72"></div>' +
-        '<h1 class="capacity-page-title">We\u2019re overwhelmed with love!</h1>' +
-        '<p class="capacity-page-text">Thank you for the incredible response! We\u2019ve hit our daily limit.</p>' +
+        '<h1 class="capacity-page-title">' + ((typeof getI18nSync === 'function' && getI18nSync('capacity.title')) || 'We\u2019re overwhelmed with love!') + '</h1>' +
+        '<p class="capacity-page-text">' + ((typeof getI18nSync === 'function' && getI18nSync('capacity.text')) || 'Thank you for the incredible response. We\u2019ve reached our daily capacity and need to give our servers a little rest.') + '</p>' +
         '<p class="capacity-page-reset" id="capResetText">' + resetText + '</p>' +
         '<div class="capacity-page-actions">' +
-          '<button class="capacity-page-btn" onclick="window.location.reload()">Check if we\u2019re back</button>' +
+          '<button class="capacity-page-btn" onclick="window.location.reload()">' + ((typeof getI18nSync === 'function' && getI18nSync('capacity.btn')) || 'Check if we\u2019re back') + '</button>' +
         '</div>' +
         '<p class="capacity-page-footer">Wibe Stories</p>' +
       '</div>';

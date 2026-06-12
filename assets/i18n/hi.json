@@ -1,9 +1,4 @@
 {
-  "nav": {
-    "tagline": "बोलें · स्टाइल करें · साझा करें",
-    "help": "कैसे उपयोग करें",
-    "theme": "डार्क मोड टॉगल करें"
-  },
   "hero": {
     "title": "एक बार बोलें, हमेशा साझा करें",
     "subtitle": "माइक से रिकॉर्ड करें या <a href=\"https://wisprflow.ai/r?BEST76\" target=\"_blank\" rel=\"noopener\" class=\"wispr-flow-link\"><strong><em>Wispr Flow</em></strong></a> से बोलें। स्टाइल करें और प्यार से साझा करें।",
@@ -16,12 +11,10 @@
     "sub": "आपके शब्द रुकने पर दिखाई देते हैं",
     "generating": "बनाया जा रहा है…",
     "processing": "आपका ऑडियो प्रोसेस हो रहा है…",
-    "cancel": "रद्द करें",
     "couldntRetry": "ट्रांसक्राइब नहीं हो सका। पुनः प्रयास के लिए टैप करें",
     "listening": "आपके शब्द सुनकर और प्रतिपादन",
     "paused": "रुका हुआ — जारी शुरू करने के लिए माइक दबाएं",
-    "pausedHint": "ट्रांस्क्रिप्ट करने के लिए डन दबाएं",
-    "ended": "Recording ended",
+    "ended": "रिकॉर्डिंग समाप्त",
     "done": "हो गया",
     "softHint": "आज और कुछ 💛",
     "softHintDone": "कल और 💛"
@@ -40,7 +33,6 @@
     "tooltipNative": "मूल भाषा के लिए माइक बंद है",
     "filter": "भाषाएँ खोजें…"
   },
-  "orText": "या अपने शब्द टाइप या पेस्ट करें",
   "textarea": {
     "label": "आपके शब्द",
     "placeholder": "बोलें या अपना संदेश टाइप करें..."
@@ -54,8 +46,7 @@
     "label": "प्रेरणा चाहिए? एक उदाहरण पर क्लिक करें"
   },
   "customize": {
-    "summary": "अपना बनाएं",
-    "hint": "लहजा · रंग · आकार"
+    "summary": "अपना बनाएं"
   },
   "tone": {
     "label": "लहजा",
@@ -175,11 +166,6 @@
   },
   "toasts": {
     "welcomePro": "Welcome to Pro 💛",
-    "proUnlocked": "Pro unlocked 💛",
-    "invalidKey": "Key invalid",
-    "verifyFailed": "Verify failed",
-    "enterKey": "Enter your key",
-    "checking": "Checking...",
     "micDenied": "Allow mic to record",
     "micAccessDenied": "Allow mic in browser",
     "noMicFound": "No mic found",
@@ -229,9 +215,7 @@
     "detached": "Voice removed",
     "textChanged": "Voice removed",
     "webmDone": "Voice saved ✓",
-    "webmFailed": "Voice export failed",
-    "listen": "Listen to voice",
-    "playing": "Playing..."
+    "webmFailed": "Voice export failed"
   },
   "exportProgress": {
     "generating": "कार्ड बन रहा है…"

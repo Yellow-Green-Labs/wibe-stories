@@ -38,12 +38,6 @@
   flex-direction: column;
 }
 
-/* Empty-state typewriter demo: gentle fade between cycles. The text writes
-   itself in character-by-character; no caret is drawn. */
-.card-demo-fading {
-  opacity: 0;
-}
-
 .card-empty {
   border: 2px dashed rgba(0, 0, 0, 0.12);
   background: transparent !important;

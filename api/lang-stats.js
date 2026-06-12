@@ -40,7 +40,7 @@ export default async function handler(req) {
     }
 
     const raw = await redis.hgetall('wispr:langstats');
-    console.log('[LangStats] raw from Redis:', JSON.stringify(raw));
+    console.debug('[LangStats] raw from Redis:', JSON.stringify(raw));
 
     const voice = {};
     const story = {};
@@ -60,9 +60,9 @@ export default async function handler(req) {
       }
     }
 
-    console.log('[LangStats] Parsed voice keys:', Object.keys(voice));
-    console.log('[LangStats] Parsed story keys:', Object.keys(story));
-    console.log('[LangStats] Response:', JSON.stringify({ voice, story }));
+    console.debug('[LangStats] Parsed voice keys:', Object.keys(voice));
+    console.debug('[LangStats] Parsed story keys:', Object.keys(story));
+    console.debug('[LangStats] Response:', JSON.stringify({ voice, story }));
 
     return new Response(JSON.stringify({ voice, story }), {
       status: 200,

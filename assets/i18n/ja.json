@@ -1,9 +1,4 @@
 {
-  "nav": {
-    "tagline": "話す · 整える · 共有する",
-    "help": "使い方",
-    "theme": "ダークモード切替"
-  },
   "hero": {
     "title": "一度話して、永遠に共有",
     "subtitle": "マイクで録音するか<a href=\"https://wisprflow.ai/r?BEST76\" target=\"_blank\" rel=\"noopener\" class=\"wispr-flow-link\"><strong><em>Wispr Flow</em></strong></a>で音声入力。スタイルし、愛を込めてシェア。",
@@ -16,12 +11,10 @@
     "sub": "停止すると言葉が表示されます",
     "generating": "生成中…",
     "processing": "オーディオを処理中…",
-    "cancel": "キャンセル",
     "couldntRetry": "文字起こしできませんでした。タップして再試行",
     "listening": "話してください、テキストに変換します",
     "paused": "一時停止 — 再開はマイクをタップ",
-    "pausedHint": "テキスト化は完了をタップ",
-    "ended": "Recording ended",
+    "ended": "録音終了",
     "done": "完了",
     "softHint": "今日あと少し 💛",
     "softHintDone": "明日また 💛"
@@ -40,7 +33,6 @@
     "tooltipNative": "ネイティブ言語ではマイクは無効です",
     "filter": "言語を検索…"
   },
-  "orText": "または言葉を入力または貼り付け",
   "textarea": {
     "label": "あなたの言葉",
     "placeholder": "話すかメッセージを入力してください..."
@@ -54,8 +46,7 @@
     "label": "インスピレーションが必要ですか？例をクリック"
   },
   "customize": {
-    "summary": "自分らしく",
-    "hint": "トーン · 色 · 形"
+    "summary": "自分らしく"
   },
   "tone": {
     "label": "トーン",
@@ -175,11 +166,6 @@
   },
   "toasts": {
     "welcomePro": "Welcome to Pro 💛",
-    "proUnlocked": "Pro unlocked 💛",
-    "invalidKey": "Key invalid",
-    "verifyFailed": "Verify failed",
-    "enterKey": "Enter your key",
-    "checking": "Checking...",
     "micDenied": "Allow mic to record",
     "micAccessDenied": "Allow mic in browser",
     "noMicFound": "No mic found",
@@ -229,9 +215,7 @@
     "detached": "Voice removed",
     "textChanged": "Voice removed",
     "webmDone": "Voice saved ✓",
-    "webmFailed": "Voice export failed",
-    "listen": "Listen to voice",
-    "playing": "Playing..."
+    "webmFailed": "Voice export failed"
   },
   "exportProgress": {
     "generating": "カードを生成中…"

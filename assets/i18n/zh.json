@@ -1,9 +1,4 @@
 {
-  "nav": {
-    "tagline": "表达 · 排版 · 分享",
-    "help": "使用说明",
-    "theme": "切换深色模式"
-  },
   "hero": {
     "title": "说一次，永远分享",
     "subtitle": "用麦克风录音或用<a href=\"https://wisprflow.ai/r?BEST76\" target=\"_blank\" rel=\"noopener\" class=\"wispr-flow-link\"><strong><em>Wispr Flow</em></strong></a>口述。排版并分享爱。",
@@ -16,12 +11,10 @@
     "sub": "停止后文字会显示",
     "generating": "正在生成…",
     "processing": "正在处理你的音频…",
-    "cancel": "取消",
     "couldntRetry": "转录失败，点击重试",
     "listening": "正在听你说话并转为文字",
     "paused": "已暂停 — 点击麦克风继续",
-    "pausedHint": "点击“完成”转为文字",
-    "ended": "Recording ended",
+    "ended": "录音结束",
     "done": "完成",
     "softHint": "今天还有几次 💛",
     "softHintDone": "明天再来 💛"
@@ -40,7 +33,6 @@
     "tooltipNative": "母语语言的麦克风已禁用",
     "filter": "搜索语言…"
   },
-  "orText": "或输入或粘贴你的文字",
   "textarea": {
     "label": "你的文字",
     "placeholder": "说话或输入你的消息..."
@@ -54,8 +46,7 @@
     "label": "需要灵感？点击一个示例"
   },
   "customize": {
-    "summary": "个性化设置",
-    "hint": "语气 · 颜色 · 形状"
+    "summary": "个性化设置"
   },
   "tone": {
     "label": "语气",
@@ -175,11 +166,6 @@
   },
   "toasts": {
     "welcomePro": "Welcome to Pro 💛",
-    "proUnlocked": "Pro unlocked 💛",
-    "invalidKey": "Key invalid",
-    "verifyFailed": "Verify failed",
-    "enterKey": "Enter your key",
-    "checking": "Checking...",
     "micDenied": "Allow mic to record",
     "micAccessDenied": "Allow mic in browser",
     "noMicFound": "No mic found",
@@ -229,9 +215,7 @@
     "detached": "Voice removed",
     "textChanged": "Voice removed",
     "webmDone": "Voice saved ✓",
-    "webmFailed": "Voice export failed",
-    "listen": "Listen to voice",
-    "playing": "Playing..."
+    "webmFailed": "Voice export failed"
   },
   "exportProgress": {
     "generating": "正在生成卡片…"

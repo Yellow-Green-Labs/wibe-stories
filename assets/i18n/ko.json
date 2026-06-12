@@ -1,9 +1,4 @@
 {
-  "nav": {
-    "tagline": "말하기 · 스타일링 · 공유하기",
-    "help": "사용 방법",
-    "theme": "다크 모드 전환"
-  },
   "hero": {
     "title": "한 번 말하고, 영원히 공유하세요",
     "subtitle": "마이크로 녹음하거나 <a href=\"https://wisprflow.ai/r?BEST76\" target=\"_blank\" rel=\"noopener\" class=\"wispr-flow-link\"><strong><em>Wispr Flow</em></strong></a>로 받아쓰기. 스타일링하고 사랑으로 공유하기.",
@@ -16,12 +11,10 @@
     "sub": "멈추면 단어가 나타납니다",
     "generating": "생성 중…",
     "processing": "오디오 처리 중…",
-    "cancel": "취소",
     "couldntRetry": "텍스트 변환에 실패했습니다. 탭하여 다시 시도",
     "listening": "말을 쓰고 처리하고 있어요",
     "paused": "일시정지 — 리줌마는 마이크를 누르세요",
-    "pausedHint": "트랜스크립트는 완료를 누르세요",
-    "ended": "Recording ended",
+    "ended": "녹음 완료",
     "done": "완료",
     "softHint": "오늘 조금 더 💛",
     "softHintDone": "내일 또 💛"
@@ -40,7 +33,6 @@
     "tooltipNative": "모국어에 대해 마이크가 비활성화되었습니다",
     "filter": "언어 검색…"
   },
-  "orText": "또는 단어를 입력하거나 붙여넣기",
   "textarea": {
     "label": "당신의 단어",
     "placeholder": "말하거나 메시지를 입력하세요..."
@@ -54,8 +46,7 @@
     "label": "영감이 필요하신가요? 예시를 클릭하세요"
   },
   "customize": {
-    "summary": "나만의 것으로 만들기",
-    "hint": "톤 · 색상 · 모양"
+    "summary": "나만의 것으로 만들기"
   },
   "tone": {
     "label": "톤",
@@ -175,11 +166,6 @@
   },
   "toasts": {
     "welcomePro": "Welcome to Pro 💛",
-    "proUnlocked": "Pro unlocked 💛",
-    "invalidKey": "Key invalid",
-    "verifyFailed": "Verify failed",
-    "enterKey": "Enter your key",
-    "checking": "Checking...",
     "micDenied": "Allow mic to record",
     "micAccessDenied": "Allow mic in browser",
     "noMicFound": "No mic found",
@@ -229,9 +215,7 @@
     "detached": "Voice removed",
     "textChanged": "Voice removed",
     "webmDone": "Voice saved ✓",
-    "webmFailed": "Voice export failed",
-    "listen": "Listen to voice",
-    "playing": "Playing..."
+    "webmFailed": "Voice export failed"
   },
   "exportProgress": {
     "generating": "카드 생성 중…"

@@ -1,9 +1,4 @@
 {
-  "nav": {
-    "tagline": "ಮಾತನಾಡಿ · ಶೈಲಿ ಮಾಡಿ · ಹಂಚಿಕೊಳ್ಳಿ",
-    "help": "ಹೇಗೆ ಬಳಸುವುದು",
-    "theme": "ಡಾರ್ಕ್ ಮೋಡ್ ಟಾಗಲ್ ಮಾಡಿ"
-  },
   "hero": {
     "title": "ಒಮ್ಮೆ ಹೇಳಿ, ಶಾಶ್ವತವಾಗಿ ಹಂಚಿಕೊಳ್ಳಿ",
     "subtitle": "ಮೈಕ್‌ನಿಂದ ರೆಕಾರ್ಡ್ ಮಾಡಿ ಅಥವಾ <a href=\"https://wisprflow.ai/r?BEST76\" target=\"_blank\" rel=\"noopener\" class=\"wispr-flow-link\"><strong><em>Wispr Flow</em></strong></a> ನೊಂದಿಗೆ ಹೇಳಿ. ಶೈಲಿ ಮಾಡಿ ಮತ್ತು ಪ್ರೀತಿಯಿಂದ ಹಂಚಿಕೊಳ್ಳಿ.",
@@ -16,12 +11,10 @@
     "sub": "ನೀವು ನಿಲ್ಲಿಸಿದಾಗ ಪದಗಳು ಕಾಣಿಸುತ್ತವೆ",
     "generating": "ರಚಿಸಲಾಗುತ್ತಿದೆ…",
     "processing": "ನಿಮ್ಮ ಆಡಿಯೋವನ್ನು ಸಂಸ್ಕರಿಸಲಾಗುತ್ತಿದೆ…",
-    "cancel": "ರದ್ದುಮಾಡಿ",
     "couldntRetry": "ಟ್ರಾನ್ಸ್‌ಕ್ರೈಬ್ ಆಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ",
     "listening": "ನಿಮ್ಮ ಫೆದಗಳನ್ನು ಕೇಳುತ್ತಿದ್ದೇನೆ ಮತ್ತು ಪ್ರಕ್ರಿಯಿಸುತ್ತಿದ್ದೇನೆ",
     "paused": "ನಿದ್ರಾಂಶ — ಮುಂದಿಸಲು ಮಾಡಲು ಮೈಕ್ ಟೀನ್ ಮಾಡಿ",
-    "pausedHint": "ಟ್ರಾನ್ಸ್ಕ್ರಿಪ್ಟ್ ಮಾಡಲು ಡನ್ ಟೀನ್ ಮಾಡಿ",
-    "ended": "Recording ended",
+    "ended": "ರೆಕಾರ್ಡಿಂಗ್ ಮುಗಿದಿದೆ",
     "done": "ಮುಗದಿದೆ",
     "softHint": "ಇಂದು ಇನ್ನೂ ಸ್ವಲ್ಪ 💛",
     "softHintDone": "ನಾಳೆ ಮತ್ತೆ 💛"
@@ -40,7 +33,6 @@
     "tooltipNative": "ಮೂಲ ಭಾಷೆಗಾಗಿ ಮೈಕ್ ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ",
     "filter": "ಭಾಷೆಗಳನ್ನು ಹುಡುಕಿ…"
   },
-  "orText": "ಅಥವಾ ನಿಮ್ಮ ಪದಗಳನ್ನು ಟೈಪ್ ಮಾಡಿ ಅಥವಾ ಅಂಟಿಸಿ",
   "textarea": {
     "label": "ನಿಮ್ಮ ಪದಗಳು",
     "placeholder": "ಮಾತನಾಡಿ ಅಥವಾ ನಿಮ್ಮ ಸಂದೇಶವನ್ನು ಟೈಪ್ ಮಾಡಿ..."
@@ -54,8 +46,7 @@
     "label": "ಪ್ರೇರಣೆ ಬೇಕೇ? ಉದಾಹರಣೆಯನ್ನು ಕ್ಲಿಕ್ ಮಾಡಿ"
   },
   "customize": {
-    "summary": "ನಿಮ್ಮದಾಗಿಸಿ",
-    "hint": "ಸ್ವರ · ಬಣ್ಣ · ಆಕಾರ"
+    "summary": "ನಿಮ್ಮದಾಗಿಸಿ"
   },
   "tone": {
     "label": "ಸ್ವರ",
@@ -175,11 +166,6 @@
   },
   "toasts": {
     "welcomePro": "Welcome to Pro 💛",
-    "proUnlocked": "Pro unlocked 💛",
-    "invalidKey": "Key invalid",
-    "verifyFailed": "Verify failed",
-    "enterKey": "Enter your key",
-    "checking": "Checking...",
     "micDenied": "Allow mic to record",
     "micAccessDenied": "Allow mic in browser",
     "noMicFound": "No mic found",
@@ -229,9 +215,7 @@
     "detached": "Voice removed",
     "textChanged": "Voice removed",
     "webmDone": "Voice saved ✓",
-    "webmFailed": "Voice export failed",
-    "listen": "Listen to voice",
-    "playing": "Playing..."
+    "webmFailed": "Voice export failed"
   },
   "exportProgress": {
     "generating": "ಕಾರ್ಡ್ ರಚಿಸಲಾಗುತ್ತಿದೆ…"

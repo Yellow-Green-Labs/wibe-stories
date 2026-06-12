@@ -107,10 +107,8 @@ var speechLang = localStorage.getItem('wsSpeechLang') || '';
 let curP = 0,
   curTone = "original",
   curLang = localStorage.getItem("wsLang") || "en",
-  isRTL = false,
   useRounded = true,
-  inputSource = "story",
-  userOverride = false;
+  inputSource = "story";
 let recog = null,
   isRec = false,
   fullTx = "";
@@ -129,8 +127,7 @@ _recTimerPausedAt = null,
 _recTimerPausedRemaining = null,
 _isRecPaused = false,
   recMaxDuration = FREE_MAX_RECORDING_SEC,
-  recDurationTimer = null,
-  recGraceTimer = null;
+  recDurationTimer = null;
 let _sttHealthCache = null;
 const STT_HEALTH_TTL_MS = 10 * 60 * 1000;
 let _lastSttWav = null;
@@ -143,7 +140,7 @@ let _lastKnownRecordingsDate = "";
 let _updatePending = false;
 let _versionPollTimer = null;
 const VERSION_POLL_INTERVAL_MS = 60 * 1000; // 60 seconds
-const CURRENT_VERSION = "v0.11.0.8";
+const CURRENT_VERSION = "v0.11.0.10";
 
 // Shows the "new version available" notice. Transient (it does not block other
 // toasts) and re-shown when the user returns to the tab while an update is
@@ -402,7 +399,6 @@ function saveDraft() {
       palette: curP,
       inputSource: inputSource,
       lang: curLang,
-      isRTL: isRTL,
       rounded: useRounded,
       cardReady: cardReady,
       voiceAttached: voiceAttached,
@@ -428,7 +424,6 @@ function loadDraft() {
       // language of whatever example sentence the user last clicked.
       // Page UI language is owned by the dropdown / loadLanguages init.
       curLang = draft.lang;
-      isRTL = draft.isRTL || false;
     }
     if (draft.rounded != null) {
       useRounded = draft.rounded;
@@ -617,14 +612,12 @@ function trackCardUsage() {
   var lang = source === "voice"
     ? (effectiveSpeechLang || effectiveCurLang || "en")
     : (effectiveCurLang || effectiveSpeechLang || "en");
-  console.debug("[Track] Sending lang=" + lang + " source=" + source + " speechLang=" + speechLang + " curLang=" + curLang);
   fetch("/api/track-usage", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ lang: lang, source: source })
   }).then(function(r) {
-    console.debug("[Track] Response status=" + r.status);
-    return r.text().then(function(t) { console.debug("[Track] Body=" + t); });
+    return r.text();
   }).catch(function(e) {
     console.warn("[Track] Fetch failed:", e);
   });
@@ -660,6 +653,8 @@ document.getElementById("upgradeClose")?.addEventListener("click", closeUpgradeM
 document.getElementById("upgradeBackdrop")?.addEventListener("click", closeUpgradeModal);
 document.getElementById("upgradeBtn")?.addEventListener("click", openUpgradeModal);
 document.getElementById("mobileBtnUpgrade")?.addEventListener("click", openUpgradeModal);
+document.getElementById("upgradeKeyGo")?.addEventListener("click", handleUpgradeKey);
+document.getElementById("upgradeEmailGo")?.addEventListener("click", handleUpgradeEmail);
 async function handleUpgradeKey() {
   const input = document.getElementById("upgradeKeyInput");
   const msg = document.getElementById("upgradeKeyMsg");
@@ -1186,7 +1181,6 @@ async function refreshMicList() {
     if (!sel || !row) return;
     var devices = await navigator.mediaDevices.enumerateDevices();
     var mics = devices.filter(function (d) { return d.kind === "audioinput"; });
-    console.debug("[Mic] Available inputs: " + mics.map(function (m) { return m.label || "(unlabeled)"; }).join(" | "));
     // Labels are empty until permission is granted — without them the picker is useless.
     var labeled = mics.filter(function (m) { return m.label; });
     if (labeled.length === 0) { row.style.display = "none"; return; }
@@ -1241,7 +1235,6 @@ async function startDeepgramRecording(stream) {
     if (audioTrack) {
       var settings = {};
       try { settings = audioTrack.getSettings(); } catch(e) {}
-      console.debug("[Mic] Device label=" + audioTrack.label + " enabled=" + audioTrack.enabled + " settings=" + JSON.stringify(settings));
     } else {
       console.error("[Mic] No audio tracks in stream!");
     }
@@ -1271,12 +1264,9 @@ async function startDeepgramRecording(stream) {
       isRec = false;
       var _maxTimeMsg = (typeof getI18nSync === "function" && getI18nSync("toasts.maxTime")) || ("Max " + recMaxDuration + "s");
       showToast(_maxTimeMsg.replace("{max}", recMaxDuration));
-      console.debug("[Rec] Timer expired, stopping, chunks=" + audioChunks.length + ", speechLang=" + speechLang);
       if (mediaRec && mediaRec.state !== "inactive") {
         stopDeepgramRecording().then(function(result) {
           fullTx = result.text ? result.text.trim().slice(0, 150) : "";
-          var preview = (result.text || "").slice(0, 30) + ((result.text || "").length > 30 ? "..." : "");
-          console.debug("[Rec] STT result: text='" + preview + "', duration=" + result.duration + ", fullTx='" + fullTx + "'");
           if (!fullTx) showToast((typeof getI18nSync === "function" && getI18nSync("toasts.silence")) || "Didn't catch that");
           if (audioBlob) {
             _computeWaveform(audioBlob).then(function(h) {
@@ -1322,7 +1312,6 @@ function stopDeepgramRecording() {
         const duration = deepgramStartTime ? Math.floor((Date.now() - deepgramStartTime) / 1000) : 0;
         deepgramStartTime = null;
         const blob = new Blob(audioChunks, { type: mediaRec.mimeType });
-        console.debug("[Rec] Onstop: chunks=" + audioChunks.length + ", blobSize=" + blob.size + ", duration=" + duration);
         audioChunks = [];
         audioBlob = blob;
         audioDurationSec = duration;
@@ -1343,7 +1332,6 @@ function stopDeepgramRecording() {
             _lvlSum += _lvlAbs;
           }
           _lvlCtx.close();
-          console.debug("[Mic] Captured audio level: peak=" + _lvlPeak.toFixed(4) + " avg=" + (_lvlSum / (_lvlCh.length || 1)).toFixed(6) + " samples=" + _lvlCh.length);
         } catch (_lvlErr) {
           console.warn("[Mic] Level check failed:", _lvlErr && _lvlErr.message);
         }
@@ -1361,7 +1349,6 @@ function stopDeepgramRecording() {
         _lastSttWav = fetchBlob;
         _lastSttLang = speechLang;
         _lastSttSessionId = localStorage.getItem("wsSessionId") || "";
-        console.debug("[STT] Sending WAV: size=" + fetchBlob.size);
         var controller = new AbortController();
         var sttTimeout = setTimeout(function() { controller.abort(); }, 15000);
         try {
@@ -1376,7 +1363,6 @@ function stopDeepgramRecording() {
             signal: controller.signal,
           });
           clearTimeout(sttTimeout);
-          console.debug("[STT] Response status=" + res.status);
           if (!res.ok) {
             const err = await res.text();
             console.error("[STT] API error:", err);
@@ -1630,7 +1616,6 @@ function startWebSpeechAPI() {
     document.getElementById("recSt").textContent = listeningMsg3;
     document.getElementById("recSub").classList.add("live");
     _showDoneButton(true);
-    console.debug("[Speech] Started, lang=" + recog.lang + ", max=" + recMaxDuration + "s");
     _startRecTimer(recMaxDuration, function() {
       var _maxTimeMsgWS = (typeof getI18nSync === "function" && getI18nSync("toasts.maxTime")) || ("Max " + recMaxDuration + "s");
       showToast(_maxTimeMsgWS.replace("{max}", recMaxDuration));
@@ -1652,7 +1637,6 @@ function startWebSpeechAPI() {
     }
     if (fi) {
       fullTx += fi + " ";
-      console.debug('[Speech] Final result: "' + fi.trim() + '"');
     }
     if (recogTimeout) {
       clearTimeout(recogTimeout);
@@ -1661,7 +1645,6 @@ function startWebSpeechAPI() {
   };
   recog.onend = () => {
     if (usingDeepgram) return;
-    console.debug("[Speech] Ended, isRec=" + isRec);
     if (recogTimeout) {
       clearTimeout(recogTimeout);
       recogTimeout = null;
@@ -1681,9 +1664,6 @@ _vibrate();
         try {
           recog.lang = _wsLocales[speechLang] || _wsLocales[curLang] || 'en-US';
           recog.start();
-          console.debug(
-            "[Speech] Restarted (attempt " + recogRestartCount + ")"
-          );
         } catch (e) {
           console.error("[Speech] Restart failed:", e);
           isRec = false;
@@ -1755,7 +1735,6 @@ function finishRec() {
     document.getElementById("sta").value = fullTx.trim().slice(0, 150);
     inputSource = "voice";
     _exampleLang = null;
-    userOverride = false;
     updateCard();
     saveDraft();
     fullTx = "";
@@ -1936,10 +1915,6 @@ async function _stopAndTranscribe() {
     clearTimeout(recDurationTimer);
     recDurationTimer = null;
   }
-  if (recGraceTimer) {
-    clearTimeout(recGraceTimer);
-    recGraceTimer = null;
-  }
   _stopRecTimer();
   _showDoneButton(false);
   var recBtnFin = document.getElementById("recBtn");
@@ -2055,7 +2030,6 @@ document.getElementById("recBtn").addEventListener("click", async () => {
   const isPro = isSupporter();
   const maxDuration = isPro ? PRO_MAX_RECORDING_SEC : FREE_MAX_RECORDING_SEC;
 
-  console.debug("[Limits] precheck:", JSON.stringify({ sessionId: localStorage.getItem("wsSessionId"), isPro, audioDuration: maxDuration }));
   try {
     const res = await fetch("/api/limits", {
       method: "POST",
@@ -2063,7 +2037,6 @@ document.getElementById("recBtn").addEventListener("click", async () => {
       body: JSON.stringify({ sessionId: localStorage.getItem("wsSessionId"), isPro, audioDuration: maxDuration, checkOnly: true }),
     });
     const data = await res.json();
-    console.debug("[Limits] precheck response:", JSON.stringify(data));
 
     if (!data.allowed) {
       clearTimeout(readyTimer);
@@ -2121,7 +2094,6 @@ async function reportRecordingDuration(actualDuration) {
   if (_skipDurationReport) { _skipDurationReport = false; return; }
   const sessionId = localStorage.getItem("wsSessionId");
   const isPro = isSupporter();
-  console.debug("[Limits] report:", JSON.stringify({ sessionId, actualDuration, isPro }));
   try {
     const res = await fetch("/api/limits", {
       method: "POST",
@@ -2129,7 +2101,6 @@ async function reportRecordingDuration(actualDuration) {
       body: JSON.stringify({ sessionId, isPro, audioDuration: actualDuration || 0, checkOnly: false }),
     });
     const data = await res.json();
-    console.debug("[Limits] report response:", JSON.stringify(data));
     if (data.allowed) {
       updateRecCounter(data.recordingsUsed, data.recordingsMax, data.cumulativeUsed, data.cumulativeMax, sessionId);
     }
@@ -2139,11 +2110,7 @@ async function reportRecordingDuration(actualDuration) {
     // value. checkOnly: true does not increment, so this is idempotent.
     // This auto-corrects the known "Counter stuck at 5/5" symptom in case
     // the root cause is a client-side caching issue.
-    console.debug("[Limits] report post-verify (allowed=" + data.allowed + ")");
     await _refreshLimitsFromServer();
-    if (!data.allowed && (data.reason === "too_many" || data.reason === "cumulative_exceeded")) {
-      console.debug("[Limits] report returned cap:", data.reason);
-    }
   } catch (e) {
     console.warn("[Limits] Report failed:", e.message);
   }
@@ -2157,7 +2124,6 @@ async function _refreshLimitsFromServer() {
   const sessionId = localStorage.getItem("wsSessionId");
   if (!sessionId) return;
   const isPro = isSupporter();
-  console.debug("[Limits] refresh:", JSON.stringify({ sessionId, isPro }));
   try {
     const res = await fetch("/api/limits", {
       method: "POST",
@@ -2165,7 +2131,6 @@ async function _refreshLimitsFromServer() {
       body: JSON.stringify({ sessionId, isPro, audioDuration: 0, checkOnly: true }),
     });
     const data = await res.json();
-    console.debug("[Limits] refresh response:", JSON.stringify(data));
     if (data && data.recordingsMax) {
       updateRecCounter(data.recordingsUsed, data.recordingsMax, data.cumulativeUsed, data.cumulativeMax, sessionId);
     }
@@ -2192,13 +2157,11 @@ function updateRecCounter(used, max, cumulativeUsed, cumulativeMax, sessionId) {
     _lastKnownRecordingsUsed = -1;
   }
   if (used < _lastKnownRecordingsUsed) {
-    console.debug("[Limits] updateRecCounter: ignoring stale used=" + used + " (last known=" + _lastKnownRecordingsUsed + ")");
     return;
   }
   _lastKnownRecordingsUsed = used;
   _lastKnownRecordingsDate = today;
   _lastKnownRecordingsSessionId = sessionId || _lastKnownRecordingsSessionId;
-  console.debug("[Limits] updateRecCounter:", JSON.stringify({ used, max, cumulativeUsed, cumulativeMax }));
   const remaining = max - used;
   const cumRemaining = Math.max(0, cumulativeMax - cumulativeUsed);
   if (remaining <= 0) {
@@ -2216,7 +2179,6 @@ const langSelEl = document.getElementById("langSel");
 if (langSelEl) {
   langSelEl.addEventListener("change", (e) => {
     curLang = e.target.value;
-    isRTL = false;
     updateCard();
     saveDraft();
     // Re-localize the Style chip summary to the new page language.
@@ -2663,20 +2625,6 @@ document.getElementById("nin").addEventListener("input", function() {
   saveDraft();
   _updateResetBtnVisibility();
 });
-document.getElementById("sta").addEventListener("paste", () => {
-  rewriteCache = {};
-  _webmCache = null;
-  _pngCache = null;
-  inputSource = "story";
-  setTimeout(function() { autoDetectLangFromText(document.getElementById("sta").value); updateCard(); saveDraft(); updateSlNudge(); updateMicState(); }, 50);
-});
-document.getElementById("nin").addEventListener("input", function() {
-  this.value = stripControls(this.value)
-    .replace(/[^\p{L}\p{M}\p{N}\s\-'.()À-ɏ]/gu, "")
-    .slice(0, 20);
-  updateCard();
-  saveDraft();
-});
 document.getElementById("sta").addEventListener("focus", _stopPlaceholderCycle);
 document.getElementById("sta").addEventListener("blur", function() { if (!this.value.length) setTimeout(_startPlaceholderCycle, 2000); });
 document.getElementById("resetBtn").addEventListener("click", () => {
@@ -2710,7 +2658,6 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   document.getElementById("sta").value = "";
   document.getElementById("nin").value = "";
   inputSource = "story";
-  userOverride = false;
   // Do NOT reset language — keep user's selection
   audioBlob = null;
   _cardWaveform = null;
@@ -2926,13 +2873,11 @@ function tryAutoDetectLang() {
   for (const code of tryCodes) {
     if (i18nList.indexOf(code) !== -1 && allLanguages.find((l) => l.code === code)) {
       curLang = code;
-      isRTL = false;
       window.setLanguageByCode(code);
       return;
     }
   }
   curLang = "en";
-  isRTL = false;
   window.setLanguageByCode("en");
 }
 tryAutoDetectLang();
@@ -3170,7 +3115,6 @@ document.getElementById("exGrid").addEventListener("click", (e) => {
     // without touching the page UI language. The page language stays on the
     // user's chosen locale; only the card display language follows the example.
     curLang = c.dataset.lang;
-    isRTL = false;
     _exampleLang = c.dataset.lang;
   }
   updateCard();
@@ -4125,7 +4069,6 @@ async function _loadFfmpeg() {
   if (!SR) {
     diag.push("[Diagnostic] Web Speech API not supported — Deepgram only");
   }
-  console.debug(diag.join("\n"));
 })();
 
 // Re-localize the Style accordion's chip summary after i18n is ready, so
