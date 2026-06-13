@@ -184,28 +184,18 @@ body {
 .values-circle {
   position: relative;
   width: 100%;
-  max-width: 520px;
-  height: 400px;
+  max-width: 600px;
   margin: 0 auto;
 }
-.values-center {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 60px;
-  height: 60px;
-  z-index: 2;
-}
-.values-logo {
+.values-svg {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  height: auto;
+  display: block;
 }
 .value-item {
   position: absolute;
   text-align: center;
-  max-width: 160px;
+  max-width: 150px;
 }
 .value-item p {
   font-size: clamp(12px, 1vw, 14px);
@@ -220,27 +210,13 @@ body {
 :root.dark .value-item strong {
   color: var(--ws-lavender);
 }
-.value-arc {
-  width: 100%;
-  height: 40px;
-  border: 1px solid var(--ws-lavender);
-  border-radius: 50%;
-  margin-bottom: 8px;
-  opacity: 0.5;
-}
-/* Positions around the circle */
+/* Positions around the circle — top, right, bottom-right, bottom, bottom-left, left */
 .value-1 { top: 0; left: 50%; transform: translateX(-50%); }
-.value-1 .value-arc { border-bottom: none; border-radius: 50% 50% 0 0; }
-.value-2 { top: 30%; right: 0; transform: translateY(-50%); }
-.value-2 .value-arc { border-left: none; border-radius: 0 50% 50% 0; }
-.value-3 { bottom: 15%; right: 5%; }
-.value-3 .value-arc { border-left: none; border-radius: 0 50% 50% 0; }
+.value-2 { top: 22%; right: 0; transform: translateY(-50%); }
+.value-3 { bottom: 8%; right: 2%; }
 .value-4 { bottom: 0; left: 50%; transform: translateX(-50%); }
-.value-4 .value-arc { border-top: none; border-radius: 0 0 50% 50%; }
-.value-5 { bottom: 15%; left: 5%; }
-.value-5 .value-arc { border-right: none; border-radius: 50% 0 0 50%; }
-.value-6 { top: 30%; left: 0; transform: translateY(-50%); }
-.value-6 .value-arc { border-right: none; border-radius: 50% 0 0 50%; }
+.value-5 { bottom: 8%; left: 2%; }
+.value-6 { top: 22%; left: 0; transform: translateY(-50%); }
 
 /* === Typography === */
 h1 {
