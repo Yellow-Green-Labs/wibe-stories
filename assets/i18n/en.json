@@ -116,6 +116,7 @@
     "text": "<a href=\"#top\" class=\"footer-wave wave-on-hover\">Wibe Stories</a>",
     "independent": "Independent project · Not affiliated with Wispr Flow",
     "copyright": "© 2026",
+    "features": "Features",
     "about": "About",
     "langStats": "Lang Stats",
     "support": "Support Here",
@@ -157,15 +158,7 @@
     "step2": "<strong>Customize</strong> your card: choose a tone, color, and corner style.",
     "step3": "<strong>Create &amp; share</strong>: download as PNG or share directly on social platforms.",
     "gotIt": "Got it, let's go!",
-    "hint": "Need help later? Open <em>How to Use</em> in the footer menu.",
-    "refTitle": "Quick reference",
-    "refToggle": "<strong>Switch modes</strong>: tap the mic icon to toggle between record and text mode.",
-    "refVoice": "<strong>Voice languages</strong>: 44 languages + auto-detect. Pick from the language button.",
-    "refText": "<strong>Text editing</strong>: the textarea accepts up to 150 characters. Edit freely.",
-    "refTone": "<strong>Tone rewriting</strong>: 6 tones. Free users get 5 per tone per day. Pro users get unlimited.",
-    "refColor": "<strong>Color</strong>: choose a palette to set the card background.",
-    "refShape": "<strong>Shape</strong>: sharp edges for messaging, rounded for galleries.",
-    "refFontSize": "<strong>Font size</strong>: bump the card text up for short messages."
+    "hint": "Need help later? Open <em>How to Use</em> in the footer menu."
   },
   "mobileBar": {
     "create": "Create",

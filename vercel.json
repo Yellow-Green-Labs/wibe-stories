@@ -1,10 +1,12 @@
 {
   "rewrites": [
     { "source": "/", "destination": "/wisprstories.html" },
+    { "source": "/features", "destination": "/features.html" },
     { "source": "/about", "destination": "/about.html" },
     { "source": "/language-stats", "destination": "/language-stats.html" },
     { "source": "/card", "destination": "/api/card" },
-    { "source": "/c/:id", "destination": "/api/c/[id]" }
+    { "source": "/c/:id", "destination": "/api/c/[id]" },
+    { "source": "/og-img/:id", "destination": "https://jkzbaevzmimaelrr.public.blob.vercel-storage.com/og/:id.jpg" }
   ],
   "redirects": [
     { "source": "/about.html", "destination": "/about", "statusCode": 301 },

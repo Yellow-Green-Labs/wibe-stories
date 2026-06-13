@@ -291,166 +291,28 @@ h2 {
   line-height: 1.6;
   font-weight: 400;
 }
-p.section-intro {
-  font-size: clamp(13px, 1.1vw, 14px);
-  color: var(--ink3);
-  margin-top: -12px;
-  margin-bottom: 8px;
-}
 
-/* === Feature grid === */
-.features {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin: 32px 0;
-}
-.feature-item {
+/* === Features page link === */
+.features-link {
   text-align: center;
-  padding: 18px 8px;
-  background: var(--cream2);
-  border-radius: 12px;
-  border: 1px solid var(--rule);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  margin: 32px 0 0;
 }
-.feature-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  background: var(--ws-card-hover);
-  border-color: var(--ws-lavender);
+.features-link a {
+  font-size: clamp(14px, 1.2vw, 16px);
+  font-weight: 600;
+  color: var(--ws-lavender-dark);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.2s, color 0.2s;
 }
-.feature-item:hover .feature-icon {
+.features-link a:hover {
+  border-bottom-color: var(--ws-lavender-dark);
+}
+:root.dark .features-link a {
   color: var(--ws-lavender);
 }
-.feature-icon {
-  font-size: clamp(26px, 2.4vw, 32px);
-  color: var(--ink);
-  margin-bottom: 6px;
-  transition: color 0.2s ease;
-}
-.feature-value {
-  font-size: clamp(22px, 2.2vw, 28px);
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 2px;
-  line-height: 1.2;
-}
-.feature-label {
-  font-size: clamp(11px, 0.3vw + 10px, 12px);
-  color: var(--ink3);
-  line-height: 1.3;
-}
-
-/* === How It Works === */
-.how-steps {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin: 32px 0;
-}
-.how-step {
-  position: relative;
-  padding: 24px 16px;
-  background: transparent;
-  border-radius: 12px;
-  border: 1px solid var(--rule);
-  text-align: center;
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-.how-step:hover {
-  border-color: var(--ws-lavender);
-  background: var(--ws-card-hover);
-}
-.how-step-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: transparent;
-  border: 2px solid var(--ws-lavender-dark);
-  color: var(--ws-lavender-dark);
-  font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 10px;
-}
-.how-step-icon {
-  font-size: clamp(26px, 2.4vw, 32px);
-  color: var(--ws-lavender-dark);
-  margin-bottom: 8px;
-}
-:root.dark .how-step-icon {
-  color: var(--ws-lavender);
-}
-.how-step-title {
-  font-size: clamp(13px, 1.1vw, 14px);
-  font-weight: 600;
-  color: var(--ink);
-  margin-bottom: 4px;
-}
-.how-step-desc {
-  font-size: clamp(12px, 1vw, 13px);
-  color: var(--ink2);
-  line-height: 1.5;
-  margin-top: 4px;
-}
-
-/* === Section eyebrow label (used above stats grid) === */
-.section-eyebrow {
-  margin-top: 40px;
-  margin-bottom: 4px;
-}
-.section-eyebrow + .features {
-  margin-top: 8px;
-}
-
-/* === Three Ways to Create === */
-.modes-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin: 24px 0 8px;
-}
-.mode-card {
-  border-radius: 12px;
-  border: 1px solid var(--rule);
-  padding: 20px 16px;
-  background: var(--cream2);
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-.mode-card:hover {
-  border-color: var(--mode-color, var(--ws-lavender));
-  background: var(--ws-card-hover);
-}
-.mode-icon {
-  font-size: 24px;
-  margin-bottom: 10px;
-  color: var(--mode-color, var(--ws-lavender));
-}
-.mode-title {
-  font-size: clamp(13px, 1.1vw, 14px);
-  font-weight: 600;
-  color: var(--ink);
-  margin-bottom: 6px;
-}
-.mode-desc {
-  font-size: clamp(12px, 1vw, 13px);
-  color: var(--ink2);
-  line-height: 1.5;
-  margin-bottom: 10px;
-}
-.mode-label {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--ink3);
-  letter-spacing: 0.03em;
-}
-p.modes-note {
-  font-size: clamp(12px, 0.9vw, 13px);
-  color: var(--ink3);
-  text-align: center;
-  margin: 4px 0 0;
+:root.dark .features-link a:hover {
+  border-bottom-color: var(--ws-lavender);
 }
 
 /* === Body links === */
@@ -597,10 +459,6 @@ a { color: var(--ink); }
     linear-gradient(rgba(17, 17, 17, 0.70), rgba(17, 17, 17, 0.80)),
     url('../../assets/images/image-1.webp') center/cover no-repeat;
 }
-:root.dark .how-step-num {
-  border-color: var(--ws-lavender);
-  color: var(--ws-lavender);
-}
 .support-link {
   margin-top: 16px;
   font-size: clamp(12px, 0.3vw + 11px, 13px);
@@ -703,16 +561,11 @@ button:focus-visible {
 .mc-5 { bottom: -10px; right: 20px; transform: rotate(4deg); }
   .mc-6 { top: 40px; left: 90px; transform: rotate(7deg); }
   .mc-7 { bottom: 20px; left: 130px; transform: rotate(-3deg); }
-  .features { grid-template-columns: repeat(2, 1fr); }
-  .how-steps { grid-template-columns: 1fr; gap: 12px; }
-  .how-step::after, .how-step::before { display: none; }
-  .modes-grid { grid-template-columns: 1fr; }
+
   .back-to-top { bottom: 72px; right: 20px; width: 36px; height: 36px; }
   h2 { margin-top: 40px; }
 }
-@media (max-width: 380px) {
-  .features { grid-template-columns: 1fr 1fr; gap: 8px; }
-}
+
 
 /* === Text selection === */
 .main ::selection {

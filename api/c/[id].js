@@ -68,11 +68,9 @@ export default async function handler(req, res) {
     ? `${origin}/#text=${enc(metaText)}&name=${enc(metaName)}&tone=${metaTone}&p=${metaP}&r=${metaR}`
     : homeUrl;
 
-  // OG image = the actual card, native 1:1 (1200×1200) JPEG by api/upload.js.
-  // The blob is a static CDN file, so the scraper fetches it instantly with
-  // no serverless cold start. Native aspect matches the card; older
-  // 1200×630 padded OG images were visibly wrong on the share-apps path.
-  const ogUrl = `https://${BLOB_HOST}/og/${id}.jpg`;
+  // OG image = the actual card JPEG served through our own domain via Vercel rewrite,
+  // so scrapers fetch it from the same origin as the page, avoiding cross-domain CDN issues.
+  const ogUrl = `${origin}/og-img/${id}`;
 
   const safeOgUrl = escapeHtml(ogUrl);
   const safeCardUrl = escapeHtml(cardUrl);
@@ -148,9 +146,9 @@ export default async function handler(req, res) {
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{
-  position:fixed;
-  inset:0;
-  overflow:hidden;
+  overflow-x:hidden;
+  overflow-y:auto;
+  min-height:100vh;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -253,7 +251,6 @@ html,body{
 @keyframes wave-letter-auto{0%,70%{transform:translateY(0)}80%{transform:translateY(-4px)}90%,100%{transform:translateY(0)}}
 @keyframes pulse-glow{0%,100%{text-shadow:0 0 4px rgba(245,158,11,.2)}50%{text-shadow:0 0 16px rgba(245,158,11,.5)}}
 @media(prefers-reduced-motion:reduce){.hook-flow span{animation:none!important}.hook-flow.pulse{animation:none!important}}
-@media(max-width:720px){.hook-flow span{animation:none!important}.hook-flow.pulse{animation:none!important}}
 </style>
 </head>
 <body>
@@ -275,7 +272,7 @@ html,body{
   <p class="hook-line">${hookLine} <a class="hook-flow pulse" href="https://wisprflow.ai/r?BEST76" target="_blank" rel="noopener">→Wispr Flow</a></p>
   <br>
 </main>
-<script>(function(){var e=document.querySelector('.hook-flow');if(!e||window.matchMedia('(prefers-reduced-motion:reduce)').matches||innerWidth<=720)return;var t=e.textContent;e.innerHTML='';var c=0;for(var i=0;i<t.length;i++){if(t[i]===' '){e.appendChild(document.createTextNode(' '))}else{var s=document.createElement('span');s.textContent=t[i];s.style.animationDelay=(c*0.06)+'s';e.appendChild(s);c++}}})()</script>
+<script>(function(){var e=document.querySelector('.hook-flow');if(!e||window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;var t=e.textContent;e.innerHTML='';var c=0;for(var i=0;i<t.length;i++){if(t[i]===' '){e.appendChild(document.createTextNode(' '))}else{var s=document.createElement('span');s.textContent=t[i];s.style.animationDelay=(c*0.06)+'s';e.appendChild(s);c++}}})()</script>
 </body>
 </html>`;
 

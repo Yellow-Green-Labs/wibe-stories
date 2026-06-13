@@ -108,6 +108,7 @@
     "text": "<a href=\"#top\" class=\"footer-wave wave-on-hover\">Wibe Stories</a>",
     "independent": "独立项目 · 与 Wispr Flow 无关联",
     "copyright": "© 2026",
+    "features": "Features",
     "about": "About",
     "langStats": "Lang Stats",
     "support": "Support Here",
@@ -149,15 +150,7 @@
     "step2": "<strong>自定义</strong>你的卡片: 选择语气、颜色和边角样式。",
     "step3": "<strong>创建和分享</strong>: 下载为 PNG 或直接分享到社交平台。",
     "gotIt": "明白了, 开始吧！",
-    "hint": "稍后需要帮助？在页脚菜单中打开<em>使用说明</em>。",
-    "refTitle": "快速参考",
-    "refToggle": "<strong>切换模式</strong>: 点击麦克风图标在录音模式和文字模式之间切换。",
-    "refVoice": "<strong>语音语言</strong>: 44 种语言 + 自动检测。从语言按钮选择。",
-    "refText": "<strong>文字编辑</strong>: 文本区域最多接受 150 个字符。可自由编辑。",
-    "refTone": "<strong>语气改写</strong>: 6 种语气。免费用户每个语气每天 5 次。Pro 用户无限次。",
-    "refColor": "<strong>颜色</strong>: 选择调色板以设置卡片背景。",
-    "refShape": "<strong>形状</strong>: 消息用锐利边缘, 画廊用圆角。",
-    "refFontSize": "<strong>字体大小</strong>: 短消息可放大卡片文字。"
+    "hint": "稍后需要帮助？在页脚菜单中打开<em>使用说明</em>。"
   },
   "mobileBar": {
     "create": "创建",

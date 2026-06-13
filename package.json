@@ -1,7 +1,7 @@
 {
   "private": true,
   "type": "module",
-  "version": "0.11.0.10",
+  "version": "0.11.0.13",
   "description": "Turn your voice into shareable cards, in your language, in seconds.",
   "dependencies": {
     "@upstash/redis": "^1.34.0",

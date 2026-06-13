@@ -108,6 +108,7 @@
     "text": "<a href=\"#top\" class=\"footer-wave wave-on-hover\">Wibe Stories</a>",
     "independent": "Proyecto independiente · No afiliado con Wispr Flow",
     "copyright": "© 2026",
+    "features": "Features",
     "about": "About",
     "langStats": "Lang Stats",
     "support": "Support Here",
@@ -149,15 +150,7 @@
     "step2": "<strong>Personaliza</strong> tu tarjeta: elige un tono, color y estilo de esquina.",
     "step3": "<strong>Crea y comparte</strong>: descarga como PNG o comparte directamente en redes sociales.",
     "gotIt": "¡Entendido, vamos!",
-    "hint": "¿Necesitas ayuda después? Abre <em>Cómo usar</em> en el menú del pie.",
-    "refTitle": "Referencia rápida",
-    "refToggle": "<strong>Cambiar modos</strong>: toca el ícono del micrófono para alternar entre modo de grabación y texto.",
-    "refVoice": "<strong>Idiomas de voz</strong>: 44 idiomas + detección automática. Elige desde el botón de idioma.",
-    "refText": "<strong>Edición de texto</strong>: el área de texto acepta hasta 150 caracteres. Edita libremente.",
-    "refTone": "<strong>Reescritura de tono</strong>: 6 tonos. Los usuarios gratuitos obtienen 5 por tono al día. Los usuarios Pro obtienen ilimitado.",
-    "refColor": "<strong>Color</strong>: elige una paleta para establecer el fondo de la tarjeta.",
-    "refShape": "<strong>Forma</strong>: bordes afilados para mensajería, redondeados para galerías.",
-    "refFontSize": "<strong>Tamaño de fuente</strong>: aumenta el texto de la tarjeta para mensajes cortos."
+    "hint": "¿Necesitas ayuda después? Abre <em>Cómo usar</em> en el menú del pie."
   },
   "mobileBar": {
     "create": "Crear",

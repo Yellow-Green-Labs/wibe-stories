@@ -1,4 +1,4 @@
-console.log("%c[Build] Wibe Stories v0.11.0.10 (2026-06-09)", "color:#ec4899;font-weight:bold;font-size:14px");
+console.log("%c[Build] Wibe Stories v0.11.0.13 (2026-06-13)", "color:#ec4899;font-weight:bold;font-size:14px");
 const PALS = [
   "#7c3aed",
   "#f59e0b",
@@ -140,7 +140,7 @@ let _lastKnownRecordingsDate = "";
 let _updatePending = false;
 let _versionPollTimer = null;
 const VERSION_POLL_INTERVAL_MS = 60 * 1000; // 60 seconds
-const CURRENT_VERSION = "v0.11.0.10";
+const CURRENT_VERSION = "v0.11.0.13";
 
 // Shows the "new version available" notice. Transient (it does not block other
 // toasts) and re-shown when the user returns to the tab while an update is
@@ -3457,7 +3457,7 @@ document.getElementById("shareNative").addEventListener("click", async function 
     // beneath the big image. This is how Spotify's mobile share behaves.
     // The card image is a real attachment, so it always renders large — it is
     // NOT a scraped link preview, which is the flaky path.
-    var shareCaption = shareTitle + "\n" + shareUrl + "\u200B\n\n" + _flowCTAs[Math.floor(Math.random() * _flowCTAs.length)];
+    var shareCaption = shareTitle + "\n" + shareUrl + "\n\n" + _flowCTAs[Math.floor(Math.random() * _flowCTAs.length)];
     if (navigator.canShare && navigator.canShare({ files: [shareFile] })) {
       navigator.share({ files: [shareFile], text: shareCaption }).catch(function () {});
     } else {
@@ -3524,10 +3524,19 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
     var ctaText = _flowCTAs[Math.floor(Math.random() * _flowCTAs.length)];
     var clipboardText = url + "\u200B\n\n" + ctaText;
     try {
-      await navigator.clipboard.writeText(clipboardText);
+      var clipboardItem = new ClipboardItem({
+        "text/plain": new Blob([clipboardText], { type: "text/plain" }),
+        "image/png": _shareBlob
+      });
+      await navigator.clipboard.write([clipboardItem]);
       showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓");
     } catch (e2) {
-      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.copyFailed")) || "Copy failed");
+      try {
+        await navigator.clipboard.writeText(clipboardText);
+        showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓");
+      } catch (e3) {
+        showToast((typeof getI18nSync === "function" && getI18nSync("toasts.copyFailed")) || "Copy failed");
+      }
     }
   } catch (e) {
     showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed");

@@ -152,6 +152,9 @@
     >[ <i class="fa-solid fa-question"></i> ]</a>
 
     <div class="fmenu-panel hidden" id="fmenu-panel">
+      <a href="/features" class="fmenu-link">
+        <i class="fa-solid fa-star" aria-hidden="true"></i><span data-i18n="footer.features">Features</span>
+      </a>
       <a href="/about" class="fmenu-link">
         <i class="fa-solid fa-book-open" aria-hidden="true"></i><span data-i18n="footer.about">About</span>
       </a>

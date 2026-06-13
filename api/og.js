@@ -104,10 +104,14 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=3600');
     res.end(image);
   } catch (e) {
-    res.statusCode = 500;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end(
-      'OG render error: ' + (e && e.message ? e.message : 'unknown') + ' | ' + (e && e.stack ? e.stack.split('\n')[0] : ''),
-    );
+    // Fallback: return a simple SVG so the scraper always gets an image
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'image/svg+xml');
+    res.setHeader('Cache-Control', 'public, max-age=300, s-maxage=3600');
+    res.end(`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630">
+      <rect width="1200" height="630" fill="#7c3aed"/>
+      <text x="600" y="315" text-anchor="middle" fill="white" font-family="Arial,sans-serif" font-size="48" font-weight="bold">Wibe Stories</text>
+      <text x="600" y="380" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-family="Arial,sans-serif" font-size="24">speak &middot; scribe &middot; share</text>
+    </svg>`);
   }
 }

@@ -183,7 +183,7 @@ Upload a card PNG and generate an OG image.
 
 **Process:**
 1. Store PNG in Vercel Blob (`cards/`)
-2. Generate 1200×630 OG PNG via sharp (`og/`)
+2. Generate 1200×1200 OG JPEG via sharp (`og/`) — used as fallback
 3. Write metadata sidecar (`meta/<shortId>.json`)
 4. Return 8-character `shortId`
 
@@ -213,18 +213,33 @@ Shared-card landing page. Returns HTML with OG metadata for social bots.
 
 ## 6. OG image
 
+### `GET /og-img/:id`
+
+Vercel rewrite that serves the card's OG image JPEG through the app's own domain.
+Proxies the request to Vercel Blob behind the scenes so scrapers fetch the image
+from the same origin as the card landing page.
+
+**No auth required.**
+
+**Response:** JPEG image (1200×1200)
+
+---
+
 ### `GET /api/og`
 
-Dynamic OG image renderer.
+Dynamic OG image renderer (fallback).
 
 **Runtime:** Node.js
 
 **Query params:**
-- `text` — card text
-- `tone` — tone used
-- `bg` — background colour
+- `text` — card text (default: "Your story")
+- `name` — card author name (default: "Wibe Stories")
+- `p` — palette index 0–9
+- `r` — corner style ("rounded" | "sharp")
 
 **Response:** PNG image (1200×630)
+
+**Fallback:** If rendering fails, returns a branded SVG placeholder.
 
 ---
 

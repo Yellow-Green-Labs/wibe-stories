@@ -108,6 +108,7 @@
     "text": "<a href=\"#top\" class=\"footer-wave wave-on-hover\">Wibe Stories</a>",
     "independent": "独立したプロジェクト · Wispr Flowとは提携していません",
     "copyright": "© 2026",
+    "features": "Features",
     "about": "About",
     "langStats": "Lang Stats",
     "support": "Support Here",
@@ -149,15 +150,7 @@
     "step2": "カードを<strong>カスタマイズ</strong>: トーン、色、角のスタイルを選択します。",
     "step3": "<strong>作成して共有</strong>: PNGでダウンロードするか、ソーシャルプラットフォームで直接共有します。",
     "gotIt": "了解, 始めましょう！",
-    "hint": "後でヘルプが必要ですか？フッターメニューの<em>使い方</em>を開いてください。",
-    "refTitle": "クイックリファレンス",
-    "refToggle": "<strong>モード切替</strong>: マイクアイコンをタップして、録音モードとテキストモードを切り替えます。",
-    "refVoice": "<strong>音声言語</strong>: 44言語+自動検出。言語ボタンから選択します。",
-    "refText": "<strong>テキスト編集</strong>: テキストエリアは最大150文字まで対応。自由に編集できます。",
-    "refTone": "<strong>トーン書き換え</strong>: 6つのトーン。無料ユーザーは1トーン1日5回。Proユーザーは無制限です。",
-    "refColor": "<strong>色</strong>: パレットを選択してカードの背景を設定します。",
-    "refShape": "<strong>形</strong>: メッセージにはシャープな角、ギャラリーには丸い角。",
-    "refFontSize": "<strong>フォントサイズ</strong>: 短いメッセージではカードテキストを大きくします。"
+    "hint": "後でヘルプが必要ですか？フッターメニューの<em>使い方</em>を開いてください。"
   },
   "mobileBar": {
     "create": "作成",

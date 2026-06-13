@@ -711,6 +711,8 @@ body.modal-open .rewrite-bar {
   padding: 36px 32px 28px;
   max-width: 440px;
   width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: 0 32px 96px rgba(0, 0, 0, 0.35);
   animation: onboarding-slide-up 0.35s ease-out;
 }
@@ -819,57 +821,6 @@ body.modal-open .rewrite-bar {
   font-size: clamp(12px, 0.3vw + 11px, 13px);
   vertical-align: middle;
 }
-.onboarding-quick-ref {
-  text-align: left;
-  margin: 0 0 28px;
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 12px;
-  padding: 0;
-  background: rgba(0,0,0,0.02);
-}
-.onboarding-quick-ref > summary {
-  cursor: pointer;
-  padding: 12px 16px;
-  font-size: clamp(13px, 0.3vw + 12px, 14px);
-  font-weight: 600;
-  color: var(--ink);
-  list-style: none;
-  user-select: none;
-}
-.onboarding-quick-ref > summary::-webkit-details-marker {
-  display: none;
-}
-.onboarding-quick-ref > summary::before {
-  content: "▸";
-  display: inline-block;
-  margin-right: 8px;
-  font-size: 11px;
-  transition: transform 0.2s;
-  color: var(--ink3);
-}
-.onboarding-quick-ref[open] > summary::before {
-  transform: rotate(90deg);
-}
-.onboarding-quick-ref-list {
-  list-style: none;
-  margin: 0;
-  padding: 4px 16px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.onboarding-quick-ref-list dd {
-  margin: 0;
-  font-size: clamp(12px, 0.3vw + 11px, 13px);
-  line-height: 1.5;
-  color: var(--ink3);
-  opacity: 0.72;
-}
-.onboarding-quick-ref-list dd strong {
-  color: var(--ink);
-  font-weight: 700;
-  opacity: 1;
-}
 :root.dark .onboarding-banner {
   background: #2a2a2a;
 }
@@ -888,24 +839,6 @@ body.modal-open .rewrite-bar {
 }
 :root.dark .onboarding-hint em {
   color: rgba(255,255,235,0.8);
-}
-:root.dark .onboarding-quick-ref {
-  border-color: rgba(255,255,235,0.08);
-  background: rgba(255,255,235,0.02);
-}
-:root.dark .onboarding-quick-ref > summary {
-  color: #ffffeb;
-}
-:root.dark .onboarding-quick-ref > summary::before {
-  color: rgba(255,255,235,0.5);
-}
-:root.dark .onboarding-quick-ref-list dd {
-  color: rgba(255,255,235,0.55);
-  opacity: 1;
-}
-:root.dark .onboarding-quick-ref-list dd strong {
-  color: #ffffeb;
-  opacity: 1;
 }
 
 /* DOWNLOAD CHOICE MODAL */
