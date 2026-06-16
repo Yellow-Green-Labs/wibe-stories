@@ -29,9 +29,6 @@
 
 ---
 
-<!-- TODO: replace this line with a screenshot of the card UI, e.g. assets/screenshots/hero.png -->
-<p align="center"><em>Screenshot coming soon — capture the card editor and a finished card.</em></p>
-
 ## What is Wibe Stories?
 
 Wibe Stories turns a short voice message — or typed text — into a designed, shareable card. Anyone opens the app, speaks or types something meaningful, picks a tone and colour, and gets a card they can download or send straight to WhatsApp, Instagram, iMessage, or X through the native share sheet.
@@ -67,6 +64,7 @@ No account, no install, no build step. The front end is plain HTML, CSS, and Jav
 
 ## Documentation
 
+- **[Features](https://wibestories.vercel.app/features)** — the 5 capabilities: Speak, Write, Rewrite, Design, Share.
 - **[Product documentation](documentation/WIBE_STORIES.md)** — product vision, features, design system, architecture, and roadmap.
 - **[Developer guide](documentation/DEVELOPER.md)** — technical onboarding, code structure, deployment, and development workflow.
 - **[API reference](documentation/API.md)** — all 19 serverless endpoints, request/response specs, and error codes.

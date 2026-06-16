@@ -1,5 +1,50 @@
 # Changelog
 
+## [v0.11.0.14] — Features Page: 5 Capability Sections + About Page Trim (2026-06-13)
+
+New `/features` page structured as 5 capability sections modeled after Wispr Flow's features page — Speak (voice recording, 44 languages), Write (direct typing, Grace zone), Rewrite (6 AI tones, free/Pro tiers), Design (colors, shapes, fonts, occasion images), Share (link, PNG download, social sharing). Each section: bold hero phrase + 4 feature cards with icons. Additional: stats grid (44 langs, 2 engines, 6 tones, 36 hrs), feature FAQ (Native, free, Pro, Grace zone — moved from about.html), CTA section with background image + Wispr Flow link. Footer menu gets Features link above About. About page trimmed to pure story/mission/origin content.
+
+### Added
+- `features.html` — new features page with 5 capability sections
+- `global/features.js` — features page interactivity
+- `global/styles/features.css` — features page styling
+- Footer menu Features link (above About)
+- `vercel.json` — `/features` rewrite
+- i18n `footer.features` key to all 11 locales
+
+### Changed
+- `about.html` — trimmed to pure story/mission/origin content
+- Build banner unchanged (no app code changed)
+
+---
+
+## [v0.11.0.13] — Patch release (2026-06-13)
+
+Bug fixes and improvements (details not documented in AGENTS.md).
+
+---
+
+## [v0.11.0.12] — Mobile Share + Landing Page Fixes (2026-06-13)
+
+Patch release. 4 fixes for mobile sharing and card landing page.
+
+### Fixed
+- **WhatsApp share caption fix**: Removed `\u200B` (ZWS) from share caption URL so WhatsApp linkifies the URL in the text caption (`wisprstories.js:3460`)
+- **Copy image link fix**: Changed "Copy image link" to write both `image/png` and `text/plain` to clipboard via `ClipboardItem`, so pasting in messaging apps shows the card image; falls back to text-only if unsupported (`wisprstories.js:3526-3540`)
+- **Card landing page scroll fix**: Replaced `position:fixed; overflow:hidden` with `overflow-x:hidden; overflow-y:auto; min-height:100vh` so content is scrollable on small screens (`api/c/[id].js:150-153`)
+- **Wispr Flow CTA animation on mobile**: Removed `@media(max-width:720px)` CSS rule that disabled animation; removed `innerWidth<=720` guard from the letter-by-letter JS so the CTA word animates on all screen sizes
+
+### Changed
+- Build banner `wisprstories.js:1` v0.11.0.10 → v0.11.0.12
+
+---
+
+## [v0.11.0.11] — Patch release (2026-06-09)
+
+Bug fixes and improvements (details not documented in AGENTS.md).
+
+---
+
 ## [v0.11.0.10] — Share Polish: robots.txt + Mobile Share Merge + Wispr Flow CTAs (2026-06-09)
 
 Three share-related fixes to improve WhatsApp/Telegram previews, mobile share UX, and organic promotion of Wispr Flow.

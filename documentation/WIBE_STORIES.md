@@ -1,5 +1,7 @@
 # Wibe Stories — Product Documentation
 
+> For the developer guide (architecture, code structure, deployment), see [DEVELOPER.md](DEVELOPER.md).
+
 > **Branding note**
 >
 > Wibe Stories began as an early prototype under the name "Wispr Stories." As the project grew into a product with a direction of its own, it was renamed to give it a clearer, independent identity: Wibe Stories.
@@ -8,7 +10,7 @@
 >
 > Wibe Stories is an independent project, not affiliated with Wispr Flow.
 
-> **Status:** Live prototype. This document is the single source of truth for the product, its architecture, and how to run it.
+> **Status:** Live prototype. This document is the single source of truth for the product.
 
 ---
 
@@ -21,19 +23,15 @@
 5. [How it works](#5-how-it-works)
 6. [Feature summary](#6-feature-summary)
 7. [Design system](#7-design-system)
-8. [Architecture](#8-architecture)
-9. [Usage limits](#9-usage-limits)
-10. [Internationalization](#10-internationalization)
-11. [Occasion system](#11-occasion-system)
-12. [Sharing pipeline](#12-sharing-pipeline)
-13. [PWA and offline behaviour](#13-pwa-and-offline-behaviour)
-14. [Security and privacy](#14-security-and-privacy)
-15. [Deployment](#15-deployment)
-16. [Testing](#16-testing)
-17. [Known limitations](#17-known-limitations)
-18. [Roadmap](#18-roadmap)
-19. [Success metrics](#19-success-metrics)
-20. [Requirements](#20-requirements)
+8. [Internationalization](#8-internationalization)
+9. [Occasion system](#9-occasion-system)
+10. [Sharing pipeline](#10-sharing-pipeline)
+11. [PWA and offline behaviour](#11-pwa-and-offline-behaviour)
+12. [Security and privacy](#12-security-and-privacy)
+13. [Known limitations](#13-known-limitations)
+14. [Roadmap](#14-roadmap)
+15. [Success metrics](#15-success-metrics)
+16. [Requirements](#16-requirements)
 
 ---
 
@@ -147,8 +145,8 @@ Marcus uses voice dictation for quick notes and board updates. He is technically
 - A pre-rendered decorative background (one of 20 baked WebP images).
 - An inner white panel holding the user's text and name.
 - An audio waveform motif, signalling voice-created content.
-- A **"Voice Original" / "Voice Styled"** label. It reads *Voice Styled* when an LLM tone rewrite has been applied and *Voice Original* otherwise.
-- A small **Wibe Stories** wordmark and logo.
+- A source label with emoji: 🎙️ **Voice Original** / 🎙️ **Voice Styled** (when recorded), or ✏️ **Story Original** / ✏️ **Story Styled** (when typed). *Styled* appears when an LLM tone rewrite has been applied.
+- A small **Wibe Stories** wordmark, logo, and the tagline **"speak · scribe · share"**.
 
 The card image itself carries only the user's words and the Wibe Stories mark. Wispr Flow attribution lives on the page (footer and the "Try Wispr Flow" CTA), not baked into the card.
 
@@ -160,14 +158,17 @@ The card image itself carries only the user's words and the Wibe Stories mark. W
 |---|---|
 | Voice input | Web Speech API in the browser, with a server STT fallback |
 | Typing / paste | Full fallback for any language or unsupported browser |
+| Voice attachment | Optional toggle to attach the original voice recording to a shared card |
 | AI tone rewriting | 6 tones (Warm, Bold, Poetic, Playful, Reflective, Honest) via OpenRouter |
 | Colour palettes | 10 colours × 2 corner styles = 20 backgrounds |
 | Aspect ratio | 1:1 square (the only built ratio; others are designed, not shipped) |
 | Speech languages | 44 selectable languages |
 | UI languages | 11 locales (English + 10) |
 | Occasions | 53 auto-detected occasions |
+| Grace zone | Textarea maxlength 160 but UI shows 150; counter turns yellow at 120, red at 150+ |
 | Export | PNG download, clipboard copy, and shareable link |
-| Sharing | Web Share API (image + caption) on supported devices |
+| Sharing | Web Share API (image + caption) on supported devices; 13 rotating Wispr Flow CTAs in share captions |
+| Draft auto-save | Text and settings persist in localStorage across sessions |
 | Installable | Progressive Web App with offline typing |
 | Dark mode | Follows system preference |
 
@@ -208,61 +209,7 @@ Only the **1:1 square** ratio is built (asset prefix `2x2_`), optimised for the 
 
 ---
 
-## 8. Architecture
-
-The app is a static front end plus stateless Vercel serverless functions. Persistent state lives only in Upstash Redis and Vercel Blob.
-
-### Stack
-
-| Layer | Technology |
-|---|---|
-| Voice transcription (primary) | Web Speech API (browser-native, free) |
-| Voice transcription (fallback) | Deepgram Nova-3 or OpenRouter Whisper |
-| Tone rewriting | OpenRouter LLMs (free + Pro model chains) |
-| Card rendering | HTML/CSS + pre-baked WebP backgrounds |
-| PNG export | html2canvas (vendored) |
-| Hosting | Vercel (serverless + static) |
-| State / rate limiting | Upstash Redis (two instances) |
-| Blob storage | Vercel Blob (card PNGs + OG images) |
-
-### Request flow
-
-```
-Record → Web Speech API → (unsupported/failed) → POST /api/stt → Deepgram / Whisper
-   ↓
-Transcript in text box → (optional) tap tone → POST /api/rewrite → OpenRouter LLM
-   ↓
-Create card (client render) → Share → POST /api/upload → Vercel Blob + OG image
-   ↓
-Recipient opens wibestories.vercel.app/c/<shortId>
-   ├─ social bot  → /api/c/[id] serves OG meta (large preview)
-   └─ human       → landing page with the card + "Create your own" CTA
-```
-
-### Key design decisions
-
-- **Stateless serverless:** No persistent server. All state in Redis or Blob.
-- **Client-side rendering:** Card is rendered in the browser, not on the server.
-- **36-hour retention:** All shared content auto-expires. No permanent storage.
-- **Pro key validation:** Server-side Redis-backed, not a stub. Rate-limited (10 attempts/IP/minute).
-
----
-
-## 9. Usage limits
-
-| Limit | Free | Pro |
-|---|---|---|
-| Daily user cap (shared pool) | 99 users/day | Bypassed |
-| Recordings / user / day | 5 | 50 |
-| Max recording length | 15s | 30s |
-| Cumulative audio / user / day | 75s | 900s (15 min) |
-| Tone rewrites / tone / day | 5 | Unlimited |
-
-All limits are enforced server-side via Redis; the client UI mirrors them but is never trusted as the source of truth.
-
----
-
-## 10. Internationalization
+## 8. Internationalization
 
 - **Speech languages (44):** Shown in a 2-column modal. Relevant only when recording.
 - **UI locales (11):** English plus Hindi, Spanish, Italian, Japanese, Kannada, Korean, Telugu, Tamil, Thai, and Chinese. Arabic and Urdu were removed intentionally; RTL infrastructure remains for future re-enablement.
@@ -271,13 +218,13 @@ All limits are enforced server-side via Redis; the client UI mirrors them but is
 
 ---
 
-## 11. Occasion system
+## 9. Occasion system
 
 The app ships **53 occasions** that auto-detect from the user's text — birthdays, Diwali, Christmas, Eid, Lunar New Year, regional Indian festivals, and many more. Detection supports plain-string triggers and regex across many languages, plus date-aware occasions keyed to the user's country. When a match is found, an occasion image appears on the card and the example prompts adapt to the occasion.
 
 ---
 
-## 12. Sharing pipeline
+## 10. Sharing pipeline
 
 ### Direct PNG share
 
@@ -297,7 +244,7 @@ All shared content (card images, OG images, voice audio, metadata) auto-expires 
 
 ---
 
-## 13. PWA and offline behaviour
+## 11. PWA and offline behaviour
 
 The app is an installable Progressive Web App with three-tier caching: network-only for API calls, stale-while-revalidate for fonts, and cache-first for static assets. Offline: typing still works. Recording, font loading, and image export need connectivity.
 
@@ -307,7 +254,7 @@ The app never reloads itself out from under the user. It polls for new versions 
 
 ---
 
-## 14. Security and privacy
+## 12. Security and privacy
 
 ### Data handling
 
@@ -326,33 +273,7 @@ A full Content-Security-Policy is configured. Additional headers include X-Frame
 
 ---
 
-## 15. Deployment
-
-- **Platform:** Vercel (serverless + static).
-- **URL:** `wibestories.vercel.app` (production).
-- **Deploy:** `vercel --prod` from the project root.
-- **Local dev:** `vercel dev` or open `wisprstories.html` directly in a browser.
-
-### Deploy checklist
-
-Two rules keep the update notice and caching honest:
-
-1. **Bump the version in lockstep.** Update `version.json`, the `CURRENT_VERSION` constant in `wisprstories.js`, and the build banner (`wisprstories.js:1`) to the same value.
-2. **Bump `CACHE_NAME` in `sw.js`** when CSS or static assets change. HTML and JS are network-first and refresh on their own.
-
-### Key environment variables
-
-13 env vars configured in Vercel. Routes degrade gracefully when a key is missing. The full list is in `docs/existing-redis.md` and `docs/daily-capacity-system.md`.
-
----
-
-## 16. Testing
-
-The main app is tested manually against the user flow in [Section 5](#5-how-it-works), with special attention to the grandparent test. Repeatable verification scripts (Node.js 18+) live in `scripts/`.
-
----
-
-## 17. Known limitations
+## 13. Known limitations
 
 Known limitations are accessible in-app by pressing **Alt+F1**, which opens the "Acknowledged Logs" — an honest list of what the app does not yet handle well.
 
@@ -362,24 +283,22 @@ Known limitations are accessible in-app by pressing **Alt+F1**, which opens the 
 | Safari / iOS | No native `.webm` playback; voice-attached-card playback is unsupported there. |
 | Aspect ratios | Only 1:1 square is built; 4:5, 16:9, 3:4, 9:16 are designed only. |
 | Browser STT accuracy | Web Speech API is less accurate than a dedicated dictation engine; the server fallback mitigates this. |
-| Privacy guarantee | Cannot guarantee on-device-only speech processing in the browser path (see [Section 14](#14-security-and-privacy)). |
+| Privacy guarantee | Cannot guarantee on-device-only speech processing in the browser path (see [Section 12](#12-security-and-privacy)). |
 
 ---
 
-## 18. Roadmap
+## 14. Roadmap
 
 | Priority | Item | Notes |
 |---|---|---|
 | Medium | Additional aspect ratios | 4:5, 16:9, 3:4, 9:16 layouts |
 | Medium | Mobile preview UX | A floating "Preview" button so the card is not hidden below the inputs |
-| ~~Medium~~ | ~~Pro key validation (server-side)~~ | Already implemented — `api/validate-key.js` + `lib/pro-key.js` with Redis, rate limiting, and admin revocation (`api/admin-revoke.js`). |
 | Medium | Onboarding banner | First-launch hint, designed but not built |
-| Low | Voice-attached cards | Play the original voice from a shared link (audio via Vercel Blob; PNG download stays silent) |
 | Low | Animated shareable links | Open a card as a live web page, not just a static image |
 
 ---
 
-## 19. Success metrics
+## 15. Success metrics
 
 | Metric | Target | Rationale |
 |---|---|---|
@@ -393,7 +312,7 @@ Known limitations are accessible in-app by pressing **Alt+F1**, which opens the 
 
 ---
 
-## 20. Requirements
+## 16. Requirements
 
 ### Must-have (v1.0)
 
@@ -408,7 +327,6 @@ Known limitations are accessible in-app by pressing **Alt+F1**, which opens the 
 
 ### Should-have (v1.x)
 
-- Voice-attached cards (audio playback on shared link)
 - Additional aspect ratios (4:5, 16:9, 3:4, 9:16)
 - Mobile preview UX (floating "Preview" button)
 - Onboarding banner (first-launch hint)

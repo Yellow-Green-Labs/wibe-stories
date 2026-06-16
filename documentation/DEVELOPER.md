@@ -101,6 +101,7 @@ Recipient opens wibestories.vercel.app/c/<shortId>
 | `wisprstories.html` | Main HTML entry point |
 | `wisprstories.js` | All app logic (STT, recording, card creation, share, tones, i18n) |
 | `about.html` | About page |
+| `features.html` | Features page (5 capability sections: Speak, Write, Rewrite, Design, Share) |
 | `language-stats.html` | Language stats page |
 | `sw.js` | Service worker (three-tier caching) |
 | `site.webmanifest` | PWA manifest |
@@ -114,6 +115,7 @@ Recipient opens wibestories.vercel.app/c/<shortId>
 | `fonts.js` | Per-script × per-tone font mapping |
 | `footer-menu.js` | Footer menu rendering, i18n, reorder |
 | `about.js` | About page behaviour |
+| `features.js` | Features page behaviour |
 | `language-stats.js` | Language stats page behaviour |
 | `capacity-check.js` | Daily capacity check (99-user cap), admin/pro key headers |
 | `demo.js` | Demo animation (disabled, preserved for restoration) |
@@ -242,6 +244,18 @@ Prompts target ≤150 characters, force same-language/same-script output, and ar
 ### Card metadata sidecar
 
 `api/upload.js` writes `meta/<shortId>.json` alongside each card. `api/c/[id].js` reads it to personalise the landing page. Old cards without a sidecar fall back gracefully.
+
+### Usage limits
+
+| Limit | Free | Pro |
+|---|---|---|
+| Daily user cap (shared pool) | 99 users/day | Bypassed |
+| Recordings / user / day | 5 | 50 |
+| Max recording length | 15s | 30s |
+| Cumulative audio / user / day | 75s | 900s (15 min) |
+| Tone rewrites / tone / day | 5 | Unlimited |
+
+All limits are enforced server-side via Redis; the client UI mirrors them but is never trusted as the source of truth.
 
 ---
 

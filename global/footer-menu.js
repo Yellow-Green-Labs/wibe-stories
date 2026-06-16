@@ -184,19 +184,6 @@
     </div>
   `;
 
-  // <a href="language-stats.html" class="fmenu-link">
-      //   <i class="fa-solid fa-chart-simple"></i> Lang Stats
-      // </a>
-      // <a href="#" class="fmenu-link">
-      //   <i class="fa-solid fa-book-open"></i> About
-      // </a>
-      // <a href="#" class="fmenu-link">
-      //   <i class="fa-solid fa-clock-rotate-left"></i> Version Notes
-      // </a>
-      // <a href="#" class="fmenu-link">
-      //   <i class="fa-solid fa-pen-clip"></i> Submit Feedback
-      // </a>
-
   document.currentScript
     ? document.currentScript.parentNode.insertBefore(
         wrapper,

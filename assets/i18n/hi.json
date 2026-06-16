@@ -200,7 +200,8 @@
     "thankYouEmail": "Sent! 💛",
     "validEmail": "Enter a valid email",
     "updateAvailable": "Update ready — tap to refresh",
-    "setSpeechLang": "Choose language"
+    "setSpeechLang": "Choose language",
+    "grace": "Grace"
   },
   "voice": {
     "attach": "Attach voice",
