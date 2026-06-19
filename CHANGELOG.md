@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased] — 2026-06-16
+
+### Changed
+- **Consolidated VERSION_HISTORY.md into CHANGELOG.md** — Single source of truth for version history. `global/footer-menu.js` now fetches `version.json` instead of parsing `VERSION_HISTORY.md`. `VERSION_HISTORY.md` deleted.
+
+---
+
 ## [v0.11.0.14] — Features Page: 5 Capability Sections + About Page Trim (2026-06-13)
 
 New `/features` page structured as 5 capability sections modeled after Wispr Flow's features page — Speak (voice recording, 44 languages), Write (direct typing, Grace zone), Rewrite (6 AI tones, free/Pro tiers), Design (colors, shapes, fonts, occasion images), Share (link, PNG download, social sharing). Each section: bold hero phrase + 4 feature cards with icons. Additional: stats grid (44 langs, 2 engines, 6 tones, 36 hrs), feature FAQ (Native, free, Pro, Grace zone — moved from about.html), CTA section with background image + Wispr Flow link. Footer menu gets Features link above About. About page trimmed to pure story/mission/origin content.
@@ -14,6 +21,7 @@ New `/features` page structured as 5 capability sections modeled after Wispr Flo
 
 ### Changed
 - `about.html` — trimmed to pure story/mission/origin content
+- `global/styles/features.css` — added base `.sc-visual` class for consistent spacing across section visual wrappers
 - Build banner unchanged (no app code changed)
 
 ---
@@ -327,11 +335,6 @@ Toast shortening, recording flow bug fixes, and i18n cleanup. Biggest change is 
 ### Files touched
 `wisprstories.js`, `assets/i18n/en.json`, `assets/i18n/{es,hi,it,ja,kn,ko,ta,te,th,zh}.json`, `global/footer-menu.js`, `global/styles/layout.css`.
 
-## [Unreleased] — 2026-06-03
-
-### Changed
-- **Locale toast/voice sync** — Updated `toasts` and `voice` sections in all 10 non-English locale files (es, hi, it, ja, kn, ko, ta, te, th, zh) to match the English version. Ensures consistent toast messages and voice-related strings across all languages.
-
 ## [v0.10.4.5] — Friction Reduction Pass (2026-06-03)
 
 Friction-reduction pass: hides technical jargon (counter), warms the card-creation moment, moves toasts to top-center (eye line with the mic), and adds self-healing for the recording counter. Zero new UI for grandparents — every change fades in only when needed.
@@ -393,19 +396,6 @@ Stage 1 implements the 7 bug fixes + 4 deep sub-fixes (2.1 Promise.all + Cancel 
 
 ### Removed
 - **`global/styles/tooltips.css`**: Orphaned after the 2.5 tooltip removal. Was only imported from `global/styles/main.css`; that import is now also gone. No other file referenced it.
-
-## [Unreleased] — 2026-06-03 Design Inconsistency Audit
-
-### Added
-- **`audit.md`** — design inconsistency audit document capturing 9 UI/UX issues across the app
-- **`docs/every-design-decision-explained.md`** — architecture Q&A reference explaining key design decisions
-
-### Fixed
-- **Locale onboarding: "29 languages" → "44 languages"** — All 11 locale files had the old `refVoice` string claiming 29 STT languages; updated to 44 language count in lockstep (`onboarding.refVoice` key)
-- **btnS dead code removed** — In `wisprstories.js`, the `if (!cardReady) { document.getElementById("btnC").click(); return; }` guard at the top of the btnS click handler was removed. `cardReady` is always `true` by the time btnS is enabled, so this was unreachable dead code.
-
-### Changed
-- **Creation Celebration animation** — Card creation now shows a "✨ Created!" flash on the Create button (1.2s) plus an enhanced card pop animation: longer transition (0.28s), bigger scale (1.025), amber glow box-shadow (`rgba(245,158,11,0.35)`), with 720ms duration before reset.
 
 ## [v0.10.4.1] — Tone Counter & WhatsApp Share Fixes (2026-06-02)
 

@@ -1,6 +1,6 @@
 # Wibe Stories — robots policy
 # Public app; everything indexable except API endpoints and ephemeral share blobs.
-# Social media crawlers are allowed /c/ for WhatsApp/Twitter link previews.
+# Social media crawlers are allowed /c/ and /api/og/ for link previews.
 
 User-agent: *
 Allow: /
@@ -8,17 +8,22 @@ Disallow: /api/
 Disallow: /.well-known/
 
 # Allow social media crawlers for link previews on /c/ card pages
+# and /api/og/ for OG image serving
 User-agent: facebookexternalhit
 Allow: /c/
+Allow: /api/og/*
 
 User-agent: WhatsApp
 Allow: /c/
+Allow: /api/og/*
 
 User-agent: Facebot
 Allow: /c/
+Allow: /api/og/*
 
 User-agent: Twitterbot
 Allow: /c/
+Allow: /api/og/*
 
 # Block search engines from indexing ephemeral card pages
 User-agent: Googlebot

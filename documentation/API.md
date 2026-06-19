@@ -213,15 +213,17 @@ Shared-card landing page. Returns HTML with OG metadata for social bots.
 
 ## 6. OG image
 
-### `GET /og-img/:id`
+### `GET /api/og/:id`
 
-Vercel rewrite that serves the card's OG image JPEG through the app's own domain.
-Proxies the request to Vercel Blob behind the scenes so scrapers fetch the image
-from the same origin as the card landing page.
+Serverless function that serves the card's OG image JPEG through the app's own domain.
+Reads the JPEG from Vercel Blob storage and returns it directly to crawlers (same-origin,
+no proxy hop).
 
 **No auth required.**
 
 **Response:** JPEG image (1200×1200)
+
+**Cache:** `Cache-Control: public, max-age=86400, s-maxage=86400` (1 day)
 
 ---
 

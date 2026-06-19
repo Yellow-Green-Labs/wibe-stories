@@ -228,12 +228,11 @@
   const versionDiv = wrapper.querySelector("#fmenu-version");
   const versionSpan = wrapper.querySelector("#fmenu-version-number");
 
-  fetch("VERSION_HISTORY.md?v=20260609")
-    .then(r => r.ok ? r.text() : Promise.reject())
-    .then(text => {
-      const match = text.match(/^## (v\d+(?:\.\d+)+)/m);
-      if (match) {
-        versionSpan.textContent = match[1];
+  fetch("version.json?v=" + Date.now(), { cache: "no-store" })
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(data => {
+      if (data.version) {
+        versionSpan.textContent = data.version;
         versionDiv.classList.add("loaded");
       }
     })

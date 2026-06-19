@@ -3,10 +3,10 @@
 // a landing page with branding + card image + "Create Your Own" for humans.
 //
 // GET /c/:id
-// og:image points to a JPEG copy of the card on Vercel Blob (direct CDN,
-// no proxy hop) so WhatsApp/Facebook crawlers fetch a ~30–60 KB hero
-// image instead of a 200 KB padded PNG. Original card PNG is used for
-// the landing-page display.
+// og:image points to /api/og/:id which reads the JPEG from Blob storage
+// and serves it directly to crawlers (same-origin, no proxy hop).
+// WhatsApp/Facebook crawlers fetch a ~30–60 KB hero image instead of a
+// 200 KB padded PNG. Original card PNG is used for the landing-page display.
 
 const BLOB_HOST = 'jkzbaevzmimaelrr.public.blob.vercel-storage.com';
 
@@ -68,9 +68,9 @@ export default async function handler(req, res) {
     ? `${origin}/#text=${enc(metaText)}&name=${enc(metaName)}&tone=${metaTone}&p=${metaP}&r=${metaR}`
     : homeUrl;
 
-  // OG image = the actual card JPEG served through our own domain via Vercel rewrite,
+  // OG image = the actual card JPEG served through our own domain via /api/og/:id,
   // so scrapers fetch it from the same origin as the page, avoiding cross-domain CDN issues.
-  const ogUrl = `${origin}/og-img/${id}`;
+  const ogUrl = `${origin}/api/og/${id}`;
 
   const safeOgUrl = escapeHtml(ogUrl);
   const safeCardUrl = escapeHtml(cardUrl);

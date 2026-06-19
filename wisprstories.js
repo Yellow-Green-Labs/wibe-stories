@@ -142,18 +142,31 @@ let _versionPollTimer = null;
 const VERSION_POLL_INTERVAL_MS = 60 * 1000; // 60 seconds
 const CURRENT_VERSION = "v0.11.0.13";
 
-// Shows the "new version available" notice. Transient (it does not block other
-// toasts) and re-shown when the user returns to the tab while an update is
-// pending, so it is hard to miss — without ever auto-reloading and interrupting
-// the user's work (e.g. a recording in progress or a half-typed card).
+// Shows the "new version available" notice. Persists until clicked — unlike
+// the generic showToast() which auto-dismisses after 3.2s. Clicking triggers
+// a cache-busting reload so the user always gets the fresh app.
 function showUpdateToast() {
+  const t = document.getElementById("toast");
+  if (!t) return;
+  // Prevent duplicate persistent toasts
+  if (t.classList.contains("show") && t.dataset.updateToast === "1") return;
+
+  // Block the generic showToast() from overwriting this persistent toast.
+  // _toastShowing is declared in the same scope (line ~3601).
+  _toastShowing = true;
+  clearTimeout(t._t);
+
   const msg = getI18nSync("toasts.updateAvailable") || "A new version is ready — tap to refresh.";
-  showToast(msg);
-  const toastEl = document.getElementById("toast");
-  if (toastEl) {
-    toastEl.style.cursor = "pointer";
-    toastEl.onclick = function () { location.reload(); };
-  }
+  t.textContent = msg;
+  t.dataset.updateToast = "1";
+  t.style.cursor = "pointer";
+  t.classList.add("show");
+  t.onclick = function () {
+    // Cache-busting reload: navigate to the same path with a unique query
+    // string. This forces the browser to treat it as a new request, bypassing
+    // both the HTTP cache and the service worker's cached responses.
+    location.href = location.pathname + "?reload=" + Date.now();
+  };
 }
 
 function initSWUpdateDetection() {

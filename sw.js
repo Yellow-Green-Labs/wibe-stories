@@ -98,13 +98,15 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // HTML — network-only. Never cache HTML so users always get fresh version
-  // on every navigation. Fall back to cached shell only when offline.
+  // HTML — network-only with cache bypass. Never serve stale HTML so users
+  // always get the fresh version on every navigation. cache: 'reload' forces
+  // the browser to bypass its HTTP cache. Fall back to cached shell only
+  // when offline.
   const isHtml = url.pathname === '/' || url.pathname.endsWith('.html');
 
   if (isHtml) {
     event.respondWith(
-      fetch(req)
+      fetch(new Request(req, { cache: 'reload' }))
         .catch(() =>
           caches.match(req).then((cached) =>
             cached || caches.match('/wisprstories.html')
@@ -114,11 +116,13 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // JS — network-first. Always fetch latest when online; cache for offline.
-  // Fall back to cache only when offline.
+  // JS — network-first with cache bypass. Always fetch the latest version
+  // when online; cache for offline. Using cache: 'reload' forces the browser
+  // to bypass its HTTP cache and go to the network, preventing stale JS from
+  // being served via a 304 Not Modified response on CTRL+R/F5.
   if (url.pathname.endsWith('.js')) {
     event.respondWith(
-      fetch(req)
+      fetch(new Request(req, { cache: 'reload' }))
         .then((resp) => {
           if (resp && resp.status === 200 && resp.type === 'basic') {
             const clone = resp.clone();

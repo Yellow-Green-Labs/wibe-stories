@@ -5,8 +5,7 @@
     { "source": "/about", "destination": "/about.html" },
     { "source": "/language-stats", "destination": "/language-stats.html" },
     { "source": "/card", "destination": "/api/card" },
-    { "source": "/c/:id", "destination": "/api/c/[id]" },
-    { "source": "/og-img/:id", "destination": "https://jkzbaevzmimaelrr.public.blob.vercel-storage.com/og/:id.jpg" }
+    { "source": "/c/:id", "destination": "/api/c/[id]" }
   ],
   "redirects": [
     { "source": "/about.html", "destination": "/about", "statusCode": 301 },

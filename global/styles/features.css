@@ -152,6 +152,9 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); }
 }
 
 /* ── Card demo (shared across sections) ── */
+.sc-visual {
+  margin-bottom: 32px;
+}
 .card-demo {
   border-radius: 14px;
   padding: 24px 20px;
@@ -760,21 +763,41 @@ a:focus-visible, button:focus-visible {
   .mc-6 { top: 40px; left: 90px; transform: rotate(7deg); }
   .mc-7 { bottom: 20px; left: 130px; transform: rotate(-3deg); }
   .features { grid-template-columns: repeat(2, 1fr); }
+
+  /* Feature sections mobile */
   .sc { margin: 0 -16px; padding: 40px 16px; }
+  .card-demo { width: 100%; max-width: 200px; }
   .sc-speak-visual { flex-direction: column; gap: 24px; }
-  .speak-cards { flex-wrap: wrap; justify-content: center; }
+  .speak-cards { flex-wrap: wrap; justify-content: center; gap: 12px; }
   .cd-1, .cd-2, .cd-3 { transform: none; }
-  .sc-points { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .speak-mic { width: 60px; height: 60px; }
+  .speak-mic > i { font-size: 22px; }
+  .mic-ring-1 { width: 80px; height: 80px; }
+  .mic-ring-2 { width: 100px; height: 100px; }
+  .mic-ring-3 { width: 120px; height: 120px; }
+  .sc-points { grid-template-columns: 1fr; gap: 14px; }
+  .sc-point-icon { width: 28px; height: 28px; font-size: 12px; }
+
   .write-flow { flex-direction: column; align-items: stretch; }
   .write-input { width: 100%; }
   .write-arrow { transform: rotate(90deg); margin: 0 auto; }
+
   .sc-rewrite-visual { flex-direction: column; }
+  .rewrite-original { min-width: 0; width: 100%; }
   .rewrite-arrow { transform: rotate(90deg); margin: 0 auto; }
   .rewrite-tones { grid-template-columns: 1fr 1fr; }
-  .design-demo { grid-template-columns: 1fr 1fr; }
-  .sc-share-visual { flex-direction: column; }
-  .share-demo .card-demo { width: 100%; }
+
+  .design-demo { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .design-demo .card-demo { min-height: 110px; padding: 16px 14px; }
+
+  .sc-share-visual { flex-direction: column; gap: 24px; }
+  .share-demo .card-demo { width: 100%; max-width: 260px; }
+  .share-paths { gap: 14px; }
+
+  .sc-text-num { min-width: 32px; font-size: clamp(24px, 2.4vw, 30px); }
+  .sc-text-item { gap: 12px; }
   .sc-badges { flex-direction: column; }
+
   h2 { margin-top: 40px; }
   .back-to-top { bottom: 72px; right: 20px; width: 36px; height: 36px; }
 }
