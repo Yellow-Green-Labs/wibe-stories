@@ -753,6 +753,9 @@ function canCreateCard() {
   if (speechLang === "__native__") return { ok: true }; // Native mode allowed
   if (curTone === "original") return { ok: true };
   if (isSupporter()) return { ok: true };
+  // If the rewrite was already confirmed (accepted or auto-committed by Create),
+  // the counter was already incremented — don't block on quota.
+  if (window._rewriteConfirmed) return { ok: true };
   const left = getCardsLeft();
   if (left > 0) return { ok: true };
   return {
@@ -2646,6 +2649,12 @@ function _stopPlaceholderCycle() {
 let _dc;
 document.getElementById("sta").addEventListener("input", (e) => {
   rewriteCache = {};
+  // Clear stale rewrite preview if user types while a preview is active
+  if (window._pendingRewrite && !window._rewriteConfirmed) {
+    window._pendingRewrite = null;
+    window._originalText = null;
+    hideRewritePreview();
+  }
   _exampleLang = null;
   var _slt = document.getElementById('speechLangTrigger');
   if (_slt) { _slt.style.pointerEvents = ''; _slt.style.opacity = ''; }
@@ -3249,7 +3258,14 @@ document.getElementById("btnC").addEventListener("click", async () => {
     if (typeof result.used === "number") {
       setToneUsed(curTone, result.used);
     }
+    // Apply the rewrite to the textarea so updateCard() picks it up
+    if (window._pendingRewrite) {
+      document.getElementById("sta").value = window._pendingRewrite;
+    }
     window._rewriteConfirmed = true;
+    window._pendingRewrite = null;
+    window._originalText = null;
+    hideRewritePreview();
   }
   // The per-tone counter is now authoritative on the server (via confirm
   // above for non-original tones, or unchanged for original). Mirror the
