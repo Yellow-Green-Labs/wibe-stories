@@ -411,6 +411,7 @@ function saveDraft() {
       palette: curP,
       inputSource: inputSource,
       lang: curLang,
+      exampleLang: _exampleLang,
       rounded: useRounded,
       cardReady: cardReady,
       voiceAttached: voiceAttached,
@@ -436,6 +437,11 @@ function loadDraft() {
       // language of whatever example sentence the user last clicked.
       // Page UI language is owned by the dropdown / loadLanguages init.
       curLang = draft.lang;
+    }
+    if (draft.exampleLang) {
+      _exampleLang = draft.exampleLang;
+      var _slt = document.getElementById('speechLangTrigger');
+      if (_slt) { _slt.style.pointerEvents = 'none'; _slt.style.opacity = '0.5'; }
     }
     if (draft.rounded != null) {
       useRounded = draft.rounded;
@@ -2677,6 +2683,7 @@ document.getElementById("nin").addEventListener("input", function() {
   this.value = stripControls(this.value)
     .replace(/[^\p{L}\p{M}\p{N}\s\-'.()À-ɏ]/gu, "")
     .slice(0, 20);
+  updateCard();
   saveDraft();
   _updateResetBtnVisibility();
 });
