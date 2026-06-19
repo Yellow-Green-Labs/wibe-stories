@@ -94,16 +94,16 @@ export default async function handler(req, res) {
     : 'A Wibe Story card';
 
   const ogTitle = safeName
-    ? `A Wibe Story by ${safeName}`
-    : 'A Wibe Story — Turn your voice into something beautiful';
+    ? `${safeName} shared a Wibe Story — tap to create yours`
+    : 'Wibe Stories — Turn your voice into a beautiful card';
 
   const ogDesc = safeName
-    ? `${safeName} shared a Wibe Story with you — created with Wibe Stories.`
-    : 'Created with Wibe Stories. Tap to make your own.';
+    ? `${safeName} shared a Wibe Story with you. Tap to listen and create your own in 44 languages.`
+    : 'Speak naturally, get a beautiful card. Free, no account, 44 languages.';
 
   const twitterDesc = safeName
-    ? `${safeName} shared a Wibe Story with you. Make your own at Wibe Stories.`
-    : 'Created with Wibe Stories. Tap to make your own.';
+    ? `${safeName} shared a Wibe Story with you. Tap to create yours.`
+    : 'Turn your voice into a beautiful card. Free, no account, 44 languages.';
 
   const punchLines = [
     "Stop typing. Start talking.",
@@ -126,6 +126,7 @@ export default async function handler(req, res) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="${ogDesc}">
 <link rel="icon" href="${safeHomeUrl}assets/ws-logo-blwbg.png" type="image/png">
 <title>${ogTitle}</title>
 <meta property="og:title" content="${ogTitle}">
@@ -133,7 +134,7 @@ export default async function handler(req, res) {
 <meta property="og:image" content="${safeOgUrl}">
 <meta property="og:image:secure_url" content="${safeOgUrl}">
 <meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:alt" content="${ogAltText}">
 <meta property="og:url" content="${safeShareUrl}">
