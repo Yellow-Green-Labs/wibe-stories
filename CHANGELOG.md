@@ -1,10 +1,16 @@
 # Changelog
 
-## [Unreleased] — 2026-06-16
+## [Unreleased] — 2026-06-19
 
 ### Changed
 - **Consolidated VERSION_HISTORY.md into CHANGELOG.md** — Single source of truth for version history. `global/footer-menu.js` now fetches `version.json` instead of parsing `VERSION_HISTORY.md`. `VERSION_HISTORY.md` deleted.
 - **Branded OG image via template compositing** — `api/upload.js` now composites the user's card PNG onto `WS-OG-Image.png` template instead of solid-color background. New `api/lib/og-render.js` handles compositing via sharp. Template cached in-memory; HTTP fetch with local filesystem fallback. Output: 1200×630 JPEG, ~43 KB. Card positioned at x=540, y=25 (570×570 inside template frame). Metadata parsing moved before OG generation.
+- **Upgrade modal footer** — Removed "— made for Wispr Flow" suffix. Footer now shows "Wibe Stories" only.
+- **Update toast color** — "Update available" toast now shows light purple (#f0d7ff) background to stand out from regular dark toasts.
+- **Build banner auto-update** — `wisprstories.js:1` console.log now reads version from `version.json` dynamically. No manual version updates needed.
+- **Share modal mobile layout** — Now matches upgrade modal on mobile (≤480px): bottom-sheet with rounded top corners, full-width, 92dvh max-height, scrollable. Preview image reduced to 35vh.
+- **Speech language trigger** — Disabled (non-clickable, dimmed) when an example sentence is selected, since examples already carry their own language. Re-enabled when user records voice, types, or pastes (was a bug — trigger stayed disabled after `_exampleLang` cleared).
+- **Hinglish voice input** — New "Hinglish" option in speech language picker enables Deepgram `language=multi` for Hindi+English code-switching. Web Speech API fallback uses single Hindi locale. Card font rendering for mixed Devanagari+Latin already works.
 
 ---
 

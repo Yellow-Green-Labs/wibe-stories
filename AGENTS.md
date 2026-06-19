@@ -156,5 +156,5 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (36-hour retention).
 
-<!-- agsync: last-run 2026-06-19; added api/lib/og-render.js to Key files. Branded OG image via template compositing (WS-OG-Image.png). -->
+<!-- agsync: last-run 2026-06-19; UI polish: upgrade modal footer, update toast color, build banner auto-update, share modal mobile bottom-sheet, speech lang trigger disable/re-enable on example select + voice/type/paste, Hinglish voice support. -->
 
