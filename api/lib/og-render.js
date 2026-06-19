@@ -2,7 +2,7 @@
 // template (WS-OG-Image.png) for a polished link-preview image.
 //
 // Template: assets/WS-OG-Image.png (1200×630, deployed as static asset)
-// Card frame area: right side, approximately x=540 y=25, inner ~570×570
+// Card frame area: right side, x=557 y=30, inner ~570×570
 //
 // No new dependencies — uses sharp (already installed).
 
@@ -14,9 +14,9 @@ import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Card placement inside the template frame (measured from pixel scan)
-const CARD_LEFT = 540;
-const CARD_TOP = 25;
+// Card placement inside the template frame (from Figma)
+const CARD_LEFT = 557;
+const CARD_TOP = 30;
 const CARD_SIZE = 570;
 
 let _tplCache = null;
