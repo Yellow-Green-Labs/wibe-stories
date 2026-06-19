@@ -142,6 +142,10 @@
   pointer-events: auto;
   transform: translateX(-50%) translateY(0);
 }
+.toast.update-toast {
+  background: #f0d7ff;
+  color: #1a1a1a;
+}
 
 /* EXPORT PROGRESS */
 .export-progress {
@@ -348,6 +352,9 @@ body.modal-open .rewrite-bar {
   text-align: center;
 }
 :root.dark .upgrade-modal-content {
+  background: #2a2a2a;
+}
+:root.dark .share-modal-content {
   background: #2a2a2a;
 }
 :root.dark .upgrade-modal-input {

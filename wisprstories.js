@@ -1,4 +1,4 @@
-console.log("%c[Build] Wibe Stories v0.11.0.13 (2026-06-13)", "color:#ec4899;font-weight:bold;font-size:14px");
+(async function(){try{var r=await fetch("/version.json?v="+Date.now(),{cache:"no-store"});var v=await r.json();console.log("%c[Build] Wibe Stories "+v.version+" ("+v.buildDate+")","color:#ec4899;font-weight:bold;font-size:14px");}catch(e){console.log("%c[Build] Wibe Stories","color:#ec4899;font-weight:bold;font-size:14px");}})();
 const PALS = [
   "#7c3aed",
   "#f59e0b",
@@ -162,6 +162,7 @@ function showUpdateToast() {
   t.style.cursor = "pointer";
   t.style.pointerEvents = "auto";
   t.classList.add("show");
+  t.classList.add("update-toast");
   t.onclick = function () {
     location.reload();
   };
@@ -1623,7 +1624,7 @@ function startWebSpeechAPI() {
   recog = new SR();
   recog.continuous = false;
   recog.interimResults = true;
-  var _wsLocales = { ca:'ca-ES', cs:'cs-CZ', de:'de-DE', el:'el-GR', es:'es-ES', fr:'fr-FR', gu:'gu-IN', hi:'hi-IN', id:'id-ID', it:'it-IT', ja:'ja-JP', jw:'jv-ID', kn:'kn-IN', ko:'ko-KR', ml:'ml-IN', my:'my-MM', ne:'ne-NP', pa:'pa-IN', pt:'pt-BR', ru:'ru-RU', si:'si-LK', sv:'sv-SE', ta:'ta-IN', te:'te-IN', th:'th-TH', tr:'tr-TR', uz:'uz-UZ', zh:'zh-CN', ar:'ar-SA', bn:'bn-BD', da:'da-DK', fa:'fa-IR', fi:'fi-FI', he:'he-IL', hu:'hu-HU', mr:'mr-IN', ms:'ms-MY', nl:'nl-NL', pl:'pl-PL', tl:'tl-PH', uk:'uk-UA', ur:'ur-PK', vi:'vi-VN' };
+  var _wsLocales = { ca:'ca-ES', cs:'cs-CZ', de:'de-DE', el:'el-GR', es:'es-ES', fr:'fr-FR', gu:'gu-IN', hi:'hi-IN', hinglish:'hi-IN', id:'id-ID', it:'it-IT', ja:'ja-JP', jw:'jv-ID', kn:'kn-IN', ko:'ko-KR', ml:'ml-IN', my:'my-MM', ne:'ne-NP', pa:'pa-IN', pt:'pt-BR', ru:'ru-RU', si:'si-LK', sv:'sv-SE', ta:'ta-IN', te:'te-IN', th:'th-TH', tr:'tr-TR', uz:'uz-UZ', zh:'zh-CN', ar:'ar-SA', bn:'bn-BD', da:'da-DK', fa:'fa-IR', fi:'fi-FI', he:'he-IL', hu:'hu-HU', mr:'mr-IN', ms:'ms-MY', nl:'nl-NL', pl:'pl-PL', tl:'tl-PH', uk:'uk-UA', ur:'ur-PK', vi:'vi-VN' };
   recog.lang = _wsLocales[speechLang] || _wsLocales[curLang] || 'en-US';
   recog.onstart = () => {
     isRec = true;
@@ -2233,7 +2234,7 @@ function updateSlNudge() {
   var t = document.getElementById('speechLangTrigger');
   var sta = document.getElementById('sta');
   if (!t) return;
-  if (!speechLang && sta && sta.value.trim().length > 0) {
+  if (!speechLang && !_exampleLang && sta && sta.value.trim().length > 0) {
     t.classList.add('sl-nudge');
   } else {
     t.classList.remove('sl-nudge');
@@ -2376,6 +2377,34 @@ function populateSlGrid() {
     g.insertBefore(nd, first.nextSibling);
   } else {
     g.appendChild(nd);
+  }
+  // Hinglish (Hindi + English code-switching) item — insert after English
+  var hd = document.createElement('div');
+  hd.className = 'sl-modal-item' + (speechLang === 'hinglish' ? ' selected' : '');
+  hd.dataset.code = 'hinglish';
+  hd.innerHTML = '<i class="fi fi-in"></i><span class="sl-label"><span class="sl-en">Hinglish</span><span class="sl-native">Hindi + English</span></span>';
+  hd.addEventListener('click', function(){
+    if (speechLang === 'hinglish') {
+      speechLang = "";
+      try { localStorage.removeItem('wsSpeechLang'); } catch(_e){}
+      updateSlTrigger();
+      closeSlModal();
+      updateCard();
+      saveDraft();
+      return;
+    }
+    speechLang = 'hinglish';
+    try { localStorage.setItem('wsSpeechLang', 'hinglish'); } catch(_e){}
+    updateSlTrigger();
+    closeSlModal();
+    updateCard();
+    saveDraft();
+  });
+  var firstChild = g.firstChild;
+  if (firstChild && firstChild.nextSibling) {
+    g.insertBefore(hd, firstChild.nextSibling);
+  } else {
+    g.appendChild(hd);
   }
 }
 document.getElementById('speechLangTrigger').addEventListener('click', function(){ openSlModal(); });
@@ -2700,6 +2729,9 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   applyPal(0);
   applySize();
   document.getElementById("cardGhost").innerHTML = '\u201C';
+  var slt = document.getElementById('speechLangTrigger');
+  if (slt) { slt.style.pointerEvents = ''; slt.style.opacity = ''; }
+  _exampleLang = null;
   updateCard();
   updateSlNudge();
   updateMicState();
@@ -3140,6 +3172,9 @@ document.getElementById("exGrid").addEventListener("click", (e) => {
     _exampleLang = c.dataset.lang;
   }
   updateCard();
+  updateSlNudge();
+  var slt = document.getElementById('speechLangTrigger');
+  if (slt) { slt.style.pointerEvents = _exampleLang ? 'none' : ''; slt.style.opacity = _exampleLang ? '0.5' : ''; }
   updateMicState();
   cardReady = true;
   document.getElementById("btnS").disabled = false;
@@ -3643,6 +3678,7 @@ function showToast(msg) {
   _toastShowing = true;
   const t = document.getElementById("toast");
   t.textContent = msg;
+  t.classList.remove("update-toast");
   t.classList.add("show");
   clearTimeout(t._t);
   t._t = setTimeout(function() {

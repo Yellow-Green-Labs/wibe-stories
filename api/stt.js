@@ -90,11 +90,12 @@ export default async function handler(req) {
     }
 
     var dgLang = (language || '').slice(0, 2).toLowerCase();
+    var isMultiLang = (language || '').toLowerCase() === 'hinglish';
 
     // Whisper-routed languages: CJK/Thai + Deepgram-unsupported Indian languages
     var whisperLanguages = ['th', 'ja', 'ko', 'zh', 'ml', 'pa', 'ne', 'my', 'si', 'jw', 'uz'];
 
-    if (!apiKey || whisperLanguages.indexOf(dgLang) !== -1) {
+    if (!apiKey || (!isMultiLang && whisperLanguages.indexOf(dgLang) !== -1)) {
       if (orKey) {
         var audioFormat = baseType.split('/')[1] || 'webm';
         var whisperRes = await fetch('https://openrouter.ai/api/v1/audio/transcriptions', {
@@ -127,7 +128,12 @@ export default async function handler(req) {
 
     // Deepgram Nova-3 Multilingual (Batch)
     var dgSupported = ['de','el','es','fr','gu','hi','id','it','kn','pt','ru','sv','ta','te','tr','ca','cs','ar','bn','da','fa','fi','he','hu','mr','ms','nl','pl','tl','uk','ur','vi'];
-    var langParam = dgLang && dgSupported.indexOf(dgLang) !== -1 ? '&language=' + dgLang : '';
+    var langParam;
+    if (isMultiLang) {
+      langParam = '&language=multi';
+    } else {
+      langParam = dgLang && dgSupported.indexOf(dgLang) !== -1 ? '&language=' + dgLang : '';
+    }
     const url = 'https://api.deepgram.com/v1/listen?model=nova-3&smart_format=true&punctuate=true' + langParam;
     const res = await fetch(url, {
       method: 'POST',
