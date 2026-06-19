@@ -1755,6 +1755,8 @@ function finishRec() {
     document.getElementById("sta").value = fullTx.trim().slice(0, 150);
     inputSource = "voice";
     _exampleLang = null;
+    var _slt = document.getElementById('speechLangTrigger');
+    if (_slt) { _slt.style.pointerEvents = ''; _slt.style.opacity = ''; }
     updateCard();
     saveDraft();
     fullTx = "";
@@ -2638,6 +2640,8 @@ let _dc;
 document.getElementById("sta").addEventListener("input", (e) => {
   rewriteCache = {};
   _exampleLang = null;
+  var _slt = document.getElementById('speechLangTrigger');
+  if (_slt) { _slt.style.pointerEvents = ''; _slt.style.opacity = ''; }
   // No auto-switch to "voice" for text input (paste, type, dictate).
   // Only the mic recording path in finishRec() sets inputSource = "voice".
   // User can manually toggle via the source label.
@@ -2665,6 +2669,8 @@ document.getElementById("sta").addEventListener("paste", () => {
   _pngCache = null;
   inputSource = "story";
   _exampleLang = null;
+  var _slt = document.getElementById('speechLangTrigger');
+  if (_slt) { _slt.style.pointerEvents = ''; _slt.style.opacity = ''; }
   setTimeout(function() { autoDetectLangFromText(document.getElementById("sta").value); updateCard(); saveDraft(); updateSlNudge(); updateMicState(); _updateResetBtnVisibility(); }, 50);
 });
 document.getElementById("nin").addEventListener("input", function() {
