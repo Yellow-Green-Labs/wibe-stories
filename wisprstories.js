@@ -2496,6 +2496,7 @@ document.getElementById("toneRow").addEventListener("click", async (e) => {
     window._pendingRewrite = cached.text;
     window._rewriteConfirmed = false;
     showRewritePreview(text, cached.text, tone);
+    saveDraft();
     return;
   }
 
@@ -3199,9 +3200,8 @@ document.getElementById("exGrid").addEventListener("click", (e) => {
     document.getElementById("card").scrollIntoView({ behavior: "smooth", block: "center" });
   }
   updateMobileBar();
+  saveDraft();
 });
-
-// Create card
 document.getElementById("btnC").addEventListener("click", async () => {
   _vibrate();
   const btn = document.getElementById("btnC");
@@ -3267,6 +3267,7 @@ document.getElementById("btnC").addEventListener("click", async () => {
     card.style.boxShadow = "";
   }, 720);
   cardReady = true;
+  saveDraft();
   document.getElementById("btnS").disabled = false;
   document.getElementById("wcta").classList.add("show");
   const dl = document.getElementById("dlBtn");
