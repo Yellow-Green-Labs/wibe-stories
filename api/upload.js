@@ -2,10 +2,8 @@
 // Accepts raw PNG bytes (no multipart parsing) for fast uploads.
 // Creates two versions:
 //   1. Original card PNG (for landing page display)
-//   2. Card re-encoded as JPEG at native aspect (for WhatsApp large preview)
-// JPEG keeps the file ~5× smaller than PNG, comfortably under WhatsApp's
-// mobile preview size threshold. The card fills the OG frame instead of
-// sitting inside padding bars, so the preview reads as a large hero image.
+//   2. Branded OG JPEG — composites the card onto WS-OG-Image.png template
+//      for polished link previews (1200×630, 1.91:1 aspect ratio).
 //
 // POST /api/upload
 // Body: raw PNG bytes
@@ -13,7 +11,7 @@
 // Response: { shortId: "aB3xK9mP" }
 
 import { put } from '@vercel/blob';
-import sharp from 'sharp';
+import { generateOgImage } from './lib/og-render.js';
 
 const VALID_TONES = new Set([
   'original', 'warm', 'bold', 'poetic', 'playful', 'reflective', 'honest',
@@ -81,6 +79,13 @@ export default async function handler(req, res) {
     // Generate short random ID
     const shortId = randomId();
 
+    // Parse card metadata from custom headers (moved up so it's available early)
+    const cardText = req.headers['x-card-text'] ? decodeURIComponent(req.headers['x-card-text']) : '';
+    const cardName = req.headers['x-card-name'] ? decodeURIComponent(req.headers['x-card-name']) : '';
+    const cardTone = safeTone(req.headers['x-card-tone']) || 'original';
+    const cardP = safePalette(req.headers['x-card-p']) || '0';
+    const cardR = safeCorners(req.headers['x-card-r']) || 'rounded';
+
     // Upload original card PNG (used by the landing page hero image)
     await put(`cards/${shortId}.png`, pngBuffer, {
       access: 'public',
@@ -88,17 +93,12 @@ export default async function handler(req, res) {
       cacheControlMaxAge: 60 * 60 * 24 * 5, // 5 days
     });
 
-    // Re-encode the original card as a 1200×630 JPEG for the OG image.
-    // 1.91:1 is the optimal aspect ratio for link previews (WhatsApp, Twitter,
-    // Discord, Slack, etc.). The 1:1 card is centered on a 1200×630 canvas
-    // with the palette background color filling the sides.
-    const palIdx = safePalette(req.headers['x-card-p']);
-    const bgColor = PALS[palIdx] || '#ffffff';
-    const ogBuffer = await sharp(pngBuffer)
-      .resize({ width: 1200, height: 630, fit: 'contain', background: bgColor })
-      .flatten({ background: bgColor })
-      .jpeg({ quality: 82, mozjpeg: true, chromaSubsampling: '4:2:0' })
-      .toBuffer();
+    // Generate branded OG image — composites the user's card onto the
+    // WS-OG-Image.png template for polished link previews.
+    const host = req.headers.host || 'wibestories.vercel.app';
+    const proto = req.headers['x-forwarded-proto'] || 'https';
+    const origin = `${proto}://${host}`;
+    const ogBuffer = await generateOgImage({ pngBuffer, origin });
 
     await put(`og/${shortId}.jpg`, ogBuffer, {
       access: 'public',
@@ -107,12 +107,6 @@ export default async function handler(req, res) {
       contentType: 'image/jpeg',
     });
 
-    // Store card metadata sidecar if provided via custom headers
-    const cardText = req.headers['x-card-text'] ? decodeURIComponent(req.headers['x-card-text']) : '';
-    const cardName = req.headers['x-card-name'] ? decodeURIComponent(req.headers['x-card-name']) : '';
-    const cardTone = safeTone(req.headers['x-card-tone']) || 'original';
-    const cardP = safePalette(req.headers['x-card-p']) || '0';
-    const cardR = safeCorners(req.headers['x-card-r']) || 'rounded';
     if (cardText || cardName) {
       const meta = { text: cardText, name: cardName, tone: cardTone, p: cardP, r: cardR };
       await put(`meta/${shortId}.json`, JSON.stringify(meta), {

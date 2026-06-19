@@ -444,7 +444,7 @@
     max-height: 92dvh;
   }
   .share-modal-preview {
-    aspect-ratio: auto;
+    aspect-ratio: 1 / 1;
     max-height: 50vh;
   }
   .reset-btn {

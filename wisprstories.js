@@ -3480,12 +3480,31 @@ document.getElementById("shareNative").addEventListener("click", async function 
     // The card image is a real attachment, so it always renders large — it is
     // NOT a scraped link preview, which is the flaky path.
     var shareCaption = shareTitle + "\n" + shareUrl + "\n\n" + _flowCTAs[Math.floor(Math.random() * _flowCTAs.length)];
-    if (navigator.canShare && navigator.canShare({ files: [shareFile] })) {
-      navigator.share({ files: [shareFile], text: shareCaption }).catch(function () {});
-    } else {
-      navigator.share({ text: shareCaption }).catch(function () {});
+    try {
+      if (navigator.canShare && navigator.canShare({ files: [shareFile] })) {
+        await navigator.share({ files: [shareFile], text: shareCaption });
+      } else if (navigator.share) {
+        await navigator.share({ text: shareCaption });
+      } else {
+        // Fallback: copy link to clipboard
+        await navigator.clipboard.writeText(shareCaption);
+        showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓");
+        btn.innerHTML = origHTML;
+        btn.disabled = false;
+        return;
+      }
+      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.shared")) || "Shared ✓");
+    } catch (shareErr) {
+      if (shareErr && shareErr.name !== "AbortError") {
+        // User cancelled — do nothing. Other errors get a fallback copy.
+        try {
+          await navigator.clipboard.writeText(shareUrl);
+          showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓");
+        } catch (ce2) {
+          showToast((typeof getI18nSync === "function" && getI18nSync("toasts.shareFailed")) || "Share failed");
+        }
+      }
     }
-    showToast((typeof getI18nSync === "function" && getI18nSync("toasts.shared")) || "Shared ✓");
   } catch (e) {
     showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed");
   }
@@ -3548,7 +3567,20 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
       await navigator.clipboard.writeText(clipboardText);
       showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓");
     } catch (e2) {
-      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.copyFailed")) || "Copy failed");
+      // Fallback for mobile browsers where clipboard API fails
+      try {
+        var ta = document.createElement("textarea");
+        ta.value = clipboardText;
+        ta.style.cssText = "position:fixed;left:-9999px;top:-9999px;opacity:0";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓");
+      } catch (e3) {
+        showToast((typeof getI18nSync === "function" && getI18nSync("toasts.copyFailed")) || "Copy failed");
+      }
     }
   } catch (e) {
     showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed");

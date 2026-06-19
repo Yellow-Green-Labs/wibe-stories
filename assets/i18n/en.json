@@ -198,6 +198,7 @@
     "uploadFailed": "Upload failed",
     "linkCopied": "Copied ✓",
     "copyFailed": "Copy failed",
+    "shareFailed": "Share failed — link copied instead",
     "imageCopied": "Copied ✓",
     "imageSaved": "Saved to Photos",
     "imageSavedDownloads": "Saved ✓",
