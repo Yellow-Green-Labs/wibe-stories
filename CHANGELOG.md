@@ -4,6 +4,7 @@
 
 ### Changed
 - **Consolidated VERSION_HISTORY.md into CHANGELOG.md** — Single source of truth for version history. `global/footer-menu.js` now fetches `version.json` instead of parsing `VERSION_HISTORY.md`. `VERSION_HISTORY.md` deleted.
+- **Branded OG image via template compositing** — `api/upload.js` now composites the user's card PNG onto `WS-OG-Image.png` template instead of solid-color background. New `api/lib/og-render.js` handles compositing via sharp. Template cached in-memory; HTTP fetch with local filesystem fallback. Output: 1200×630 JPEG, ~43 KB. Card positioned at x=540, y=25 (570×570 inside template frame). Metadata parsing moved before OG generation.
 
 ---
 
