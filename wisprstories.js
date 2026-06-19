@@ -140,7 +140,7 @@ let _lastKnownRecordingsDate = "";
 let _updatePending = false;
 let _versionPollTimer = null;
 const VERSION_POLL_INTERVAL_MS = 60 * 1000; // 60 seconds
-const CURRENT_VERSION = "v0.11.0.13";
+const CURRENT_VERSION = "v0.11.0.14";
 
 // Shows the "new version available" notice. Persists until clicked — unlike
 // the generic showToast() which auto-dismisses after 3.2s. Clicking triggers
@@ -156,16 +156,14 @@ function showUpdateToast() {
   _toastShowing = true;
   clearTimeout(t._t);
 
-  const msg = getI18nSync("toasts.updateAvailable") || "A new version is ready — tap to refresh.";
+  const msg = getI18nSync("toasts.updateAvailable") || "A new version is ready — refresh page.";
   t.textContent = msg;
   t.dataset.updateToast = "1";
   t.style.cursor = "pointer";
+  t.style.pointerEvents = "auto";
   t.classList.add("show");
   t.onclick = function () {
-    // Cache-busting reload: navigate to the same path with a unique query
-    // string. This forces the browser to treat it as a new request, bypassing
-    // both the HTTP cache and the service worker's cached responses.
-    location.href = location.pathname + "?reload=" + Date.now();
+    location.reload();
   };
 }
 
@@ -3535,21 +3533,12 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
     }
     var url = location.origin + "/c/" + _shortId;
     var ctaText = _flowCTAs[Math.floor(Math.random() * _flowCTAs.length)];
-    var clipboardText = url + "\u200B\n\n" + ctaText;
+    var clipboardText = url + "\n\n" + ctaText;
     try {
-      var clipboardItem = new ClipboardItem({
-        "text/plain": new Blob([clipboardText], { type: "text/plain" }),
-        "image/png": _shareBlob
-      });
-      await navigator.clipboard.write([clipboardItem]);
+      await navigator.clipboard.writeText(clipboardText);
       showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓");
     } catch (e2) {
-      try {
-        await navigator.clipboard.writeText(clipboardText);
-        showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓");
-      } catch (e3) {
-        showToast((typeof getI18nSync === "function" && getI18nSync("toasts.copyFailed")) || "Copy failed");
-      }
+      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.copyFailed")) || "Copy failed");
     }
   } catch (e) {
     showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed");
