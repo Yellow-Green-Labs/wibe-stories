@@ -542,6 +542,7 @@ body.modal-open .rewrite-bar {
   touch-action: manipulation;
   margin-bottom: 8px;
   user-select: none;
+  -webkit-user-select: none;
 }
 .speech-lang-trigger:hover {
   background: var(--cream3);
@@ -703,6 +704,7 @@ body.modal-open .rewrite-bar {
   justify-content: center;
   background: rgba(0, 0, 0, 0.55);
   backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 .onboarding-overlay.show {
   display: flex;

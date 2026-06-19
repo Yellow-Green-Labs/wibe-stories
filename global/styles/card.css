@@ -130,6 +130,7 @@
   line-height: 1;
   color: rgba(255, 255, 255, 0.2);
   user-select: none;
+  -webkit-user-select: none;
   pointer-events: none;
   z-index: 1;
   transition: color 0.3s;
