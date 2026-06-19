@@ -42,5 +42,7 @@
   { "code": "tl", "label": "Tagalog", "nativeName": "Tagalog", "flagCode": "ph", "i18nCode": "tl" },
   { "code": "uk", "label": "Ukrainian", "nativeName": "Українська", "flagCode": "ua", "i18nCode": "uk" },
   { "code": "ur", "label": "Urdu", "nativeName": "اردو", "flagCode": "pk", "i18nCode": "ur" },
-  { "code": "vi", "label": "Vietnamese", "nativeName": "Tiếng Việt", "flagCode": "vn", "i18nCode": "vi" }
+  { "code": "vi", "label": "Vietnamese", "nativeName": "Tiếng Việt", "flagCode": "vn", "i18nCode": "vi" },
+  { "code": "fil", "label": "Filipino", "nativeName": "Filipino", "flagCode": "ph", "i18nCode": "tl" },
+  { "code": "ro", "label": "Romanian", "nativeName": "Română", "flagCode": "ro", "i18nCode": "ro" }
 ]
