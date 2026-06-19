@@ -447,7 +447,9 @@ function loadDraft() {
         card.style.overflow = "hidden";
       }
       document.querySelectorAll("#roundnessRow .sz").forEach(function(r) {
-        r.classList.toggle("on", r.dataset.rounded === String(draft.rounded));
+        const sel = r.dataset.rounded === String(draft.rounded);
+        r.classList.toggle("on", sel);
+        r.setAttribute("aria-checked", sel);
       });
     }
     // Restore voice toggle intent if previously ON (disabled since no audio blob)
@@ -554,8 +556,10 @@ function applyPal(idx) {
   // Warm the cache for the rest of the palettes (current corner style) so
   // subsequent palette clicks are instant.
   preloadCardBgVariant(useRounded ? 'rounded' : 'sharp');
-  document.querySelectorAll(".pd").forEach((d) => d.classList.remove("on"));
-  document.querySelector('.pd[data-p="' + idx + '"]').classList.add("on");
+  document.querySelectorAll(".pd").forEach((d) => { d.classList.remove("on"); d.setAttribute("aria-checked", "false"); });
+  const selPal = document.querySelector('.pd[data-p="' + idx + '"]');
+  selPal.classList.add("on");
+  selPal.setAttribute("aria-checked", "true");
   wave(document.getElementById("sta").value);
   checkOccasions();
   const light = isLightColor(col);
@@ -758,7 +762,11 @@ function applyTone(tone) {
   document.getElementById("cardGhost").innerHTML =
     '<i class="' + t.g + '"></i>';
   const toneBtns = document.querySelectorAll(".tc");
-  toneBtns.forEach((c) => c.classList.toggle("on", c.dataset.tone === tone));
+  toneBtns.forEach((c) => {
+    const sel = c.dataset.tone === tone;
+    c.classList.toggle("on", sel);
+    c.setAttribute("aria-checked", sel);
+  });
   const tx = document.getElementById("cardText");
   if (!tx.classList.contains("mt")) {
     const rawText = tx.textContent;
@@ -2557,8 +2565,9 @@ document.getElementById("roundnessRow").addEventListener("click", (e) => {
   if (!hasCardContent()) return;
   document
     .querySelectorAll("#roundnessRow .sz")
-    .forEach((r) => r.classList.remove("on"));
+    .forEach((r) => { r.classList.remove("on"); r.setAttribute("aria-checked", "false"); });
   b.classList.add("on");
+  b.setAttribute("aria-checked", "true");
   useRounded = b.dataset.rounded === "true";
   const card = document.getElementById("card");
   if (useRounded) {
@@ -2684,7 +2693,9 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   card.style.borderRadius = "32px";
   card.style.overflow = "hidden";
   document.querySelectorAll("#roundnessRow .sz").forEach(function(r) {
-    r.classList.toggle("on", r.dataset.rounded === "true");
+    const sel = r.dataset.rounded === "true";
+    r.classList.toggle("on", sel);
+    r.setAttribute("aria-checked", sel);
   });
   applyPal(0);
   applySize();
@@ -3532,8 +3543,7 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
       return;
     }
     var url = location.origin + "/c/" + _shortId;
-    var ctaText = _flowCTAs[Math.floor(Math.random() * _flowCTAs.length)];
-    var clipboardText = url + "\n\n" + ctaText;
+    var clipboardText = url;
     try {
       await navigator.clipboard.writeText(clipboardText);
       showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓");
