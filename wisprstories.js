@@ -3654,7 +3654,9 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
       return;
     }
     var url = location.origin + "/c/" + _shortId;
-    var clipboardText = url;
+    var sharerName = document.getElementById("nin").value || "";
+    var shareTitle = sharerName ? "A Wibe Story by " + sharerName : "A Wibe Story";
+    var clipboardText = shareTitle + "\n" + url + "\n\n" + _flowCTAs[Math.floor(Math.random() * _flowCTAs.length)];
     try {
       await navigator.clipboard.writeText(clipboardText);
       showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓");
