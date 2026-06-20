@@ -743,8 +743,9 @@ function handleUpgradeEmail() {
 }
 
 function canCreateCard() {
-  // Speech language is required for all cards (voice + text) — Task A
-  if (!speechLang) {
+  // Speech language is required for all cards (voice + text) — Task A.
+  // Example sentences set _exampleLang instead of speechLang, so check both.
+  if (!speechLang && !_exampleLang) {
     return {
       ok: false,
       msg: (typeof getI18nSync === "function" && getI18nSync("toasts.setSpeechLang")) || "Select a speech language first"
