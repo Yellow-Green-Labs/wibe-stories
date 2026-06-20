@@ -140,7 +140,7 @@ let _lastKnownRecordingsDate = "";
 let _updatePending = false;
 let _versionPollTimer = null;
 const VERSION_POLL_INTERVAL_MS = 60 * 1000; // 60 seconds
-const CURRENT_VERSION = "v0.11.0.14";
+const CURRENT_VERSION = "v0.11.0.15";
 
 // Shows the "new version available" notice. Persists until clicked — unlike
 // the generic showToast() which auto-dismisses after 3.2s. Clicking triggers
@@ -3728,12 +3728,15 @@ document.getElementById("shareCopyImage").addEventListener("click", async functi
 
 var _toastQueue = [], _toastShowing = false;
 function showToast(msg) {
+  const t = document.getElementById("toast");
+  // Never overwrite the persistent update toast — it must stay pink and
+  // clickable until the user acts on it or navigates away.
+  if (t && t.dataset.updateToast === "1") return;
   if (_toastShowing) {
     if (_toastQueue.length < 3) _toastQueue.push(msg);
     return;
   }
   _toastShowing = true;
-  const t = document.getElementById("toast");
   t.textContent = msg;
   t.classList.remove("update-toast");
   t.classList.add("show");
