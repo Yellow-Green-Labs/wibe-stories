@@ -3488,6 +3488,22 @@ document.getElementById("btnS").addEventListener("click", async () => {
     document.getElementById("shareModal").classList.add("open");
     document.body.classList.add("modal-open");
     _activateModal(document.getElementById("shareModal"));
+    // Pre-upload the card in the background so _shortId is ready before the
+    // user taps "Share to apps". navigator.share() must be called within the
+    // user gesture context; if we await the upload in the share handler, the
+    // gesture context expires and the share sheet opens without file data.
+    (async () => {
+      try {
+        var res = await fetch("/api/upload", { method: "POST", body: _shareBlob, headers: { "Content-Type": "image/png", "X-Card-Text": encodeURIComponent(document.getElementById("sta").value), "X-Card-Name": encodeURIComponent(document.getElementById("nin").value), "X-Card-Tone": curTone || "", "X-Card-P": String(curP), "X-Card-R": useRounded ? "rounded" : "sharp" } });
+        if (res.ok) {
+          var data = await res.json();
+          _shortId = data.shortId;
+          if (voiceAttached && audioBlob) {
+            try { await fetch("/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Voice] Upload failed:", ve); }
+          }
+        }
+      } catch (e) { console.error("[Share] Pre-upload failed:", e); }
+    })();
   } catch (e) {
     btn.innerHTML = '<i class="fas fa-share-nodes"></i> Share card';
     btn.disabled = false;

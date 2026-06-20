@@ -18,7 +18,7 @@
 //   online. Only change CACHE_NAME when you want to force a full cache
 //   flush across all existing users (rare — major structural changes only).
 
-const CACHE_NAME = 'wispr-stories-shell-v12';
+const CACHE_NAME = 'wispr-stories-shell-v13';
 
 // Files seeded into the cache on install so the app works on first
 // offline visit. Keep this list to the true shell only — every entry
@@ -98,15 +98,15 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // HTML — network-only with cache bypass. Never serve stale HTML so users
-  // always get the fresh version on every navigation. cache: 'reload' forces
-  // the browser to bypass its HTTP cache. Fall back to cached shell only
-  // when offline.
+  // HTML — network-only. Never serve stale HTML so users always get the
+  // fresh version on every navigation. 'no-store' is used instead of
+  // 'reload' because some mobile browsers ignore cache: 'reload' and serve
+  // from their HTTP cache anyway, causing stale content on pull-to-refresh.
   const isHtml = url.pathname === '/' || url.pathname.endsWith('.html');
 
   if (isHtml) {
     event.respondWith(
-      fetch(new Request(req, { cache: 'reload' }))
+      fetch(new Request(req, { cache: 'no-store' }))
         .catch(() =>
           caches.match(req).then((cached) =>
             cached || caches.match('/wisprstories.html')
@@ -116,13 +116,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // JS — network-first with cache bypass. Always fetch the latest version
-  // when online; cache for offline. Using cache: 'reload' forces the browser
-  // to bypass its HTTP cache and go to the network, preventing stale JS from
-  // being served via a 304 Not Modified response on CTRL+R/F5.
+  // JS — network-first. Always fetch the latest version when online; cache
+  // for offline. 'no-store' prevents mobile browsers from serving stale JS
+  // from their HTTP cache on pull-to-refresh.
   if (url.pathname.endsWith('.js')) {
     event.respondWith(
-      fetch(new Request(req, { cache: 'reload' }))
+      fetch(new Request(req, { cache: 'no-store' }))
         .then((resp) => {
           if (resp && resp.status === 200 && resp.type === 'basic') {
             const clone = resp.clone();
