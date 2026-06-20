@@ -56,6 +56,11 @@
   border: 1px solid #f59e0b;
   gap: 8px;
 }
+.btn-c:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
 .btn-c:hover {
   background: #e69500;
   color: #1a1a1a;

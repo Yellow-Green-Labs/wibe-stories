@@ -1104,11 +1104,14 @@ function updateCard(preserveText) {
   checkOccasions();
   updateVoiceBar();
 
-  // Disable Create button (btnC) when no valid speech language is set (Task A)
-  const hasValidSpeechLang = speechLang && speechLang !== "__native__";
+  // Disable Create button (btnC) when there is no text to create a card from.
+  // Missing speech language is NOT grounds for disabling — canCreateCard() in
+  // the handler shows the appropriate toast instead. Disabled buttons suppress
+  // click events at the browser level (spec), so disabling here would make the
+  // button silently unresponsive with no feedback.
   const btnC = document.getElementById("btnC");
   if (btnC) {
-    btnC.disabled = !hasValidSpeechLang || !raw.trim();
+    btnC.disabled = !raw.trim();
   }
 
   // Font-size control: only for short, non-empty card text. The length checked
@@ -3214,97 +3217,104 @@ document.getElementById("exGrid").addEventListener("click", (e) => {
 document.getElementById("btnC").addEventListener("click", async () => {
   _vibrate();
   const btn = document.getElementById("btnC");
-  if (btn.disabled) return;
+  if (btn.disabled) {
+    return;
+  }
   btn.disabled = true;
-  setTimeout(() => btn.disabled = false, 400);
-  const text = document.getElementById("sta").value.trim();
-  if (text.replace(/\s/g, "").length < 2) {
-    const ta = document.getElementById("sta");
-    ta.style.borderColor = "rgba(26,26,26,.3)";
-    ta.focus();
-    setTimeout(() => (ta.style.borderColor = ""), 1400);
-    /* removed: speak first toast */
-    return;
-  }
-  const check = canCreateCard();
-  if (!check.ok) {
-    showToast(check.msg);
-    return;
-  }
-  // If the user picked a tone and skipped Accept, auto-commit the rewrite
-  // so the per-tone counter ticks. The rewrite is "used" the moment a
-  // card is created with it — previewing then cancelling is free.
-  if (window._pendingRewrite && !window._rewriteConfirmed && curTone !== "original") {
-    const result = await confirmRewrite(curTone);
-    if (!result.ok) {
-      const toneLabel = typeof getI18nSync === "function" ? getI18nSync("tone." + curTone) : curTone;
-      const msg = result.status === 429
-        ? ((typeof getI18nSync === "function" && getI18nSync("toasts.dailyRewritesUsed").replace("{tone}", toneLabel.toLowerCase())) || "Out of " + toneLabel.toLowerCase() + " today")
-        : ((typeof getI18nSync === "function" && getI18nSync("toasts.rewriteFailed")) || "Rewrite failed");
-      showToast(msg);
-      if (window._originalText) {
-        document.getElementById("sta").value = window._originalText;
-      }
-      window._pendingRewrite = null;
-      window._rewriteConfirmed = false;
-      window._originalText = null;
-      hideRewritePreview();
-      applyTone("original");
-      updateCard();
-      saveDraft();
+  try {
+    const text = document.getElementById("sta").value.trim();
+    if (text.replace(/\s/g, "").length < 2) {
+      const ta = document.getElementById("sta");
+      ta.style.borderColor = "rgba(26,26,26,.3)";
+      ta.focus();
+      setTimeout(() => (ta.style.borderColor = ""), 1400);
       btn.disabled = false;
       return;
     }
-    if (typeof result.used === "number") {
-      setToneUsed(curTone, result.used);
+    const check = canCreateCard();
+    if (!check.ok) {
+      showToast(check.msg);
+      btn.disabled = false;
+      return;
     }
-    // Apply the rewrite to the textarea so updateCard() picks it up
-    if (window._pendingRewrite) {
-      document.getElementById("sta").value = window._pendingRewrite;
+    // If the user picked a tone and skipped Accept, auto-commit the rewrite
+    // so the per-tone counter ticks. The rewrite is "used" the moment a
+    // card is created with it — previewing then cancelling is free.
+    if (window._pendingRewrite && !window._rewriteConfirmed && curTone !== "original") {
+      const result = await confirmRewrite(curTone);
+      if (!result.ok) {
+        const toneLabel = typeof getI18nSync === "function" ? getI18nSync("tone." + curTone) : curTone;
+        const msg = result.status === 429
+          ? ((typeof getI18nSync === "function" && getI18nSync("toasts.dailyRewritesUsed").replace("{tone}", toneLabel.toLowerCase())) || "Out of " + toneLabel.toLowerCase() + " today")
+          : ((typeof getI18nSync === "function" && getI18nSync("toasts.rewriteFailed")) || "Rewrite failed");
+        showToast(msg);
+        if (window._originalText) {
+          document.getElementById("sta").value = window._originalText;
+        }
+        window._pendingRewrite = null;
+        window._rewriteConfirmed = false;
+        window._originalText = null;
+        hideRewritePreview();
+        applyTone("original");
+        updateCard();
+        saveDraft();
+        btn.disabled = false;
+        return;
+      }
+      if (typeof result.used === "number") {
+        setToneUsed(curTone, result.used);
+      }
+      // Apply the rewrite to the textarea so updateCard() picks it up
+      if (window._pendingRewrite) {
+        document.getElementById("sta").value = window._pendingRewrite;
+      }
+      window._rewriteConfirmed = true;
+      window._pendingRewrite = null;
+      window._originalText = null;
+      hideRewritePreview();
     }
-    window._rewriteConfirmed = true;
-    window._pendingRewrite = null;
-    window._originalText = null;
-    hideRewritePreview();
+    // The per-tone counter is now authoritative on the server (via confirm
+    // above for non-original tones, or unchanged for original). Mirror the
+    // current state in localStorage so the UI reflects the same count.
+    applyTone(curTone);
+    trackCardUsage();
+    updateCard();
+    const card = document.getElementById("card");
+    card.style.transition =
+      "transform .28s cubic-bezier(.34,1.56,.64,1),box-shadow .7s";
+    card.style.transform = "scale(1.025)";
+    card.style.boxShadow = "0 32px 80px rgba(0,0,0,.22), 0 0 60px rgba(245,158,11,0.35)";
+    setTimeout(() => {
+      card.style.transform = "";
+      card.style.boxShadow = "";
+    }, 720);
+    cardReady = true;
+    saveDraft();
+    document.getElementById("btnS").disabled = false;
+    document.getElementById("wcta").classList.add("show");
+    const dl = document.getElementById("dlBtn");
+    dl.style.display = "";
+    updateMobileBar();
+    setTimeout(() => {
+      if (window.innerWidth <= 720) {
+        document.querySelector(".card-wrap").scrollIntoView({ behavior: "smooth", block: "center" });
+      } else {
+        card.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 120);
+    const btnCTxt = document.getElementById("btnCTxt");
+    const origText = btnCTxt.textContent;
+    const btnCEl = document.getElementById("btnC");
+    btnCEl.classList.add("created");
+    btnCTxt.textContent = "\ud83d\udc9b Beautiful!";
+    setTimeout(() => {
+      btnCEl.classList.remove("created");
+      btnCTxt.textContent = origText;
+    }, 1500);
+  } catch (e) {
+    console.error("[btnC] Unexpected error:", e);
+    btn.disabled = false;
   }
-  // The per-tone counter is now authoritative on the server (via confirm
-  // above for non-original tones, or unchanged for original). Mirror the
-  // current state in localStorage so the UI reflects the same count.
-  applyTone(curTone);
-  trackCardUsage();
-  updateCard();
-  const card = document.getElementById("card");
-  card.style.transition =
-    "transform .28s cubic-bezier(.34,1.56,.64,1),box-shadow .7s";
-  card.style.transform = "scale(1.025)";
-  card.style.boxShadow = "0 32px 80px rgba(0,0,0,.22), 0 0 60px rgba(245,158,11,0.35)";
-  setTimeout(() => {
-    card.style.transform = "";
-    card.style.boxShadow = "";
-  }, 720);
-  cardReady = true;
-  saveDraft();
-  document.getElementById("btnS").disabled = false;
-  document.getElementById("wcta").classList.add("show");
-  const dl = document.getElementById("dlBtn");
-  dl.style.display = "";
-  updateMobileBar();
-  setTimeout(() => {
-    if (window.innerWidth <= 720) {
-      document.querySelector(".card-wrap").scrollIntoView({ behavior: "smooth", block: "center" });
-    } else {
-      card.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  }, 120);
-  const btnCTxt = document.getElementById("btnCTxt");
-  const origText = btnCTxt.textContent;
-  const btnCEl = document.getElementById("btnC");
-  btnCEl.classList.add("created");
-  btnCTxt.textContent = "\ud83d\udc9b Beautiful!";
-  setTimeout(() => {
-    btnCEl.classList.remove("created");
-    btnCTxt.textContent = origText;
-  }, 1500);
 });
 
 // Download helpers -- PNG only
