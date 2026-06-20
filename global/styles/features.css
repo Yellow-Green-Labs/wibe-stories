@@ -72,7 +72,7 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); }
   margin: 36px auto 0;
 }
 .mosaic-card {
-  position: absolute; width: 140px; border-radius: 12px;
+  position: absolute; width: 140px; aspect-ratio: 1/1; border-radius: 12px;
   color: #fff;
   box-shadow: 0 12px 30px rgba(0,0,0,0.25); overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: default;
@@ -153,7 +153,7 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); }
   border-radius: 14px;
   color: #fff;
   width: 200px;
-  min-height: 150px;
+  aspect-ratio: 1/1;
   box-shadow: 0 16px 40px rgba(0,0,0,0.18);
   font-family: var(--sans);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -482,7 +482,7 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); }
 .cd-style-4 { transform: rotate(2deg) translateY(8px); }
 .design-demo .card-demo {
   width: 100%;
-  min-height: 130px;
+  aspect-ratio: 1/1;
 }
 
 /* ── Share Section ── */
@@ -499,7 +499,7 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); }
 }
 .share-demo .card-demo {
   width: 220px;
-  min-height: 160px;
+  aspect-ratio: 1/1;
 }
 .share-paths {
   display: flex;
