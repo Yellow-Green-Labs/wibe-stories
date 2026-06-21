@@ -247,14 +247,14 @@ body {
   transform: rotate(4deg);
 }
 .mc-6 {
-  top: 60px;
-  left: 140px;
-  transform: rotate(7deg);
+  top: 90px;
+    left: 140px;
+    transform: rotate(-2deg);
 }
 .mc-7 {
-  bottom: 30px;
-  left: 200px;
-  transform: rotate(-3deg);
+  top: 130px;
+  left: 220px;
+  transform: rotate(5deg);
 }
 
 /* Section intro */
