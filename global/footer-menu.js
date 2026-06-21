@@ -209,9 +209,6 @@
   });
 
   var helpLink = wrapper.querySelector("#fmenu-help");
-  if (typeof window.showOnboarding !== "function" && helpLink) {
-    helpLink.style.display = "none";
-  }
   helpLink?.addEventListener("click", (e) => {
     e.preventDefault();
     panel.classList.add("hidden");
