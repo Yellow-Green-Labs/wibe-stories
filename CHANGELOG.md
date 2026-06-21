@@ -1,5 +1,19 @@
 # Changelog
 
+## [Unreleased] — 2026-06-21
+
+### Changed
+- **Features page images** — Replaced all gradient elements with WebP images across 5 sections: hero mosaic (7 cards), speak (3 cards), write (1 card), design (4 cards), share (1 card). Images sourced from `assets/featurepage/` subdirectories.
+- **Tone cards corrected** — Rewrite section updated from 6 incorrect tones (Warm, Professional, Poetic, Enthusiastic, Concise, Heartfelt) to 7 correct ones matching the app: Original, Warm, Bold, Poetic, Playful, Reflective, Honest. Each with correct icon (fa-pen, fa-heart, fa-bolt, fa-feather, fa-face-smile, fa-moon, fa-handshake) and gradient.
+- **Tone layout** — Original tone centered alone on first row (1+3+3 grid via `.tc-first` class spanning all columns).
+- **Stats updated** — "6 Tone styles" → "7 Tone styles" in feature grid.
+- **Section intro text** — Changed from "Five ways to say what matters" to "Speak, write, rewrite, design, and share. All from your voice."
+- **FAQ updated** — "6 tone styles" → "7 tone styles" in tone-change FAQ answer.
+- **CSS cleanup** — All card elements now use `aspect-ratio: 1/1` (images are 720×720 square). Removed padding/text styles from `.mosaic-card` and `.card-demo`. Removed `::before` pseudo-element from mosaic cards. Increased `.rewrite-tones` gap to 16px.
+- **Footer menu fix** — Removed auto-hide check for "How to Use" link (was hidden because `footer-menu.js` loaded before `wisprstories.js` defined `showOnboarding`).
+- **Service worker** — `CACHE_NAME` bumped to `wispr-stories-shell-v14` to force cache invalidation.
+- **Version** — `v0.11.0.15` → `v0.11.1`.
+
 ## [Unreleased] — 2026-06-19
 
 ### Changed

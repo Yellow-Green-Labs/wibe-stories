@@ -105,6 +105,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/rewrite-confirm.js` — tone rewrite commit endpoint (Redis INCR on per-tone counter)
 - `api/rewrite-status.js` — read-only GET endpoint for per-tone counts from Redis
 - `api/stt.js` — STT via Deepgram Nova-3 + Whisper/OpenRouter, Edge runtime
+- `api/resend-key.js` — automated Pro key recovery via email (resends key by email lookup)
 - `wisprstories.html` — main HTML
 - `wisprstories.js` — app logic (STT, recording, card creation, share, tones, i18n)
 - `global/fonts.js` — script font mapping
@@ -156,5 +157,5 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (36-hour retention).
 
-<!-- agsync: last-run 2026-06-20; UI polish: upgrade modal footer, update toast color, build banner auto-update, share modal mobile bottom-sheet, speech lang trigger disable/re-enable on example select + voice/type/paste, Hinglish voice support. Bug fixes: btnC no longer disabled for missing speech lang (prevents silent click suppression), canCreateCard() checks _exampleLang for example sentences, share modal pre-uploads card so navigator.share() fires within gesture context, sw.js uses cache:'no-store' for HTML/JS to fix stale mobile refresh. -->
+<!-- agsync: last-run 2026-06-21; Pro membership edge case mitigations: added api/resend-key.js for automated key recovery, updated handleUpgradeEmail() to call API instead of mailto, added dev bypass for WS-TEST-DEMO-KEY in api/pro-status.js and lib/pro-key.js, documented BMAC webhook setup in DEVELOPER.md. -->
 

@@ -722,8 +722,9 @@ async function handleUpgradeKey() {
     msg.className = "upgrade-modal-msg err";
   }
 }
-function handleUpgradeEmail() {
+async function handleUpgradeEmail() {
   const input = document.getElementById("upgradeEmailInput");
+  const btn = document.getElementById("upgradeEmailGo");
   const msg = document.getElementById("upgradeEmailMsg");
   const email = input.value.trim();
   if (!email || !email.includes("@")) {
@@ -731,15 +732,29 @@ function handleUpgradeEmail() {
     msg.className = "upgrade-modal-msg err";
     return;
   }
-  // Open a pre-filled email to the support address so the user can send
-  // their recovery request directly. No backend email system needed.
-  const subject = encodeURIComponent("Wibe Stories \u2014 Lost Supporter Key");
-  const body = encodeURIComponent(
-    "Hi,\n\nI lost my Wibe Stories supporter key.\nMy purchase email was: " + email + "\n\nPlease resend my key. Thank you!"
-  );
-  window.open("mailto:yellowgreenlabs@proton.me?subject=" + subject + "&body=" + body);
-  msg.textContent = "Opening your email app \u2014 send the message and I\u2019ll reply with your key.";
-  msg.className = "upgrade-modal-msg ok";
+  btn.disabled = true;
+  msg.textContent = "Sending...";
+  msg.className = "upgrade-modal-msg";
+  try {
+    const res = await fetch("/api/resend-key", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const data = await res.json();
+    if (data.ok) {
+      msg.textContent = "Check your inbox \u2014 your key is on its way.";
+      msg.className = "upgrade-modal-msg ok";
+    } else {
+      msg.textContent = "Something went wrong. Try again or email support.";
+      msg.className = "upgrade-modal-msg err";
+    }
+  } catch {
+    msg.textContent = "Could not send. Try again or email support.";
+    msg.className = "upgrade-modal-msg err";
+  } finally {
+    btn.disabled = false;
+  }
 }
 
 function canCreateCard() {

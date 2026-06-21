@@ -30,6 +30,15 @@ export default async function handler(req) {
       });
     }
 
+    // Dev/test bypass — accept test key without Redis lookup
+    if (key === 'WS-TEST-DEMO-KEY' && process.env.VERCEL_ENV !== 'production') {
+      console.warn('[ProStatus] Dev bypass activated — test key used');
+      return new Response(JSON.stringify({ isPro: true, tier: 'pro' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const redis = getRedis();
 
     // Rate limit: 10 activation attempts per IP per minute

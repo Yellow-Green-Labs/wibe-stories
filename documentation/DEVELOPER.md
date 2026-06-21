@@ -203,11 +203,32 @@ See [Section 5](#5-api-routes) for the full list.
 | `track-usage.js` | Card-creation usage tracking | Node.js |
 | `lang-stats.js` | Per-language usage counters | Node.js |
 | `validate-key.js` | Pro key validation (Redis-backed, rate-limited) | Node.js |
-| `pro-status.js` | Pro status check | Node.js |
+| `pro-status.js` | Pro status check (accepts `WS-TEST-DEMO-KEY` in non-production) | Node.js |
 | `webhook-bmac.js` | Buy Me a Coffee webhook → key generation | Node.js |
+| `resend-key.js` | Automated Pro key recovery via email | Node.js |
 | `cleanup.js` | Daily blob cleanup (Vercel Cron, 03:00 UTC) | Node.js |
 | `admin-revoke.js` | Admin Pro-key revocation | Node.js |
 | `beacon.js` | Internal redirect helper (env-gated) | Node.js |
+
+### Buy Me a Coffee webhook setup
+
+Before accepting Pro payments, configure the BMAC webhook:
+
+1. Go to [Buy Me a Coffee dashboard](https://buymeacoffee.com/dashboard) → Settings → Webhooks
+2. Add webhook URL: `https://wibestories.vercel.app/api/webhook-bmac`
+3. Subscribe to these events:
+   - `support_created` (new membership)
+   - `subscription_cancelled`
+   - `support_updated` (level changes, e.g. monthly → annual)
+   - `support_refunded`
+4. Copy the webhook secret → set as `BMAC_WEBHOOK_SECRET` in Vercel env vars
+5. Ensure `BREVO_API_KEY` is set in Vercel env vars (for sending Pro key emails)
+
+**If `BMAC_WEBHOOK_SECRET` or `BREVO_API_KEY` are missing**, the webhook returns 500 and logs an error. BMAC will retry delivery.
+
+**Key recovery:** If the initial email fails (Brevo down), BMAC retries the webhook. On retry, the code re-sends the email using the stored key. If all retries fail, the user can use "Lost your key?" in the upgrade modal → enters their email → the `/api/resend-key` endpoint looks up and resends the key.
+
+**Test webhooks:** BMAC test pings (`payload.live_mode === false`) are skipped — they don't generate keys.
 
 ### LLM model chains (`api/rewrite.js`)
 
