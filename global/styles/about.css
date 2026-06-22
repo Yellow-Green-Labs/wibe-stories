@@ -172,7 +172,7 @@ body {
   margin-bottom: 12px;
 }
 
-/* === Values Grid === */
+/* === Values Bento Grid === */
 .values-grid-section {
   text-align: center;
   margin: 56px 0;
@@ -184,6 +184,7 @@ body {
 .values-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: auto;
   gap: 12px;
   max-width: 560px;
   margin: 0 auto;
@@ -212,6 +213,22 @@ body {
 }
 :root.dark .value-card strong {
   color: var(--ws-lavender);
+}
+.value-card-lg {
+  grid-column: span 2;
+  grid-row: span 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--cream2) 0%, rgba(201, 138, 239, 0.08) 100%);
+  border-color: rgba(201, 138, 239, 0.2);
+}
+.value-card-lg p {
+  font-size: clamp(16px, 1.8vw, 22px);
+  line-height: 1.3;
+}
+.value-card-lg strong {
+  font-size: clamp(18px, 2vw, 26px);
 }
 
 /* === Typography === */
@@ -563,6 +580,7 @@ button:focus-visible {
   .back-to-top { bottom: 72px; right: 20px; width: 36px; height: 36px; }
   h2 { margin-top: 40px; }
   .values-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .value-card-lg { grid-column: span 2; grid-row: span 1; padding: 24px 16px; }
   .value-card { padding: 16px 12px; }
 }
 
