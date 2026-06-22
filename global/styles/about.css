@@ -172,51 +172,47 @@ body {
   margin-bottom: 12px;
 }
 
-/* === Values Circle === */
-.values-circle-section {
+/* === Values Grid === */
+.values-grid-section {
   text-align: center;
   margin: 56px 0;
 }
-.values-circle-section h2 {
+.values-grid-section h2 {
   border-bottom: none;
   margin-bottom: 40px;
 }
-.values-circle {
-  position: relative;
-  width: 100%;
-  max-width: 600px;
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  max-width: 560px;
   margin: 0 auto;
 }
-.values-svg {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-.value-item {
-  position: absolute;
+.value-card {
+  background: var(--cream2);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 20px 16px;
   text-align: center;
-  max-width: 150px;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
-.value-item p {
+.value-card:hover {
+  border-color: var(--ws-lavender);
+  box-shadow: 0 2px 12px rgba(201, 138, 239, 0.12);
+}
+.value-card p {
   font-size: clamp(12px, 1vw, 14px);
   line-height: 1.4;
   color: var(--ink2);
   margin: 0;
 }
-.value-item strong {
+.value-card strong {
   color: var(--ws-lavender-dark);
   font-weight: 600;
 }
-:root.dark .value-item strong {
+:root.dark .value-card strong {
   color: var(--ws-lavender);
 }
-/* Positions around the circle — top, right, bottom-right, bottom, bottom-left, left */
-.value-1 { top: 0; left: 50%; transform: translateX(-50%); }
-.value-2 { top: 22%; right: 0; transform: translateY(-50%); }
-.value-3 { bottom: 8%; right: 2%; }
-.value-4 { bottom: 0; left: 50%; transform: translateX(-50%); }
-.value-5 { bottom: 8%; left: 2%; }
-.value-6 { top: 22%; left: 0; transform: translateY(-50%); }
 
 /* === Typography === */
 h1 {
@@ -566,8 +562,8 @@ button:focus-visible {
 
   .back-to-top { bottom: 72px; right: 20px; width: 36px; height: 36px; }
   h2 { margin-top: 40px; }
-  .values-circle { height: 350px; }
-  .value-item { max-width: 130px; }
+  .values-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .value-card { padding: 16px 12px; }
 }
 
 

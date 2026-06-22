@@ -157,5 +157,5 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (36-hour retention).
 
-<!-- agsync: last-run 2026-06-21; Pro membership edge case mitigations: added api/resend-key.js for automated key recovery, updated handleUpgradeEmail() to call API instead of mailto, added dev bypass for WS-TEST-DEMO-KEY in api/pro-status.js and lib/pro-key.js, documented BMAC webhook setup in DEVELOPER.md. -->
+<!-- agsync: last-run 2026-06-21; Pro membership edge case mitigations: added api/resend-key.js for automated key recovery, updated handleUpgradeEmail() to call API instead of mailto, added dev bypass for WS-TEST-DEMO-KEY in api/pro-status.js and lib/pro-key.js, documented BMAC webhook setup in DEVELOPER.md. About page: replaced SVG values circle with CSS grid card layout (3-col desktop, 2-col mobile). -->
 
