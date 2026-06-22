@@ -231,6 +231,37 @@ body {
   font-size: clamp(18px, 2vw, 26px);
 }
 
+/* === Stats Section === */
+.stats-section {
+  margin: 48px 0;
+  text-align: center;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+.stat-item {
+  padding: 16px 8px;
+}
+.stat-item .feature-value {
+  font-family: var(--serif);
+  font-size: clamp(28px, 3vw, 42px);
+  font-weight: 400;
+  color: var(--ws-lavender-dark);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+:root.dark .stat-item .feature-value {
+  color: var(--ws-lavender);
+}
+.stat-label {
+  font-size: clamp(11px, 0.8vw, 13px);
+  color: var(--ink3);
+}
+
 /* === Typography === */
 h1 {
   font-family: var(--serif);
@@ -582,6 +613,7 @@ button:focus-visible {
   .values-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .value-card-lg { grid-column: span 2; grid-row: span 1; padding: 24px 16px; }
   .value-card { padding: 16px 12px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
 }
 
 
