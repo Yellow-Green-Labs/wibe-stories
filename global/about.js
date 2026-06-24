@@ -122,20 +122,68 @@
     reveals.forEach(function(el) { el.classList.add('visible'); });
   }
 
+  /* --- Word-by-word reveal --- */
+  var wordReveals = document.querySelectorAll('.word-reveal');
+  wordReveals.forEach(function(el) {
+    var text = el.textContent;
+    el.textContent = '';
+    text.trim().split(/\s+/).forEach(function(word, i) {
+      var span = document.createElement('span');
+      span.textContent = word;
+      span.style.setProperty('--i', i);
+      el.appendChild(span);
+      if (i < text.trim().split(/\s+/).length - 1) {
+        el.appendChild(document.createTextNode(' '));
+      }
+    });
+  });
+  if ('IntersectionObserver' in window && wordReveals.length) {
+    var wordObserver = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          wordObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2, rootMargin: '0px 0px -40px 0px' });
+    wordReveals.forEach(function(el) { wordObserver.observe(el); });
+  } else {
+    wordReveals.forEach(function(el) { el.classList.add('visible'); });
+  }
+
   /* --- Count-up animation for stat numbers --- */
   function animateCountUp(el) {
-    var text = el.textContent.trim();
+    var unitSpan = el.querySelector('.stat-unit');
+    if (!unitSpan) {
+      var text = el.textContent.trim();
+      var match = text.match(/^(\d+)/);
+      if (!match) return;
+      var target = parseInt(match[0], 10);
+      var suffix = text.slice(match[0].length);
+      var duration = 900;
+      var start = performance.now();
+      function step(now) {
+        var t = Math.min((now - start) / duration, 1);
+        var eased = 1 - Math.pow(1 - t, 3);
+        var current = Math.round(eased * target);
+        el.textContent = current + suffix;
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+      return;
+    }
+    var clone = el.cloneNode(true);
+    var text = clone.textContent.trim();
     var match = text.match(/^(\d+)/);
     if (!match) return;
     var target = parseInt(match[0], 10);
-    var suffix = text.slice(match[0].length);
     var duration = 900;
     var start = performance.now();
     function step(now) {
       var t = Math.min((now - start) / duration, 1);
       var eased = 1 - Math.pow(1 - t, 3);
       var current = Math.round(eased * target);
-      el.textContent = current + suffix;
+      el.innerHTML = clone.innerHTML.replace(match[0], current);
       if (t < 1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);

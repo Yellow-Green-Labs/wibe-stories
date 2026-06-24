@@ -3586,7 +3586,7 @@ document.getElementById("shareNative").addEventListener("click", async function 
     // beneath the big image. This is how Spotify's mobile share behaves.
     // The card image is a real attachment, so it always renders large — it is
     // NOT a scraped link preview, which is the flaky path.
-    var shareCaption = shareTitle + "\n" + shareUrl + "\n\n" + _flowCTAs[Math.floor(Math.random() * _flowCTAs.length)];
+    var shareCaption = shareTitle + "\n" + shareUrl + "\u200B\n\n" + _flowCTAs[Math.floor(Math.random() * _flowCTAs.length)];
     try {
       if (navigator.canShare && navigator.canShare({ files: [shareFile] })) {
         await navigator.share({ files: [shareFile], text: shareCaption });
@@ -3669,7 +3669,7 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
       return;
     }
     var url = location.origin + "/c/" + _shortId;
-    var clipboardText = url;
+    var clipboardText = url + "\u200B\n\n" + _flowCTAs[Math.floor(Math.random() * _flowCTAs.length)];
     try {
       await navigator.clipboard.writeText(clipboardText);
       showToast((typeof getI18nSync === "function" && getI18nSync("toasts.linkCopied")) || "Copied ✓");

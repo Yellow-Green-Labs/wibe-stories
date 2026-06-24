@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   Wibe Stories — sitemap
-  Single-page app at /. Ephemeral share routes under /c/{id} are not listed
-  because they expire (~36h, see api/cleanup.js) and are user-private. If a
-  curated examples archive ships, add it as a separate <url> entry below.
+  Static pages only. Ephemeral share routes under /c/{id} are not listed
+  because they expire (~36h, see api/cleanup.js) and are user-private.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://wibestories.vercel.app/</loc>
-    <lastmod>2026-06-04</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://wibestories.vercel.app/about</loc>
-    <lastmod>2026-06-04</lastmod>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://wibestories.vercel.app/features</loc>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://wibestories.vercel.app/language-stats</loc>
-    <lastmod>2026-06-04</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.5</priority>
   </url>

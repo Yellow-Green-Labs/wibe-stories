@@ -72,6 +72,17 @@ html, body {
 .reveal-delay-5 { transition-delay: 0.40s; }
 .reveal-delay-6 { transition-delay: 0.48s; }
 .reveal-delay-7 { transition-delay: 0.56s; }
+
+/* --- Word-by-word reveal --- */
+.word-reveal span {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  display: inline;
+}
+.word-reveal.visible span {
+  opacity: 1;
+  transition-delay: calc(var(--i, 0) * 0.06s);
+}
 body {
   background: var(--cream);
   color: var(--ink);
@@ -231,37 +242,76 @@ body {
   font-size: clamp(18px, 2vw, 26px);
 }
 
-/* === Stats Section === */
+/* === Stats Section (Tres Mares–inspired) === */
 .stats-section {
-  margin: 48px 0;
-  text-align: center;
+  margin: 80px 0;
 }
+.stats-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 48px;
+  align-items: start;
+}
+.stats-text {
+  padding-top: 16px;
+}
+.stats-description {
+  font-size: clamp(16px, 1.6vw, 20px);
+  color: var(--ink2);
+  line-height: 1.55;
+  margin-bottom: 24px;
+}
+.stats-link {
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.stats-link:hover { color: var(--ws-lavender-dark); }
+:root.dark .stats-link:hover { color: var(--ws-lavender); }
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-  max-width: 560px;
-  margin: 0 auto;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
 }
-.stat-item {
-  padding: 16px 8px;
+.stats-col {
+  display: flex;
+  flex-direction: column;
 }
-.stat-item .feature-value {
+.stats-col--right {
+  padding-top: 60px;
+}
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 280px;
+  padding: 40px 32px;
+  border: 1px solid rgba(127, 127, 127, 0.25);
+}
+.stat-card .feature-value {
   font-family: var(--serif);
-  font-size: clamp(28px, 3vw, 42px);
+  font-size: clamp(64px, 10vw, 120px);
   font-weight: 400;
+  font-style: italic;
   color: var(--ws-lavender-dark);
-  line-height: 1;
-  margin-bottom: 4px;
+  line-height: 0.85;
+  letter-spacing: -0.03em;
 }
-:root.dark .stat-item .feature-value {
+.stat-unit {
+  font-size: 0.35em;
+  font-style: normal;
+  vertical-align: baseline;
+  letter-spacing: 0;
+}
+:root.dark .stat-card .feature-value {
   color: var(--ws-lavender);
 }
 .stat-label {
-  font-size: clamp(11px, 0.8vw, 13px);
+  font-size: clamp(12px, 1vw, 14px);
   color: var(--ink3);
+  letter-spacing: 0.02em;
 }
-
 /* === Typography === */
 h1 {
   font-family: var(--serif);
@@ -302,11 +352,12 @@ h2 {
   margin-bottom: 0;
 }
 .origin-story .accent-line {
-  font-size: clamp(17px, 1.7vw, 22px);
+  font-size: clamp(22px, 2.4vw, 32px);
   font-weight: 500;
   color: var(--ws-lavender-dark);
   line-height: 1.5;
-  margin: 20px 0;
+  margin: 64px 0;
+  max-width: 700px;
 }
 :root.dark .origin-story .accent-line {
   color: var(--ws-lavender);
@@ -323,11 +374,12 @@ h2 {
 }
 .mission-statement {
   text-align: center;
-  margin: 32px auto 40px;
-  max-width: 500px;
+  margin: 80px auto;
+  max-width: 600px;
+  padding: 64px 0;
 }
 .mission-statement p {
-  font-size: clamp(17px, 1.8vw, 22px);
+  font-size: clamp(22px, 2.4vw, 32px);
   font-weight: 500;
   color: var(--ws-lavender-dark);
   line-height: 1.5;
@@ -553,6 +605,7 @@ p.wispr-cta-tagline {
 }
 @media (prefers-reduced-motion: reduce) {
   .wispr-cta-tagline .wispr-wave span { animation: none !important; transform: none !important; }
+  .word-reveal span { opacity: 1 !important; transition: none !important; }
 }
 @media (max-width: 720px) {
   .wispr-cta-tagline .wispr-wave span { animation: none !important; transform: none !important; }
@@ -613,7 +666,14 @@ button:focus-visible {
   .values-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .value-card-lg { grid-column: span 2; grid-row: span 1; padding: 24px 16px; }
   .value-card { padding: 16px 12px; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .stats-grid { grid-template-columns: 1fr; gap: 16px; }
+  .stats-col--right { padding-top: 0; }
+  .stat-card { padding: 28px 20px; min-height: 200px; }
+}
+@media (max-width: 480px) {
+  .stats-layout { grid-template-columns: 1fr; gap: 24px; }
+  .stat-card .feature-value { font-size: clamp(56px, 14vw, 80px); }
+  .stat-card { padding: 24px 16px; }
 }
 
 
