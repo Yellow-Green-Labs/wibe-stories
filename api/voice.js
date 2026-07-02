@@ -34,7 +34,7 @@ export default async function handler(req, res) {
       return;
     }
 
-    const MAX_AUDIO_BYTES = 2 * 1024 * 1024;
+    const MAX_AUDIO_BYTES = 6 * 1024 * 1024;
     let totalBytes = 0;
     const chunks = [];
     for await (const chunk of req) {

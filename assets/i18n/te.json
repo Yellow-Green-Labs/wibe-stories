@@ -217,7 +217,7 @@
   },
   "dlChoice": {
     "title": "మీ కార్డ్ డౌన్‌లోడ్ చేయండి",
-    "png": "<i class=\"fa-solid fa-file-image\"></i> PNG డౌన్‌లోడ్",
-    "webm": "<i class=\"fa-solid fa-video\"></i> WebM డౌన్‌లోడ్"
+    "png": "<i class=\"fa-solid fa-file-image\"></i> చిత్రం డౌన్‌లోడ్",
+    "webm": "<i class=\"fa-solid fa-video\"></i> గొంతు డౌన్‌లోడ్"
   }
 }

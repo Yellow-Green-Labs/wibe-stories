@@ -4,7 +4,7 @@
 > Update this file first; the Notion page mirrors the section marked `MIRROR TO NOTION`.
 > The section marked `INTERNAL ONLY` is for the Wibe Stories team and the Wispr Flow team and is never published.
 >
-> **Last updated:** 2026-06-04 (v0.11.0.4, content revision: added introduction and footer to the MIRROR TO NOTION block — "What this page is" paragraph at top, "Something missing?" + "Create a Wispr Story" CTA at bottom)
+> **Last updated:** 2026-06-24 (v0.11.2, content revision: added Limitation 9 — uploaded audio transcription accuracy)
 >
 > **Build version note:** the app build banner is at v0.11.0.4. v0.11.0.4 is a deployment path fix (script tags now use absolute `/internal-logs/secret-shortcut.js` so the chord works on `/about` and `/language-stats`). v0.11.0.3 was the Windows menu-activation fix (scoped `e.preventDefault()` for W/S keys). The Acknowledged Logs content above was last touched at v0.11.0.1 and has not changed for v0.11.0.3/v0.11.0.4 — both are code fixes only, no public content impact.
 > **Audience for public content:** the Wispr Flow team and anyone Wibe Stories points at this page.
@@ -152,6 +152,14 @@ If we receive a report, we review it manually. This is a known gap. We have not 
 **Q:** I noticed the character counter went past 150. Why?
 
 **A:** The textarea's user-visible cap is 150 characters, but the system quietly allows up to 160 characters. We do not display the number 160 anywhere in the interface, because we do not want to invite longer messages; 150 is still the recommended length for the best-looking cards. The 10 extra characters exist only so the system does not aggressively cut your message mid-word. If you are at 145 characters and want to add "friend" (6 letters plus 1 space, 7 characters), the system lets you finish. This grace applies only to the text you type in the textarea; the card image, transcription, and tone rewriting are all based on the first 150 characters of your message. Beyond 160 characters the system stops accepting input.
+
+## Limitation 9 — Uploaded audio transcription may not exactly match the card text
+
+**Topic:** Audio file upload transcription accuracy
+
+**Q:** I uploaded an audio file, but the text on the card is different from what I said in the recording. Why?
+
+**A:** When you upload a WAV or MP3 file, the audio is run through the same speech-to-text engine (Deepgram Nova-3) that processes live microphone recordings. This transcription is rarely 100% accurate — background noise, accent, speaking speed, and audio quality all affect the result. Unlike a live recording where you can see words appearing and re-speak if needed, with an uploaded file the transcription is generated in one pass and the result appears directly in the text box. If the transcription is off, you can edit the text box manually or tap the reset icon to start over.
 
 ---
 

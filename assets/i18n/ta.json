@@ -217,7 +217,7 @@
   },
   "dlChoice": {
     "title": "உங்கள் அட்டையைப் பதிவிறக்கவும்",
-    "png": "<i class=\"fa-solid fa-file-image\"></i> PNG பதிவிறக்கம்",
-    "webm": "<i class=\"fa-solid fa-video\"></i> WebM பதிவிறக்கம்"
+    "png": "<i class=\"fa-solid fa-file-image\"></i> படம் பதிவிறக்கம்",
+    "webm": "<i class=\"fa-solid fa-video\"></i> குரல் பதிவிறக்கம்"
   }
 }

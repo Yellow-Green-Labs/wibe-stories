@@ -520,12 +520,6 @@
     }
 
     document.getElementById('tableBody').innerHTML = html;
-    // Update row count
-    var countEl = document.getElementById('searchCount');
-    if (countEl) {
-      var visibleRows = document.querySelectorAll('#tableBody tr:not([style*="display: none"])').length;
-      countEl.textContent = visibleRows + ' of ' + LANGUAGES.length;
-    }
   }
 
   function updateView() {
@@ -534,6 +528,7 @@
     renderChart();
     renderTable();
     updateRegionBadge();
+    updateChips();
   }
 
   function updateInsights() {
@@ -628,7 +623,7 @@
     });
     var totalLangs = LANGUAGES.length;
     var countMap = {
-      'all': totalLangs,
+      'All': totalLangs,
       'South Asia': counts['South Asia'] || 0,
       'Europe': counts['Europe'] || 0,
       'East Asia': counts['East Asia'] || 0,

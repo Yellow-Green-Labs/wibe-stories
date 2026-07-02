@@ -114,6 +114,43 @@
   opacity: 0.85;
 }
 
+/* Desktop: reorder share buttons — Copy link first (highlighted), Share to apps last */
+@media (min-width: 721px) {
+  .share-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  #shareCopyLink   { order: 1; }
+  #shareCopyImage   { order: 2; }
+  #shareDownload    { order: 3; }
+  #shareNative      { order: 4; }
+  /* Highlight "Copy image link" on desktop */
+  #shareCopyLink {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--cream);
+  }
+  #shareCopyLink:hover { opacity: 0.85; }
+  /* De-emphasize "Share to apps" on desktop */
+  #shareNative {
+    border-color: var(--rule);
+    background: var(--cream2);
+    color: var(--ink3);
+    opacity: 0.5;
+  }
+  #shareNative:hover { opacity: 0.7; }
+  /* Remove default first-child highlight on desktop */
+  .share-modal-btn:first-child {
+    border-color: var(--rule);
+    background: var(--cream2);
+    color: var(--ink);
+  }
+  .share-modal-btn:first-child:hover {
+    background: var(--cream3);
+  }
+}
+
 /* TOAST */
 .toast {
   position: fixed;
@@ -920,7 +957,7 @@ body.modal-open .rewrite-bar {
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 8px;
   transition: background 0.18s;
   touch-action: manipulation;

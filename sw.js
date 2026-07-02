@@ -18,7 +18,7 @@
 //   online. Only change CACHE_NAME when you want to force a full cache
 //   flush across all existing users (rare — major structural changes only).
 
-const CACHE_NAME = 'wispr-stories-shell-v14';
+const CACHE_NAME = 'wispr-stories-shell-v17';
 
 // Files seeded into the cache on install so the app works on first
 // offline visit. Keep this list to the true shell only — every entry
@@ -65,6 +65,9 @@ self.addEventListener('fetch', (event) => {
     if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/c/')) {
       return; // browser handles it; we don't intercept
     }
+    // /version.json must always hit the network so the update-check never
+    // compares a stale SW-cached version against CURRENT_VERSION.
+    if (url.pathname === '/version.json') return;
   }
 
   // Vercel Blob storage — bypass the SW entirely. The browser loads these
@@ -76,6 +79,10 @@ self.addEventListener('fetch', (event) => {
 
   // Cross-origin (Google Fonts, etc.) — stale-while-revalidate so updates
   // arrive on the next visit but offline still works.
+  // Skip FFmpeg WASM CDN — browser must get a fresh Response with unconsumed
+  // body stream so toBlobURL's arrayBuffer() doesn't throw.
+  if (url.hostname.includes('cdn.jsdelivr.net')) return;
+
   if (url.origin !== self.location.origin) {
     event.respondWith(
       caches.open(CACHE_NAME).then((cache) =>

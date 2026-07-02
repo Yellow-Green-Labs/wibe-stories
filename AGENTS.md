@@ -155,7 +155,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 
 - `api/upload.js` stores `meta/<shortId>.json` alongside card images (`{ text, name, tone, p, r }`).
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
-- `meta/` cleaned up by `api/cleanup.js` (36-hour retention).
+- `meta/` cleaned up by `api/cleanup.js` (7-day retention).
 
-<!-- agsync: last-run 2026-06-21; Pro membership edge case mitigations: added api/resend-key.js for automated key recovery, updated handleUpgradeEmail() to call API instead of mailto, added dev bypass for WS-TEST-DEMO-KEY in api/pro-status.js and lib/pro-key.js, documented BMAC webhook setup in DEVELOPER.md. About page: replaced SVG values circle with bento grid layout (3-col desktop with 2x2 anchor card, 2-col mobile), added stats section with animated count-up numbers. -->
+<!-- agsync: last-run 2026-07-01; v0.11.13: Download modal text (PNG→Image, WebM→Voice) in HTML + 12 locales. Share modal desktop reorder (Copy link highlighted, Share to apps de-emphasized). Occasion trigger fixes: removed 6 false-positives (rip, dep, luck, selamat, pride, easter), fixed data quality (leading space, typo), removed ~30 internal duplicates, added 7 missing triggers. Cross-occasion fixes: removed wrong triggers from birthday/congratulations/easter. Landing page: download buttons (image + voice), expiry badge (color-coded), voice status label. 7-day card retention (MAX_AGE_HOURS 36→168). Upload button desktop-only + renamed to "Upload extracted audio". Share button double-tap fix (debounce + touch-action). -->
 

@@ -1,6 +1,48 @@
 # Changelog
 
-## [Unreleased] — 2026-06-21
+## [v0.11.13] — UX Polish + Occasion Fixes + Landing Page Enhancements (2026-07-01)
+
+### Added
+- **Landing page download buttons** — "Download image" (PNG) always shown, "Download voice" (WebM) shown for voice cards. Positioned between voice player and "Create your own" CTA.
+- **Landing page expiry badge** — Dynamic countdown: "Expires in X days" / "Expires tomorrow" / "Expires today". Color-coded urgency (green/amber/orange/red). Shows for cards with blob metadata.
+- **Landing page voice status label** — "With voice" / "Text only" shown between card image and voice player.
+- **Upload audio button desktop-only** — Hidden on mobile (≤720px) via CSS. Wispr Flow is desktop-only.
+- **Share modal desktop reorder** — "Copy image link" highlighted as primary button on desktop. "Share to apps" de-emphasized. Mobile order unchanged.
+- **Share button double-tap fix** — Added debounce + `touch-action: manipulation` to mobile share button. Prevents 300ms tap delay on iOS Safari.
+- **Occasion trigger additions** — `many happy returns of the day` (birthday), `season's greetings` (christmas), `break a leg` (goodluck), `rest in power` (memorial), `ramadan` (ramzan), `బతుకమ్మ` (bathukamma), `బోనాలు` (bonalu).
+
+### Changed
+- **Download modal text** — "Download PNG" → "Download image", "Download WebM" → "Download voice" across HTML + all 12 locale files.
+- **Upload button text** — "Upload audio" → "Upload extracted audio" (en.json).
+- **7-day card retention** — `api/cleanup.js` `MAX_AGE_HOURS` 36 → 168 (7 days). ~343 MB within 1 GB Vercel Hobby free tier.
+- **`api/c/[id].js`** — Added `import { head } from '@vercel/blob'` for expiry badge metadata fetch.
+
+### Fixed
+- **Occasion false positives** — Removed `rip`, `dep` (memorial), `luck` (goodluck), `selamat` (congratulations), `pride` (pridemonth), `easter` (easter). These short triggers were matching unrelated words.
+- **Occasion data quality** — Fixed leading space in teachers-day trigger, `bonne voyage` → `bon voyage` in safe-travels, removed case-variant duplicates.
+- **Occasion internal duplicates** — Removed ~30 duplicate triggers across memorial, thank-you, congratulations, goodluck, safe-travels.
+- **Cross-occasion triggers** — Removed `feliz aniversario`, `happy anniversary`, `joyeux anniversaire`, `parabéns` from birthday (kept in anniversary/congratulations). Removed Indian "wishes" words from congratulations (kept in goodluck). Removed `wesołych świąt` from easter (kept in christmas).
+
+---
+
+## [v0.11.2] — Audio File Upload (2026-06-24)
+
+### Added
+- **Audio file upload (WAV/MP3)** — New upload row below mic select with "Upload audio" button. File read, decoded via `AudioContext`, validated ≤30s, converted to PCM WAV in-browser, and sent to `/api/stt` for transcription. Original file stored for voice attachment. Mutually exclusive with mic recording.
+- **`_fileAttached` state variable** — Tracks upload state. Mic disabled when file attached; upload disabled during recording. Cancel (✕) button clears file and resets state.
+- **`_processAudioFile(file)`** — Full upload pipeline: decode, validate, WAV conversion, STT fetch, auto-enable voice toggle, clear `_exampleLang`, update all UI.
+- **`_audioBufferToWav(buffer)`** — PCM 16-bit WAV encoder from `AudioBuffer` with RIFF/WAVE headers.
+- **`updateUploadState()`** — Toggles between upload button (idle) / "Processing..." (in-progress) / file status display (complete).
+- **`upload.btn` i18n key** — English: "Upload audio". Falls back gracefully in non-English locales.
+- **Limitation 9** — `internal-logs/ilogs-ws.md`: uploaded audio transcription may not match card text exactly.
+
+### Changed
+- **`api/voice.js`** — `MAX_AUDIO_BYTES` 2MB → 6MB for larger audio files.
+- **`version.json`** — `v0.11.1` → `v0.11.2`.
+- **`sw.js`** — `wispr-stories-shell-v14` → v15 for cache invalidation.
+- **Build banner** — Updated to v0.11.2.
+
+## [v0.11.1] — Features Page: 5 Capability Sections (2026-06-21)
 
 ### Changed
 - **Features page images** — Replaced all gradient elements with WebP images across 5 sections: hero mosaic (7 cards), speak (3 cards), write (1 card), design (4 cards), share (1 card). Images sourced from `assets/featurepage/` subdirectories.

@@ -135,17 +135,64 @@ export default async function handler(req) {
       langParam = dgLang && dgSupported.indexOf(dgLang) !== -1 ? '&language=' + dgLang : '';
     }
     const url = 'https://api.deepgram.com/v1/listen?model=nova-3&smart_format=true&punctuate=true' + langParam;
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Token ' + apiKey,
-        'Content-Type': dgContentType,
-      },
-      body: bytes,
-    });
+
+    async function _tryWhisperFallback() {
+      if (!orKey) return null;
+      var audioFormat = baseType.split('/')[1] || 'webm';
+      var wr = await fetch('https://openrouter.ai/api/v1/audio/transcriptions', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + orKey,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://wibestories.vercel.app',
+          'X-OpenRouter-Title': 'Wibe Stories',
+        },
+        body: JSON.stringify({
+          model: 'openai/whisper-large-v3-turbo',
+          input_audio: { data: audioBase64, format: audioFormat },
+          language: dgLang,
+        }),
+      });
+      if (!wr.ok) {
+        const errText = await wr.text();
+        console.error('[STT] Whisper fallback failed:', wr.status, errText);
+        return null;
+      }
+      return (await wr.json()).text || '';
+    }
+
+    let res;
+    let dgFailed = false;
+    try {
+      res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Token ' + apiKey,
+          'Content-Type': dgContentType,
+        },
+        body: bytes,
+      });
+    } catch (dgErr) {
+      console.error('[STT] Deepgram fetch failed, trying Whisper fallback:', dgErr.message);
+      dgFailed = true;
+      const fallbackText = await _tryWhisperFallback();
+      if (fallbackText !== null) {
+        return new Response(JSON.stringify({ text: fallbackText }), {
+          status: 200, headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      throw dgErr;
+    }
 
     if (!res.ok) {
       const err = await res.text();
+      // Try Whisper fallback on non-200 Deepgram responses too
+      const fallbackText = await _tryWhisperFallback();
+      if (fallbackText !== null) {
+        return new Response(JSON.stringify({ text: fallbackText }), {
+          status: 200, headers: { 'Content-Type': 'application/json' },
+        });
+      }
       return new Response(JSON.stringify({ error: 'Deepgram API error', detail: err }), {
         status: res.status, headers: { 'Content-Type': 'application/json' },
       });
@@ -170,7 +217,12 @@ export default async function handler(req) {
       status: 200, headers: { 'Content-Type': 'application/json' },
     });
   } catch (e) {
-    return new Response(JSON.stringify({ error: e.message }), {
+    const type = e.constructor?.name || 'Error';
+    const stack = (e.stack || '').split('\n').slice(0,6).join('|');
+    const ct = req.headers.get('content-type') || 'unknown';
+    const lang = req.headers.get('x-language') || 'unknown';
+    console.error('[STT] Error:', type, '-', e.message, '| CT:', ct, '| Lang:', lang);
+    return new Response(JSON.stringify({ error: e.message, type, stack, ct, lang }), {
       status: 500, headers: { 'Content-Type': 'application/json' },
     });
   }

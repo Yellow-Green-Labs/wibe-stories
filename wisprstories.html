@@ -349,6 +349,20 @@
               <i class="fa-solid fa-microphone" aria-hidden="true"></i>
               <select id="micSelect" aria-label="Choose microphone"></select>
             </div>
+
+            <div class="upload-row" id="uploadRow">
+              <input type="file" id="audioFileInput" accept="audio/wav,audio/wave,audio/x-wav,.wav,audio/mpeg,audio/mp3,audio/x-mp3,.mp3" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;pointer-events:none" tabindex="-1" aria-hidden="true">
+              <button class="upload-btn" id="uploadBtn">
+                <i class="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i>
+                <span data-i18n="upload.btn">Upload extracted audio</span>
+              </button>
+              <div class="upload-status" id="uploadStatus" style="display:none">
+                <span class="upload-name" id="uploadFileName"></span>
+                <span class="upload-dur" id="uploadDuration"></span>
+                <button class="upload-cancel" id="uploadCancel" aria-label="Remove uploaded file">&times;</button>
+              </div>
+            </div>
+
           </div>
 
           <div class="or">
@@ -1090,14 +1104,14 @@
             id="dlChoicePng"
             data-i18n="dlChoice.png"
           >
-            <i class="fa-solid fa-file-image"></i> Download PNG
+            <i class="fa-solid fa-camera"></i> Download image
           </button>
           <button
             class="dl-choice-btn dl-choice-btn-secondary"
             id="dlChoiceWebm"
             data-i18n="dlChoice.webm"
           >
-            <i class="fa-solid fa-video"></i> Download WebM
+            <i class="fa-solid fa-clapperboard"></i> Download voice
           </button>
         </div>
       </div>

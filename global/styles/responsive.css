@@ -30,6 +30,8 @@
     padding-bottom: max(25px, env(safe-area-inset-bottom));
   }
 
+  .upload-row { display: none; }
+
   .shell {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto auto auto;
@@ -171,6 +173,7 @@
   .mobile-bar-btn-share {
     background: var(--cream2);
     color: var(--ink);
+    touch-action: manipulation;
   }
   .mobile-bar-btn-share:active {
     background: var(--cream3);

@@ -8,6 +8,8 @@
 // WhatsApp/Facebook crawlers fetch a ~30–60 KB hero image instead of a
 // 200 KB padded PNG. Original card PNG is used for the landing-page display.
 
+import { head } from '@vercel/blob';
+
 const BLOB_HOST = 'jkzbaevzmimaelrr.public.blob.vercel-storage.com';
 
 function escapeHtml(value) {
@@ -62,6 +64,23 @@ export default async function handler(req, res) {
     const voiceRes = await fetch(`https://${BLOB_HOST}/voice/${id}`, { method: 'HEAD' });
     hasVoice = voiceRes.ok;
   } catch (e) { /* no voice */ }
+
+  // Calculate expiry from blob metadata
+  let expiryHtml = '';
+  try {
+    const cardBlob = await head(`https://${BLOB_HOST}/cards/${id}.png`);
+    if (cardBlob.uploadedAt) {
+      const ageMs = Date.now() - new Date(cardBlob.uploadedAt).getTime();
+      const daysElapsed = Math.floor(ageMs / 86400000);
+      const daysRemaining = Math.max(0, 7 - daysElapsed);
+      let label, cls;
+      if (daysRemaining > 5) { label = `Expires in ${daysRemaining} days`; cls = 'green'; }
+      else if (daysRemaining > 1) { label = `Expires in ${daysRemaining} days`; cls = 'amber'; }
+      else if (daysRemaining === 1) { label = 'Expires tomorrow'; cls = 'orange'; }
+      else { label = 'Expires today'; cls = 'red'; }
+      expiryHtml = `<p class="expiry-badge ${cls}">${label}</p>`;
+    }
+  } catch (e) { /* old card without metadata — no badge */ }
 
   const enc = (s) => encodeURIComponent(s || '');
   const appUrl = metaText || metaName
@@ -252,6 +271,19 @@ html,body{
 @keyframes wave-letter-auto{0%,70%{transform:translateY(0)}80%{transform:translateY(-4px)}90%,100%{transform:translateY(0)}}
 @keyframes pulse-glow{0%,100%{text-shadow:0 0 4px rgba(245,158,11,.2)}50%{text-shadow:0 0 16px rgba(245,158,11,.5)}}
 @media(prefers-reduced-motion:reduce){.hook-flow span{animation:none!important}.hook-flow.pulse{animation:none!important}}
+.voice-status{font-size:clamp(11px,1.8vw,13px);color:#a5a596;margin-top:2px;text-align:center;letter-spacing:0.02em}
+.expiry-badge{display:inline-block;font-size:clamp(10px,1.6vw,12px);font-weight:600;padding:3px 10px;border-radius:12px;margin-top:6px;text-align:center}
+.expiry-badge.green{background:rgba(34,197,94,.15);color:#22c55e}
+.expiry-badge.amber{background:rgba(245,158,11,.15);color:#f59e0b}
+.expiry-badge.orange{background:rgba(249,115,22,.15);color:#f97316}
+.expiry-badge.red{background:rgba(239,68,68,.15);color:#ef4444}
+.dl-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.dl-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:999px;font-size:clamp(13px,2vw,15px);font-weight:600;text-decoration:none;cursor:pointer;border:none;transition:transform .15s,background .15s}
+.dl-btn:hover{transform:translateY(-1px)}
+.dl-btn-primary{background:#1a1a1a;color:#ffffeb}
+.dl-btn-primary:hover{background:#333}
+.dl-btn-secondary{background:transparent;color:#1a1a1a;border:1px solid #ccc}
+.dl-btn-secondary:hover{background:#f5f5f0}
 </style>
 </head>
 <body>
@@ -267,8 +299,14 @@ html,body{
   <div class="card-img">
     <img src="${safeCardUrl}" alt="${altText}">
   </div>
+  <p class="voice-status">${hasVoice ? 'With voice' : 'Text only'}</p>
+  ${expiryHtml}
   ${hasVoice ? '<div class="voice-player"><button class="voice-btn" id="playVoice" onclick="var a=document.getElementById(\'voiceAudio\');if(a.paused){a.play();this.innerHTML=\'<span>⏸</span> Playing\u2026\';this.classList.add(\'playing\')}else{a.pause();this.innerHTML=\'<span>▶</span> Listen to voice\';this.classList.remove(\'playing\')}"><span>▶</span> Listen to voice</button><audio id="voiceAudio" src="' + safeVoiceUrl + '" preload="none" onended="var b=document.getElementById(\'playVoice\');b.innerHTML=\'<span>▶</span> Listen to voice\';b.classList.remove(\'playing\')"></audio></div>' : ''}
   ${captionHtml}
+  <div class="dl-btns">
+    <a class="dl-btn dl-btn-primary" href="${safeCardUrl}" download="wibe-story.png"><i class="fa-solid fa-camera"></i> Download image</a>
+    ${hasVoice ? `<a class="dl-btn dl-btn-secondary" href="${safeVoiceUrl}" download="wibe-voice.webm"><i class="fa-solid fa-clapperboard"></i> Download voice</a>` : ''}
+  </div>
   <a class="cta" href="${safeAppUrl}">Create your own &rarr;</a>
   <p class="hook-line">${hookLine} <a class="hook-flow pulse" href="https://wisprflow.ai/r?BEST76" target="_blank" rel="noopener">→Wispr Flow</a></p>
   <br>

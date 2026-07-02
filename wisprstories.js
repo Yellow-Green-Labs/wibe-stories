@@ -140,7 +140,7 @@ let _lastKnownRecordingsDate = "";
 let _updatePending = false;
 let _versionPollTimer = null;
 const VERSION_POLL_INTERVAL_MS = 60 * 1000; // 60 seconds
-const CURRENT_VERSION = "v0.11.1";
+const CURRENT_VERSION = "v0.11.13";
 
 // Shows the "new version available" notice. Persists until clicked — unlike
 // the generic showToast() which auto-dismisses after 3.2s. Clicking triggers
@@ -248,6 +248,7 @@ let usingDeepgram = false,
   deepgramStartTime = null;
 
 let audioBlob = null;
+let _fileAttached = false;
 let _skipDurationReport = false;
 let voiceAttached = false;
 var _webmCache = null;
@@ -920,7 +921,8 @@ function updateVoiceBar() {
     voiceAttached = false;
     toggle.checked = false;
   }
-  if (inputSource === "voice" && audioBlob && webmCodecString && toneAllowsVoice) {
+  var hasText = (document.getElementById('sta')?.value || '').trim().length > 0;
+  if (inputSource === "voice" && audioBlob && webmCodecString && toneAllowsVoice && hasText) {
     bar.style.display = "flex";
     toggle.disabled = false;
     info.style.display = audioDurationSec > 0 ? "flex" : "none";
@@ -2026,6 +2028,10 @@ document.getElementById("recBtn").addEventListener("click", async () => {
   if (speechLang === "__native__") {
     return;
   }
+  if (_fileAttached) {
+    showToast("Remove uploaded file to record", 6000);
+    return;
+  }
 
   // Show immediate feedback before any async setup. Disable the button
   // synchronously so a double-tap can't fire two record starts in parallel.
@@ -2294,13 +2300,213 @@ function updateMicState() {
       r.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> ' + ((typeof getI18nSync === 'function' && getI18nSync('speechLang.reminderNative')) || 'Unsupported languages are treated as the native language');
       r.classList.add('show');
     }
-  } else {
-    b.classList.remove('disabled');
-    b.title = '';
-    if (s) s.textContent = (typeof getI18nSync === 'function' && getI18nSync('record.status')) || 'Tap to speak';
-    if (sub) sub.textContent = '';
+  } else if (_exampleLang) {
+    b.classList.add('disabled');
+    b.title = 'Example selected';
+    if (s) s.textContent = 'Mic disabled';
+    if (sub) sub.textContent = 'Edit text or tap reset to record';
     if (r) {
       r.classList.remove('show');
+    }
+  } else {
+    if (_fileAttached) {
+      b.classList.add('disabled');
+      b.title = 'Audio file ready';
+      if (s) s.textContent = 'Audio file ready';
+      if (sub) sub.textContent = '';
+    } else {
+      b.classList.remove('disabled');
+      b.title = '';
+      if (s) s.textContent = (typeof getI18nSync === 'function' && getI18nSync('record.status')) || 'Tap to speak';
+      if (sub) sub.textContent = '';
+    }
+    if (r) {
+      r.classList.remove('show');
+    }
+  }
+}
+function updateUploadState() {
+  var row = document.getElementById('uploadRow');
+  var btn = document.getElementById('uploadBtn');
+  var status = document.getElementById('uploadStatus');
+  if (!row || !btn || !status) return;
+  if (_fileAttached && audioBlob) {
+    btn.style.display = 'none';
+    btn.disabled = false;
+    status.style.display = 'inline-flex';
+    row.classList.remove('processing');
+  } else if (_fileAttached && !audioBlob) {
+    btn.style.display = 'none';
+    btn.disabled = false;
+    status.style.display = 'inline-flex';
+    row.classList.add('processing');
+  } else {
+    btn.style.display = '';
+    btn.disabled = !!_exampleLang;
+    status.style.display = 'none';
+    row.classList.remove('processing');
+  }
+}
+async function _processAudioFile(file) {
+  if (!file) return;
+  if (!speechLang || speechLang === '__native__') {
+    showToast('Select a speech language first');
+    document.getElementById('audioFileInput').value = '';
+    return;
+  }
+  var ext = file.name ? file.name.split('.').pop().toLowerCase() : '';
+  var mime = file.type ? file.type.toLowerCase() : '';
+  var validMimes = ['audio/wav', 'audio/wave', 'audio/x-wav', 'audio/mpeg', 'audio/mp3', 'audio/x-mp3'];
+  var validExts = ['wav', 'mp3'];
+  if (!validExts.includes(ext) && !validMimes.some(function(m) { return mime.indexOf(m) >= 0; })) {
+    showToast('Only WAV and MP3 files are supported', 6000);
+    document.getElementById('audioFileInput').value = '';
+    return;
+  }
+  _fileAttached = true;
+  audioBlob = null;
+  var nameEl = document.getElementById('uploadFileName');
+  var durEl = document.getElementById('uploadDuration');
+  if (nameEl) nameEl.textContent = file.name;
+  updateUploadState();
+  try {
+    var arrayBuffer = await file.arrayBuffer();
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var audioBuffer;
+    try {
+      audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+    } catch (decodeErr) {
+      audioCtx.close();
+      showToast('Could not read audio file. Try WAV or MP3.', 6000);
+      _fileAttached = false;
+      updateUploadState();
+      document.getElementById('audioFileInput').value = '';
+      return;
+    }
+    var durationSec = Math.round(audioBuffer.duration);
+    if (durationSec > 30) {
+      audioCtx.close();
+      showToast('Audio too long (' + formatDuration(durationSec) + ') — max 30 seconds', 6000);
+      _fileAttached = false;
+      updateUploadState();
+      document.getElementById('audioFileInput').value = '';
+      return;
+    }
+    if (durEl) durEl.textContent = formatDuration(durationSec);
+    audioDurationSec = durationSec;
+    var wavBuffer = _audioBufferToWav(audioBuffer);
+    audioCtx.close();
+    var fetchBlob = new Blob([wavBuffer], { type: 'audio/wav' });
+    isRec = false;
+    var controller = new AbortController();
+    var durLabel = document.getElementById('uploadDuration');
+    if (durLabel) durLabel.textContent = 'Transcribing...';
+    var timeoutId = setTimeout(function() { controller.abort(); }, 60000);
+    var sttRes = await fetch('/api/stt', {
+      method: 'POST',
+      headers: Object.assign({
+        'Content-Type': 'audio/wav',
+        'X-Language': speechLang === '__native__' ? '' : speechLang,
+        'X-Session-Id': localStorage.getItem('wsSessionId') || '',
+      }, typeof getAdminHeaders === 'function' ? getAdminHeaders() : {}),
+      body: fetchBlob,
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    if (!sttRes.ok) {
+      var errText = await sttRes.text();
+      console.error('[Upload] STT error:', errText);
+      audioBlob = file;
+      inputSource = 'voice';
+      voiceAttached = false;
+      document.getElementById('voiceToggle').checked = false;
+      updateUploadState();
+      _updateResetBtnVisibility();
+      showToast('Transcription failed. Type text, then enable voice.', 6000);
+      return;
+    }
+    var data = await sttRes.json();
+    if (!data.text) {
+      audioBlob = file;
+      inputSource = 'voice';
+      voiceAttached = false;
+      document.getElementById('voiceToggle').checked = false;
+      updateUploadState();
+      _updateResetBtnVisibility();
+      showToast('No speech detected. Type text, then enable voice.', 6000);
+      return;
+    }
+    audioBlob = file;
+    document.getElementById('sta').value = data.text.trim().slice(0, 150);
+    inputSource = 'voice';
+    _exampleLang = null;
+    var slt = document.getElementById('speechLangTrigger');
+    if (slt) { slt.style.pointerEvents = ''; slt.style.opacity = ''; }
+    document.getElementById('voiceToggle').checked = true;
+    voiceAttached = true;
+    updateCard();
+    saveDraft();
+    updateUploadState();
+    updateSlNudge();
+    updateMicState();
+    updateVoiceBar();
+    _updateResetBtnVisibility();
+  } catch (err) {
+    console.error('[Upload] Error:', err);
+    showToast('Something went wrong. Try again.', 6000);
+    _fileAttached = false;
+    audioBlob = null;
+    updateUploadState();
+    document.getElementById('audioFileInput').value = '';
+  }
+}
+function _audioBufferToWav(buffer) {
+  var numChannels = buffer.numberOfChannels;
+  var sampleRate = buffer.sampleRate;
+  var format = 1;
+  var bitDepth = 16;
+  var bytesPerSample = bitDepth / 8;
+  var blockAlign = numChannels * bytesPerSample;
+  var data = [];
+  for (var ch = 0; ch < numChannels; ch++) {
+    var channelData = buffer.getChannelData(ch);
+    var samples = new Int16Array(channelData.length);
+    for (var i = 0; i < channelData.length; i++) {
+      var s = Math.max(-1, Math.min(1, channelData[i]));
+      samples[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+    }
+    data.push(samples);
+  }
+  var length = data[0].length * bytesPerSample;
+  var dataSize = data.length * length;
+  var headerSize = 44;
+  var totalSize = headerSize + dataSize;
+  var arrayBuffer = new ArrayBuffer(totalSize);
+  var view = new DataView(arrayBuffer);
+  writeString(view, 0, 'RIFF');
+  view.setUint32(4, totalSize - 8, true);
+  writeString(view, 8, 'WAVE');
+  writeString(view, 12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, format, true);
+  view.setUint16(22, numChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * blockAlign, true);
+  view.setUint16(32, blockAlign, true);
+  view.setUint16(34, bitDepth, true);
+  writeString(view, 36, 'data');
+  view.setUint32(40, dataSize, true);
+  var offset = 44;
+  for (var i = 0; i < data[0].length; i++) {
+    for (var ch = 0; ch < numChannels; ch++) {
+      view.setInt16(offset, data[ch][i], true);
+      offset += 2;
+    }
+  }
+  return arrayBuffer;
+  function writeString(view, offset, string) {
+    for (var i = 0; i < string.length; i++) {
+      view.setUint8(offset + i, string.charCodeAt(i));
     }
   }
 }
@@ -2694,7 +2900,7 @@ document.getElementById("sta").addEventListener("input", (e) => {
   if (cleaned !== ta.value) { const pos = ta.selectionStart; ta.value = cleaned; ta.setSelectionRange(pos, pos); }
   autoDetectLangFromText(ta.value);
   clearTimeout(_dc);
-  _dc = setTimeout(function() { updateCard(); saveDraft(); updateSlNudge(); updateMicState(); _updateResetBtnVisibility(); }, 50);
+  _dc = setTimeout(function() { updateCard(); saveDraft(); updateSlNudge(); updateMicState(); _updateResetBtnVisibility(); updateVoiceBar(); }, 50);
   _stopPlaceholderCycle();
   _updateResetBtnVisibility();
 });
@@ -2718,6 +2924,36 @@ document.getElementById("nin").addEventListener("input", function() {
 });
 document.getElementById("sta").addEventListener("focus", _stopPlaceholderCycle);
 document.getElementById("sta").addEventListener("blur", function() { if (!this.value.length) setTimeout(_startPlaceholderCycle, 2000); });
+// Upload audio file
+document.getElementById("uploadBtn").addEventListener("click", function() {
+  if (isRec) return;
+  if (_exampleLang) {
+    showToast("Clear example to upload audio", 6000);
+    return;
+  }
+  if (!speechLang || speechLang === "__native__") {
+    showToast("Select a speech language first");
+    return;
+  }
+  document.getElementById('audioFileInput').click();
+});
+document.getElementById("audioFileInput").addEventListener("change", function() {
+  var file = this.files[0];
+  if (!file) return;
+  _processAudioFile(file);
+});
+document.getElementById("uploadCancel").addEventListener("click", function() {
+  _fileAttached = false;
+  audioBlob = null;
+  audioDurationSec = 0;
+  voiceAttached = false;
+  document.getElementById('audioFileInput').value = '';
+  document.getElementById('voiceToggle').checked = false;
+  updateUploadState();
+  updateMicState();
+  updateVoiceBar();
+  _updateResetBtnVisibility();
+});
 document.getElementById("resetBtn").addEventListener("click", () => {
   rewriteCache = {};
   if (isRec) {
@@ -2750,7 +2986,10 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   document.getElementById("nin").value = "";
   inputSource = "story";
   // Do NOT reset language — keep user's selection
+  _fileAttached = false;
   audioBlob = null;
+  document.getElementById('audioFileInput').value = '';
+  updateUploadState();
   _cardWaveform = null;
   voiceAttached = false;
   audioDurationSec = 0;
@@ -2774,6 +3013,7 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   var slt = document.getElementById('speechLangTrigger');
   if (slt) { slt.style.pointerEvents = ''; slt.style.opacity = ''; }
   _exampleLang = null;
+  updateUploadState();
   updateCard();
   updateSlNudge();
   updateMicState();
@@ -3217,7 +3457,9 @@ document.getElementById("exGrid").addEventListener("click", (e) => {
   updateSlNudge();
   var slt = document.getElementById('speechLangTrigger');
   if (slt) { slt.style.pointerEvents = _exampleLang ? 'none' : ''; slt.style.opacity = _exampleLang ? '0.5' : ''; }
+  updateUploadState();
   updateMicState();
+  _updateResetBtnVisibility();
   cardReady = true;
   document.getElementById("btnS").disabled = false;
   document.getElementById("wcta").classList.add("show");
@@ -3401,16 +3643,15 @@ function _estPngSize() {
   return Math.round(150 + txt * 1.5); // rough estimate
 }
 function showDownloadChoice() {
-  // Update size estimates
-  var pngSize = _estPngSize();
   var pngEl = document.getElementById("dlChoicePng");
-  var webmSize = audioBlob ? audioBlob.size + 80000 : 0; // 80KB video overhead
-  pngEl.innerHTML = '&#128247; Download PNG <small class="dl-est">' + _formatSize(pngSize) + ' &middot; ~2s</small>';
+  pngEl.innerHTML = '<i class="fa-solid fa-camera"></i> Download PNG';
   var webmEl = document.getElementById("dlChoiceWebm");
-  webmEl.innerHTML = '&#127916; Download WebM <small class="dl-est">' + _formatSize(webmSize) + ' &middot; ~3-6s</small>';
+  webmEl.innerHTML = '<i class="fa-solid fa-clapperboard"></i> Download WebM';
   document.getElementById("dlChoice").classList.add("open");
   document.body.classList.add("modal-open");
   _activateModal(document.getElementById("dlChoice"));
+  window.ensureHtml2canvas();
+  if (audioBlob && webmCodecString) _loadFfmpeg();
 }
 function hideDownloadChoice() { _deactivateModal(); document.getElementById("dlChoice").classList.remove("open"); document.body.classList.remove("modal-open"); }
 function _flashDlBtn(btn) {
@@ -3439,8 +3680,20 @@ document.getElementById("mobileBtnC")?.addEventListener("click", () => {
   document.getElementById("btnC").click();
 });
 document.getElementById("mobileBtnS")?.addEventListener("click", () => {
-  document.getElementById("btnS").click();
+  var desktopBtn = document.getElementById("btnS");
+  if (desktopBtn && !desktopBtn.disabled) desktopBtn.click();
 });
+/* Mobile share: prevent double-tap zoom and ensure single-tap response */
+(function(){
+  var ms = document.getElementById("mobileBtnS");
+  if (!ms) return;
+  var lastTap = 0;
+  ms.addEventListener("touchend", function(e) {
+    var now = Date.now();
+    if (now - lastTap < 300) { e.preventDefault(); return; }
+    lastTap = now;
+  }, { passive: false });
+})();
 
 // Share modal
 let _shareBlob = null;
@@ -3560,7 +3813,7 @@ document.getElementById("shareNative").addEventListener("click", async function 
       }
     }
     if (!/^[a-zA-Z0-9]{4,12}$/.test(_shortId)) {
-      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed");
+      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed", 6000);
       btn.innerHTML = origHTML;
       btn.disabled = false;
       return;
@@ -3613,7 +3866,7 @@ document.getElementById("shareNative").addEventListener("click", async function 
       }
     }
   } catch (e) {
-    showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed");
+    showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed", 6000);
   }
   btn.innerHTML = origHTML;
   btn.disabled = false;
@@ -3663,7 +3916,7 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
       }
     }
     if (!/^[a-zA-Z0-9]{4,12}$/.test(_shortId)) {
-      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed");
+      showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed", 6000);
       btn.innerHTML = origHTML;
       btn.disabled = false;
       return;
@@ -3690,7 +3943,7 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
       }
     }
   } catch (e) {
-    showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed");
+    showToast((typeof getI18nSync === "function" && getI18nSync("toasts.uploadFailed")) || "Upload failed", 6000);
   }
   btn.innerHTML = origHTML;
   btn.disabled = false;
@@ -3742,13 +3995,13 @@ document.getElementById("shareCopyImage").addEventListener("click", async functi
 });
 
 var _toastQueue = [], _toastShowing = false;
-function showToast(msg) {
+function showToast(msg, duration) {
   const t = document.getElementById("toast");
   // Never overwrite the persistent update toast — it must stay pink and
   // clickable until the user acts on it or navigates away.
   if (t && t.dataset.updateToast === "1") return;
   if (_toastShowing) {
-    if (_toastQueue.length < 3) _toastQueue.push(msg);
+    if (_toastQueue.length < 3) _toastQueue.push({ msg: msg, duration: duration });
     return;
   }
   _toastShowing = true;
@@ -3756,11 +4009,12 @@ function showToast(msg) {
   t.classList.remove("update-toast");
   t.classList.add("show");
   clearTimeout(t._t);
+  var dur = typeof duration === 'number' ? duration : 3200;
   t._t = setTimeout(function() {
     t.classList.remove("show");
     _toastShowing = false;
-    if (_toastQueue.length) setTimeout(function() { showToast(_toastQueue.shift()); }, 250);
-  }, 3200);
+    if (_toastQueue.length) setTimeout(function() { showToast(_toastQueue[0].msg, _toastQueue[0].duration); _toastQueue.shift(); }, 250);
+  }, dur);
 }
 
 // Export
@@ -4039,7 +4293,7 @@ async function generateWebm() {
       else reject(new Error("PNG frame failed"));
     });
   });
-  _setExportStage("Loading encoder\u2026");
+  _setExportStage("Preparing video tools\u2026");
   var ffmpeg = await _loadFfmpeg();
   _setExportStage("Encoding video\u2026");
   var ext = audioBlob.type && (audioBlob.type.includes('mp4') || audioBlob.type.includes('aac') || audioBlob.type.includes('m4a')) ? '.mp4' : '.webm';
@@ -4180,14 +4434,19 @@ async function _loadFfmpeg() {
   if (_ffmpegInstance) return _ffmpegInstance;
   if (_ffmpegPromise) return _ffmpegPromise;
   _ffmpegPromise = (async () => {
-    const { FFmpeg } = await import('https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js');
-    const { toBlobURL } = await import('https://unpkg.com/@ffmpeg/util@0.12.1/dist/esm/index.js');
+    const { FFmpeg } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js');
+    const { toBlobURL } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js');
     const ffmpeg = new FFmpeg();
-    const base = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+    const base = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';
+    _setExportStage("Preparing video tools\u2026 0%");
     await ffmpeg.load({
-      coreURL: await toBlobURL(base + '/ffmpeg-core.js', 'text/javascript'),
-      wasmURL: await toBlobURL(base + '/ffmpeg-core.wasm', 'application/wasm'),
-      classWorkerURL: await toBlobURL('https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm/worker.js', 'text/javascript'),
+      coreURL: await toBlobURL(base + '/ffmpeg-core.js', 'text/javascript', (p) => {
+        if (p && typeof p === 'number') _setExportStage("Preparing video tools\u2026 " + Math.round(p * 100) + "%");
+      }),
+      wasmURL: await toBlobURL(base + '/ffmpeg-core.wasm', 'application/wasm', (p) => {
+        if (p && typeof p === 'number') _setExportStage("Preparing video tools\u2026 " + Math.round(p * 100) + "%");
+      }),
+      classWorkerURL: await toBlobURL('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/worker.js', 'text/javascript'),
     });
     _ffmpegInstance = ffmpeg;
     return ffmpeg;

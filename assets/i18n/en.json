@@ -19,6 +19,9 @@
     "softHint": "A few more today 💛",
     "softHintDone": "More tomorrow 💛"
   },
+  "upload": {
+    "btn": "Upload extracted audio"
+  },
   "speechLang": {
     "title": "Select speech language",
     "sub": "Choose your speaking language: 44 options",
@@ -103,8 +106,8 @@
   },
   "dlChoice": {
     "title": "Download your card",
-    "png": "<i class=\"fa-solid fa-file-image\"></i> Download PNG",
-    "webm": "<i class=\"fa-solid fa-video\"></i> Download WebM"
+    "png": "<i class=\"fa-solid fa-file-image\"></i> Download image",
+    "webm": "<i class=\"fa-solid fa-video\"></i> Download voice"
   },
   "cardEmpty": "Fill the details,<br />your card appears here",
   "cardPlaceholder": "Your story appears here as you speak or type.",

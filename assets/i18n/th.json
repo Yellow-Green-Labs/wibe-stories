@@ -217,7 +217,7 @@
   },
   "dlChoice": {
     "title": "ดาวน์โหลดการ์ดของคุณ",
-    "png": "<i class=\"fa-solid fa-file-image\"></i> ดาวน์โหลด PNG",
-    "webm": "<i class=\"fa-solid fa-video\"></i> ดาวน์โหลด WebM"
+    "png": "<i class=\"fa-solid fa-file-image\"></i> ดาวน์โหลดรูปภาพ",
+    "webm": "<i class=\"fa-solid fa-video\"></i> ดาวน์โหลดเสียง"
   }
 }

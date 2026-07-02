@@ -872,3 +872,57 @@ details.customize:not([open]) > *:not(summary.customize-summary) {
   border-color: var(--ink);
 }
 
+/* --- Upload audio row --- */
+.upload-row {
+  width: 100%;
+  margin-top: 12px;
+  min-height: 42px;
+}
+.upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px 16px;
+  border: 2px dashed var(--rule);
+  border-radius: 8px;
+  background: var(--cream2);
+  color: var(--ink);
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  touch-action: manipulation;
+}
+.upload-btn:hover { border-color: var(--ink2); background: var(--cream3); }
+.upload-btn:active { transform: scale(0.97); }
+.upload-btn[disabled] { opacity: 0.3; cursor: not-allowed; pointer-events: none; border-style: solid; border-color: var(--rule); background: var(--cream); }
+.upload-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--cream2);
+  font-size: clamp(11px, 0.3vw + 10px, 12px);
+  color: var(--ink2);
+  box-sizing: border-box;
+}
+.upload-name { font-weight: 500; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.upload-dur { color: var(--ink3); }
+.upload-cancel {
+  background: none;
+  border: none;
+  color: var(--ink3);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 4px;
+  margin-left: auto;
+  line-height: 1;
+  transition: color 0.15s ease;
+}
+.upload-cancel:hover { color: var(--ink); }
+.upload-row.processing .upload-status { font-style: italic; color: var(--ink3); }
+

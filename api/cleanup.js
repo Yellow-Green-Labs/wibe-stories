@@ -1,12 +1,12 @@
 // Scheduled cleanup of expired card blobs.
 // Runs daily via Vercel Cron (see vercel.json `crons` block). Deletes any
 // blob in `cards/` or `og/` older than MAX_AGE_HOURS so shared cards live
-// ~1–2 days, never longer. Triggered by Vercel with
+// ~7 days, never longer. Triggered by Vercel with
 // `Authorization: Bearer ${CRON_SECRET}`; rejects anything else with 401.
 
 import { list, del } from '@vercel/blob';
 
-const MAX_AGE_HOURS = 36; // 1.5 days — gives ~1–2 day blob lifetime
+const MAX_AGE_HOURS = 168; // 7 days — cards live for a week
 const PREFIXES = ['cards/', 'og/', 'voice/', 'meta/'];
 const DELETE_BATCH = 50;
 

@@ -217,7 +217,7 @@
   },
   "dlChoice": {
     "title": "カードをダウンロード",
-    "png": "<i class=\"fa-solid fa-file-image\"></i> PNGをダウンロード",
-    "webm": "<i class=\"fa-solid fa-video\"></i> WebMをダウンロード"
+    "png": "<i class=\"fa-solid fa-file-image\"></i> 画像をダウンロード",
+    "webm": "<i class=\"fa-solid fa-video\"></i> 音声をダウンロード"
   }
 }
