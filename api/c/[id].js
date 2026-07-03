@@ -73,12 +73,10 @@ export default async function handler(req, res) {
       const ageMs = Date.now() - new Date(cardBlob.uploadedAt).getTime();
       const daysElapsed = Math.floor(ageMs / 86400000);
       const daysRemaining = Math.max(0, 7 - daysElapsed);
-      let label, cls;
-      if (daysRemaining > 5) { label = `Expires in ${daysRemaining} days`; cls = 'green'; }
-      else if (daysRemaining > 1) { label = `Expires in ${daysRemaining} days`; cls = 'amber'; }
-      else if (daysRemaining === 1) { label = 'Expires tomorrow'; cls = 'orange'; }
-      else { label = 'Expires today'; cls = 'red'; }
-      expiryHtml = `<p class="expiry-badge ${cls}">${label}</p>`;
+      if (daysRemaining > 5) { expiryHtml = `Expires in ${daysRemaining} days`; }
+      else if (daysRemaining > 1) { expiryHtml = `Expires in ${daysRemaining} days`; }
+      else if (daysRemaining === 1) { expiryHtml = 'Expires tomorrow'; }
+      else { expiryHtml = 'Expires today'; }
     }
   } catch (e) { /* old card without metadata — no badge */ }
 
@@ -166,9 +164,8 @@ export default async function handler(req, res) {
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{
-  overflow-x:hidden;
-  overflow-y:auto;
-  min-height:100vh;
+  overflow:hidden;
+  height:100vh;height:100dvh;
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -176,47 +173,37 @@ html,body{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   background:#1a1a1a;
   color:#ffffeb;
-  padding:24px;
+  padding:16px;
 }
 .landing-wrap{
   width:100%;
   max-width:600px;
+  height:100vh;height:100dvh;
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:16px;
-}
-.branding{
-  text-align:center;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
-}
-.branding-row{
-  display:flex;
-  align-items:center;
+  justify-content:center;
   gap:10px;
 }
+.branding{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
 .branding-logo{
-  width:28px;
-  height:28px;
+  width:24px;
+  height:24px;
   object-fit:contain;
 }
 .branding-name{
-  font-size:clamp(18px, 3vw, 24px);
+  font-size:clamp(16px,2.5vw,20px);
   font-weight:700;
   color:#ffffeb;
 }
-.branding-sub{
-  font-size:clamp(12px, 2vw, 14px);
-  color:#a5a596;
-  max-width:320px;
-  line-height:1.4;
-}
 .card-img{
-  width:100%;
-  max-width:500px;
+  max-height:40vh;
+  width:auto;
+  max-width:100%;
   border-radius:16px;
   overflow:hidden;
   box-shadow:0 20px 60px rgba(0,0,0,0.3);
@@ -224,15 +211,9 @@ html,body{
 }
 .card-img img{
   width:100%;
-  height:auto;
+  height:100%;
+  object-fit:contain;
   display:block;
-}
-.landing-caption{
-  font-size:clamp(13px, 2vw, 15px);
-  color:#a5a596;
-  text-align:center;
-  margin-top:4px;
-  line-height:1.4;
 }
 .cta{
   display:inline-block;
@@ -241,29 +222,12 @@ html,body{
   text-decoration:none;
   padding:12px 28px;
   border-radius:999px;
-  font-size:clamp(15px, 2.2vw, 18px);
+  font-size:clamp(15px,2.2vw,18px);
   font-weight:600;
   transition:transform .15s ease,background .15s ease;
-  margin-top:8px;
 }
 .cta:hover{background:#fff;transform:translateY(-1px)}
-@media (max-height:700px){
-  .branding{gap:2px}
-  .branding-sub{font-size:11px}
-  .card-img{max-width:400px}
-  .cta{padding:10px 24px}
-}
-.voice-player{margin-top:8px;text-align:center}
-.voice-btn{background:#f59e0b;color:#1a1a1a;border:none;border-radius:40px;padding:12px 28px;font-size:clamp(14px,2.2vw,16px);font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 14px rgba(245,158,11,.4)}
-.voice-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(245,158,11,.5)}
-.voice-btn.playing{background:#555;color:#ffffeb;box-shadow:none}
-.voice-btn.playing:hover{transform:none;box-shadow:none}
-@media (max-width:400px){
-  html,body{padding:16px}
-  .branding-logo{width:24px;height:24px}
-  .card-img{max-width:100%}
-}
-.hook-line{font-size:clamp(12px,2vw,14px);color:#a5a596;margin-top:20px;text-align:center}
+.hook-line{font-size:clamp(12px,2vw,14px);color:#a5a596;margin:0;text-align:center}
 .hook-flow{display:inline-block;font-size:clamp(14px,2.2vw,16px);font-weight:700;color:#f59e0b;text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
 .hook-flow:hover{border-bottom-color:#f59e0b}
 .hook-flow span{display:inline-block;animation:wave-letter-auto 2.5s ease-in-out infinite}
@@ -271,45 +235,48 @@ html,body{
 @keyframes wave-letter-auto{0%,70%{transform:translateY(0)}80%{transform:translateY(-4px)}90%,100%{transform:translateY(0)}}
 @keyframes pulse-glow{0%,100%{text-shadow:0 0 4px rgba(245,158,11,.2)}50%{text-shadow:0 0 16px rgba(245,158,11,.5)}}
 @media(prefers-reduced-motion:reduce){.hook-flow span{animation:none!important}.hook-flow.pulse{animation:none!important}}
-.voice-status{font-size:clamp(11px,1.8vw,13px);color:#a5a596;margin-top:2px;text-align:center;letter-spacing:0.02em}
-.expiry-badge{display:inline-block;font-size:clamp(10px,1.6vw,12px);font-weight:600;padding:3px 10px;border-radius:12px;margin-top:6px;text-align:center}
-.expiry-badge.green{background:rgba(34,197,94,.15);color:#22c55e}
-.expiry-badge.amber{background:rgba(245,158,11,.15);color:#f59e0b}
-.expiry-badge.orange{background:rgba(249,115,22,.15);color:#f97316}
-.expiry-badge.red{background:rgba(239,68,68,.15);color:#ef4444}
-.dl-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px}
-.dl-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:999px;font-size:clamp(13px,2vw,15px);font-weight:600;text-decoration:none;cursor:pointer;border:none;transition:transform .15s,background .15s}
+.divider{width:40px;border:none;border-top:1px solid #444;margin:2px 0}
+.landing-meta{font-size:12px;color:#a5a596;text-align:center;line-height:1.5;margin:0}
+.dl-btns{display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap}
+.dl-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;text-decoration:none;cursor:pointer;border:none;transition:transform .15s,background .15s}
 .dl-btn:hover{transform:translateY(-1px)}
-.dl-btn-primary{background:#1a1a1a;color:#ffffeb}
-.dl-btn-primary:hover{background:#333}
-.dl-btn-secondary{background:transparent;color:#1a1a1a;border:1px solid #ccc}
-.dl-btn-secondary:hover{background:#f5f5f0}
+.dl-btn-primary{background:#ffffeb;color:#1a1a1a}
+.dl-btn-primary:hover{background:#fff}
+.dl-btn-secondary{background:transparent;color:#ffffeb;border:1px solid #555}
+.dl-btn-secondary:hover{background:#333}
+.voice-btn{background:#f59e0b;color:#1a1a1a;border:none;border-radius:999px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:transform .15s,box-shadow .15s}
+.voice-btn:hover{transform:translateY(-1px)}
+.voice-btn.playing{background:#555;color:#ffffeb;box-shadow:none}
+.voice-btn.playing:hover{transform:none}
+@media (max-height:600px){
+  .branding{display:none}
+  .card-img{max-height:35vh}
+  .cta{padding:10px 22px;font-size:14px}
+}
+@media (max-width:400px){
+  html,body{padding:12px}
+  .branding-logo{width:20px;height:20px}
+}
 </style>
 </head>
 <body>
 <main class="landing-wrap">
   <div class="branding">
-    <div class="branding-row">
-      <img class="branding-logo" src="${safeHomeUrl}assets/ws-logo-blwbg.png" alt="Wibe Stories">
-      <span class="branding-name">Wibe Stories</span>
-    </div>
-    <p class="branding-sub">Turn your voice into something beautiful</p>
+    <img class="branding-logo" src="${safeHomeUrl}assets/ws-logo-blwbg.png" alt="Wibe Stories">
+    <span class="branding-name">Wibe Stories</span>
   </div>
-  <br>
   <div class="card-img">
     <img src="${safeCardUrl}" alt="${altText}">
   </div>
-  <p class="voice-status">${hasVoice ? 'With voice' : 'Text only'}</p>
-  ${expiryHtml}
-  ${hasVoice ? '<div class="voice-player"><button class="voice-btn" id="playVoice" onclick="var a=document.getElementById(\'voiceAudio\');if(a.paused){a.play();this.innerHTML=\'<span>⏸</span> Playing\u2026\';this.classList.add(\'playing\')}else{a.pause();this.innerHTML=\'<span>▶</span> Listen to voice\';this.classList.remove(\'playing\')}"><span>▶</span> Listen to voice</button><audio id="voiceAudio" src="' + safeVoiceUrl + '" preload="none" onended="var b=document.getElementById(\'playVoice\');b.innerHTML=\'<span>▶</span> Listen to voice\';b.classList.remove(\'playing\')"></audio></div>' : ''}
-  ${captionHtml}
-  <div class="dl-btns">
-    <a class="dl-btn dl-btn-primary" href="${safeCardUrl}" download="wibe-story.png"><i class="fa-solid fa-camera"></i> Download image</a>
-    ${hasVoice ? `<a class="dl-btn dl-btn-secondary" href="${safeVoiceUrl}" download="wibe-voice.webm"><i class="fa-solid fa-clapperboard"></i> Download voice</a>` : ''}
-  </div>
   <a class="cta" href="${safeAppUrl}">Create your own &rarr;</a>
   <p class="hook-line">${hookLine} <a class="hook-flow pulse" href="https://wisprflow.ai/r?BEST76" target="_blank" rel="noopener">→Wispr Flow</a></p>
-  <br>
+  <hr class="divider">
+  <p class="landing-meta">${safeName ? safeName + ' shared a Wibe Story. · ' : ''}${hasVoice ? 'With voice' : 'Text only'}${expiryHtml ? ' · ' + expiryHtml : ''}</p>
+  <div class="dl-btns">
+    ${hasVoice ? '<button class="voice-btn" id="playVoice" onclick="var a=document.getElementById(\'voiceAudio\');if(a.paused){a.play();this.innerHTML=\'⏸ Playing\';this.classList.add(\'playing\')}else{a.pause();this.innerHTML=\'▶ Listen\';this.classList.remove(\'playing\')}">▶ Listen</button><audio id="voiceAudio" src="' + safeVoiceUrl + '" preload="none" onended="var b=document.getElementById(\'playVoice\');b.innerHTML=\'▶ Listen\';b.classList.remove(\'playing\')"></audio>' : ''}
+    <a class="dl-btn dl-btn-primary" href="${safeCardUrl}" download="wibe-story.png">Download image</a>
+    ${hasVoice ? `<a class="dl-btn dl-btn-secondary" href="${safeVoiceUrl}" download="wibe-voice.webm">Download voice</a>` : ''}
+  </div>
 </main>
 <script>(function(){var e=document.querySelector('.hook-flow');if(!e||window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;var t=e.textContent;e.innerHTML='';var c=0;for(var i=0;i<t.length;i++){if(t[i]===' '){e.appendChild(document.createTextNode(' '))}else{var s=document.createElement('span');s.textContent=t[i];s.style.animationDelay=(c*0.06)+'s';e.appendChild(s);c++}}})()</script>
 </body>
