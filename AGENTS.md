@@ -150,6 +150,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `internal-logs/ilogs-ws.md` — acknowledged logs source-of-truth (git-ignored)
 - `internal-logs/observer.js` — keyboard shortcut handler for beacon redirect
 - `api/beacon.js` — redirect handler (reads `WS_EP` env var)
+- `api/download/[id].js` — download proxy (serves Blob files with `Content-Disposition: attachment`)
 
 ## Card metadata sidecar system
 
@@ -157,5 +158,5 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7-day retention).
 
-<!-- agsync: last-run 2026-07-01; v0.11.13: Download modal text (PNG→Image, WebM→Voice) in HTML + 12 locales. Share modal desktop reorder (Copy link highlighted, Share to apps de-emphasized). Occasion trigger fixes: removed 6 false-positives (rip, dep, luck, selamat, pride, easter), fixed data quality (leading space, typo), removed ~30 internal duplicates, added 7 missing triggers. Cross-occasion fixes: removed wrong triggers from birthday/congratulations/easter. Landing page: download buttons (image + voice), expiry badge (color-coded), voice status label. 7-day card retention (MAX_AGE_HOURS 36→168). Upload button desktop-only + renamed to "Upload extracted audio". Share button double-tap fix (debounce + touch-action). -->
+<!-- agsync: last-run 2026-07-03; v0.11.13.1: Card Not Found fix (strip \u200B from ID). Banner text fix ("Create my card" → "Create your own to share next"). Update toast fix (_versionUpToDate flag + 3s delay). Download proxy (api/download/[id].js + vercel.json rewrite). -->
 

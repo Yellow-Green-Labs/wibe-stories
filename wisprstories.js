@@ -138,9 +138,10 @@ let _lastKnownRecordingsDate = "";
 
 // Service Worker update detection & version polling
 let _updatePending = false;
+let _versionUpToDate = false;
 let _versionPollTimer = null;
 const VERSION_POLL_INTERVAL_MS = 60 * 1000; // 60 seconds
-const CURRENT_VERSION = "v0.11.13";
+const CURRENT_VERSION = "v0.11.13.1";
 
 // Shows the "new version available" notice. Persists until clicked — unlike
 // the generic showToast() which auto-dismisses after 3.2s. Clicking triggers
@@ -148,6 +149,10 @@ const CURRENT_VERSION = "v0.11.13";
 function showUpdateToast() {
   const t = document.getElementById("toast");
   if (!t) return;
+  // If version check already confirmed we're up-to-date, don't show the toast.
+  // This prevents the SW controllerchange handler from showing a false positive
+  // right after a hard refresh (controllerchange fires before checkVersion completes).
+  if (_versionUpToDate) return;
   // Prevent duplicate persistent toasts
   if (t.classList.contains("show") && t.dataset.updateToast === "1") return;
 
@@ -177,8 +182,15 @@ function initSWUpdateDetection() {
   // controllerchange fires when a new SW takes over the page
   navigator.serviceWorker.addEventListener("controllerchange", function () {
     if (_updatePending) return;
+    // Delay showing the toast by 3 seconds to let checkVersion() complete first.
+    // After a hard refresh, controllerchange fires immediately but checkVersion()
+    // needs time to fetch /version.json. Without this delay, the toast appears
+    // even when versions match (false positive).
     _updatePending = true;
-    showUpdateToast();
+    setTimeout(function () {
+      if (_versionUpToDate) return; // checkVersion confirmed we're current
+      showUpdateToast();
+    }, 3000);
   });
 
   // updatefound fires when a new SW is being installed
@@ -203,6 +215,10 @@ async function checkVersion() {
       if (_updatePending) return;   // already flagged; visibilitychange re-shows it
       _updatePending = true;
       showUpdateToast();
+    } else {
+      // Versions match — we're up to date. Flag this so the controllerchange
+      // handler (which may fire later with a delay) doesn't show a false toast.
+      _versionUpToDate = true;
     }
   } catch (_e) {
     // Silent fail — network issues, offline, etc.
@@ -372,7 +388,7 @@ function showNotice(type) {
   let html = "";
   if (type === "shared") {
     html = tr("sharedCta") ||
-      "✨ <strong>You received a Wibe Story!</strong> Tap <em>Create my card</em> to make your own.";
+      "✨ <strong>You received a Wibe Story!</strong> Love it? Create your own to share next.";
   } else {
     return;
   }

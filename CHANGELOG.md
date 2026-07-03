@@ -1,5 +1,20 @@
 # Changelog
 
+## [v0.11.13.1] — Bug Fixes (2026-07-03)
+
+### Added
+- **Download proxy endpoint** — New `api/download/[id].js` serves Blob files with `Content-Disposition: attachment` header. Fixes cross-origin download issue where browsers ignored the `download` attribute on CDN URLs. Landing page download links now use `/download/:id` proxy instead of direct CDN URLs.
+
+### Changed
+- **Banner text** — "Tap Create my card to make your own." → "Love it? Create your own to share next." in `en.json` and `wisprstories.js` fallback.
+- **Landing page download links** — Now use `/download/:id` proxy instead of direct CDN URLs.
+
+### Fixed
+- **Card Not Found on valid links** — Zero-width space (`\u200B`) in share URLs was causing ID validation to fail. Added `.replace(/[^\w-]/g, '')` to strip invisible characters from the ID before validation in `api/c/[id].js`.
+- **Update toast false positive** — After hard refresh, the "new version available" toast appeared even when versions matched. Added `_versionUpToDate` flag, 3-second delay on `controllerchange` handler, and `sessionStorage` safety net.
+
+---
+
 ## [v0.11.13] — UX Polish + Occasion Fixes + Landing Page Enhancements (2026-07-01)
 
 ### Added

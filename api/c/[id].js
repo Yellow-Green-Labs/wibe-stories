@@ -28,7 +28,9 @@ export default async function handler(req, res) {
 
   // Extract short ID from URL path: /c/abc123
   const url = new URL(req.url, origin);
-  const id = url.pathname.replace(/^\/c\//, '');
+  // Strip zero-width space (\u200B) and other non-alphanumeric chars that
+  // sneak into shared URLs as separators between the card link and CTA text.
+  const id = url.pathname.replace(/^\/c\//, '').replace(/[^\w-]/g, '');
 
   if (!id || id.length < 4 || id.length > 12 || !/^[a-zA-Z0-9]+$/.test(id)) {
     res.statusCode = 404;
@@ -274,8 +276,8 @@ html,body{
   <p class="landing-meta">${safeName ? safeName + ' shared a Wibe Story. · ' : ''}${hasVoice ? 'With voice' : 'Text only'}${expiryHtml ? ' · ' + expiryHtml : ''}</p>
   <div class="dl-btns">
     ${hasVoice ? '<button class="voice-btn" id="playVoice" onclick="var a=document.getElementById(\'voiceAudio\');if(a.paused){a.play();this.innerHTML=\'⏸ Playing\';this.classList.add(\'playing\')}else{a.pause();this.innerHTML=\'▶ Listen\';this.classList.remove(\'playing\')}">▶ Listen</button><audio id="voiceAudio" src="' + safeVoiceUrl + '" preload="none" onended="var b=document.getElementById(\'playVoice\');b.innerHTML=\'▶ Listen\';b.classList.remove(\'playing\')"></audio>' : ''}
-    <a class="dl-btn dl-btn-primary" href="${safeCardUrl}" download="wibe-story.png">Download image</a>
-    ${hasVoice ? `<a class="dl-btn dl-btn-secondary" href="${safeVoiceUrl}" download="wibe-voice.webm">Download voice</a>` : ''}
+    <a class="dl-btn dl-btn-primary" href="/download/${id}" download="wibe-story.png">Download image</a>
+    ${hasVoice ? `<a class="dl-btn dl-btn-secondary" href="/download/${id}?type=voice" download="wibe-voice.webm">Download voice</a>` : ''}
   </div>
 </main>
 <script>(function(){var e=document.querySelector('.hook-flow');if(!e||window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;var t=e.textContent;e.innerHTML='';var c=0;for(var i=0;i<t.length;i++){if(t[i]===' '){e.appendChild(document.createTextNode(' '))}else{var s=document.createElement('span');s.textContent=t[i];s.style.animationDelay=(c*0.06)+'s';e.appendChild(s);c++}}})()</script>

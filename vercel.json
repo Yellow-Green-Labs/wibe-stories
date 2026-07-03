@@ -5,7 +5,8 @@
     { "source": "/about", "destination": "/about.html" },
     { "source": "/language-stats", "destination": "/language-stats.html" },
     { "source": "/card", "destination": "/api/card" },
-    { "source": "/c/:id", "destination": "/api/c/[id]" }
+    { "source": "/c/:id", "destination": "/api/c/[id]" },
+    { "source": "/download/:id", "destination": "/api/download/:id" }
   ],
   "redirects": [
     { "source": "/about.html", "destination": "/about", "statusCode": 301 },
