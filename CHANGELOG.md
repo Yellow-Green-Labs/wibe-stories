@@ -8,9 +8,13 @@
 - **Landing page watermark** — "Wibe Stories · Turn your voice into something beautiful" shown at bottom of landing page.
 
 ### Changed
-- **Banner text** — "Tap Create my card to make your own." → "Love it? Create your own to share next." in `en.json` and `wisprstories.js` fallback.
+- **"Create your own" link** — Now always goes to clean URL (`/`) instead of including card data in hash. Prevents stale state persisting through refreshes.
 - **Landing page download links** — Now use `/download/:id` proxy instead of direct CDN URLs.
 - **Landing page meta line** — Removed name from meta (now shown in caption above image).
+- **Landing page restructured** — Branding at top, caption + image + CTA + punchline centered, watermark at bottom. All content fits in viewport (no scroll).
+
+### Removed
+- **"sharedCta" banner** — Removed dead code from `wisprstories.js` and all 11 locale files. Banner was designed to show when app opened with hash parameters, but "Create your own" now goes to clean URL.
 
 ### Fixed
 - **Card Not Found on valid links** — Zero-width space (`\u200B`) in share URLs was causing ID validation to fail. Added `.replace(/[^\w-]/g, '')` to strip invisible characters from the ID before validation in `api/c/[id].js`.

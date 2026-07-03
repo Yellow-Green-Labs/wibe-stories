@@ -82,10 +82,10 @@ export default async function handler(req, res) {
     }
   } catch (e) { /* old card without metadata — no badge */ }
 
-  const enc = (s) => encodeURIComponent(s || '');
-  const appUrl = metaText || metaName
-    ? `${origin}/#text=${enc(metaText)}&name=${enc(metaName)}&tone=${metaTone}&p=${metaP}&r=${metaR}`
-    : homeUrl;
+  // "Create your own" always goes to clean state — no hash params.
+  // Including card data in the hash caused the URL to persist through refreshes,
+  // making it impossible to get back to a fresh state.
+  const appUrl = homeUrl;
 
   // OG image = the actual card JPEG served through our own domain via /api/og/:id,
   // so scrapers fetch it from the same origin as the page, avoiding cross-domain CDN issues.

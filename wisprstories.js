@@ -377,25 +377,7 @@ async function _computeWaveform(blob) {
 
 // Unified notice system — one slot, one message at a time, dismissable.
 // Priority: Firefox warning beats shared-link CTA (the functional/blocking
-// notice wins over the informational one). Dismissal persists per-type
-// in localStorage so users don't see the same banner twice.
-function showNotice(type) {
-  if (localStorage.getItem("noticeDismissed:" + type) === "1") return;
-  const el = document.getElementById("notice");
-  const txt = document.getElementById("noticeText");
-  if (!el || !txt) return;
-  const tr = (key) => (typeof getI18nSync === "function" ? getI18nSync(key) : null);
-  let html = "";
-  if (type === "shared") {
-    html = tr("sharedCta") ||
-      "✨ <strong>You received a Wibe Story!</strong> Love it? Create your own to share next.";
-  } else {
-    return;
-  }
-  txt.innerHTML = html;
-  el.dataset.noticeType = type;
-  el.hidden = false;
-}
+// notice banner was removed — "Create your own" now goes to clean URL.
 function dismissNotice() {
   const el = document.getElementById("notice");
   const type = el?.dataset.noticeType;
@@ -403,21 +385,6 @@ function dismissNotice() {
   if (el) el.hidden = true;
 }
 document.getElementById("noticeDismiss")?.addEventListener("click", dismissNotice);
-
-// Pick the highest-priority notice for this session.
-if (location.hash && location.hash.length > 1) {
-  try {
-    const params = new URLSearchParams(location.hash.slice(1));
-    if (params.get("text")) showNotice("shared");
-  } catch (e) {
-    /* malformed hash — no notice */
-  }
-}
-// Re-localize notice text when the user changes language.
-document.addEventListener("languagesReady", function () {
-  const el = document.getElementById("notice");
-  if (el && !el.hidden && el.dataset.noticeType) showNotice(el.dataset.noticeType);
-});
 
 function saveDraft() {
   try {
