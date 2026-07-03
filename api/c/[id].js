@@ -238,7 +238,9 @@ html,body{
 @keyframes pulse-glow{0%,100%{text-shadow:0 0 4px rgba(245,158,11,.2)}50%{text-shadow:0 0 16px rgba(245,158,11,.5)}}
 @media(prefers-reduced-motion:reduce){.hook-flow span{animation:none!important}.hook-flow.pulse{animation:none!important}}
 .divider{width:40px;border:none;border-top:1px solid #444;margin:2px 0}
+.landing-caption{font-size:clamp(13px,2vw,15px);color:#ffffeb;margin:0;text-align:center}
 .landing-meta{font-size:12px;color:#a5a596;text-align:center;line-height:1.5;margin:0}
+.watermark{font-size:11px;color:#555;text-align:center;margin-top:auto;padding-top:8px}
 .dl-btns{display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap}
 .dl-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;text-decoration:none;cursor:pointer;border:none;transition:transform .15s,background .15s}
 .dl-btn:hover{transform:translateY(-1px)}
@@ -252,6 +254,7 @@ html,body{
 .voice-btn.playing:hover{transform:none}
 @media (max-height:600px){
   .branding{display:none}
+  .landing-caption{display:none}
   .card-img{max-height:35vh}
   .cta{padding:10px 22px;font-size:14px}
 }
@@ -267,18 +270,20 @@ html,body{
     <img class="branding-logo" src="${safeHomeUrl}assets/ws-logo-blwbg.png" alt="Wibe Stories">
     <span class="branding-name">Wibe Stories</span>
   </div>
+  ${safeName ? `<p class="landing-caption">${safeName} shared a Wibe Story with you.</p>` : ''}
   <div class="card-img">
     <img src="${safeCardUrl}" alt="${altText}">
   </div>
   <a class="cta" href="${safeAppUrl}">Create your own &rarr;</a>
   <p class="hook-line">${hookLine} <a class="hook-flow pulse" href="https://wisprflow.ai/r?BEST76" target="_blank" rel="noopener">→Wispr Flow</a></p>
   <hr class="divider">
-  <p class="landing-meta">${safeName ? safeName + ' shared a Wibe Story. · ' : ''}${hasVoice ? 'With voice' : 'Text only'}${expiryHtml ? ' · ' + expiryHtml : ''}</p>
+  <p class="landing-meta">${hasVoice ? 'With voice' : 'Text only'}${expiryHtml ? ' · ' + expiryHtml : ''}</p>
   <div class="dl-btns">
     ${hasVoice ? '<button class="voice-btn" id="playVoice" onclick="var a=document.getElementById(\'voiceAudio\');if(a.paused){a.play();this.innerHTML=\'⏸ Playing\';this.classList.add(\'playing\')}else{a.pause();this.innerHTML=\'▶ Listen\';this.classList.remove(\'playing\')}">▶ Listen</button><audio id="voiceAudio" src="' + safeVoiceUrl + '" preload="none" onended="var b=document.getElementById(\'playVoice\');b.innerHTML=\'▶ Listen\';b.classList.remove(\'playing\')"></audio>' : ''}
     <a class="dl-btn dl-btn-primary" href="/download/${id}" download="wibe-story.png">Download image</a>
     ${hasVoice ? `<a class="dl-btn dl-btn-secondary" href="/download/${id}?type=voice" download="wibe-voice.webm">Download voice</a>` : ''}
   </div>
+  <p class="watermark">Wibe Stories · Turn your voice into something beautiful</p>
 </main>
 <script>(function(){var e=document.querySelector('.hook-flow');if(!e||window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;var t=e.textContent;e.innerHTML='';var c=0;for(var i=0;i<t.length;i++){if(t[i]===' '){e.appendChild(document.createTextNode(' '))}else{var s=document.createElement('span');s.textContent=t[i];s.style.animationDelay=(c*0.06)+'s';e.appendChild(s);c++}}})()</script>
 </body>

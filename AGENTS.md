@@ -158,5 +158,5 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7-day retention).
 
-<!-- agsync: last-run 2026-07-03; v0.11.13.1: Card Not Found fix (strip \u200B from ID). Banner text fix ("Create my card" → "Create your own to share next"). Update toast fix (_versionUpToDate flag + 3s delay). Download proxy (api/download/[id].js + vercel.json rewrite). -->
+<!-- agsync: last-run 2026-07-03; v0.11.13.1: Card Not Found fix (strip \u200B from ID). Banner text fix ("Create my card" → "Create your own to share next"). Update toast fix (_versionUpToDate flag + 3s delay). Download proxy (api/download/[id].js + vercel.json rewrite). Landing page caption + watermark added. -->
 

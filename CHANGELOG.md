@@ -4,10 +4,13 @@
 
 ### Added
 - **Download proxy endpoint** — New `api/download/[id].js` serves Blob files with `Content-Disposition: attachment` header. Fixes cross-origin download issue where browsers ignored the `download` attribute on CDN URLs. Landing page download links now use `/download/:id` proxy instead of direct CDN URLs.
+- **Landing page caption** — "Name shared a Wibe Story with you." shown between branding and card image. Only appears when card has a name.
+- **Landing page watermark** — "Wibe Stories · Turn your voice into something beautiful" shown at bottom of landing page.
 
 ### Changed
 - **Banner text** — "Tap Create my card to make your own." → "Love it? Create your own to share next." in `en.json` and `wisprstories.js` fallback.
 - **Landing page download links** — Now use `/download/:id` proxy instead of direct CDN URLs.
+- **Landing page meta line** — Removed name from meta (now shown in caption above image).
 
 ### Fixed
 - **Card Not Found on valid links** — Zero-width space (`\u200B`) in share URLs was causing ID validation to fail. Added `.replace(/[^\w-]/g, '')` to strip invisible characters from the ID before validation in `api/c/[id].js`.
