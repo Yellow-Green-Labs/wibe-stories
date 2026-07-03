@@ -184,8 +184,15 @@ html,body{
   display:flex;
   flex-direction:column;
   align-items:center;
+}
+.center-content{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
   justify-content:center;
   gap:10px;
+  width:100%;
 }
 .branding{
   display:flex;
@@ -254,6 +261,7 @@ html,body{
 .voice-btn.playing:hover{transform:none}
 @media (max-height:600px){
   .branding{display:none}
+  .center-content{gap:6px}
   .landing-caption{display:none}
   .card-img{max-height:35vh}
   .cta{padding:10px 22px;font-size:14px}
@@ -270,18 +278,20 @@ html,body{
     <img class="branding-logo" src="${safeHomeUrl}assets/ws-logo-blwbg.png" alt="Wibe Stories">
     <span class="branding-name">Wibe Stories</span>
   </div>
-  ${safeName ? `<p class="landing-caption">${safeName} shared a Wibe Story with you.</p>` : ''}
-  <div class="card-img">
-    <img src="${safeCardUrl}" alt="${altText}">
-  </div>
-  <a class="cta" href="${safeAppUrl}">Create your own &rarr;</a>
-  <p class="hook-line">${hookLine} <a class="hook-flow pulse" href="https://wisprflow.ai/r?BEST76" target="_blank" rel="noopener">→Wispr Flow</a></p>
-  <hr class="divider">
-  <p class="landing-meta">${hasVoice ? 'With voice' : 'Text only'}${expiryHtml ? ' · ' + expiryHtml : ''}</p>
-  <div class="dl-btns">
-    ${hasVoice ? '<button class="voice-btn" id="playVoice" onclick="var a=document.getElementById(\'voiceAudio\');if(a.paused){a.play();this.innerHTML=\'⏸ Playing\';this.classList.add(\'playing\')}else{a.pause();this.innerHTML=\'▶ Listen\';this.classList.remove(\'playing\')}">▶ Listen</button><audio id="voiceAudio" src="' + safeVoiceUrl + '" preload="none" onended="var b=document.getElementById(\'playVoice\');b.innerHTML=\'▶ Listen\';b.classList.remove(\'playing\')"></audio>' : ''}
-    <a class="dl-btn dl-btn-primary" href="/download/${id}" download="wibe-story.png">Download image</a>
-    ${hasVoice ? `<a class="dl-btn dl-btn-secondary" href="/download/${id}?type=voice" download="wibe-voice.webm">Download voice</a>` : ''}
+  <div class="center-content">
+    ${safeName ? `<p class="landing-caption"><strong>${safeName}</strong> shared a Wibe Story with you.</p>` : ''}
+    <div class="card-img">
+      <img src="${safeCardUrl}" alt="${altText}">
+    </div>
+    <a class="cta" href="${safeAppUrl}">Create your own &rarr;</a>
+    <p class="hook-line">${hookLine} <a class="hook-flow pulse" href="https://wisprflow.ai/r?BEST76" target="_blank" rel="noopener">→Wispr Flow</a></p>
+    <hr class="divider">
+    <p class="landing-meta">${hasVoice ? 'With voice' : 'Text only'}${expiryHtml ? ' · ' + expiryHtml : ''}</p>
+    <div class="dl-btns">
+      ${hasVoice ? '<button class="voice-btn" id="playVoice" onclick="var a=document.getElementById(\'voiceAudio\');if(a.paused){a.play();this.innerHTML=\'⏸ Playing\';this.classList.add(\'playing\')}else{a.pause();this.innerHTML=\'▶ Listen\';this.classList.remove(\'playing\')}">▶ Listen</button><audio id="voiceAudio" src="' + safeVoiceUrl + '" preload="none" onended="var b=document.getElementById(\'playVoice\');b.innerHTML=\'▶ Listen\';b.classList.remove(\'playing\')"></audio>' : ''}
+      <a class="dl-btn dl-btn-primary" href="/download/${id}" download="wibe-story.png">Download image</a>
+      ${hasVoice ? `<a class="dl-btn dl-btn-secondary" href="/download/${id}?type=voice" download="wibe-voice.webm">Download voice</a>` : ''}
+    </div>
   </div>
   <p class="watermark">Wibe Stories · Turn your voice into something beautiful</p>
 </main>
