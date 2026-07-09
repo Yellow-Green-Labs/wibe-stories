@@ -1,6 +1,16 @@
-export const config = { runtime: 'edge' };
+export const config = { runtime: 'nodejs' };
 
 import { getOccasionById, getNextOccasion, sendOccasionEmail } from '../api/lib/occasion-email.js';
+
+function getSmtpConfig() {
+  return {
+    host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+    port: parseInt(process.env.SMTP_PORT || '587', 10),
+    secure: process.env.SMTP_SECURE === 'true',
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  };
+}
 
 export default async function handler(req) {
   const url = new URL(req.url);
@@ -14,9 +24,9 @@ export default async function handler(req) {
     });
   }
 
-  const brevoApiKey = process.env.BREVO_API_KEY;
-  if (!brevoApiKey) {
-    return new Response(JSON.stringify({ error: 'BREVO_API_KEY not set on server' }), {
+  const smtpConfig = getSmtpConfig();
+  if (!smtpConfig.user || !smtpConfig.pass) {
+    return new Response(JSON.stringify({ error: 'SMTP credentials not set on server' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -41,15 +51,15 @@ export default async function handler(req) {
     }
   }
 
-  const ok = await sendOccasionEmail(brevoApiKey, email, occasion);
+  const result = await sendOccasionEmail(smtpConfig, email, occasion);
 
-  if (ok) {
+  if (result.ok) {
     return new Response(JSON.stringify({ ok: true, occasion: occasion.id, name: occasion.name, sentTo: email }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
   } else {
-    return new Response(JSON.stringify({ ok: false, error: 'Brevo send failed', occasion: occasion.id, name: occasion.name }), {
+    return new Response(JSON.stringify({ ok: false, error: result.error, occasion: occasion.id, name: occasion.name }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });

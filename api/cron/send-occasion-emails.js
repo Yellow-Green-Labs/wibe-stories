@@ -1,4 +1,4 @@
-export const config = { runtime: 'edge' };
+export const config = { runtime: 'nodejs' };
 
 import { getRedis, KEYS } from '../../lib/redis.js';
 import { getOccasionForDate, sendOccasionEmail } from '../lib/occasion-email.js';
@@ -9,15 +9,25 @@ function normalizeEmail(email) {
   return email.toLowerCase().trim();
 }
 
+function getSmtpConfig() {
+  return {
+    host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+    port: parseInt(process.env.SMTP_PORT || '587', 10),
+    secure: process.env.SMTP_SECURE === 'true',
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  };
+}
+
 export default async function handler(req) {
   const expected = process.env.CRON_SECRET;
   if (!expected || req.headers.get('authorization') !== `Bearer ${expected}`) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  const brevoApiKey = process.env.BREVO_API_KEY;
-  if (!brevoApiKey) {
-    console.error('[OccasionCron] BREVO_API_KEY not set');
+  const smtpConfig = getSmtpConfig();
+  if (!smtpConfig.user || !smtpConfig.pass) {
+    console.error('[OccasionCron] SMTP credentials not set');
     return new Response('Server config error', { status: 500 });
   }
 
@@ -63,11 +73,12 @@ export default async function handler(req) {
           return 'skipped';
         }
 
-        const ok = await sendOccasionEmail(brevoApiKey, email, occasion);
-        if (ok) {
+        const result = await sendOccasionEmail(smtpConfig, email, occasion);
+        if (result.ok) {
           await redis.set(dedupKey, '1', { ex: 31536000 });
           return 'sent';
         } else {
+          console.error(`[OccasionCron] ${email} failed:`, result.error);
           return 'error';
         }
       })

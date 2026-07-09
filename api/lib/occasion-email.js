@@ -1,7 +1,6 @@
 export const SENDER_EMAIL = 'yellowgreenlabs@proton.me';
 export const SENDER_NAME = 'Wibe Stories';
 
-const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
 const EMAIL_TIMEOUT_MS = 8000;
 const IMG_BASE = 'https://wibestories.vercel.app/assets/occasions/';
 
@@ -198,33 +197,31 @@ export function buildHtmlBody(occasion, email) {
 </html>`;
 }
 
-export async function sendOccasionEmail(brevoApiKey, email, occasion) {
+export async function sendOccasionEmail(smtpConfig, email, occasion) {
+  const nodemailer = await import('nodemailer');
   const subject = buildSubject(occasion);
   const htmlContent = buildHtmlBody(occasion, email);
-  const payload = {
-    sender: { email: SENDER_EMAIL, name: SENDER_NAME },
-    to: [{ email, name: '' }],
-    subject,
-    htmlContent,
-  };
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), EMAIL_TIMEOUT_MS);
+
+  const transporter = nodemailer.default.createTransport({
+    host: smtpConfig.host,
+    port: smtpConfig.port,
+    secure: smtpConfig.secure,
+    auth: {
+      user: smtpConfig.user,
+      pass: smtpConfig.pass,
+    },
+  });
+
   try {
-    const res = await fetch(BREVO_API_URL, {
-      method: 'POST',
-      headers: {
-        'api-key': brevoApiKey,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
+    await transporter.sendMail({
+      from: `"${SENDER_NAME}" <${SENDER_EMAIL}>`,
+      to: email,
+      subject,
+      html: htmlContent,
     });
-    clearTimeout(timeoutId);
-    return res.ok;
+    return { ok: true };
   } catch (err) {
-    clearTimeout(timeoutId);
-    console.error(`[OccasionEmail] Failed for ${email}:`, err.message);
-    return false;
+    console.error(`[OccasionEmail] SMTP failed for ${email}:`, err.message);
+    return { ok: false, error: err.message };
   }
 }
