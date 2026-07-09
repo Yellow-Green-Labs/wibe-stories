@@ -12,6 +12,23 @@ const PALS = [
   "#4f46e5",
 ];
 const PAL_NAMES = ['violet', 'amber', 'crimson', 'emerald', 'ocean', 'rose', 'orange', 'teal', 'fuchsia', 'indigo'];
+let customColor = null;
+
+function isCustomColor() { return customColor !== null; }
+
+function getCardColor() {
+  if (isCustomColor()) return customColor;
+  if (_savedCustomColor) return _savedCustomColor;
+  return PALS[curP] || PALS[0];
+}
+
+const TEXTURES = [
+  { name: "Grain", file: "assets/themes/wh-texture-1.png", mode: "multiply" },
+  { name: "Linen", file: "assets/themes/wh-texture-2.png", mode: "multiply" },
+];
+let _curTexture = null;
+
+
 // Card is standardized on 2:2 (square) so the share/OG image reliably
 // triggers the large-preview format in WhatsApp/iMessage/etc. (Spotify uses
 // the same square strategy for lyrics card shares.)
@@ -400,6 +417,7 @@ function saveDraft() {
       cardReady: cardReady,
       voiceAttached: voiceAttached,
       fontBump: cardFontBump,
+      texture: _curTexture,
     };
     sessionStorage.setItem("wisprDraft", JSON.stringify(draft));
   } catch (e) { /* storage unavailable */ }
@@ -429,6 +447,7 @@ function loadDraft() {
     }
     if (draft.rounded != null) {
       useRounded = draft.rounded;
+      _customColorBgCache = {};
       const card = document.getElementById("card");
       if (useRounded) {
         card.style.borderRadius = "32px";
@@ -449,6 +468,7 @@ function loadDraft() {
     // length limit, so a saved bump on now-too-long text is reset to base.
     var savedBump = typeof draft.fontBump === "number" ? draft.fontBump : 0;
     cardFontBump = Math.max(0, Math.min(FONT_BUMP_MAX, Math.round(savedBump)));
+    if (draft.texture != null) applyTexture(draft.texture);
     updateCard();
     updateSlNudge();
     updateMicState();
@@ -463,7 +483,7 @@ function wave(text) {
   if (!(text || "").trim()) return;
   const len = Math.min((text || "").length, 150);
   const active = Math.floor((len / 150) * 35);
-  const col = PALS[curP];
+  const col = getCardColor();
   if (_cardWaveform) {
     for (let i = 0; i < 35; i++) {
       var h = _cardWaveform[i] * 100;
@@ -523,8 +543,10 @@ function updateStyleChipSummary() {
     const cNameEl = document.getElementById('czChipColorName');
     const shEl = document.getElementById('czChipShape');
     if (tEl) tEl.textContent = tr('tone.' + curTone, curTone);
-    if (swEl && PALS[curP]) swEl.style.background = PALS[curP];
-    if (cNameEl && PAL_NAMES[curP]) {
+    if (swEl) swEl.style.background = getCardColor();
+    if (cNameEl && isCustomColor()) {
+      cNameEl.textContent = getCardColor();
+    } else if (cNameEl && PAL_NAMES[curP]) {
       cNameEl.textContent = tr('color.' + PAL_NAMES[curP], PAL_NAMES[curP]);
     }
     if (shEl) shEl.textContent = tr(useRounded ? 'shape.rounded' : 'shape.sharp', useRounded ? 'Rounded' : 'Sharp');
@@ -533,41 +555,71 @@ function updateStyleChipSummary() {
   }
 }
 
+function _applyBackground() {
+  const bg = document.getElementById("cardBg");
+  const col = getCardColor();
+  bg.style.backgroundColor = col;
+  if (_curTexture !== null && TEXTURES[_curTexture]) {
+    const t = TEXTURES[_curTexture];
+    bg.style.backgroundImage = `url(${t.file})`;
+    bg.style.backgroundBlendMode = t.mode;
+    bg.style.backgroundSize = 'cover';
+    bg.style.backgroundRepeat = 'no-repeat';
+  } else if (isCustomColor()) {
+    var spiralUrl = useRounded ? 'assets/card-bgs/spiral-overlay.webp' : 'assets/card-bgs/spiral-overlay-sharp.webp';
+    bg.style.backgroundImage = 'url(' + spiralUrl + ')';
+    bg.style.backgroundBlendMode = 'overlay';
+    bg.style.backgroundSize = '100% 100%';
+    bg.style.backgroundRepeat = '';
+  } else {
+    bg.style.backgroundImage = `url(${getCardBgImage()})`;
+    bg.style.backgroundBlendMode = '';
+    bg.style.backgroundSize = '100% 100%';
+    bg.style.backgroundRepeat = '';
+  }
+}
+
 function applyPal(idx) {
   if (isNaN(idx) || idx < 0 || idx >= PALS.length) return;
+  if (!isSupporter() && idx >= 3) return;
+  customColor = null;
   curP = idx;
   _webmCache = null;
   _pngCache = null;
-  const bg = document.getElementById("cardBg");
-  const col = PALS[idx];
-  // Solid color fallback first — prevents page-bg flash while the WebP loads.
-  bg.style.backgroundColor = col;
-  bg.style.backgroundImage = `url(${getCardBgImage()})`;
-  bg.style.backgroundSize = '100% 100%';
-  // Warm the cache for the rest of the palettes (current corner style) so
-  // subsequent palette clicks are instant.
+  _applyBackground();
   preloadCardBgVariant(useRounded ? 'rounded' : 'sharp');
   document.querySelectorAll(".pd").forEach((d) => { d.classList.remove("on"); d.setAttribute("aria-checked", "false"); });
   const selPal = document.querySelector('.pd[data-p="' + idx + '"]');
   selPal.classList.add("on");
   selPal.setAttribute("aria-checked", "true");
+  _closeColorPicker();
+  _updateCpPreview();
   wave(document.getElementById("sta").value);
   checkOccasions();
-  const light = isLightColor(col);
-  document.getElementById("cardLabel").style.color = light ? "#1a1a1a" : "";
-  document.getElementById("cardGhost").style.color = light
-    ? "rgba(0,0,0,0.32)"
-    : "";
-  const lt = document.querySelector(".card-logo-text");
-  if (lt) lt.style.color = light ? "#1a1a1a" : "";
-  const dm = document.querySelector(".card-domain");
-  if (dm) dm.style.color = light ? "#555548" : "";
   updateStyleChipSummary();
 }
 
-// Free-tier daily quota is enforced per tone (5 rewrites per tone per day).
+function applyTexture(tIdx) {
+  if (tIdx !== null && !isSupporter()) return;
+  if (tIdx === null || tIdx < 0 || tIdx >= TEXTURES.length) {
+    _curTexture = null;
+  } else {
+    _curTexture = tIdx;
+  }
+  _webmCache = null;
+  _pngCache = null;
+  _applyBackground();
+  document.querySelectorAll(".txd").forEach(function(d) { d.classList.remove("on"); d.setAttribute("aria-checked", "false"); });
+  if (_curTexture !== null) {
+    var selTx = document.querySelector('.txd[data-tx="' + _curTexture + '"]');
+    if (selTx) { selTx.classList.add("on"); selTx.setAttribute("aria-checked", "true"); }
+  }
+  saveDraft();
+}
+
+// Free-tier daily quota is enforced per tone (1 rewrite per tone per day).
 // Mirror of the server-side FREE_MAX_PER_TONE constant in api/rewrite.js.
-const FREE_MAX_PER_TONE = 5;
+const FREE_MAX_PER_TONE = 1;
 const REWRITE_TONES = ["warm", "bold", "poetic", "playful", "reflective", "honest"];
 // In-memory cache of per-tone rewrite results to avoid redundant API calls.
 // Keyed by tone; entry: { text, original }. Cleared when source text changes.
@@ -641,105 +693,50 @@ function updateSupporterBadge() {
   // also change. Force a re-fetch so the UI matches the new tier immediately,
   // not just on the next click of the mic.
   if (typeof _refreshLimitsFromServer === "function") _refreshLimitsFromServer();
+  applyProGating();
 }
 
-function openUpgradeModal() {
-  document.getElementById("upgradeModal").classList.add("open");
-  document.body.classList.add("modal-open");
-  _activateModal(document.getElementById("upgradeModal"));
-}
-function closeUpgradeModal() {
-  _deactivateModal();
-  document.getElementById("upgradeModal").classList.remove("open");
-  document.body.classList.remove("modal-open");
-  document.getElementById("upgradeKeyMsg").textContent = "";
-  document.getElementById("upgradeEmailMsg").textContent = "";
-}
-document.getElementById("upgradeClose")?.addEventListener("click", closeUpgradeModal);
-document.getElementById("upgradeBackdrop")?.addEventListener("click", closeUpgradeModal);
-document.getElementById("upgradeBtn")?.addEventListener("click", openUpgradeModal);
-document.getElementById("mobileBtnUpgrade")?.addEventListener("click", openUpgradeModal);
-document.getElementById("upgradeKeyGo")?.addEventListener("click", handleUpgradeKey);
-document.getElementById("upgradeEmailGo")?.addEventListener("click", handleUpgradeEmail);
-async function handleUpgradeKey() {
-  const input = document.getElementById("upgradeKeyInput");
-  const msg = document.getElementById("upgradeKeyMsg");
-  const key = input.value.trim().toUpperCase();
-  if (!key) { msg.textContent = "Enter your key"; msg.className = "upgrade-modal-msg err"; return; }
-
-  msg.textContent = "Checking...";
-  msg.className = "upgrade-modal-msg";
-
-  try {
-    const res = await fetch("/api/pro-status", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ key }),
-    });
-    const data = await res.json();
-
-    if (data.isPro) {
-      localStorage.setItem("wsSupporter", "true");
-      localStorage.setItem("wsProKey", key);
-      localStorage.setItem("wsSupporterVerifiedAt", Date.now().toString());
-      updateSupporterBadge();
-      msg.textContent = "Pro unlocked! Enjoy unlimited everything.";
-      msg.className = "upgrade-modal-msg ok";
-      setTimeout(() => {
-        closeUpgradeModal();
-        showToast((typeof getI18nSync === "function" && getI18nSync("toasts.welcomePro")) || "Welcome to Pro 💛");
-      }, 1500);
+function applyProGating() {
+  var pro = isSupporter();
+  document.querySelectorAll(".pd").forEach(function(d) {
+    var idx = parseInt(d.dataset.p);
+    if (!pro && idx >= 3) {
+      d.classList.add("pd-locked");
+      if (!d.dataset.origTitle) d.dataset.origTitle = d.title;
+      d.title = "Unlock with Pro";
     } else {
-      if (data.reason === "revoked") {
-        msg.textContent = "This key has been revoked. Contact support to resolve.";
-      } else if (data.reason === "expired") {
-        msg.textContent = "Your subscription has expired. Renew on Buy Me a Coffee.";
-      } else if (data.reason === "rate_limited") {
-        msg.textContent = "Too many attempts. Please wait a minute and try again.";
-      } else {
-        msg.textContent = "Invalid key. Try again or buy a coffee.";
+      d.classList.remove("pd-locked");
+      if (d.dataset.origTitle) {
+        d.title = d.dataset.origTitle;
+        delete d.dataset.origTitle;
       }
-      msg.className = "upgrade-modal-msg err";
     }
-  } catch (e) {
-    msg.textContent = "Could not verify key. Try again.";
-    msg.className = "upgrade-modal-msg err";
-  }
-}
-async function handleUpgradeEmail() {
-  const input = document.getElementById("upgradeEmailInput");
-  const btn = document.getElementById("upgradeEmailGo");
-  const msg = document.getElementById("upgradeEmailMsg");
-  const email = input.value.trim();
-  if (!email || !email.includes("@")) {
-    msg.textContent = "Please enter a valid email address.";
-    msg.className = "upgrade-modal-msg err";
-    return;
-  }
-  btn.disabled = true;
-  msg.textContent = "Sending...";
-  msg.className = "upgrade-modal-msg";
-  try {
-    const res = await fetch("/api/resend-key", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-    const data = await res.json();
-    if (data.ok) {
-      msg.textContent = "Check your inbox \u2014 your key is on its way.";
-      msg.className = "upgrade-modal-msg ok";
+  });
+  document.querySelectorAll(".txd").forEach(function(d) {
+    if (!pro) {
+      d.classList.add("txd-locked");
+      if (!d.dataset.origTitle) d.dataset.origTitle = d.title;
+      d.title = "Unlock with Pro";
     } else {
-      msg.textContent = "Something went wrong. Try again or email support.";
-      msg.className = "upgrade-modal-msg err";
+      d.classList.remove("txd-locked");
+      if (d.dataset.origTitle) {
+        d.title = d.dataset.origTitle;
+        delete d.dataset.origTitle;
+      }
     }
-  } catch {
-    msg.textContent = "Could not send. Try again or email support.";
-    msg.className = "upgrade-modal-msg err";
-  } finally {
-    btn.disabled = false;
-  }
+  });
 }
+
+document.getElementById("upgradeBtn")?.addEventListener("click", function () {
+  if (typeof window.showPricingModal === "function") window.showPricingModal();
+});
+document.getElementById("mobileBtnUpgrade")?.addEventListener("click", function () {
+  if (typeof window.showPricingModal === "function") window.showPricingModal();
+});
+window.addEventListener("i18nApplied", function () {
+  updateSupporterBadge();
+  applyProGating();
+});
 
 function canCreateCard() {
   // Speech language is required for all cards (voice + text) — Task A.
@@ -781,9 +778,15 @@ function applyTone(tone) {
   if (!tx.classList.contains("mt")) {
     const rawText = tx.textContent;
     if (rawText) applyScriptFonts(tx, tone, rawText);
-    tx.style.fontStyle = t.fi;
-    tx.style.fontWeight = t.fw;
-    tx.style.letterSpacing = t.ls;
+    if (window.isSupporter ? window.isSupporter() : false) {
+      tx.style.fontStyle = t.fi;
+      tx.style.fontWeight = t.fw;
+      tx.style.letterSpacing = t.ls;
+    } else {
+      tx.style.fontStyle = "normal";
+      tx.style.fontWeight = "400";
+      tx.style.letterSpacing = "normal";
+    }
   }
   const btn = document.getElementById("btnCTxt");
   const wrap = document.getElementById("tonePillWrap");
@@ -845,9 +848,7 @@ function applyTone(tone) {
     btn.textContent = createToneTpl.replace("{tone}", toneLabel);
     if (isSupporter()) {
       showPill();
-      pill.textContent = "\u221E Unlimited \u2014 no daily cap";
-      pill.className = "tone-pill supporter";
-      upgBtn.style.display = "none";
+      pill.style.display = "none";
     } else {
       const left = getRewritesLeftForTone(tone);
       if (isMobile) {
@@ -1062,9 +1063,15 @@ function updateCard(preserveText) {
     if (!preserveText) {
       applyScriptFonts(tx, curTone, displayText);
     }
-    tx.style.fontStyle = t.fi;
-    tx.style.fontWeight = t.fw;
-    tx.style.letterSpacing = t.ls;
+    if (window.isSupporter ? window.isSupporter() : false) {
+      tx.style.fontStyle = t.fi;
+      tx.style.fontWeight = t.fw;
+      tx.style.letterSpacing = t.ls;
+    } else {
+      tx.style.fontStyle = "normal";
+      tx.style.fontWeight = "400";
+      tx.style.letterSpacing = "normal";
+    }
     // Label: use _exampleLang when card is from an example, otherwise speechLang
     var langName = "";
     var _labelLang = _exampleLang || null;
@@ -2443,56 +2450,6 @@ async function _processAudioFile(file) {
     document.getElementById('audioFileInput').value = '';
   }
 }
-function _audioBufferToWav(buffer) {
-  var numChannels = buffer.numberOfChannels;
-  var sampleRate = buffer.sampleRate;
-  var format = 1;
-  var bitDepth = 16;
-  var bytesPerSample = bitDepth / 8;
-  var blockAlign = numChannels * bytesPerSample;
-  var data = [];
-  for (var ch = 0; ch < numChannels; ch++) {
-    var channelData = buffer.getChannelData(ch);
-    var samples = new Int16Array(channelData.length);
-    for (var i = 0; i < channelData.length; i++) {
-      var s = Math.max(-1, Math.min(1, channelData[i]));
-      samples[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
-    }
-    data.push(samples);
-  }
-  var length = data[0].length * bytesPerSample;
-  var dataSize = data.length * length;
-  var headerSize = 44;
-  var totalSize = headerSize + dataSize;
-  var arrayBuffer = new ArrayBuffer(totalSize);
-  var view = new DataView(arrayBuffer);
-  writeString(view, 0, 'RIFF');
-  view.setUint32(4, totalSize - 8, true);
-  writeString(view, 8, 'WAVE');
-  writeString(view, 12, 'fmt ');
-  view.setUint32(16, 16, true);
-  view.setUint16(20, format, true);
-  view.setUint16(22, numChannels, true);
-  view.setUint32(24, sampleRate, true);
-  view.setUint32(28, sampleRate * blockAlign, true);
-  view.setUint16(32, blockAlign, true);
-  view.setUint16(34, bitDepth, true);
-  writeString(view, 36, 'data');
-  view.setUint32(40, dataSize, true);
-  var offset = 44;
-  for (var i = 0; i < data[0].length; i++) {
-    for (var ch = 0; ch < numChannels; ch++) {
-      view.setInt16(offset, data[ch][i], true);
-      offset += 2;
-    }
-  }
-  return arrayBuffer;
-  function writeString(view, offset, string) {
-    for (var i = 0; i < string.length; i++) {
-      view.setUint8(offset + i, string.charCodeAt(i));
-    }
-  }
-}
 function openSlModal() {
   var m = document.getElementById('slModal');
   if (!m) return;
@@ -2649,12 +2606,19 @@ document.getElementById('slFilter').addEventListener('input', function() {
 if (typeof allLanguages !== 'undefined' && allLanguages.length) { updateSlTrigger(); updateMicState(); }
 document.addEventListener('languagesReady', function(){ updateSlTrigger(); updateMicState(); });
 
+function _showToneHint() {
+  if (localStorage.getItem('ws_tone_hint_shown')) return;
+  localStorage.setItem('ws_tone_hint_shown', '1');
+  showToast('You get 1 free rewrite per tone per day. Pro = unlimited.', 4000);
+}
+
 document.getElementById("toneRow").addEventListener("click", async (e) => {
   const c = e.target.closest(".tc");
   if (!c || c.disabled) return;
   if (!hasCardContent()) return;
 
   const tone = c.dataset.tone;
+  _showToneHint();
 
   // Original tone — restore original text if we had a pending rewrite
   if (tone === "original") {
@@ -2795,7 +2759,12 @@ document.getElementById("toneRow").addEventListener("click", async (e) => {
 document.getElementById("palRow").addEventListener("click", (e) => {
   const d = e.target.closest(".pd");
   if (!d) return;
+  if (d.classList.contains("pd-locked")) {
+    if (typeof window.showPricingModal === "function") window.showPricingModal();
+    return;
+  }
   if (!hasCardContent()) return;
+  _savedCustomColor = null;
   applyPal(parseInt(d.dataset.p));
   saveDraft();
 });
@@ -2804,9 +2773,134 @@ document.getElementById("palRow").addEventListener("keydown", (e) => {
   const d = e.target.closest(".pd");
   if (!d) return;
   e.preventDefault();
+  if (d.classList.contains("pd-locked")) {
+    if (typeof window.showPricingModal === "function") window.showPricingModal();
+    return;
+  }
   if (!hasCardContent()) return;
+  _savedCustomColor = null;
   applyPal(parseInt(d.dataset.p));
   saveDraft();
+});
+
+/* ---- Custom color picker (iro.js, Pro-gated) ---- */
+var _iroInstance = null;
+var _savedCustomColor = null;
+
+function _initIroPicker() {
+  if (_iroInstance) return;
+  var el = document.getElementById("iroPicker");
+  if (!el || typeof iro === "undefined") return;
+  _iroInstance = new iro.ColorPicker(el, {
+    width: 200,
+    color: getCardColor(),
+    borderWidth: 1,
+    borderColor: "#ccc",
+    layoutDirection: "vertical",
+    layout: [
+      { component: iro.ui.Wheel, options: {} },
+      { component: iro.ui.Slider, options: { sliderType: "hue" } },
+      { component: iro.ui.Slider, options: { sliderType: "saturation" } },
+      { component: iro.ui.Slider, options: { sliderType: "value" } },
+    ],
+  });
+  _iroInstance.on('color:change', function(color) {
+    customColor = color.hexString;
+    _savedCustomColor = color.hexString;
+    _applyBackground();
+    wave(document.getElementById("sta").value);
+    document.getElementById("cpPreview").style.background = color.hexString;
+  });
+}
+
+function _updateCpPreview() {
+  var preview = document.getElementById("cpPreview");
+  if (!preview) return;
+  preview.style.background = isCustomColor() ? customColor : "conic-gradient(red, yellow, lime, cyan, blue, magenta, red)";
+}
+
+function _openColorPicker() {
+  var body = document.getElementById("cpBody");
+  var arrow = document.getElementById("cpArrow");
+  var btn = document.getElementById("customColorBtn");
+  if (!body || !arrow || !btn) return;
+  body.classList.add("open");
+  arrow.classList.add("open");
+  btn.classList.add("open");
+  _initIroPicker();
+  if (_iroInstance) _iroInstance.color.hexString = getCardColor();
+  _updateCpPreview();
+}
+
+function _closeColorPicker() {
+  var body = document.getElementById("cpBody");
+  var arrow = document.getElementById("cpArrow");
+  var btn = document.getElementById("customColorBtn");
+  if (body) body.classList.remove("open");
+  if (arrow) arrow.classList.remove("open");
+  if (btn) btn.classList.remove("open");
+}
+
+function toggleColorPicker() {
+  var body = document.getElementById("cpBody");
+  if (!body) return;
+  if (body.classList.contains("open")) { _closeColorPicker(); return; }
+  _openColorPicker();
+}
+
+function applyCustomColor(hex) {
+  customColor = hex;
+  _savedCustomColor = hex;
+  curP = -1;
+  _webmCache = null;
+  _pngCache = null;
+  _applyBackground();
+  document.querySelectorAll("#palRow .pd").forEach(function(d) { d.classList.remove("on"); d.setAttribute("aria-checked", "false"); });
+  _updateCpPreview();
+  wave(document.getElementById("sta").value);
+  checkOccasions();
+  updateStyleChipSummary();
+  saveDraft();
+}
+
+document.getElementById("customColorBtn").addEventListener("click", function() {
+  if (!isSupporter()) {
+    if (typeof window.showPricingModal === "function") window.showPricingModal();
+    return;
+  }
+  if (!hasCardContent()) return;
+  toggleColorPicker();
+});
+
+document.getElementById("applyCustomColor").addEventListener("click", function() {
+  if (!_iroInstance) return;
+  applyCustomColor(_iroInstance.color.hexString);
+});
+document.getElementById("texRow")?.addEventListener("click", (e) => {
+  var tx = e.target.closest(".txd");
+  if (!tx) return;
+  if (tx.classList.contains("txd-locked")) {
+    if (typeof window.showPricingModal === "function") window.showPricingModal();
+    return;
+  }
+  if (!hasCardContent()) return;
+  var idx = parseInt(tx.dataset.tx);
+  if (_curTexture === idx) { applyTexture(null); return; }
+  applyTexture(idx);
+});
+document.getElementById("texRow")?.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  var tx = e.target.closest(".txd");
+  if (!tx) return;
+  e.preventDefault();
+  if (tx.classList.contains("txd-locked")) {
+    if (typeof window.showPricingModal === "function") window.showPricingModal();
+    return;
+  }
+  if (!hasCardContent()) return;
+  var idx = parseInt(tx.dataset.tx);
+  if (_curTexture === idx) { applyTexture(null); return; }
+  applyTexture(idx);
 });
 document.getElementById("roundnessRow").addEventListener("click", (e) => {
   const b = e.target.closest(".sz");
@@ -2818,6 +2912,7 @@ document.getElementById("roundnessRow").addEventListener("click", (e) => {
   b.classList.add("on");
   b.setAttribute("aria-checked", "true");
   useRounded = b.dataset.rounded === "true";
+  _customColorBgCache = {};
   const card = document.getElementById("card");
   if (useRounded) {
     card.style.borderRadius = "32px";
@@ -2982,6 +3077,7 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   document.getElementById("wcta").classList.remove("show");
   applyTone("original");
   useRounded = true;
+  _customColorBgCache = {};
   const card = document.getElementById("card");
   card.style.borderRadius = "32px";
   card.style.overflow = "hidden";
@@ -2990,6 +3086,9 @@ document.getElementById("resetBtn").addEventListener("click", () => {
     r.classList.toggle("on", sel);
     r.setAttribute("aria-checked", sel);
   });
+  _curTexture = null;
+  _savedCustomColor = null;
+  document.querySelectorAll(".txd").forEach(function(d) { d.classList.remove("on"); d.setAttribute("aria-checked", "false"); });
   applyPal(0);
   applySize();
   document.getElementById("cardGhost").innerHTML = '\u201C';
@@ -3208,6 +3307,8 @@ document.addEventListener("languagesReady", tryAutoDetectLang);
 //   2. Revoked or expired keys that were valid at activation time
 // Throttled to once per 24h so normal page loads have zero extra latency.
 async function revalidateProKey() {
+  // Skip validation for admin bypass
+  if (localStorage.getItem("wsAdminSecret")) return;
   const isMarkedPro = localStorage.getItem("wsSupporter") === "true";
   if (!isMarkedPro) return;
 
@@ -3260,6 +3361,11 @@ async function revalidateProKey() {
   }
 }
 revalidateProKey();
+
+// Auto-open pricing modal from email link (?showPricing)
+if (location.search.includes("showPricing") && typeof window.showPricingModal === "function") {
+  window.showPricingModal();
+}
 
 // Onboarding Banner — first-launch detection + help icon trigger
 function showOnboarding() {
@@ -3428,7 +3534,7 @@ document.getElementById("exGrid").addEventListener("click", (e) => {
       applyTone(tone);
     }
   }
-  if (c.dataset.p != null) applyPal(parseInt(c.dataset.p));
+  if (c.dataset.p != null) { _savedCustomColor = null; applyPal(parseInt(c.dataset.p)); }
   if (c.dataset.lang) {
     // Set the CARD's content language (affects font selection and card label)
     // without touching the page UI language. The page language stays on the
@@ -3702,7 +3808,7 @@ async function _makeSocialBlob(srcBlob) {
     canvas.width = CW;
     canvas.height = CH;
     const ctx = canvas.getContext("2d");
-    ctx.fillStyle = (typeof PALS !== "undefined" && PALS[curP]) ? PALS[curP] : "#1a1a1a";
+    ctx.fillStyle = getCardColor();
     ctx.fillRect(0, 0, CW, CH);
     const scale = Math.min((CW - margin * 2) / img.width, (CH - margin * 2) / img.height);
     const w = img.width * scale, h = img.height * scale;
@@ -3734,8 +3840,7 @@ document.getElementById("btnS").addEventListener("click", async () => {
     preview.innerHTML = '<img src="' + URL.createObjectURL(_shareBlob) + '" alt="Card preview" />';
     const file = new File([_shareBlob], "wibe-story.png", { type: "image/png" });
     document.getElementById("shareNative").style.display =
-      navigator.share && typeof navigator.canShare === "function" && navigator.canShare({ files: [file] })
-        ? "" : "none";
+      navigator.share ? "" : "none";
     document.getElementById("shareModal").classList.add("open");
     document.body.classList.add("modal-open");
     _activateModal(document.getElementById("shareModal"));
@@ -3745,7 +3850,7 @@ document.getElementById("btnS").addEventListener("click", async () => {
     // gesture context expires and the share sheet opens without file data.
     (async () => {
       try {
-        var res = await fetch("/api/upload", { method: "POST", body: _shareBlob, headers: { "Content-Type": "image/png", "X-Card-Text": encodeURIComponent(document.getElementById("sta").value), "X-Card-Name": encodeURIComponent(document.getElementById("nin").value), "X-Card-Tone": curTone || "", "X-Card-P": String(curP), "X-Card-R": useRounded ? "rounded" : "sharp" } });
+        var res = await fetch("/api/upload", { method: "POST", body: _shareBlob, headers: { "Content-Type": "image/png", "X-Card-Text": encodeURIComponent(document.getElementById("sta").value), "X-Card-Name": encodeURIComponent(document.getElementById("nin").value), "X-Card-Tone": curTone || "", "X-Card-P": String(curP), "X-Card-R": useRounded ? "rounded" : "sharp", "X-Card-Pro": isSupporter() ? "1" : "0" } });
         if (res.ok) {
           var data = await res.json();
           _shortId = data.shortId;
@@ -3787,7 +3892,7 @@ document.getElementById("shareNative").addEventListener("click", async function 
   btn.disabled = true;
   try {
     if (!_shortId) {
-      var res = await fetch("/api/upload", { method: "POST", body: _shareBlob, headers: { "Content-Type": "image/png", "X-Card-Text": encodeURIComponent(document.getElementById("sta").value), "X-Card-Name": encodeURIComponent(document.getElementById("nin").value), "X-Card-Tone": curTone || "", "X-Card-P": String(curP), "X-Card-R": useRounded ? "rounded" : "sharp" } });
+      var res = await fetch("/api/upload", { method: "POST", body: _shareBlob, headers: { "Content-Type": "image/png", "X-Card-Text": encodeURIComponent(document.getElementById("sta").value), "X-Card-Name": encodeURIComponent(document.getElementById("nin").value), "X-Card-Tone": curTone || "", "X-Card-P": String(curP), "X-Card-R": useRounded ? "rounded" : "sharp", "X-Card-Pro": isSupporter() ? "1" : "0" } });
       if (!res.ok) throw new Error("Upload failed");
       var data = await res.json();
       _shortId = data.shortId;
@@ -3890,7 +3995,7 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
   btn.disabled = true;
   try {
     if (!_shortId) {
-      var res = await fetch("/api/upload", { method: "POST", body: _shareBlob, headers: { "Content-Type": "image/png", "X-Card-Text": encodeURIComponent(document.getElementById("sta").value), "X-Card-Name": encodeURIComponent(document.getElementById("nin").value), "X-Card-Tone": curTone || "", "X-Card-P": String(curP), "X-Card-R": useRounded ? "rounded" : "sharp" } });
+      var res = await fetch("/api/upload", { method: "POST", body: _shareBlob, headers: { "Content-Type": "image/png", "X-Card-Text": encodeURIComponent(document.getElementById("sta").value), "X-Card-Name": encodeURIComponent(document.getElementById("nin").value), "X-Card-Tone": curTone || "", "X-Card-P": String(curP), "X-Card-R": useRounded ? "rounded" : "sharp", "X-Card-Pro": isSupporter() ? "1" : "0" } });
       if (!res.ok) throw new Error("Upload failed");
       var data = await res.json();
       _shortId = data.shortId;
@@ -4030,39 +4135,146 @@ async function generateBlobWithProgress() {
   }
 }
 
+/* Pre-rendered custom color + spiral overlay blend cache (per hex). */
+var _customColorBgCache = {};
+
+function _getCustomColorBgDataUrl(hex, w, h) {
+  var corners = useRounded ? 'rounded' : 'sharp';
+  var cacheKey = hex + '_' + corners;
+  if (_customColorBgCache[cacheKey]) { return _customColorBgCache[cacheKey]; }
+  var canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  var ctx = canvas.getContext("2d");
+  ctx.fillStyle = hex;
+  ctx.fillRect(0, 0, w, h);
+  var img = new Image();
+  img.src = useRounded ? "assets/card-bgs/spiral-overlay.webp" : "assets/card-bgs/spiral-overlay-sharp.webp";
+  return new Promise(function(resolve) {
+    img.onload = function() {
+      ctx.globalCompositeOperation = "overlay";
+      ctx.drawImage(img, 0, 0, w, h);
+      var url = canvas.toDataURL("image/png");
+      _customColorBgCache[cacheKey] = url;
+      resolve(url);
+    };
+    img.onerror = function() {
+      resolve(null);
+    };
+  });
+}
+
+function _applyCloneBg(doc, textureBgDataUrl, customColorBgDataUrl) {
+  var c = doc.getElementById("card");
+  var bg = doc.getElementById("cardBg");
+  if (!c) return;
+  if (textureBgDataUrl) {
+    c.style.backgroundImage = "url(" + textureBgDataUrl + ")";
+    c.style.backgroundSize = "cover";
+    c.style.backgroundRepeat = "no-repeat";
+  } else if (customColorBgDataUrl) {
+    c.style.backgroundImage = "url(" + customColorBgDataUrl + ")";
+    c.style.backgroundSize = "100% 100%";
+  } else {
+    c.style.backgroundColor = getCardColor();
+    c.style.backgroundImage = "url(" + getCardBgImage() + ")";
+    c.style.backgroundSize = "100% 100%";
+  }
+  if (bg) bg.style.display = "none";
+}
+
+async function _getTextureBgDataUrl(cardW, cardH, scale) {
+  var t = TEXTURES[_curTexture];
+  if (!t) return null;
+  try {
+    var img = await new Promise(function(resolve, reject) {
+      var i = new Image();
+      i.crossOrigin = "anonymous";
+      i.onload = function() { resolve(i); };
+      i.onerror = function() { reject(null); };
+      i.src = t.file;
+    });
+    if (!img) return null;
+    var cw = Math.round(cardW * scale);
+    var ch = Math.round(cardH * scale);
+    var canvas = document.createElement("canvas");
+    canvas.width = cw;
+    canvas.height = ch;
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = getCardColor();
+    ctx.fillRect(0, 0, cw, ch);
+    var scaleX = cw / img.width;
+    var scaleY = ch / img.height;
+    var s = Math.max(scaleX, scaleY);
+    var sw = Math.round(img.width * s);
+    var sh = Math.round(img.height * s);
+    var sx = Math.round((cw - sw) / 2);
+    var sy = Math.round((ch - sh) / 2);
+    ctx.globalCompositeOperation = t.mode;
+    ctx.drawImage(img, sx, sy, sw, sh);
+    return canvas.toDataURL("image/png");
+  } catch(e) {
+    return null;
+  }
+}
+
 async function generateBlob() {
   if (!window.html2canvas) throw new Error("not loaded");
-  var cacheKey = document.getElementById("sta").value + "|" + curP + "|" + curTone;
+  var effectiveCustomColor = customColor;
+  if (!effectiveCustomColor) {
+    effectiveCustomColor = _savedCustomColor;
+  }
+  if (!effectiveCustomColor && _iroInstance) {
+    var _cpBody = document.getElementById("cpBody");
+    if (_cpBody && _cpBody.classList.contains("open")) {
+      effectiveCustomColor = _iroInstance.color.hexString;
+    }
+  }
+  var cacheColor = effectiveCustomColor || (curP >= 0 && curP < PALS.length ? PALS[curP] : PALS[0]);
+  var cacheKey = document.getElementById("sta").value + "|c" + cacheColor + "|t" + (_curTexture !== null ? _curTexture : "_") + "|" + curTone;
   if (_pngCache && _pngCache.key === cacheKey && Date.now() - _pngCache.ts < 86400000) {
     return _pngCache.blob;
   }
   const card = document.getElementById("card");
   const cw = card.offsetWidth;
   const ch = card.offsetHeight;
-  const scale = 2;
-  const bgUrl = getCardBgImage();
+  const scale = isSupporter() ? 2 : 1;
+  var texDataUrl = _curTexture !== null ? await _getTextureBgDataUrl(cw, ch, scale) : null;
+  var customColorBgDataUrl = effectiveCustomColor ? await _getCustomColorBgDataUrl(effectiveCustomColor, cw, ch) : null;
+  var activeBgDataUrl = texDataUrl || customColorBgDataUrl;
   const opt = {
     backgroundColor: null,
     scale: scale,
     logging: false,
     useCORS: true,
-    x: 0,
-    y: 0,
-    width: cw,
-    height: ch,
+    ignoreElements: function(el) { return el.id === 'cardBg'; },
     onclone: function (doc) {
-      const c = doc.getElementById("card");
-      const bg = doc.getElementById("cardBg");
-      if (c) {
-        c.style.backgroundImage = "url(" + bgUrl + ")";
+      var c = doc.getElementById("card");
+      if (c && activeBgDataUrl) {
+        c.style.backgroundImage = "url(" + activeBgDataUrl + ")";
         c.style.backgroundSize = "100% 100%";
       }
-      if (bg) bg.style.display = "none";
     },
   };
   const canvas = await html2canvas(card, opt);
+  var finalCanvas = document.createElement("canvas");
+  finalCanvas.width = canvas.width;
+  finalCanvas.height = canvas.height;
+  var fctx = finalCanvas.getContext("2d");
+  if (activeBgDataUrl) {
+    var _bgImg = new Image();
+    _bgImg.src = activeBgDataUrl;
+    await new Promise(function(_r) { _bgImg.onload = _r; _bgImg.onerror = _r; });
+    fctx.drawImage(_bgImg, 0, 0, finalCanvas.width, finalCanvas.height);
+  } else {
+    var _palImg = new Image();
+    _palImg.src = getCardBgImage();
+    await new Promise(function(_r) { _palImg.onload = _r; _palImg.onerror = _r; });
+    fctx.drawImage(_palImg, 0, 0, finalCanvas.width, finalCanvas.height);
+  }
+  fctx.drawImage(canvas, 0, 0);
   return new Promise(function (resolve, reject) {
-    canvas.toBlob(function (blob) {
+    finalCanvas.toBlob(function (blob) {
       if (blob) {
         _pngCache = { blob: blob, key: cacheKey, ts: Date.now() };
         resolve(blob);
@@ -4086,8 +4298,7 @@ async function _generateAnimatedWebm(blob, cacheKey) {
     var card = document.getElementById("card");
     var cw = card.offsetWidth;
     var ch = card.offsetHeight;
-    var scale = 2;
-    var bgUrl = getCardBgImage();
+    var scale = isSupporter() ? 2 : 1;
 
     // Capture card-wv position relative to card for canvas overlay.
     // Use the content box (subtract left/right padding) so the drawn bars match
@@ -4106,19 +4317,49 @@ async function _generateAnimatedWebm(blob, cacheKey) {
     var wvH = Math.round(wvRect.height * scale);
     if (wvW < 10 || wvH < 4) throw new Error("Waveform container too small");
 
+    var texDataUrl = _curTexture !== null ? await _getTextureBgDataUrl(cw, ch, scale) : null;
+    var _effCC = customColor || _savedCustomColor;
+    if (!_effCC && _iroInstance) { var _cpB = document.getElementById("cpBody"); if (_cpB && _cpB.classList.contains("open")) _effCC = _iroInstance.color.hexString; }
+    var customColorBgDataUrl = _effCC ? await _getCustomColorBgDataUrl(_effCC, cw, ch) : null;
+    var activeBgDataUrl2 = texDataUrl || customColorBgDataUrl;
+
     // Capture card base WITHOUT waveform bars (opacity:0 in clone — keeps layout)
     var baseCanvas = await html2canvas(card, {
       backgroundColor: null, scale: scale, logging: false, useCORS: true,
-      x: 0, y: 0, width: cw, height: ch,
+      ignoreElements: function(el) { return el.id === 'cardBg'; },
       onclone: function(doc) {
-        var c = doc.getElementById("card");
-        var bg = doc.getElementById("cardBg");
         var wv = doc.getElementById("cardWv");
-        if (c) { c.style.backgroundImage = "url(" + bgUrl + ")"; c.style.backgroundSize = "100% 100%"; }
-        if (bg) bg.style.display = "none";
+        var c = doc.getElementById("card");
+        if (c && activeBgDataUrl2) {
+          c.style.backgroundImage = "url(" + activeBgDataUrl2 + ")";
+          c.style.backgroundSize = "100% 100%";
+        }
         if (wv) wv.style.opacity = "0";
       }
     });
+    if (activeBgDataUrl2) {
+      var _bgImg2 = new Image();
+      _bgImg2.src = activeBgDataUrl2;
+      await new Promise(function(_r) { _bgImg2.onload = _r; _bgImg2.onerror = _r; });
+      var _blendCanvas = document.createElement("canvas");
+      _blendCanvas.width = baseCanvas.width;
+      _blendCanvas.height = baseCanvas.height;
+      var _bctx = _blendCanvas.getContext("2d");
+      _bctx.drawImage(_bgImg2, 0, 0, _blendCanvas.width, _blendCanvas.height);
+      _bctx.drawImage(baseCanvas, 0, 0);
+      baseCanvas = _blendCanvas;
+    } else {
+      var _palImg2 = new Image();
+      _palImg2.src = getCardBgImage();
+      await new Promise(function(_r) { _palImg2.onload = _r; _palImg2.onerror = _r; });
+      var _palCanvas = document.createElement("canvas");
+      _palCanvas.width = baseCanvas.width;
+      _palCanvas.height = baseCanvas.height;
+      var _pctx = _palCanvas.getContext("2d");
+      _pctx.drawImage(_palImg2, 0, 0, _palCanvas.width, _palCanvas.height);
+      _pctx.drawImage(baseCanvas, 0, 0);
+      baseCanvas = _palCanvas;
+    }
 
     // Setup audio processing pipeline
     var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -4148,7 +4389,7 @@ async function _generateAnimatedWebm(blob, cacheKey) {
     var duration = audioBuffer.duration;
     if (!duration || duration < 0.1) throw new Error("Audio too short");
     var barCount = 35;
-    var col = PALS[curP];
+    var col = getCardColor();
     var freqData = new Uint8Array(analyser.frequencyBinCount);
     var gap = Math.round(1.5 * scale);
     var barTotalWidth = Math.max(1, (wvW - (barCount - 1) * gap) / barCount);
@@ -4233,7 +4474,7 @@ async function _generateAnimatedWebm(blob, cacheKey) {
 async function generateWebm() {
   if (!audioBlob || !webmCodecString) throw new Error("No audio or unsupported browser");
   if (_generatingWebm) throw new Error("Already generating WebM");
-  var cacheKey = audioBlob.size + "|" + document.getElementById("sta").value + "|" + curP + "|" + curTone;
+  var cacheKey = audioBlob.size + "|" + document.getElementById("sta").value + "|" + curP + "|t" + (_curTexture !== null ? _curTexture : "_") + "|" + curTone;
   if (_webmCache && _webmCache.key === cacheKey && Date.now() - _webmCache.ts < 86400000) {
     return _webmCache.blob;
   }
@@ -4255,21 +4496,49 @@ async function generateWebm() {
   var card = document.getElementById("card");
   var cw = card.offsetWidth;
   var ch = card.offsetHeight;
-  var scale = 2;
-  var bgUrl = getCardBgImage();
+  var scale = isSupporter() ? 2 : 1;
+  var texDataUrl = _curTexture !== null ? await _getTextureBgDataUrl(cw, ch, scale) : null;
+  var _effCC2 = customColor || _savedCustomColor;
+  if (!_effCC2 && _iroInstance) { var _cpB2 = document.getElementById("cpBody"); if (_cpB2 && _cpB2.classList.contains("open")) _effCC2 = _iroInstance.color.hexString; }
+  var customColorBgDataUrl = _effCC2 ? await _getCustomColorBgDataUrl(_effCC2, cw, ch) : null;
+  var activeBgDataUrl3 = texDataUrl || customColorBgDataUrl;
   var canvas = await html2canvas(card, {
     backgroundColor: null,
     scale: scale,
     logging: false,
     useCORS: true,
-    x: 0, y: 0, width: cw, height: ch,
+    ignoreElements: function(el) { return el.id === 'cardBg'; },
     onclone: function(doc) {
       var c = doc.getElementById("card");
-      var bg = doc.getElementById("cardBg");
-      if (c) { c.style.backgroundImage = "url(" + bgUrl + ")"; c.style.backgroundSize = "100% 100%"; }
-      if (bg) bg.style.display = "none";
+      if (c && activeBgDataUrl3) {
+        c.style.backgroundImage = "url(" + activeBgDataUrl3 + ")";
+        c.style.backgroundSize = "100% 100%";
+      }
     }
   });
+  if (activeBgDataUrl3) {
+    var _bgImg3 = new Image();
+    _bgImg3.src = activeBgDataUrl3;
+    await new Promise(function(_r) { _bgImg3.onload = _r; _bgImg3.onerror = _r; });
+    var _blendCanvas3 = document.createElement("canvas");
+    _blendCanvas3.width = canvas.width;
+    _blendCanvas3.height = canvas.height;
+    var _bctx3 = _blendCanvas3.getContext("2d");
+    _bctx3.drawImage(_bgImg3, 0, 0, _blendCanvas3.width, _blendCanvas3.height);
+    _bctx3.drawImage(canvas, 0, 0);
+    canvas = _blendCanvas3;
+  } else {
+    var _palImg3 = new Image();
+    _palImg3.src = getCardBgImage();
+    await new Promise(function(_r) { _palImg3.onload = _r; _palImg3.onerror = _r; });
+    var _palCanvas3 = document.createElement("canvas");
+    _palCanvas3.width = canvas.width;
+    _palCanvas3.height = canvas.height;
+    var _pctx3 = _palCanvas3.getContext("2d");
+    _pctx3.drawImage(_palImg3, 0, 0, _palCanvas3.width, _palCanvas3.height);
+    _pctx3.drawImage(canvas, 0, 0);
+    canvas = _palCanvas3;
+  }
   var pngBlob = await new Promise(function(resolve, reject) {
     canvas.toBlob(function(b) {
       if (b) resolve(b);
@@ -4324,7 +4593,7 @@ function _deactivateModal() {
 
 document.addEventListener("keydown", function(e) {
   if (e.key !== "Escape") return;
-  var openModals = document.querySelectorAll(".share-modal.open, .upgrade-modal.open, .sl-modal.open, .dl-choice.open");
+  var openModals = document.querySelectorAll(".share-modal.open, .sl-modal.open, .dl-choice.open");
   if (openModals.length) {
     openModals.forEach(function(m) { m.classList.remove("open"); });
     document.body.classList.remove("modal-open");

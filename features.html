@@ -36,7 +36,7 @@
 <link rel="stylesheet" href="assets/fontawesome/css/fontawesome.min.css" />
 <link rel="stylesheet" href="assets/fontawesome/css/solid.min.css" />
 <link rel="stylesheet" href="assets/fontawesome/css/brands.min.css" />
-<script src="global/capacity-check.js" defer></script>
+<script src="global/capacity-check.js"></script>
     <script>
       if (
         "serviceWorker" in navigator &&
@@ -58,10 +58,18 @@
     <span class="nav-brand-text">Wibe Stories</span>
     <span class="custom-tip">Just vibes 💛</span>
   </a>
+  <div class="nav-links">
+    <a href="/features" class="nav-link active" aria-current="page">Features</a>
+    <a href="/about" class="nav-link">About</a>
+    <a href="/language-stats" class="nav-link">Language Stats</a>
+  </div>
   <div class="nav-right">
-    <a href="mailto:yellowgreenlabs@proton.me?subject=Wibe%20Stories%20Feedback" class="body-link" style="font-size:clamp(12px,0.3vw+11px,13px); color:var(--ink2); border-bottom-color:var(--rule);" title="Contact us">Support</a>
+    <a href="mailto:yellowgreenlabs@proton.me?subject=Wibe%20Stories%20Feedback" class="nav-support-link" title="Contact us">Support</a>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" aria-pressed="false">
       <i class="fa-solid fa-moon"></i>
+    </button>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu" aria-expanded="false">
+      <i class="fa-solid fa-bars"></i>
     </button>
   </div>
 </nav>
@@ -315,13 +323,13 @@
     <div class="faq-item" role="listitem" id="faq-free">
       <button class="faq-q" aria-expanded="false"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i> Is Wibe Stories free?</button>
       <div class="faq-a" role="region" aria-label="Answer: Is Wibe Stories free?">
-        <p>Yes, completely free. No account or credit card needed. Free users get 15-second audio recordings (up to 5 per day) and 5 AI rewrites per tone per day.</p>
+        <p>Yes, completely free. No account or credit card needed. Free users get 3 palette colors, 15-second recordings (up to 5 per day), and 5 AI rewrites per tone per day.</p>
       </div>
     </div>
     <div class="faq-item" role="listitem" id="faq-pro">
       <button class="faq-q" aria-expanded="false"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i> What do I get with Pro?</button>
       <div class="faq-a" role="region" aria-label="Answer: What do I get with Pro?">
-        <p>Pro unlocks unlimited tone rewrites with no daily caps, 30-second audio recordings (up to 50 per day), and priority support. Upgrade directly from the app.</p>
+        <p>Pro unlocks 10 palette colors, 2 textures, 30-second recordings (up to 50 per day), unlimited AI rewrites, and priority support. Upgrade directly from the app.</p>
       </div>
     </div>
     <div class="faq-item" role="listitem" id="faq-grace">
@@ -378,7 +386,75 @@
   <span class="footer-copyright">&copy; 2026 <span class="footer-sep" aria-hidden="true">|</span><script src="global/footer-menu.js"></script></span>
 </footer>
 
+<div class="hamburger-overlay" id="hamburgerOverlay"></div>
+<div class="hamburger-panel" id="hamburgerPanel">
+  <div class="hamburger-header">
+    <span class="hamburger-title">Menu</span>
+    <button class="hamburger-close" id="hamburgerClose">&times;</button>
+  </div>
+  <div class="hamburger-items">
+    <a href="/features" class="hamburger-link active-page">Features</a>
+    <a href="/about" class="hamburger-link">About</a>
+    <a href="/language-stats" class="hamburger-link">Language Stats</a>
+    <div class="hamburger-divider"></div>
+    <a href="https://buymeacoffee.com/yg_labs/membership" class="hamburger-link" target="_blank" rel="noopener">Support</a>
+    <a href="mailto:yellowgreenlabs@proton.me?subject=Wibe%20Stories%20Feedback" class="hamburger-link">Submit issues / feedback</a>
+    <div class="hamburger-divider"></div>
+    <div class="hamburger-version" id="hamburgerVersion"></div>
+    <div class="hamburger-divider"></div>
+    <button class="hamburger-link hamburger-theme-toggle" id="hamburgerThemeToggle">
+      <i class="fa-solid fa-moon"></i> <span>Dark mode</span>
+    </button>
+  </div>
+</div>
+
+<script src="global/pricing-modal.js"></script>
 <script src="global/features.js"></script>
 <script src="/internal-logs/observer.js" defer></script>
+<script>
+(function() {
+  var btn = document.getElementById('hamburgerBtn');
+  var panel = document.getElementById('hamburgerPanel');
+  var overlay = document.getElementById('hamburgerOverlay');
+  var closeBtn = document.getElementById('hamburgerClose');
+  var themeBtn = document.getElementById('hamburgerThemeToggle');
+  var versionEl = document.getElementById('hamburgerVersion');
+
+  function openMenu() {
+    panel.classList.add('open');
+    overlay.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+  }
+  function closeMenu() {
+    panel.classList.remove('open');
+    overlay.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  btn.addEventListener('click', function() {
+    if (panel.classList.contains('open')) closeMenu();
+    else openMenu();
+  });
+  closeBtn.addEventListener('click', closeMenu);
+  overlay.addEventListener('click', closeMenu);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeMenu(); });
+
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function() {
+      document.documentElement.classList.toggle('dark');
+      var isDark = document.documentElement.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      var icon = themeBtn.querySelector('i');
+      var label = themeBtn.querySelector('span');
+      if (isDark) { icon.className = 'fa-solid fa-sun'; label.textContent = 'Light mode'; }
+      else { icon.className = 'fa-solid fa-moon'; label.textContent = 'Dark mode'; }
+    });
+  }
+
+  fetch('/version.json').then(function(r){return r.json()}).then(function(d){
+    if (d.version && versionEl) versionEl.textContent = 'v' + d.version;
+  }).catch(function(){});
+})();
+</script>
 </body>
 </html>

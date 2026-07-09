@@ -1,5 +1,59 @@
 # Changelog
 
+## [v0.11.23.0] — Occasion Email Campaign Expansion (2026-07-09)
+
+### Added
+- **30 occasion email campaigns** (was 8) — Expanded from 8 to 30 global/regional occasions covering fixed dates, floating weekdays (nth weekday of month), date ranges (Songkran Apr 13-15), and movable/lunar calendar dates (Diwali, Lunar New Year, Easter, etc.) with year-by-year lookup via `api/lib/occasion-dates.json`.
+- **55px image-based email headers** — Occasion images replace emoji in the email template. Images are non-downloadable, non-selectable. Each occasion maps to its existing `assets/occasions/` PNG file.
+- **`api/subscribe-occasion.js`** — New Edge endpoint for free user email signup. Validates email format, stores in `wispr:email-subscribers` Redis Set. CORS-enabled.
+- **Footer subscription popup** — "📬 Get reminders" link after "Wibe Stories" branding opens a tooltip popup (centered dialog on desktop, bottom sheet on mobile ≤600px) with email input + Join button + success/error states.
+- **`emailSubscribersSet`** — New Redis key `wispr:email-subscribers` in `lib/redis.js`.
+- **Nowruz** — Added to movable date lookup (`api/lib/occasion-dates.json`) with 2026-2030 equinox dates.
+- **Generic subscriber footer text** — "You're receiving this because you subscribed to Wibe Stories occasion reminders." (was "Pro subscriber").
+
+### Changed
+- **`api/lib/occasion-email.js`** — Complete rewrite: 30 occasions with `type: 'fixed' | 'movable' | 'range' | 'floating'` date handling, 55px `<img>` in email header, MOVABLE_DATES inline lookup, `buildSubject()` without emoji prefix.
+- **`api/cron/send-occasion-emails.js`** — Reads from both `wispr:pro-emails` + `wispr:email-subscribers` Redis sets. Deduplicates via `Set`. Sends to all subscribers.
+- **`occasion-email-preview.html`** — Updated to 30 occasions with image `<img>` preview and dropdown selector.
+- **`global/footer-menu.js`** — Added subscription popup HTML, CSS (clamp font sizes, z-index layering, responsive breakpoint), and event handlers (open/close, submit, keyboard, escape).
+- **`version.json`** — v0.11.22.0 → v0.11.23.0, buildDate 2026-07-09.
+
+### Removed
+- **Old OCCASIONS list** — Removed `pride` (Pride Month) and `hello-day` (World Hello Day) from email campaign. Replaced 13 emoji-based entries with 30 image-based entries.
+
+## [v0.11.22.0] — Custom Color Picker (2026-07-08)
+
+### Added
+- **Custom color picker (iro.js)** — Pro users can now pick any color for card backgrounds via a color wheel + sliders (hue, saturation, brightness). Triggered by a rainbow gradient button at the end of the palette row. Gated behind `isSupporter()`.
+- **`spiral-overlay.webp`** — Grayscale spiral texture (2048×2048, RGBA) used with `background-blend-mode: overlay` to add depth to custom solid colors. Replaces palette-specific WebP backgrounds when custom color is active.
+- **`customColor` state variable** — Stores the current custom hex color. `isCustomColor()` returns true when active. `getCardColor()` returns custom color or `PALS[curP]` as fallback — used by all render/export paths.
+- **`applyCustomColor(hex)`** — Applies a custom hex color: fills card background with spiral overlay, clears selection from palette swatches, highlights the custom button, regenerates waveform, updates the style chip summary.
+- **iro.js CDN** — Loaded from `unpkg.com/@jaames/iro@5` (already allowed by Content-Security-Policy).
+
+### Changed
+- **`_applyBackground()`** — Uses `getCardColor()` instead of `PALS[curP]`. When custom color is active and no texture is set, renders the spiral overlay WebP with `background-blend-mode: overlay`.
+- **`_applyCloneBg()`** — Handles custom color (no texture) by setting `backgroundColor`, spiral overlay backgroundImage, and `background-blend-mode: overlay` on the cloned card element.
+- **`_getTextureBgDataUrl()`** — Uses `getCardColor()` for the base fill beneath texture images.
+- **`generateBlob()`** — Cache key uses `getCardColor()` hex instead of `curP` index. Canvas fill uses `getCardColor()`.
+- **`_makeSocialBlob()`** — Uses `getCardColor()` for social card background fill.
+- **`wave()`** — Waveform bars use `getCardColor()` so custom colors color the waveform.
+- **WebM generation** — Waveform bar color uses `getCardColor()`.
+- **`updateStyleChipSummary()`** — Shows hex value as color name when custom color is active; swatch uses `getCardColor()`.
+- **`applyPal(idx)`** — Clears `customColor = null` when a palette swatch is clicked.
+
+## [v0.11.16.0] — Complete Theme System Removal (2026-07-06)
+
+### Removed
+- **All theme system code from JS**: `curTheme`, `_themeAccent`, `_manualTextDark`, `_themeBrightnessCache`, `_themeAccentCache`, `applyTheme()`, `_initThemeRow()`, `_detectThemeBrightness()`, `_extractThemeAccent()`, `_getThemeVariantSrc()`, `_uploadHeaders()`, `setCardTextColors()`, `_toggleThemeBody()`, `_setTextContrast()`, `restoreDraftTheme()`, theme click/keydown handlers, theme draft restoration, roundness handler `curTheme` branch, collapse toggle, text contrast event listeners
+- **All theme HTML**: collapsible theme section, theme toggle header, theme body, theme row, text contrast buttons from `wisprstories.html` — replaced with flat palette row
+- **All theme CSS**: `.theme-section`, `.theme-toggle-header`, `.collapse-arrow`, `.theme-body`, `.theme-original-group`, `.theme-group`, `.theme-group-label`, `.theme-thumbs`, `.theme-thumb`, `.txt-contrast-section`, `.txt-contrast-btns`, `.txt-contrast-btn` from `global/styles/inputs.css`
+- **`theme` field from saveDraft()**: `sessionStorage` draft no longer stores `curTheme`
+- **`_uploadHeaders()` function**: removed; upload calls use inline headers without `X-Card-Theme`
+- **Stale texture stub**: removed `_curTexture`/`applyTexture` reference from `applyPal()` that had no backing implementation
+
+### Changed
+- **Color section heading**: "Card color" → "Original Colors" using `.lbl` class
+
 ## [v0.11.13.1] — Bug Fixes (2026-07-03)
 
 ### Added
@@ -78,7 +132,22 @@
 - **Service worker** — `CACHE_NAME` bumped to `wispr-stories-shell-v14` to force cache invalidation.
 - **Version** — `v0.11.0.15` → `v0.11.1`.
 
-## [Unreleased] — 2026-06-19
+## [Unreleased] — 2026-07-08
+
+### Added
+- **Occasion-based email campaign for Pro subscribers** — New `api/lib/occasion-email.js` with branded email template (cream #ffffeb bg, amber #f59e0b CTA, dark header gradient, Georgia/Arial fonts), 8 global occasions (New Year, Valentine's, Mother's Day, Father's Day, Friendship Day, Halloween, Christmas, New Year's Eve), date matching with floating-date support.
+- **Daily cron for occasion emails** — `api/cron/send-occasion-emails.js` runs at 8 AM UTC, matches today's date against occasion config, fetches Pro emails from `wispr:pro-emails` Redis Set, deduplicates via `wispr:occasion-sent:{email}:{id}` keys (365-day TTL), and sends via Brevo transactional API with 5-concurrency batching.
+- **Pro email registration** — `api/webhook-bmac.js` now calls `SADD` on new Pro key creation to add the buyer's email to the `wispr:pro-emails` set.
+- **Redis key patterns** — `lib/redis.js` added `proEmailsSet` (`wispr:pro-emails`) and `occasionSent` (`wispr:occasion-sent:{email}:{id}`).
+- **Backfill migration script** — `scripts/migrate-pro-emails.mjs` scans all `wispr:emails:*` keys and populates the `wispr:pro-emails` set.
+- **Email template preview** — `occasion-email-preview.html` with interactive dropdown to preview all 8 occasions in-browser.
+
+### Changed
+- **vercel.json** — Added cron schedule `0 8 * * *` for `/api/cron/send-occasion-emails`.
+
+---
+
+## [v0.11.17.0] — OG Compositing + UX Polish (2026-06-30)
 
 ### Changed
 - **Consolidated VERSION_HISTORY.md into CHANGELOG.md** — Single source of truth for version history. `global/footer-menu.js` now fetches `version.json` instead of parsing `VERSION_HISTORY.md`. `VERSION_HISTORY.md` deleted.
@@ -90,7 +159,18 @@
 - **Speech language trigger** — Disabled (non-clickable, dimmed) when an example sentence is selected, since examples already carry their own language. Re-enabled when user records voice, types, or pastes (was a bug — trigger stayed disabled after `_exampleLang` cleared).
 - **Hinglish voice input** — New "Hinglish" option in speech language picker enables Deepgram `language=multi` for Hindi+English code-switching. Web Speech API fallback uses single Hindi locale. Card font rendering for mixed Devanagari+Latin already works.
 
----
+## [v0.11.16.0] — Complete Theme System Removal (2026-07-06)
+
+### Removed
+- **All theme system code from JS**: `curTheme`, `_themeAccent`, `_manualTextDark`, `_themeBrightnessCache`, `_themeAccentCache`, `applyTheme()`, `_initThemeRow()`, `_detectThemeBrightness()`, `_extractThemeAccent()`, `_getThemeVariantSrc()`, `_uploadHeaders()`, `setCardTextColors()`, `_toggleThemeBody()`, `_setTextContrast()`, `restoreDraftTheme()`, theme click/keydown handlers, theme draft restoration, roundness handler `curTheme` branch, collapse toggle, text contrast event listeners
+- **All theme HTML**: collapsible theme section, theme toggle header, theme body, theme row, text contrast buttons from `wisprstories.html` — replaced with flat palette row
+- **All theme CSS**: `.theme-section`, `.theme-toggle-header`, `.collapse-arrow`, `.theme-body`, `.theme-original-group`, `.theme-group`, `.theme-group-label`, `.theme-thumbs`, `.theme-thumb`, `.txt-contrast-section`, `.txt-contrast-btns`, `.txt-contrast-btn` from `global/styles/inputs.css`
+- **`theme` field from saveDraft()**: `sessionStorage` draft no longer stores `curTheme`
+- **`_uploadHeaders()` function**: removed; upload calls use inline headers without `X-Card-Theme`
+- **Stale texture stub**: removed `_curTexture`/`applyTexture` reference from `applyPal()` that had no backing implementation
+
+### Changed
+- **Color section heading**: "Card color" → "Original Colors" using `.lbl` class
 
 ## [v0.11.0.14] — Features Page: 5 Capability Sections + About Page Trim (2026-06-13)
 

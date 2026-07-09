@@ -85,6 +85,8 @@ export default async function handler(req, res) {
     const cardTone = safeTone(req.headers['x-card-tone']) || 'original';
     const cardP = safePalette(req.headers['x-card-p']) || '0';
     const cardR = safeCorners(req.headers['x-card-r']) || 'rounded';
+    const cardTheme = req.headers['x-card-theme'] || '';
+    const cardPro = req.headers['x-card-pro'] === '1';
 
     // Upload original card PNG (used by the landing page hero image)
     await put(`cards/${shortId}.png`, pngBuffer, {
@@ -108,7 +110,7 @@ export default async function handler(req, res) {
     });
 
     if (cardText || cardName) {
-      const meta = { text: cardText, name: cardName, tone: cardTone, p: cardP, r: cardR };
+      const meta = { text: cardText, name: cardName, tone: cardTone, p: cardP, r: cardR, theme: cardTheme, pro: cardPro };
       await put(`meta/${shortId}.json`, JSON.stringify(meta), {
         access: 'public',
         addRandomSuffix: false,

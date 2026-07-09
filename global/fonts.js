@@ -258,6 +258,14 @@ function esc(t) {
 }
 
 function applyScriptFonts(el, tone, text) {
+  // Free users: Noto Sans only, normal/400/normal regardless of tone
+  var _isSupporter = false;
+  try { _isSupporter = localStorage.getItem("wsSupporter") === "true"; } catch (e) {}
+  if (!_isSupporter) {
+    el.textContent = text;
+    el.style.fontFamily = '"Noto Sans","Noto Sans Devanagari","Noto Sans Bengali","Noto Sans Tamil","Noto Sans Telugu","Noto Sans Kannada","Noto Sans Malayalam","Noto Sans Gurmukhi","Noto Sans Gujarati","Noto Sans Oriya","Noto Sans Sinhala","Noto Sans Myanmar","Noto Sans Javanese","Noto Sans Arabic","Noto Sans Thai Looped","Noto Sans JP","Noto Sans KR","Noto Sans SC","Noto Sans TC",sans-serif';
+    return;
+  }
   const segments = splitByScript(text);
   if (segments.length <= 1) {
     el.textContent = text;

@@ -54,20 +54,33 @@ async function sendProKeyEmail(brevoApiKey, { toEmail, toName, proKey }) {
                 <p style="margin:0 0 12px;font-size:0.8rem;color:#77776a;text-transform:uppercase;letter-spacing:1.5px">Your Pro Key</p>
                 <span style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1.3rem;font-weight:800;letter-spacing:5px;color:#1a1a1a;background:#ffffeb;border:2px dashed rgba(26,26,26,0.15);border-radius:8px;padding:12px 20px;display:inline-block">${safeKey}</span>
               </div>
-              <p style="margin:0 0 6px;font-size:0.8rem;color:#1a1a1a;font-weight:600">How to activate</p>
-              <ol style="margin:0 0 20px;padding-left:16px;font-size:0.8rem;color:#555548;line-height:1.8">
-                <li>Open <a href="https://wibestories.vercel.app" style="color:#d97706;font-weight:600">Wibe Stories</a> and create a card</li>
-                <li>Tap the <span style="font-weight:600">Upgrade</span> button that appears, or tap <span style="font-weight:600">?</span> in the footer then <span style="font-weight:600">Support</span></li>
-                <li>Paste your Pro key and tap <span style="font-weight:600">Activate</span></li>
-              </ol>
+              <p style="margin:0 0 6px;font-size:0.8rem;color:#1a1a1a;font-weight:600">How to activate — two ways</p>
+              <div style="background:#f0f0df;border-radius:8px;padding:14px 16px;margin-bottom:10px">
+                <p style="margin:0 0 6px;font-size:0.75rem;color:#77776a;text-transform:uppercase;letter-spacing:1px;font-weight:600">Via the footer menu</p>
+                <ol style="margin:0;padding-left:14px;font-size:0.78rem;color:#555548;line-height:1.7">
+                  <li>Open <a href="https://wibestories.vercel.app" style="color:#d97706;font-weight:600">Wibe Stories</a></li>
+                  <li>Tap the <span style="font-weight:600">?</span> icon in the footer, then tap <span style="font-weight:600">Pricing</span></li>
+                  <li>Go to the <span style="font-weight:600">Activate Key</span> tab</li>
+                  <li>Paste your Pro key and tap <span style="font-weight:600">Continue</span></li>
+                </ol>
+              </div>
+              <div style="background:#f0f0df;border-radius:8px;padding:14px 16px;margin-bottom:20px">
+                <p style="margin:0 0 6px;font-size:0.75rem;color:#77776a;text-transform:uppercase;letter-spacing:1px;font-weight:600">Or, via the Unlock button</p>
+                <ol style="margin:0;padding-left:14px;font-size:0.78rem;color:#555548;line-height:1.7">
+                  <li>Create a card or tap any example card</li>
+                  <li>The <span style="font-weight:600">Unlock</span> button will appear above the card</li>
+                  <li>Tap it, then go to the <span style="font-weight:600">Activate Key</span> tab</li>
+                  <li>Paste your Pro key and tap <span style="font-weight:600">Continue</span></li>
+                </ol>
+              </div>
               <hr style="border:none;border-top:1px solid rgba(26,26,26,0.1);margin:0 0 16px" />
               <p style="margin:0;font-size:0.8rem;color:#77776a;line-height:1.5">
-                Questions? <a href="mailto:yellowgreenlabs@proton.me" style="color:#d97706">yellowgreenlabs@proton.me</a>
+                Questions? <a href="mailto:yellowgreenlabs@proton.me?subject=Pro%20Key%20Support" style="color:#d97706;font-weight:600">Email Us</a>
               </p>
             </div>
             <div style="background:#f0f0df;padding:16px 28px;text-align:center;border-radius:0 0 12px 12px;border:1px solid rgba(26,26,26,0.1);border-top:0">
               <p style="margin:0;font-size:0.7rem;color:#77776a;line-height:1.6">
-                Made with &#128155; by <a href="https://wibestories.vercel.app" style="color:#d97706;text-decoration:none">Wibe Stories</a>
+                speak &middot; scribe &middot; share &#128155; <a href="https://wibestories.vercel.app" style="color:#d97706;text-decoration:none">Wibe Stories</a>
                 <br>You are receiving this because you purchased a Pro membership.
               </p>
             </div>

@@ -95,7 +95,7 @@
   "preview": {
     "label": "실시간 미리보기"
   },
-  "upgrade": "업그레이드",
+  "unlock": "잠금 해제",
   "download": "카드 다운로드",
   "cardEmpty": "세부정보를 입력하세요,<br />카드가 여기에 표시됩니다",
   "cardPlaceholder": "말하거나 입력하는 동안 여기에 이야기가 표시됩니다.",
@@ -124,19 +124,6 @@
     "copyLink": "이미지 링크 복사",
     "copyImage": "이미지 복사"
   },
-  "upgradeModal": {
-    "title": "Pro로 업그레이드",
-    "sub": "무제한 톤 다시 쓰기. 더 이상 일일 제한 없음.",
-    "buyCoffee": "☕ 커피 한 잔 사주세요",
-    "or": "또는",
-    "haveKey": "이미 서포터 키를 가지고 계신가요?",
-    "keyPlaceholder": "키를 붙여넣으세요...",
-    "continue": "계속",
-    "lostKey": "키를 잃어버리셨나요?",
-    "emailPlaceholder": "이메일 입력",
-    "emailSend": "제출",
-    "disclaimer": "Wibe Stories"
-  },
   "capacity": {
     "title": "사랑이 넘쳐납니다!",
     "text": "놀라운 반응에 감사드립니다. 일일 용량에 도달하여 서버를 잠시 쉬게 해야 합니다.",
@@ -154,7 +141,7 @@
   "mobileBar": {
     "create": "만들기",
     "share": "공유",
-    "upgrade": "업그레이드"
+    "unlock": "잠금 해제"
   },
   "toasts": {
     "welcomePro": "Welcome to Pro 💛",

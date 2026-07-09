@@ -119,9 +119,7 @@
   background-size: 100% 100%;
   background-repeat: no-repeat;
 }
-/* Tone icon watermark in the top-right corner of the card.
-   Fully visible (not clipped), sized to feel like an accent not a glitch,
-   transparent enough to sit behind text without competing with it. */
+/* Quote ghost watermark on card. */
 .card-ghost {
   position: absolute;
   top: 3px;
@@ -186,7 +184,7 @@
   font-family: var(--sans);
   font-size: clamp(14px, 0.25vw + 13.2px, 15px);
   font-weight: 400;
-  margin-block-end: 8px;
+  margin-block-end: 20px;
   line-height: 1.5;
   color: var(--ink);
   word-break: break-word;
@@ -235,13 +233,13 @@
 }
 .card-foot {
   display: flex;
-  align-items: center;
+  align-items: end;
   justify-content: space-between;
   flex-shrink: 0;
 }
 .card-logo {
   display: flex;
-  align-items: center;
+  align-items: end;
   gap: 6px;
   color: #ffffeb;
   position: relative;
@@ -255,11 +253,11 @@
   font-size: clamp(12px, 0.3vw + 11px, 13px);
   font-weight: 600;
   letter-spacing: -0.1px;
-  color: rgba(255, 255, 255, 0.8);
+  color: #ffffeb;
 }
 .card-made-with {
   font-size: clamp(10px, 0.3vw + 9px, 12px);
-  color: rgba(255, 255, 255, 0.6);
+  color: #ffffeb;
   letter-spacing: 0.02em;
   font-weight: 400;
   white-space: nowrap;

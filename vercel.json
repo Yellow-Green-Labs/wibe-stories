@@ -14,7 +14,8 @@
     { "source": "/(.*)", "has": [{ "type": "host", "value": "wisprstories.vercel.app" }], "destination": "https://wibestories.vercel.app/$1", "statusCode": 301 }
   ],
   "crons": [
-    { "path": "/api/cleanup", "schedule": "0 3 * * *" }
+    { "path": "/api/cleanup", "schedule": "0 3 * * *" },
+    { "path": "/api/cron/send-occasion-emails", "schedule": "0 8 * * *" }
   ],
   "headers": [
     {

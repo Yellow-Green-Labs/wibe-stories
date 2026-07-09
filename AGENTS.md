@@ -71,6 +71,7 @@ Runnable verification scripts (Node.js 18+, Windows-friendly):
 - `node scripts/stress-test-99-cap.mjs` (add `--base=https://...` to test prod)
 - `node scripts/verify-cron-cleanup.mjs` (requires `CRON_SECRET` env var)
 - `node scripts/verify-rewrite-status.mjs`
+- `node scripts/migrate-pro-emails.mjs` (requires `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` env vars)
 
 Remotion demo testing: see `remotion-demo/` for test and render commands.
 
@@ -112,14 +113,21 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `global/demo.js` — demo animation (disabled, preserved for restoration)
 - `global/capacity-check.js` — daily capacity check (99-user cap), admin/pro key headers
 - `global/styles/` — CSS modules (15 files)
+- `global/pricing-modal.js` — pricing comparison modal (triggered from footer menu)
 - `global/styles/layout.css` — layout styles (footer menu divider)
 - `assets/i18n/` — 11 UI locales + `en.json`. **Do not regenerate deleted locales.**
 - `assets/i18n/i18n.js` — i18n loader with `data-i18n`, `getI18nSync()`
 - `assets/i18n/NATIVE-REVIEW.md` — per-locale review checklist
-- `assets/occasions/` — 53 occasion images (.png)
+- `assets/occasions/` — 60 occasion images (.png)
 - `api/` — Vercel API routes
 - `api/lib/og-render.js` — OG image generator (composites card onto WS-OG-Image.png template)
+- `api/lib/occasion-email.js` — occasion email template builder (30 global occasions, Brevo transactional API)
+- `api/lib/occasion-dates.json` — year-by-year date lookup for movable festival dates (2026-2030)
+- `api/cron/send-occasion-emails.js` — daily cron (8 AM UTC) that matches date to occasion and emails Pro + subscriber users
+- `api/subscribe-occasion.js` — email subscription endpoint (validates + stores in Redis)
+- `occasion-email-preview.html` — standalone preview of the occasion email template (30 occasions with images)
 - `lib/redis.js` — Upstash Redis client
+- `lib/allowed-emails.js` — email domain allowlist (Gmail, Outlook, Yahoo, Proton, iCloud, Tuta + regional variants)
 - `lib/lang-stats-redis.js` — separate Redis client for lang usage stats
 - `lib/chart.umd.min.js` — Chart.js bundle
 - `api/track-usage.js` — card creation usage tracking
@@ -139,14 +147,17 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `vercel.json` — deployment config, CSP security headers
 - `.vercelignore` — excludes remotion-demo/ from deployments
 - `sw.js` — service worker for offline font caching
-- `global/footer-menu.js` — footer menu rendering, i18n, reorder
+- `global/footer-menu.js` — footer menu rendering, i18n, reorder, occasion email subscription popup
 - `global/occasions/` — occasion triggers, date-occasions, country mapping
 - `remotion-demo/` — **Marketing demo video project** (Remotion/React). Do NOT delete.
 - `scripts/stress-test-99-cap.mjs` — load test for 99-user cap
 - `scripts/verify-cron-cleanup.mjs` — cleanup auth test
 - `scripts/verify-rewrite-status.mjs` — rewrite-status test
+- `scripts/migrate-pro-emails.mjs` — one-time Pro email backfill into Redis set for occasion campaigns
 - `docs/test-plans/` — test plans for verification scripts
 - `docs/every-design-decision-explained.md` — architecture Q&A
+- `docs/model-comparison.md` — model latency/pricing comparison for rewrite chains
+- `assets/card-bgs/spiral-overlay.webp` — grayscale spiral overlay for custom color background (used with `background-blend-mode: overlay`)
 - `internal-logs/ilogs-ws.md` — acknowledged logs source-of-truth (git-ignored)
 - `internal-logs/observer.js` — keyboard shortcut handler for beacon redirect
 - `api/beacon.js` — redirect handler (reads `WS_EP` env var)
@@ -154,9 +165,9 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 
 ## Card metadata sidecar system
 
-- `api/upload.js` stores `meta/<shortId>.json` alongside card images (`{ text, name, tone, p, r }`).
+- `api/upload.js` stores `meta/<shortId>.json` alongside card images (`{ text, name, tone, p, r, theme, pro }`).
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
-- `meta/` cleaned up by `api/cleanup.js` (7-day retention).
+- `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-03; v0.11.13.1: Card Not Found fix (strip \u200B from ID). Update toast fix (_versionUpToDate flag + 3s delay). Download proxy (api/download/[id].js + vercel.json rewrite). Landing page restructured (centered content, caption, watermark). "Create your own" goes to clean URL. Removed dead sharedCta banner from wisprstories.js + 11 locale files. -->
+<!-- agsync: last-run 2026-07-09; v0.11.23.2: Subscription modal restyled — backdrop now matches onboarding (rgba(0,0,0,0.55) + blur(4px)), emoji standardized to 📬. Added `lib/allowed-emails.js` (Gmail, Outlook, Yahoo, Proton, iCloud, Tuta + regional variants). `api/subscribe-occasion.js` blocks disposable/disallowed domains + rate-limits 3/IP/day. Fetch URL changed from absolute to relative for CSP fix. Added `scripts/generate-email-gif.cjs` — reads 6 cards from `assets/cards/`, renders animated GIF (480×175, right→center→left cycling). `api/lib/occasion-email.js` tagline box replaced with `occasion-cards-animation.gif`. -->
 

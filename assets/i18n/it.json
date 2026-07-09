@@ -59,7 +59,7 @@
     "rewriting": "Riscrittura..."
   },
   "color": {
-    "label": "Colore della card",
+    "label": "Colore",
     "violet": "Viola",
     "amber": "Ambra",
     "crimson": "Cremisi",
@@ -95,7 +95,7 @@
   "preview": {
     "label": "Anteprima dal vivo"
   },
-  "upgrade": "Aggiorna",
+  "unlock": "Sblocca",
   "download": "Scarica card",
   "cardEmpty": "Compila i dettagli,<br />la tua card apparirà qui",
   "cardPlaceholder": "La tua storia appare qui mentre parli o digiti.",
@@ -124,19 +124,6 @@
     "copyLink": "Copia link dell'immagine",
     "copyImage": "Copia immagine"
   },
-  "upgradeModal": {
-    "title": "Passa a Pro",
-    "sub": "Riscritture del tono illimitate. Niente più limiti giornalieri.",
-    "buyCoffee": "☕ Offrimi un caffè",
-    "or": "o",
-    "haveKey": "Hai già una chiave sostenitore?",
-    "keyPlaceholder": "Incolla la tua chiave...",
-    "continue": "Continua",
-    "lostKey": "Hai perso la tua chiave?",
-    "emailPlaceholder": "Inserisci la tua email",
-    "emailSend": "Invia",
-    "disclaimer": "Wibe Stories"
-  },
   "capacity": {
     "title": "Siamo sommersi d'amore!",
     "text": "Grazie per la risposta incredibile. Abbiamo raggiunto la nostra capacità giornaliera e dobbiamo dare un po' di riposo ai nostri server.",
@@ -154,7 +141,7 @@
   "mobileBar": {
     "create": "Crea",
     "share": "Condividi",
-    "upgrade": "Aggiorna"
+    "unlock": "Sblocca"
   },
   "toasts": {
     "welcomePro": "Welcome to Pro 💛",

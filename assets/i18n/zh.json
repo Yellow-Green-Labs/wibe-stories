@@ -95,7 +95,7 @@
   "preview": {
     "label": "实时预览"
   },
-  "upgrade": "升级",
+  "unlock": "解锁",
   "download": "下载卡片",
   "cardEmpty": "填写详情,<br />你的卡片将出现在这里",
   "cardPlaceholder": "你的故事会在你说话或输入时出现在这里。",
@@ -124,19 +124,6 @@
     "copyLink": "复制图片链接",
     "copyImage": "复制图片"
   },
-  "upgradeModal": {
-    "title": "升级到 Pro",
-    "sub": "无限语气重写。不再有每日限制。",
-    "buyCoffee": "☕ 请我喝杯咖啡",
-    "or": "或",
-    "haveKey": "已有支持者密钥？",
-    "keyPlaceholder": "粘贴你的密钥...",
-    "continue": "继续",
-    "lostKey": "丢失了密钥？",
-    "emailPlaceholder": "输入你的邮箱",
-    "emailSend": "提交",
-    "disclaimer": "Wibe Stories"
-  },
   "capacity": {
     "title": "我们被爱淹没了！",
     "text": "感谢令人难以置信的响应。我们已达到每日容量，需要让服务器休息一下。",
@@ -154,7 +141,7 @@
   "mobileBar": {
     "create": "创建",
     "share": "分享",
-    "upgrade": "升级"
+    "unlock": "解锁"
   },
   "toasts": {
     "welcomePro": "Welcome to Pro 💛",

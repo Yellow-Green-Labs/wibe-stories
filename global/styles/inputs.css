@@ -581,7 +581,8 @@
 .shell:not(.has-card) #toneRow .tc,
 .shell:not(.has-card) #palRow .pd,
 .shell:not(.has-card) #sizeRow .sz,
-.shell:not(.has-card) #roundnessRow .sz {
+.shell:not(.has-card) #roundnessRow .sz,
+.shell:not(.has-card) #texRow .txd {
   opacity: 0.4;
   cursor: not-allowed;
   pointer-events: none;
@@ -657,12 +658,13 @@
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
+  padding-inline-start: 0.2rem;
 }
 .pd {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  border: 3px solid transparent;
+  border: 2px solid transparent;
   transition: transform 0.18s;
   flex-shrink: 0;
   cursor: pointer;
@@ -677,9 +679,122 @@
   -webkit-appearance: none;
 }
 .pd:hover {
-  transform: scale(1.18);
+  transform: scale(1.1);
 }
 .pd.on {
+  border-color: var(--ink);
+}
+.pd.pd-locked,
+.txd.txd-locked {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+.pd.pd-locked::after,
+.txd.txd-locked::after {
+  content: "\f023";
+  font-family: "Font Awesome 7 Free";
+  font-weight: 900;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #ffffe1;
+  background: rgba(0,0,0,0.5);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* CUSTOM COLOR PICKER SECTION */
+.cp-section {
+  margin-top: 14px;
+  padding-top: 14px;
+}
+.cp-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: var(--cream2);
+  color: var(--ink);
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: clamp(14px, 0.3vw + 13px, 15px);
+  font-weight: 500;
+  transition: background 0.2s ease;
+  touch-action: manipulation;
+}
+.cp-trigger:hover {
+  background: var(--cream3);
+}
+.cp-trigger:active {
+  opacity: 0.85;
+}
+.cp-preview {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: conic-gradient(red, yellow, lime, cyan, blue, magenta, red);
+}
+:root.dark .cp-preview {
+  border-color: rgba(255, 255, 235, 0.25);
+}
+.cp-arrow {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--ink3);
+  transition: transform 0.2s ease;
+}
+.cp-arrow.open {
+  transform: rotate(180deg);
+}
+.cp-body {
+  margin-top: 12px;
+  display: none;
+}
+.cp-body.open {
+  display: block;
+}
+.cp-body .btn-s {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* TEXTURE ROW */
+.tex-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-inline-start: 0.2rem;
+}
+.txd {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: transform 0.18s, border-color 0.18s;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+}
+.txd:hover {
+  transform: scale(1.1);
+}
+.txd.on {
   border-color: var(--ink);
 }
 

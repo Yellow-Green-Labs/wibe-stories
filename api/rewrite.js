@@ -4,8 +4,8 @@ import { getRedis, KEYS } from '../lib/redis.js';
 import { validateProKey } from '../lib/pro-key.js';
 
 // Free-tier quota is enforced per tone, per day.
-// Each tone has its own 5-rewrite daily budget (5 x 6 tones = 30 max/day).
-const FREE_MAX_PER_TONE = 5;
+// Each tone has its own 1-rewrite daily budget (1 x 6 tones = 6 max/day).
+const FREE_MAX_PER_TONE = 1;
 
 // Global Redis cache for rewrite results (keyed by tone + text hash).
 // Cache hits skip both the OpenRouter call and rate limit consumption.
@@ -14,7 +14,7 @@ const CACHE_TTL_SEC = 86400; // 24 hours
 // Bump whenever the prompt logic changes — old entries are orphaned and
 // expire on their own TTL, so prompt fixes take effect immediately without
 // a manual Redis flush.
-const PROMPT_VERSION = 'v3';
+const PROMPT_VERSION = 'v4';
 
 function cacheKey(tone, text) {
   let hash = 0;
@@ -183,7 +183,7 @@ export default async function handler(req) {
       }
     }
 
-    // Call OpenRouter — Gemma/Kimi/Gemma (free chain) or Ling/Lunaris (pro chain)
+    // Call OpenRouter — free chain (8 free models) or pro chain (6 low-latency models)
     const openrouterKey = process.env.OPENROUTER_API_KEY;
     if (!openrouterKey) {
       return new Response(JSON.stringify({ error: 'Server not configured' }), {
@@ -198,19 +198,23 @@ export default async function handler(req) {
       : `The input is written in ${script} script. Respond in ${script} script. Do NOT transliterate to Latin/Romanized form.`;
     const prompt = `${TONE_PROMPTS[tone]} Keep it under 150 characters. Return ONLY the rewritten text, no quotes or commentary.\n\nLANGUAGE RULE: Respond in the exact same language and script as the input. Do not translate. ${scriptRule}\n\nOriginal message: "${text}"`;
 
-    // STRICT RULE: inclusionai/ling-2.6-flash is ONLY for verified pro users.
-    // It must never appear in the free-user model list under any circumstance.
+    // Pro chain: all low-latency models (sorted by latency, primary first) — 5s timeout per model.
+    // Free chain: all verified :free models — shuffled, 20s timeout.
     const models = isPro
-      ? ['inclusionai/ling-2.6-flash', 'sao10k/l3-lunaris-8b']  // pro: primary + fallback
-      : ['google/gemma-4-31b-it:free', 'moonshotai/kimi-k2.6:free', 'google/gemma-4-26b-a4b-it:free'];  // free: 3-model chain
+      ? ['ibm-granite/granite-4.1-8b', 'deepseek/deepseek-v4-flash', 'sao10k/l3-lunaris-8b', 'liquid/lfm-2-24b-a2b', 'nvidia/llama-3.3-nemotron-super-49b-v1.5', 'cohere/command-r7b-12-2024', 'poolside/laguna-xs-2.1']
+      : ['nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free', 'poolside/laguna-xs.2:free', 'google/gemma-4-31b-it:free', 'openai/gpt-oss-120b:free', 'cohere/north-mini-code:free', 'poolside/laguna-xs-2.1:free', 'nvidia/nemotron-3-nano-30b-a3b:free', 'google/gemma-4-26b-a4b-it:free'];
     let lastError = null;
     let data = null;
 
+    // Free users get shuffled start index for load distribution.
+    // Pro users always hit the best model first (sorted by latency).
+    const startIndex = isPro ? 0 : Math.floor(Math.random() * models.length);
     for (let mi = 0; mi < models.length; mi++) {
-      const model = models[mi];
+      const model = models[(startIndex + mi) % models.length];
       const isLastModel = mi === models.length - 1;
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 20000);
+      const timeoutMs = isPro ? 5000 : 20000;
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
       const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
@@ -225,7 +229,9 @@ export default async function handler(req) {
           messages: [
             {
               role: 'system',
-              content: 'You rewrite short voice messages into greeting cards with specific tones. You ALWAYS respond in the exact same language and script as the input. You never translate or transliterate. Return ONLY the rewritten text.',
+              content: isPro
+                ? 'You write greeting cards. Rewrite the user\'s message in the tone requested. Keep the original language, never translate. Output only the rewritten text. Under 150 characters. Sound human, not AI.'
+                : 'You rewrite short voice messages into greeting cards with specific tones. You ALWAYS respond in the exact same language and script as the input. You never translate or transliterate. Return ONLY the rewritten text.',
             },
             { role: 'user', content: prompt },
           ],

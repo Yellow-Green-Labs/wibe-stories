@@ -3227,5 +3227,104 @@
       "es-ES": "¡Feliz Día de la Mujer! Celebrando la fuerza, la gracia y el brillo de las mujeres en todas partes.",
       "de-DE": "Alles Gute zum Frauentag! Wir feiern die Stärke, Anmut und Klugheit von Frauen überall auf der Welt."
     }
+  },
+  {
+    "id": "april-fools-day",
+    "img": "assets/occasions/april-fools-day.png",
+    "triggers": [
+      "april fools",
+      "april fool's day",
+      "april fools day",
+      "happy april fools",
+      "fools day"
+    ],
+    "examples": {
+      "en-US": "April Fools! Hope your day is full of laughter and good surprises."
+    }
+  },
+  {
+    "id": "carnival",
+    "img": "assets/occasions/rio-carnival.png",
+    "triggers": [
+      "carnival",
+      "happy carnival",
+      "carnival celebration",
+      "rio carnival"
+    ],
+    "examples": {
+      "en-US": "Happy Carnival! Let the music, color, and joy fill your heart."
+    }
+  },
+  {
+    "id": "nowruz",
+    "img": "assets/occasions/nowruz.png",
+    "triggers": [
+      "nowruz",
+      "norouz",
+      "nawrouz",
+      "norumz",
+      "happy nowruz",
+      "nowruz mubarak",
+      "persian new year"
+    ],
+    "examples": {
+      "en-US": "Nowruz Mubarak! Wishing you a year of renewal, joy, and prosperity."
+    }
+  },
+  {
+    "id": "dragon-boat-festival",
+    "img": "assets/occasions/dragon-boat-festival.png",
+    "triggers": [
+      "dragon boat festival",
+      "happy dragon boat festival",
+      "duanwu",
+      "dragon boat"
+    ],
+    "examples": {
+      "en-US": "Happy Dragon Boat Festival! Wishing you health, happiness, and harmony."
+    }
+  },
+  {
+    "id": "grandparents-day",
+    "img": "assets/occasions/grandparents-day.png",
+    "triggers": [
+      "grandparents day",
+      "happy grandparents day",
+      "world day for grandparents",
+      "grandparent's day",
+      "grandparents and the elderly"
+    ],
+    "examples": {
+      "en-US": "Happy Grandparents Day! Your love and wisdom are a gift to us all.",
+      "it-IT": "Buona Festa dei Nonni! Il vostro amore e la vostra saggezza sono un dono per tutti noi."
+    }
+  },
+  {
+    "id": "day-of-families",
+    "img": "assets/occasions/day-of-families.png",
+    "triggers": [
+      "day of families",
+      "international day of families",
+      "happy families day",
+      "family day",
+      "world family day"
+    ],
+    "examples": {
+      "en-US": "Happy International Day of Families! The greatest gift is the ones we love."
+    }
+  },
+  {
+    "id": "peace-day",
+    "img": "assets/occasions/peace-day.png",
+    "triggers": [
+      "peace day",
+      "world peace day",
+      "international day of peace",
+      "happy peace day",
+      "peace"
+    ],
+    "examples": {
+      "en-US": "Wishing you peace today and every day. The world is brighter when we choose kindness."
+    }
   }
 ]

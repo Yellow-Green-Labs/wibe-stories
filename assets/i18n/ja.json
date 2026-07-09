@@ -95,7 +95,7 @@
   "preview": {
     "label": "ライブプレビュー"
   },
-  "upgrade": "アップグレード",
+  "unlock": "アンロック",
   "download": "カードをダウンロード",
   "cardEmpty": "詳細を入力,<br />カードがここに表示されます",
   "cardPlaceholder": "話したり入力したりすると、ここにストーリーが表示されます。",
@@ -124,19 +124,6 @@
     "copyLink": "画像リンクをコピー",
     "copyImage": "画像をコピー"
   },
-  "upgradeModal": {
-    "title": "Proにアップグレード",
-    "sub": "無制限のトーン書き換え。もう日次制限はありません。",
-    "buyCoffee": "☕ コーヒーをおごって",
-    "or": "または",
-    "haveKey": "すでにサポーターキーをお持ちですか？",
-    "keyPlaceholder": "キーを貼り付け...",
-    "continue": "続行",
-    "lostKey": "キーを紛失しましたか？",
-    "emailPlaceholder": "メールを入力",
-    "emailSend": "送信",
-    "disclaimer": "Wibe Stories"
-  },
   "capacity": {
     "title": "愛で溢れています！",
     "text": "素晴らしい反応に感謝します。日次容量に達し、サーバーを少し休ませる必要があります。",
@@ -154,7 +141,7 @@
   "mobileBar": {
     "create": "作成",
     "share": "共有",
-    "upgrade": "アップグレード"
+    "unlock": "アンロック"
   },
   "toasts": {
     "welcomePro": "Welcome to Pro 💛",

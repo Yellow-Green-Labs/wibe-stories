@@ -62,7 +62,7 @@
     "rewriting": "Rewriting…"
   },
   "color": {
-    "label": "Card color",
+    "label": "Colors",
     "violet": "Violet",
     "amber": "Amber",
     "crimson": "Crimson",
@@ -73,6 +73,9 @@
     "teal": "Teal",
     "fuchsia": "Fuchsia",
     "indigo": "Indigo"
+  },
+  "texture": {
+    "label": "Texture"
   },
   "shape": {
     "label": "Shape",
@@ -98,7 +101,7 @@
   "preview": {
     "label": "Live preview"
   },
-  "upgrade": "Upgrade",
+  "unlock": "Unlock",
   "download": "Download card",
   "exportProgress": {
     "generating": "Generating card&hellip;"
@@ -121,7 +124,7 @@
     "features": "Features",
     "about": "About",
     "langStats": "Lang Stats",
-    "support": "Support Here",
+    "support": "Pricing",
     "articles": "Read Articles",
     "issues": "Submit Issues",
     "help": "How to Use",
@@ -134,19 +137,6 @@
     "download": "Download card image",
     "copyLink": "Copy image link",
     "copyImage": "Copy image"
-  },
-  "upgradeModal": {
-    "title": "Upgrade to Pro",
-    "sub": "Unlimited tone rewrites. No more daily limits.",
-    "buyCoffee": "☕ Buy me a coffee",
-    "or": "or",
-    "haveKey": "Already have a supporter key?",
-    "keyPlaceholder": "Paste your key...",
-    "continue": "Continue",
-    "lostKey": "Lost your key?",
-    "emailPlaceholder": "Enter your email",
-    "emailSend": "Submit",
-    "disclaimer": "Wibe Stories"
   },
   "capacity": {
     "title": "We're overwhelmed with love!",
@@ -165,7 +155,7 @@
   "mobileBar": {
     "create": "Create",
     "share": "Share",
-    "upgrade": "Upgrade"
+    "unlock": "Unlock"
   },
   "toasts": {
     "welcomePro": "Welcome to Pro 💛",

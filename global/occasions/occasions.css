@@ -10,6 +10,8 @@
 }
 .card-occasion.show {
   display: block;
+  padding-top: 12px;
+  padding-left: 8px;
 }
 .card-occasion img {
   position: absolute;
@@ -19,9 +21,6 @@
   object-fit: contain;
   display: block;
 }
-/* .card-panel.occasion .card-panel-text {
-  padding-bottom: 10px;
-} */
 .card-panel.occasion .card-wv {
   padding-right: 55px;
 }

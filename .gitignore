@@ -21,6 +21,9 @@ backup/
 prototype-waveform-play.html
 prototype-voice-cards.html
 mockup-og-option-c.html
+preview-email.html
+_start-dev.cmd
+
 .vercel
 C_WS-updates.md
 .env

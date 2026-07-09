@@ -7,6 +7,8 @@
     var _m = window.location.hash.match(/^#ws-admin=(.+)$/);
     if (_m && _m[1]) {
       localStorage.setItem('wsAdminSecret', _m[1]);
+      localStorage.setItem('wsSupporter', 'true');
+      localStorage.setItem('wsProKey', _m[1]);
       history.replaceState(null, '', window.location.pathname + window.location.search);
     }
   } catch (_e) {}

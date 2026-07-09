@@ -155,6 +155,9 @@
       <a href="/features" class="fmenu-link">
         <i class="fa-solid fa-star" aria-hidden="true"></i><span data-i18n="footer.features">Features</span>
       </a>
+      <a href="#" class="fmenu-link" id="fmenu-pricing">
+        <i class="fa-solid fa-dollar-sign" aria-hidden="true"></i><span data-i18n="footer.support">Pricing</span>
+      </a>
       <a href="/about" class="fmenu-link">
         <i class="fa-solid fa-book-open" aria-hidden="true"></i><span data-i18n="footer.about">About</span>
       </a>
@@ -162,9 +165,6 @@
         <i class="fa-solid fa-chart-simple" aria-hidden="true"></i><span data-i18n="footer.langStats">Lang Stats</span>
       </a>
       <div class="fmenu-divider"></div>
-      <a href="https://buymeacoffee.com/yg_labs/membership" class="fmenu-link" target="_blank" rel="noopener noreferrer">
-        <i class="fa-solid fa-hand-holding-heart" aria-hidden="true"></i><span data-i18n="footer.support">Support Here</span>
-      </a>
       <a href="https://medium.com/" class="fmenu-link" rel="noopener noreferrer" target="_blank">
         <i class="fa-brands fa-medium" aria-hidden="true"></i><span data-i18n="footer.articles">Read Articles</span>
       </a>
@@ -216,6 +216,14 @@
     if (typeof window.showOnboarding === "function") window.showOnboarding();
   });
 
+  var pricingLink = wrapper.querySelector("#fmenu-pricing");
+  pricingLink?.addEventListener("click", (e) => {
+    e.preventDefault();
+    panel.classList.add("hidden");
+    toggle.setAttribute("aria-expanded", "false");
+    if (typeof window.showPricingModal === "function") window.showPricingModal();
+  });
+
   window.addEventListener("scroll", () => {
     panel.classList.add("hidden");
     toggle.setAttribute("aria-expanded", "false");
@@ -234,4 +242,281 @@
       }
     })
     .catch(() => {});
+
+  // ── Occasion email subscription modal ──
+  // Matches share-modal pattern in overlays.css
+  const subStyle = document.createElement("style");
+  subStyle.textContent = `
+    .fmenu-sub-link {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(0.65rem, 0.8vw, 0.75rem);
+      color: var(--ink3, #a0a090);
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .fmenu-sub-link:hover {
+      color: #f59e0b;
+    }
+    .fmenu-sub-sep {
+      color: var(--ink3, #a0a090);
+      opacity: 0.4;
+      margin: 0 4px;
+    }
+    .fmenu-sub-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .fmenu-sub-modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .fmenu-sub-backdrop {
+      position: absolute;
+      inset: 0;
+      background: transparent;
+    }
+    .fmenu-sub-content {
+      position: relative;
+      background: var(--cream);
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 380px;
+      width: 90vw;
+      text-align: center;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3);
+    }
+    :root.dark .fmenu-sub-content {
+      background: #2a2a2a;
+    }
+    .fmenu-sub-close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: clamp(24px, 0.5vw + 22px, 26px);
+      color: var(--ink3);
+      cursor: pointer;
+      line-height: 1;
+      padding: 10px;
+      touch-action: manipulation;
+    }
+    .fmenu-sub-close:hover {
+      color: var(--ink);
+    }
+    .fmenu-sub-icon {
+      font-size: clamp(48px, 1vw + 42px, 54px);
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+    .fmenu-sub-title {
+      font-family: var(--serif);
+      font-size: clamp(22px, 0.5vw + 20px, 24px);
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+    .fmenu-sub-sub {
+      font-size: clamp(12px, 0.3vw + 11px, 13px);
+      color: var(--ink3);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .fmenu-sub-input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--rule);
+      background: var(--cream2);
+      color: var(--ink);
+      font-size: clamp(14px, 0.3vw + 13px, 15px);
+      font-family: "Space Grotesk", sans-serif;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+      outline: none;
+    }
+    .fmenu-sub-input:focus {
+      border-color: var(--ink);
+    }
+    .fmenu-sub-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background: var(--ink);
+      color: var(--cream);
+      font-size: clamp(14px, 0.3vw + 13px, 15px);
+      font-weight: 500;
+      cursor: pointer;
+      font-family: "Space Grotesk", sans-serif;
+      transition: opacity 0.18s;
+      touch-action: manipulation;
+    }
+    .fmenu-sub-btn:hover {
+      opacity: 0.85;
+    }
+    .fmenu-sub-btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+    .fmenu-sub-success {
+      display: none;
+      font-size: clamp(12px, 0.3vw + 11px, 13px);
+      color: #22c55e;
+      margin-top: 12px;
+    }
+    .fmenu-sub-success.visible {
+      display: block;
+    }
+    .fmenu-sub-error {
+      display: none;
+      font-size: clamp(11px, 0.3vw + 10px, 12px);
+      color: #ef4444;
+      margin-top: 8px;
+    }
+    .fmenu-sub-error.visible {
+      display: block;
+    }
+    @media (max-width: 600px) {
+      .fmenu-sub-content {
+        padding: 28px 20px 24px;
+        max-width: none;
+        width: 100%;
+        border-radius: 20px 20px 0 0;
+        margin-top: auto;
+      }
+      .fmenu-sub-modal {
+        align-items: flex-end;
+      }
+    }
+  `;
+  document.head.appendChild(subStyle);
+
+  // ── Modal DOM ──
+  const modal = document.createElement("div");
+  modal.className = "fmenu-sub-modal";
+  modal.id = "fmenuSubModal";
+  modal.innerHTML =
+    '<div class="fmenu-sub-backdrop" id="fmenuSubBackdrop"></div>' +
+    '<div class="fmenu-sub-content" id="fmenuSubContent">' +
+      '<button class="fmenu-sub-close" id="fmenuSubClose">&times;</button>' +
+      '<div class="fmenu-sub-icon">\uD83D\uDCEC</div>' +
+      '<div class="fmenu-sub-title">Get occasion reminders</div>' +
+      '<p class="fmenu-sub-sub">We\'ll email you before festivals and special days so you never miss a celebration.</p>' +
+      '<input type="email" class="fmenu-sub-input" id="fmenuSubEmail" placeholder="your@email.com" />' +
+      '<button class="fmenu-sub-btn" id="fmenuSubBtn">Subscribe</button>' +
+      '<p class="fmenu-sub-success" id="fmenuSubSuccess">\u2713 You\'re in! We\'ll email you before special days.</p>' +
+      '<p class="fmenu-sub-error" id="fmenuSubError"></p>' +
+    '</div>';
+  document.body.appendChild(modal);
+
+  function openSubPopup() {
+    modal.classList.add("open");
+    document.body.classList.add("modal-open");
+    document.body.style.overflow = "hidden";
+    document.getElementById("fmenuSubEmail").focus();
+  }
+
+  function closeSubPopup() {
+    modal.classList.remove("open");
+    document.body.classList.remove("modal-open");
+    document.body.style.overflow = "";
+  }
+
+  document.getElementById("fmenuSubBackdrop").addEventListener("click", closeSubPopup);
+  document.getElementById("fmenuSubClose").addEventListener("click", closeSubPopup);
+
+  document.addEventListener("keydown", function subEsc(e) {
+    if (e.key === "Escape" && modal.classList.contains("open")) {
+      closeSubPopup();
+    }
+  });
+
+  document.getElementById("fmenuSubBtn").addEventListener("click", async function () {
+    const emailInput = document.getElementById("fmenuSubEmail");
+    const email = emailInput.value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const errorEl = document.getElementById("fmenuSubError");
+    const successEl = document.getElementById("fmenuSubSuccess");
+
+    errorEl.classList.remove("visible");
+    successEl.classList.remove("visible");
+
+    if (!email || !emailRegex.test(email)) {
+      errorEl.textContent = "Please enter a valid email address.";
+      errorEl.classList.add("visible");
+      return;
+    }
+
+    const btn = document.getElementById("fmenuSubBtn");
+    btn.disabled = true;
+    btn.textContent = "Subscribing\u2026";
+
+    try {
+      const res = await fetch("/api/subscribe-occasion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        successEl.classList.add("visible");
+        emailInput.value = "";
+        btn.textContent = "Joined!";
+        setTimeout(function () {
+          btn.textContent = "Subscribe";
+          btn.disabled = false;
+        }, 2000);
+      } else {
+        errorEl.textContent = data.error || "Something went wrong. Try again.";
+        errorEl.classList.add("visible");
+        btn.disabled = false;
+        btn.textContent = "Subscribe";
+      }
+    } catch {
+      errorEl.textContent = "Could not connect. Check your internet and try again.";
+      errorEl.classList.add("visible");
+      btn.disabled = false;
+      btn.textContent = "Subscribe";
+    }
+  });
+
+  document.getElementById("fmenuSubEmail").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      document.getElementById("fmenuSubBtn").click();
+    }
+  });
+
+  // ── Insert " | 📬 Get reminders" inside <p> beside "Wibe Stories" ──
+  function addSubLink() {
+    var pEl = document.querySelector('.footer p[data-i18n="footer.text"]');
+    if (!pEl) return;
+    if (pEl.querySelector('.fmenu-sub-link')) return;
+    var aEl = pEl.querySelector('a.footer-wave');
+    if (!aEl) return;
+    var sep = document.createElement('span');
+    sep.className = 'fmenu-sub-sep';
+    sep.textContent = ' | ';
+    var link = document.createElement('a');
+    link.href = '#';
+    link.className = 'fmenu-sub-link';
+    link.textContent = '\uD83D\uDCEC Get reminders';
+    link.addEventListener('click', function (e) { e.preventDefault(); openSubPopup(); });
+    aEl.parentNode.insertBefore(sep, aEl.nextSibling);
+    aEl.parentNode.insertBefore(link, sep.nextSibling);
+  }
+
+  addSubLink();
+  window.addEventListener('i18nApplied', addSubLink);
 })();

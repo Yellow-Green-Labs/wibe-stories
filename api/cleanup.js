@@ -1,14 +1,33 @@
 // Scheduled cleanup of expired card blobs.
 // Runs daily via Vercel Cron (see vercel.json `crons` block). Deletes any
 // blob in `cards/` or `og/` older than MAX_AGE_HOURS so shared cards live
-// ~7 days, never longer. Triggered by Vercel with
-// `Authorization: Bearer ${CRON_SECRET}`; rejects anything else with 401.
+// ~7 days, never longer. Pro subscriber cards get 14 days (PRO_MAX_AGE_HOURS).
+// Pro status is checked from the card's metadata file (meta/<shortId>.json).
+// Triggered by Vercel with `Authorization: Bearer ${CRON_SECRET}`;
+// rejects anything else with 401.
 
 import { list, del } from '@vercel/blob';
 
 const MAX_AGE_HOURS = 168; // 7 days — cards live for a week
+const PRO_MAX_AGE_HOURS = 336; // 14 days — Pro cards live for two weeks
 const PREFIXES = ['cards/', 'og/', 'voice/', 'meta/'];
 const DELETE_BATCH = 50;
+
+async function isProCard(blobUrl) {
+  try {
+    const url = new URL(blobUrl);
+    const match = url.pathname.match(/\/cards\/(.+)\.png$/);
+    if (!match) return false;
+    const shortId = match[1];
+    url.pathname = `/meta/${shortId}.json`;
+    const resp = await fetch(url.toString());
+    if (!resp.ok) return false;
+    const meta = await resp.json();
+    return meta.pro === true;
+  } catch {
+    return false;
+  }
+}
 
 export default async function handler(req, res) {
   // Reject anything that isn't the scheduled Vercel cron call
@@ -20,7 +39,8 @@ export default async function handler(req, res) {
     return;
   }
 
-  const cutoffMs = Date.now() - MAX_AGE_HOURS * 60 * 60 * 1000;
+  const cutoff7d = Date.now() - MAX_AGE_HOURS * 60 * 60 * 1000;
+  const cutoff14d = Date.now() - PRO_MAX_AGE_HOURS * 60 * 60 * 1000;
   const expiredUrls = [];
 
   try {
@@ -29,7 +49,13 @@ export default async function handler(req, res) {
       do {
         const page = await list({ prefix, cursor });
         for (const blob of page.blobs) {
-          if (new Date(blob.uploadedAt).getTime() < cutoffMs) {
+          const ageMs = new Date(blob.uploadedAt).getTime();
+          if (ageMs < cutoff14d) {
+            expiredUrls.push(blob.url);
+          } else if (ageMs < cutoff7d) {
+            if (prefix === 'cards/' && (await isProCard(blob.url))) {
+              continue; // Pro card, keep for 14 days
+            }
             expiredUrls.push(blob.url);
           }
         }
@@ -48,7 +74,7 @@ export default async function handler(req, res) {
     res.end(JSON.stringify({
       ok: true,
       deleted,
-      cutoff: new Date(cutoffMs).toISOString(),
+      cutoff: new Date(cutoff7d).toISOString(),
     }));
   } catch (e) {
     res.statusCode = 500;

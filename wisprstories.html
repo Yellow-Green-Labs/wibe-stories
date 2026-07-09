@@ -121,6 +121,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Instrument+Serif:ital,wght@0,400;1,400&family=Karla:wght@400&family=Stack+Sans+Headline:wght@400&family=EB+Garamond:ital,wght@0,400;1,400&family=Fredoka:wght@400&family=Merriweather:ital,wght@0,400;1,400&family=Atkinson+Hyperlegible:wght@400;700&family=Noto+Sans:wght@400;700&family=Noto+Serif:wght@400;700&display=swap"
       rel="stylesheet"
     />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <!-- Indian scripts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&family=Noto+Serif+Devanagari:wght@400;700&family=Noto+Sans+Bengali:wght@400;700&family=Noto+Serif+Bengali:wght@400;700&family=Noto+Sans+Tamil:wght@400;700&family=Noto+Serif+Tamil:wght@400;700&family=Noto+Sans+Telugu:wght@400;700&family=Noto+Serif+Telugu:wght@400;700&family=Noto+Sans+Kannada:wght@400;700&family=Noto+Serif+Kannada:wght@400;700&family=Noto+Sans+Malayalam:wght@400;700&family=Noto+Serif+Malayalam:wght@400;700&family=Noto+Sans+Gurmukhi:wght@400;700&family=Noto+Serif+Gurmukhi:wght@400;700&family=Noto+Sans+Gujarati:wght@400;700&family=Noto+Serif+Gujarati:wght@400;700&family=Noto+Sans+Oriya:wght@400;700&family=Noto+Serif+Oriya:wght@400;700&family=Noto+Sans+Sinhala:wght@400;700&family=Noto+Serif+Sinhala:wght@400;700&family=Noto+Sans+Myanmar:wght@400;700&family=Noto+Serif+Myanmar:wght@400;700&family=Noto+Sans+Javanese:wght@400&family=Anek+Devanagari:wght@400&family=Alkatra:wght@400&family=Baloo+Chettan+2:wght@400&family=Rajdhani:wght@400&family=Anek+Tamil:wght@400&family=Karla+Tamil+Inclined:wght@400&family=Catamaran:wght@400&family=Meera+Inimai&family=Anek+Telugu:wght@400&family=Akaya+Telivigala&family=Sirivennela&family=Anek+Kannada:wght@400&family=Tiro+Kannada&family=Hubballi&family=Anek+Malayalam:wght@400&family=Chilanka&family=Manjari:wght@400&display=swap"
@@ -506,11 +507,9 @@
           <!-- REWRITE PREVIEW BAR -->
           <div class="rewrite-preview-bar" id="rewritePreviewBar"></div>
 
-          <!-- 4. COLOUR -->
+          <!-- 4. COLORS -->
           <div>
-            <div class="lbl">
-              <span data-i18n="color.label">Card color</span>
-            </div>
+            <div class="lbl"><span data-i18n="color.label">Colors</span></div>
             <div
               class="pal-row"
               id="palRow"
@@ -628,6 +627,29 @@
                 aria-label="Indigo"
               ></button>
             </div>
+
+            <!-- Color picker sub-section (Pro-gated) -->
+            <div class="cp-section">
+              <div class="lbl"><span>Color picker</span></div>
+              <button type="button" id="customColorBtn" class="cp-trigger">
+                <span class="cp-preview" id="cpPreview"></span>
+                <span>Custom color</span>
+                <i class="fas fa-chevron-down cp-arrow" id="cpArrow"></i>
+              </button>
+              <div class="cp-body" id="cpBody">
+                <div id="iroPicker"></div>
+                <button type="button" id="applyCustomColor" class="btn-s">Apply</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4b. TEXTURES -->
+          <div>
+            <div class="lbl"><span data-i18n="texture.label">Texture</span></div>
+            <div class="tex-row" id="texRow" role="radiogroup" aria-label="Card texture">
+              <button type="button" class="txd" data-tx="0" role="radio" aria-checked="false" title="Grain" aria-label="Grain" style="background-image:url(assets/themes/wh-texture-1.png)"></button>
+              <button type="button" class="txd" data-tx="1" role="radio" aria-checked="false" title="Linen" aria-label="Linen" style="background-image:url(assets/themes/wh-texture-2.png)"></button>
+            </div>
           </div>
 
           <!-- 5. SHAPE -->
@@ -731,9 +753,7 @@
         <div class="pvw-lbl" data-i18n="preview.label">Live preview</div>
         <div id="tonePillWrap" class="tone-pill-wrap" style="display: none">
           <span id="tonePill" class="tone-pill"></span>
-          <button id="upgradeBtn" class="tone-upgrade-link" data-i18n="upgrade">
-            Upgrade
-          </button>
+          <button id="upgradeBtn" class="tone-upgrade-link" data-i18n="unlock">Unlock</button>
         </div>
         <div class="card-wrap">
           <button class="dl-btn" id="dlBtn" style="display: none">
@@ -857,6 +877,7 @@
         >
         <span class="footer-copyright"
           >&copy; 2026 <span class="footer-sep" aria-hidden="true">|</span>
+          <script src="global/pricing-modal.js"></script>
           <script src="global/footer-menu.js"></script
         ></span>
       </footer>
@@ -897,79 +918,6 @@
             <span data-i18n="shareModal.copyImage">Copy image</span>
           </button>
         </div>
-      </div>
-    </div>
-    <!-- UPGRADE MODAL -->
-    <div class="upgrade-modal" id="upgradeModal">
-      <div class="upgrade-modal-backdrop" id="upgradeBackdrop"></div>
-      <div class="upgrade-modal-content">
-        <button class="upgrade-modal-close" id="upgradeClose">&#10005;</button>
-        <div class="upgrade-modal-icon">&#10024;</div>
-        <div class="upgrade-modal-title" data-i18n="upgradeModal.title">
-          Upgrade to Pro
-        </div>
-        <p class="upgrade-modal-sub" data-i18n="upgradeModal.sub">
-          Unlimited tone rewrites. No more daily limits.
-        </p>
-        <a
-          class="upgrade-modal-btn upgrade-modal-btn-primary"
-          href="https://buymeacoffee.com/yg_labs/membership"
-          target="_blank"
-          rel="noopener"
-          data-i18n="upgradeModal.buyCoffee"
-          >&#9749; Buy me a coffee</a
-        >
-        <div class="upgrade-modal-divider" data-i18n="upgradeModal.or">
-          &#8212; or &#8212;
-        </div>
-        <p class="upgrade-modal-label" data-i18n="upgradeModal.haveKey">
-          Already have a supporter key?
-        </p>
-        <div class="upgrade-modal-row">
-          <input
-            class="upgrade-modal-input"
-            id="upgradeKeyInput"
-            aria-label="Supporter key"
-            data-i18n-placeholder="upgradeModal.keyPlaceholder"
-            placeholder="Paste your key..."
-          />
-          <button
-            class="upgrade-modal-btn"
-            id="upgradeKeyGo"
-            data-i18n="upgradeModal.continue"
-          >
-            Continue
-          </button>
-        </div>
-        <div id="upgradeKeyMsg" class="upgrade-modal-msg"></div>
-        <p
-          class="upgrade-modal-label lost-key"
-          data-i18n="upgradeModal.lostKey"
-        >
-          Lost your key?
-        </p>
-        <div class="upgrade-modal-row">
-          <input
-            class="upgrade-modal-input"
-            id="upgradeEmailInput"
-            type="email"
-            aria-label="Email to recover your key"
-            data-i18n-placeholder="upgradeModal.emailPlaceholder"
-            placeholder="Enter your email"
-          />
-          <button
-            class="upgrade-modal-btn"
-            id="upgradeEmailGo"
-            aria-label="Submit"
-            data-i18n="upgradeModal.emailSend"
-          >
-            Submit
-          </button>
-        </div>
-        <div id="upgradeEmailMsg" class="upgrade-modal-msg"></div>
-        <p class="upgrade-modal-disclaimer" data-i18n="upgradeModal.disclaimer">
-          Wibe Stories
-        </p>
       </div>
     </div>
 
@@ -1082,9 +1030,9 @@
           class="mobile-bar-btn mobile-bar-btn-upgrade"
           id="mobileBtnUpgrade"
         >
-          <i class="fas fa-mug-hot"></i>
-          <span class="mobile-bar-btn-label" data-i18n="mobileBar.upgrade"
-            >Upgrade</span
+          <i class="fas fa-key"></i>
+          <span class="mobile-bar-btn-label" data-i18n="mobileBar.unlock"
+            >Unlock</span
           >
         </button>
       </div>
@@ -1117,7 +1065,8 @@
       </div>
     </div>
 
-    <script src="global/capacity-check.js" defer></script>
+    <script src="https://unpkg.com/@jaames/iro@5"></script>
+    <script src="global/capacity-check.js"></script>
     <script src="assets/i18n/i18n.js"></script>
     <script src="assets/languages/languages-loader.js"></script>
     <script src="global/occasions/examples-loader.js"></script>
