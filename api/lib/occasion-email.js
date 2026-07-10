@@ -202,9 +202,10 @@ export function buildHtmlBody(occasion, email) {
 </html>`;
 }
 
-export async function sendOccasionEmail(resendApiKey, email, occasion) {
+export async function sendOccasionEmail(resendApiKey, email, occasion, timeoutMs) {
   const subject = buildSubject(occasion);
   const htmlContent = buildHtmlBody(occasion, email);
+  timeoutMs = timeoutMs || EMAIL_TIMEOUT_MS;
   try {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -218,6 +219,7 @@ export async function sendOccasionEmail(resendApiKey, email, occasion) {
         subject,
         html: htmlContent,
       }),
+      signal: AbortSignal.timeout(timeoutMs),
     });
     if (!res.ok) {
       const errBody = await res.text();

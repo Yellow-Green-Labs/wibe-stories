@@ -4246,45 +4246,39 @@ async function generateBlob() {
     return _pngCache.blob;
   }
   const card = document.getElementById("card");
+  const cardBg = document.getElementById("cardBg");
   const cw = card.offsetWidth;
   const ch = card.offsetHeight;
   const scale = isSupporter() ? 2 : 1;
   var texDataUrl = _curTexture !== null ? await _getTextureBgDataUrl(cw, ch, scale) : null;
   var customColorBgDataUrl = effectiveCustomColor ? await _getCustomColorBgDataUrl(effectiveCustomColor, cw, ch) : null;
   var activeBgDataUrl = texDataUrl || customColorBgDataUrl;
+  // Set background inline on live card BEFORE html2canvas creates its clone.
+  // This avoids html2canvas overriding inline styles set in onclone callback.
+  var savedBgImage = card.style.backgroundImage;
+  var savedBgSize = card.style.backgroundSize;
+  var savedBgColor = card.style.backgroundColor;
+  var savedBgDisplay = cardBg.style.display;
+  var exportBgUrl = activeBgDataUrl || getCardBgImage();
+  card.style.background = "";
+  card.style.backgroundImage = "url(" + exportBgUrl + ")";
+  card.style.backgroundSize = "100% 100%";
+  card.style.backgroundColor = "";
+  cardBg.style.display = "none";
   const opt = {
     backgroundColor: null,
     scale: scale,
     logging: false,
     useCORS: true,
-    ignoreElements: function(el) { return el.id === 'cardBg'; },
-    onclone: function (doc) {
-      var c = doc.getElementById("card");
-      if (c && activeBgDataUrl) {
-        c.style.backgroundImage = "url(" + activeBgDataUrl + ")";
-        c.style.backgroundSize = "100% 100%";
-      }
-    },
+    ignoreElements: function(el) { return el.id === "cardBg"; },
   };
   const canvas = await html2canvas(card, opt);
-  var finalCanvas = document.createElement("canvas");
-  finalCanvas.width = canvas.width;
-  finalCanvas.height = canvas.height;
-  var fctx = finalCanvas.getContext("2d");
-  if (activeBgDataUrl) {
-    var _bgImg = new Image();
-    _bgImg.src = activeBgDataUrl;
-    await new Promise(function(_r) { _bgImg.onload = _r; _bgImg.onerror = _r; });
-    fctx.drawImage(_bgImg, 0, 0, finalCanvas.width, finalCanvas.height);
-  } else {
-    var _palImg = new Image();
-    _palImg.src = getCardBgImage();
-    await new Promise(function(_r) { _palImg.onload = _r; _palImg.onerror = _r; });
-    fctx.drawImage(_palImg, 0, 0, finalCanvas.width, finalCanvas.height);
-  }
-  fctx.drawImage(canvas, 0, 0);
+  card.style.backgroundImage = savedBgImage;
+  card.style.backgroundSize = savedBgSize;
+  card.style.backgroundColor = savedBgColor;
+  cardBg.style.display = savedBgDisplay;
   return new Promise(function (resolve, reject) {
-    finalCanvas.toBlob(function (blob) {
+    canvas.toBlob(function (blob) {
       if (blob) {
         _pngCache = { blob: blob, key: cacheKey, ts: Date.now() };
         resolve(blob);
@@ -4333,43 +4327,34 @@ async function _generateAnimatedWebm(blob, cacheKey) {
     var customColorBgDataUrl = _effCC ? await _getCustomColorBgDataUrl(_effCC, cw, ch) : null;
     var activeBgDataUrl2 = texDataUrl || customColorBgDataUrl;
 
+    // Set background inline on live card BEFORE html2canvas creates its clone
+    var savedBgImg2 = card.style.backgroundImage;
+    var savedBgSz2 = card.style.backgroundSize;
+    var savedBgCl2 = card.style.backgroundColor;
+    var cardBgEl = document.getElementById("cardBg");
+    var savedBgDsp2 = cardBgEl.style.display;
+    var bgUrl2 = activeBgDataUrl2 || getCardBgImage();
+    card.style.background = "";
+    card.style.backgroundImage = "url(" + bgUrl2 + ")";
+    card.style.backgroundSize = "100% 100%";
+    card.style.backgroundColor = "";
+    cardBgEl.style.display = "none";
+
     // Capture card base WITHOUT waveform bars (opacity:0 in clone — keeps layout)
     var baseCanvas = await html2canvas(card, {
       backgroundColor: null, scale: scale, logging: false, useCORS: true,
       ignoreElements: function(el) { return el.id === 'cardBg'; },
       onclone: function(doc) {
         var wv = doc.getElementById("cardWv");
-        var c = doc.getElementById("card");
-        if (c && activeBgDataUrl2) {
-          c.style.backgroundImage = "url(" + activeBgDataUrl2 + ")";
-          c.style.backgroundSize = "100% 100%";
-        }
         if (wv) wv.style.opacity = "0";
       }
     });
-    if (activeBgDataUrl2) {
-      var _bgImg2 = new Image();
-      _bgImg2.src = activeBgDataUrl2;
-      await new Promise(function(_r) { _bgImg2.onload = _r; _bgImg2.onerror = _r; });
-      var _blendCanvas = document.createElement("canvas");
-      _blendCanvas.width = baseCanvas.width;
-      _blendCanvas.height = baseCanvas.height;
-      var _bctx = _blendCanvas.getContext("2d");
-      _bctx.drawImage(_bgImg2, 0, 0, _blendCanvas.width, _blendCanvas.height);
-      _bctx.drawImage(baseCanvas, 0, 0);
-      baseCanvas = _blendCanvas;
-    } else {
-      var _palImg2 = new Image();
-      _palImg2.src = getCardBgImage();
-      await new Promise(function(_r) { _palImg2.onload = _r; _palImg2.onerror = _r; });
-      var _palCanvas = document.createElement("canvas");
-      _palCanvas.width = baseCanvas.width;
-      _palCanvas.height = baseCanvas.height;
-      var _pctx = _palCanvas.getContext("2d");
-      _pctx.drawImage(_palImg2, 0, 0, _palCanvas.width, _palCanvas.height);
-      _pctx.drawImage(baseCanvas, 0, 0);
-      baseCanvas = _palCanvas;
-    }
+
+    // Restore original styles
+    card.style.backgroundImage = savedBgImg2;
+    card.style.backgroundSize = savedBgSz2;
+    card.style.backgroundColor = savedBgCl2;
+    cardBgEl.style.display = savedBgDsp2;
 
     // Setup audio processing pipeline
     var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -4512,43 +4497,28 @@ async function generateWebm() {
   if (!_effCC2 && _iroInstance) { var _cpB2 = document.getElementById("cpBody"); if (_cpB2 && _cpB2.classList.contains("open")) _effCC2 = _iroInstance.color.hexString; }
   var customColorBgDataUrl = _effCC2 ? await _getCustomColorBgDataUrl(_effCC2, cw, ch) : null;
   var activeBgDataUrl3 = texDataUrl || customColorBgDataUrl;
+  var bgEl = document.getElementById("cardBg");
+  var svBg3 = card.style.backgroundImage;
+  var svSz3 = card.style.backgroundSize;
+  var svCl3 = card.style.backgroundColor;
+  var svDsp3 = bgEl.style.display;
+  var bg3 = activeBgDataUrl3 || getCardBgImage();
+  card.style.background = "";
+  card.style.backgroundImage = "url(" + bg3 + ")";
+  card.style.backgroundSize = "100% 100%";
+  card.style.backgroundColor = "";
+  bgEl.style.display = "none";
   var canvas = await html2canvas(card, {
     backgroundColor: null,
     scale: scale,
     logging: false,
     useCORS: true,
     ignoreElements: function(el) { return el.id === 'cardBg'; },
-    onclone: function(doc) {
-      var c = doc.getElementById("card");
-      if (c && activeBgDataUrl3) {
-        c.style.backgroundImage = "url(" + activeBgDataUrl3 + ")";
-        c.style.backgroundSize = "100% 100%";
-      }
-    }
   });
-  if (activeBgDataUrl3) {
-    var _bgImg3 = new Image();
-    _bgImg3.src = activeBgDataUrl3;
-    await new Promise(function(_r) { _bgImg3.onload = _r; _bgImg3.onerror = _r; });
-    var _blendCanvas3 = document.createElement("canvas");
-    _blendCanvas3.width = canvas.width;
-    _blendCanvas3.height = canvas.height;
-    var _bctx3 = _blendCanvas3.getContext("2d");
-    _bctx3.drawImage(_bgImg3, 0, 0, _blendCanvas3.width, _blendCanvas3.height);
-    _bctx3.drawImage(canvas, 0, 0);
-    canvas = _blendCanvas3;
-  } else {
-    var _palImg3 = new Image();
-    _palImg3.src = getCardBgImage();
-    await new Promise(function(_r) { _palImg3.onload = _r; _palImg3.onerror = _r; });
-    var _palCanvas3 = document.createElement("canvas");
-    _palCanvas3.width = canvas.width;
-    _palCanvas3.height = canvas.height;
-    var _pctx3 = _palCanvas3.getContext("2d");
-    _pctx3.drawImage(_palImg3, 0, 0, _palCanvas3.width, _palCanvas3.height);
-    _pctx3.drawImage(canvas, 0, 0);
-    canvas = _palCanvas3;
-  }
+  card.style.backgroundImage = svBg3;
+  card.style.backgroundSize = svSz3;
+  card.style.backgroundColor = svCl3;
+  bgEl.style.display = svDsp3;
   var pngBlob = await new Promise(function(resolve, reject) {
     canvas.toBlob(function(b) {
       if (b) resolve(b);
