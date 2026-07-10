@@ -21,7 +21,7 @@ function getSmtpConfig() {
 
 export default async function handler(req) {
   const expected = process.env.CRON_SECRET;
-  if (!expected || req.headers.get('authorization') !== `Bearer ${expected}`) {
+  if (!expected || req.headers['authorization'] !== `Bearer ${expected}`) {
     return new Response('Unauthorized', { status: 401 });
   }
 

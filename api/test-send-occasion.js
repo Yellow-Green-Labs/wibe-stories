@@ -13,7 +13,7 @@ function getSmtpConfig() {
 }
 
 export default async function handler(req) {
-  const url = new URL(req.url);
+  const url = new URL(req.url, `https://${req.headers.host || 'wibestories.vercel.app'}`);
   const email = url.searchParams.get('email');
   const occasionId = url.searchParams.get('occasion');
 
