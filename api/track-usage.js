@@ -1,33 +1,44 @@
+export const config = { runtime: 'edge' };
+
 import { getLangStatsRedis } from '../lib/lang-stats-redis.js';
 
-export default async function handler(req, res) {
-  // CORS headers for Vercel
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+export default async function handler(req) {
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
 
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    return new Response(null, { status: 200, headers: corsHeaders });
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   }
 
   try {
-    const { lang, source } = req.body || {};
+    const body = await req.json();
+    const { lang, source } = body || {};
     console.log('[TrackUsage] Received lang=' + lang + ' source=' + source);
 
     if (!lang || !source) {
-      return res.status(400).json({ error: 'lang and source are required' });
+      return new Response(JSON.stringify({ error: 'lang and source are required' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     if (source !== 'voice' && source !== 'story') {
-      return res.status(400).json({ error: 'source must be "voice" or "story"' });
+      return new Response(JSON.stringify({ error: 'source must be "voice" or "story"' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
-    // Only count stats on production Vercel deployments.
-    // Localhost (vercel dev) and preview branches must not pollute production data.
     if (process.env.VERCEL_ENV === 'production') {
       try {
         const redis = getLangStatsRedis();
@@ -42,9 +53,15 @@ export default async function handler(req, res) {
       console.log('[TrackUsage] Skipped — VERCEL_ENV=' + process.env.VERCEL_ENV);
     }
 
-    return res.status(200).json({ ok: true });
+    return new Response(JSON.stringify({ ok: true }), {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   } catch (e) {
     console.error('[TrackUsage] Error:', e);
-    return res.status(500).json({ error: 'Internal server error' });
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   }
 }

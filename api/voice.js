@@ -1,12 +1,4 @@
-// Upload card voice audio to Vercel Blob storage.
-// Called after card image upload to attach audio to the same shortId.
-//
-// POST /api/voice
-// Body: raw audio bytes (WebM/Opus)
-// Content-Type: audio/webm
-// Headers:
-//   X-Short-Id: the 8-char ID from the card upload response
-// Response: { ok: true }
+export const config = { runtime: 'nodejs' };
 
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
