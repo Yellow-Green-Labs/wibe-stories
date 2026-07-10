@@ -2,16 +2,6 @@ export const config = { runtime: 'nodejs' };
 
 import { getOccasionById, getNextOccasion, sendOccasionEmail } from '../api/lib/occasion-email.js';
 
-function getSmtpConfig() {
-  return {
-    host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
-    port: 465,
-    secure: true,
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  };
-}
-
 export default async function handler(req) {
   const url = new URL(req.url, `https://${req.headers.host || 'wibestories.vercel.app'}`);
   const email = url.searchParams.get('email');
@@ -24,9 +14,9 @@ export default async function handler(req) {
     });
   }
 
-  const smtpConfig = getSmtpConfig();
-  if (!smtpConfig.user || !smtpConfig.pass) {
-    return new Response(JSON.stringify({ error: 'SMTP credentials not set on server' }), {
+  const brevoApiKey = process.env.BREVO_API_KEY;
+  if (!brevoApiKey) {
+    return new Response(JSON.stringify({ error: 'BREVO_API_KEY not set on server' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -51,7 +41,7 @@ export default async function handler(req) {
     }
   }
 
-  const result = await sendOccasionEmail(smtpConfig, email, occasion);
+  const result = await sendOccasionEmail(brevoApiKey, email, occasion);
 
   if (result.ok) {
     return new Response(JSON.stringify({ ok: true, occasion: occasion.id, name: occasion.name, sentTo: email }), {

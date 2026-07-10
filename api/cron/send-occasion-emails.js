@@ -9,25 +9,15 @@ function normalizeEmail(email) {
   return email.toLowerCase().trim();
 }
 
-function getSmtpConfig() {
-  return {
-    host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
-    port: 465,
-    secure: true,
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  };
-}
-
 export default async function handler(req) {
   const expected = process.env.CRON_SECRET;
   if (!expected || req.headers['authorization'] !== `Bearer ${expected}`) {
     return new Response('Unauthorized', { status: 401 });
   }
 
-  const smtpConfig = getSmtpConfig();
-  if (!smtpConfig.user || !smtpConfig.pass) {
-    console.error('[OccasionCron] SMTP credentials not set');
+  const brevoApiKey = process.env.BREVO_API_KEY;
+  if (!brevoApiKey) {
+    console.error('[OccasionCron] BREVO_API_KEY not set');
     return new Response('Server config error', { status: 500 });
   }
 
@@ -73,7 +63,7 @@ export default async function handler(req) {
           return 'skipped';
         }
 
-        const result = await sendOccasionEmail(smtpConfig, email, occasion);
+        const result = await sendOccasionEmail(brevoApiKey, email, occasion);
         if (result.ok) {
           await redis.set(dedupKey, '1', { ex: 31536000 });
           return 'sent';

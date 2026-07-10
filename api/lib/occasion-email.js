@@ -197,33 +197,38 @@ export function buildHtmlBody(occasion, email) {
 </html>`;
 }
 
-export async function sendOccasionEmail(smtpConfig, email, occasion) {
-  const nodemailer = await import('nodemailer');
+export async function sendOccasionEmail(brevoApiKey, email, occasion) {
   const subject = buildSubject(occasion);
   const htmlContent = buildHtmlBody(occasion, email);
-
-  const transporter = nodemailer.default.createTransport({
-    host: smtpConfig.host,
-    port: 465,
-    secure: true,
-    auth: {
-      user: smtpConfig.user,
-      pass: smtpConfig.pass,
-    },
-    connectionTimeout: 6000,
-    greetingTimeout: 4000,
-  });
-
+  const payload = {
+    sender: { email: SENDER_EMAIL, name: SENDER_NAME },
+    to: [{ email, name: '' }],
+    subject,
+    htmlContent,
+  };
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 8000);
   try {
-    await transporter.sendMail({
-      from: `"${SENDER_NAME}" <${SENDER_EMAIL}>`,
-      to: email,
-      subject,
-      html: htmlContent,
+    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'api-key': brevoApiKey,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
+    if (!res.ok) {
+      const errBody = await res.text();
+      console.error(`[OccasionEmail] Brevo error ${res.status} for ${email}:`, errBody);
+      return { ok: false, error: `Brevo ${res.status}: ${errBody}` };
+    }
     return { ok: true };
   } catch (err) {
-    console.error(`[OccasionEmail] SMTP failed for ${email}:`, err.message);
+    clearTimeout(timeoutId);
+    console.error(`[OccasionEmail] Failed for ${email}:`, err.message);
     return { ok: false, error: err.message };
   }
 }
