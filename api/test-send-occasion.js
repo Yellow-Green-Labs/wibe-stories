@@ -1,6 +1,6 @@
 export const config = { runtime: 'nodejs' };
 
-import { getOccasionById, getNextOccasion, sendOccasionEmail } from '../api/lib/occasion-email.js';
+import { getOccasionById, getNextOccasion, sendOccasionEmail } from './lib/occasion-email.js';
 
 export default async function handler(req) {
   const url = new URL(req.url, `https://${req.headers.host || 'wibestories.vercel.app'}`);
