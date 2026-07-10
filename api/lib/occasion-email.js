@@ -204,12 +204,14 @@ export async function sendOccasionEmail(smtpConfig, email, occasion) {
 
   const transporter = nodemailer.default.createTransport({
     host: smtpConfig.host,
-    port: smtpConfig.port,
-    secure: smtpConfig.secure,
+    port: 465,
+    secure: true,
     auth: {
       user: smtpConfig.user,
       pass: smtpConfig.pass,
     },
+    connectionTimeout: 6000,
+    greetingTimeout: 4000,
   });
 
   try {

@@ -5,8 +5,8 @@ import { getOccasionById, getNextOccasion, sendOccasionEmail } from '../api/lib/
 function getSmtpConfig() {
   return {
     host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
-    port: parseInt(process.env.SMTP_PORT || '587', 10),
-    secure: process.env.SMTP_SECURE === 'true',
+    port: 465,
+    secure: true,
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   };
