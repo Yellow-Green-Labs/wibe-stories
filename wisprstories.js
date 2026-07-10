@@ -158,7 +158,7 @@ let _updatePending = false;
 let _versionUpToDate = false;
 let _versionPollTimer = null;
 const VERSION_POLL_INTERVAL_MS = 60 * 1000; // 60 seconds
-const CURRENT_VERSION = "v0.11.13.1";
+const CURRENT_VERSION = "v0.11.23.0";
 
 // Shows the "new version available" notice. Persists until clicked — unlike
 // the generic showToast() which auto-dismisses after 3.2s. Clicking triggers
@@ -178,7 +178,7 @@ function showUpdateToast() {
   _toastShowing = true;
   clearTimeout(t._t);
 
-  const msg = getI18nSync("toasts.updateAvailable") || "A new version is ready — refresh page.";
+  const msg = typeof getI18nSync === "function" ? getI18nSync("toasts.updateAvailable") || "A new version is ready — refresh page." : "A new version is ready — refresh page.";
   t.textContent = msg;
   t.dataset.updateToast = "1";
   t.style.cursor = "pointer";
@@ -725,6 +725,14 @@ function applyProGating() {
       }
     }
   });
+  var cpBtn = document.getElementById("customColorBtn");
+  if (cpBtn) {
+    if (!pro) {
+      cpBtn.classList.add("cp-locked");
+    } else {
+      cpBtn.classList.remove("cp-locked");
+    }
+  }
 }
 
 document.getElementById("upgradeBtn")?.addEventListener("click", function () {
@@ -856,11 +864,13 @@ function applyTone(tone) {
       } else {
         showPill();
         if (left === 0) {
-          pill.textContent = (getI18nSync("rewrite.exhausted") || "0 {tone} rewrites left today. Try another tone").replace("{tone}", toneLabel.toLowerCase());
+          pill.textContent = (typeof getI18nSync === "function" ? getI18nSync("rewrite.exhausted") : null) || "0 {tone} rewrites left today. Try another tone";
+          pill.textContent = pill.textContent.replace("{tone}", toneLabel.toLowerCase());
           pill.className = "tone-pill exhausted";
         } else {
           var leftKey = left === 1 ? "rewrite.left" : "rewrite.plural";
-          pill.textContent = (getI18nSync(leftKey) || "{n} {tone} rewrites left today").replace("{n}", left).replace("{tone}", toneLabel.toLowerCase());
+          pill.textContent = (typeof getI18nSync === "function" ? getI18nSync(leftKey) : null) || "{n} {tone} rewrites left today";
+          pill.textContent = pill.textContent.replace("{n}", left).replace("{tone}", toneLabel.toLowerCase());
           pill.className = "tone-pill";
         }
         upgBtn.style.display = "";

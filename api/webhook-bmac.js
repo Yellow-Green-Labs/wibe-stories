@@ -3,9 +3,8 @@ export const config = { runtime: 'edge' };
 import { getRedis, KEYS } from '../lib/redis.js';
 
 // ── Constants ──
-const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
-const SENDER_EMAIL = 'yellowgreenlabs@proton.me';
-const SENDER_NAME = 'Wibe Stories';
+const RESEND_API_URL = 'https://api.resend.com/emails';
+const SENDER = 'Wibe Stories <onboarding@resend.dev>';
 const EMAIL_TIMEOUT_MS = 8000;
 
 // Key charset: 32 chars (no O, I, 0, 1 — avoids visual confusion)
@@ -86,8 +85,8 @@ function annualExpiresAt(fromDateISO) {
   return d.toISOString();
 }
 
-// Send pro key email via Brevo with 8s timeout
-async function sendProKeyEmail(brevoApiKey, { toEmail, toName, proKey }) {
+// Send pro key email via Resend with 8s timeout
+async function sendProKeyEmail(resendApiKey, { toEmail, toName, proKey }) {
   const safeName = htmlEscape(toName);
   const safeKey = htmlEscape(proKey);
 
@@ -95,19 +94,18 @@ async function sendProKeyEmail(brevoApiKey, { toEmail, toName, proKey }) {
   const timer = setTimeout(() => controller.abort(), EMAIL_TIMEOUT_MS);
 
   try {
-    const res = await fetch(BREVO_API_URL, {
+    const res = await fetch(RESEND_API_URL, {
       method: 'POST',
       signal: controller.signal,
       headers: {
-        'api-key': brevoApiKey,
+        'Authorization': `Bearer ${resendApiKey}`,
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
       },
       body: JSON.stringify({
-        sender: { email: SENDER_EMAIL, name: SENDER_NAME },
-        to: [{ email: toEmail, name: safeName }],
+        from: SENDER,
+        to: [toEmail],
         subject: 'You\'re Pro now — here\'s your key 🎉',
-        htmlContent: `
+        html: `
           <div style="font-family:Inter,'Noto Sans',system-ui,sans-serif;max-width:480px;margin:0 auto">
             <div style="background:#ffffeb;border-radius:12px 12px 0 0;border-left:1px solid rgba(26,26,26,0.1);border-right:1px solid rgba(26,26,26,0.1);border-top:1px solid rgba(26,26,26,0.1);padding:28px 28px 20px;text-align:center">
               <img src="https://wibestories.vercel.app/assets/ws-logo-blwbg.png" alt="" style="height:28px;width:auto;display:block;margin:0 auto 8px" />
@@ -163,9 +161,9 @@ export default async function handler(req) {
   }
 
   const BMAC_SECRET = process.env.BMAC_WEBHOOK_SECRET;
-  const BREVO_KEY = process.env.BREVO_API_KEY;
-  if (!BMAC_SECRET || !BREVO_KEY) {
-    console.error('[BMAC] Missing required env vars: BMAC_WEBHOOK_SECRET or BREVO_API_KEY');
+  const RESEND_KEY = process.env.RESEND_API_KEY;
+  if (!BMAC_SECRET || !RESEND_KEY) {
+    console.error('[BMAC] Missing required env vars: BMAC_WEBHOOK_SECRET or RESEND_API_KEY');
     return new Response('Server configuration error', { status: 500 });
   }
 
@@ -230,7 +228,7 @@ export default async function handler(req) {
         const retryRaw = await redis.get(KEYS.upgradeKey(retryKey));
         const retryParsed = retryRaw ? (typeof retryRaw === 'string' ? JSON.parse(retryRaw) : retryRaw) : null;
         if (retryParsed && !retryParsed.revoked) {
-          const sent = await sendProKeyEmail(BREVO_KEY, { toEmail: email, toName: supporterName, proKey: retryKey });
+          const sent = await sendProKeyEmail(RESEND_KEY, { toEmail: email, toName: supporterName, proKey: retryKey });
           if (!sent) return new Response('Email delivery failed', { status: 500 });
           console.log('[BMAC] Duplicate event — resent key email on retry');
         }
@@ -249,7 +247,7 @@ export default async function handler(req) {
 
       if (!parsed || !parsed.revoked) {
         // Active key — just resend it
-        const sent = await sendProKeyEmail(BREVO_KEY, { toEmail: email, toName: supporterName, proKey: existingKey });
+        const sent = await sendProKeyEmail(RESEND_KEY, { toEmail: email, toName: supporterName, proKey: existingKey });
         if (!sent) {
           console.error('[BMAC] Email resend failed for existing key');
           return new Response('Email delivery failed', { status: 500 }); // BMAC will retry
@@ -279,7 +277,7 @@ export default async function handler(req) {
     await redis.set(KEYS.emailLookup(email), proKey);
     await redis.sadd(KEYS.proEmailsSet, email);
 
-    const sent = await sendProKeyEmail(BREVO_KEY, { toEmail: email, toName: supporterName, proKey });
+    const sent = await sendProKeyEmail(RESEND_KEY, { toEmail: email, toName: supporterName, proKey });
     if (!sent) {
       // Key is stored — but return 500 so BMAC retries and the email gets another chance
       console.error('[BMAC] Email delivery failed — key stored in Redis, triggering BMAC retry');

@@ -2,9 +2,8 @@ export const config = { runtime: 'edge' };
 
 import { getRedis, KEYS } from '../lib/redis.js';
 
-const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
-const SENDER_EMAIL = 'yellowgreenlabs@proton.me';
-const SENDER_NAME = 'Wibe Stories';
+const RESEND_API_URL = 'https://api.resend.com/emails';
+const SENDER = 'Wibe Stories <onboarding@resend.dev>';
 const EMAIL_TIMEOUT_MS = 8000;
 const RATE_LIMIT_MAX = 3;
 const RATE_LIMIT_WINDOW_SEC = 3600; // 1 hour
@@ -18,7 +17,7 @@ function htmlEscape(str) {
     .replace(/'/g, '&#39;');
 }
 
-async function sendProKeyEmail(brevoApiKey, { toEmail, toName, proKey }) {
+async function sendProKeyEmail(resendApiKey, { toEmail, toName, proKey }) {
   const safeName = htmlEscape(toName);
   const safeKey = htmlEscape(proKey);
 
@@ -26,19 +25,18 @@ async function sendProKeyEmail(brevoApiKey, { toEmail, toName, proKey }) {
   const timer = setTimeout(() => controller.abort(), EMAIL_TIMEOUT_MS);
 
   try {
-    const res = await fetch(BREVO_API_URL, {
+    const res = await fetch(RESEND_API_URL, {
       method: 'POST',
       signal: controller.signal,
       headers: {
-        'api-key': brevoApiKey,
+        'Authorization': `Bearer ${resendApiKey}`,
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
       },
       body: JSON.stringify({
-        sender: { email: SENDER_EMAIL, name: SENDER_NAME },
-        to: [{ email: toEmail, name: safeName }],
+        from: SENDER,
+        to: [toEmail],
         subject: 'Here\'s your Pro key (resent) 🔑',
-        htmlContent: `
+        html: `
           <div style="font-family:Inter,'Noto Sans',system-ui,sans-serif;max-width:480px;margin:0 auto">
             <div style="background:#ffffeb;border-radius:12px 12px 0 0;border-left:1px solid rgba(26,26,26,0.1);border-right:1px solid rgba(26,26,26,0.1);border-top:1px solid rgba(26,26,26,0.1);padding:28px 28px 20px;text-align:center">
               <img src="https://wibestories.vercel.app/assets/ws-logo-blwbg.png" alt="" style="height:28px;width:auto;display:block;margin:0 auto 8px" />
@@ -104,9 +102,9 @@ export default async function handler(req) {
     });
   }
 
-  const BREVO_KEY = process.env.BREVO_API_KEY;
-  if (!BREVO_KEY) {
-    console.error('[ResendKey] Missing BREVO_API_KEY');
+  const RESEND_KEY = process.env.RESEND_API_KEY;
+  if (!RESEND_KEY) {
+    console.error('[ResendKey] Missing RESEND_API_KEY');
     return new Response(JSON.stringify({ error: 'Server configuration error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
@@ -166,7 +164,7 @@ export default async function handler(req) {
     }
 
     // Resend the key
-    const sent = await sendProKeyEmail(BREVO_KEY, {
+    const sent = await sendProKeyEmail(RESEND_KEY, {
       toEmail: normalizedEmail,
       toName: 'Supporter',
       proKey: existingKey,

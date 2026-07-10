@@ -14,9 +14,9 @@ export default async function handler(req) {
     });
   }
 
-  const brevoApiKey = process.env.BREVO_API_KEY;
-  if (!brevoApiKey) {
-    return new Response(JSON.stringify({ error: 'BREVO_API_KEY not set on server' }), {
+  const resendApiKey = process.env.RESEND_API_KEY;
+  if (!resendApiKey) {
+    return new Response(JSON.stringify({ error: 'RESEND_API_KEY not set on server' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -41,7 +41,7 @@ export default async function handler(req) {
     }
   }
 
-  const result = await sendOccasionEmail(brevoApiKey, email, occasion);
+  const result = await sendOccasionEmail(resendApiKey, email, occasion);
 
   if (result.ok) {
     return new Response(JSON.stringify({ ok: true, occasion: occasion.id, name: occasion.name, sentTo: email }), {

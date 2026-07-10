@@ -256,6 +256,10 @@
 }
 
 /* UPGRADE MODAL */
+/* Prevent background scrolling while any modal is open */
+body.modal-open {
+  overflow: hidden;
+}
 /* When a modal is open, hide the mobile rewrite-bar so its buttons don't
    bleed through the modal backdrop and look like they're floating out. */
 body.modal-open .rewrite-bar {

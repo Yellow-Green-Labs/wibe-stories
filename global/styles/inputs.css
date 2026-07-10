@@ -685,13 +685,15 @@
   border-color: var(--ink);
 }
 .pd.pd-locked,
-.txd.txd-locked {
+.txd.txd-locked,
+.cp-trigger.cp-locked {
   position: relative;
   cursor: pointer;
   overflow: hidden;
 }
 .pd.pd-locked::after,
-.txd.txd-locked::after {
+.txd.txd-locked::after,
+.cp-trigger.cp-locked::after {
   content: "\f023";
   font-family: "Font Awesome 7 Free";
   font-weight: 900;
@@ -705,6 +707,9 @@
   background: rgba(0,0,0,0.5);
   border-radius: 50%;
   pointer-events: none;
+}
+.cp-trigger.cp-locked::after {
+  border-radius: 8px;
 }
 
 /* CUSTOM COLOR PICKER SECTION */

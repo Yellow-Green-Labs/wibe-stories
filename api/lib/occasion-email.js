@@ -1,5 +1,5 @@
-export const SENDER_EMAIL = 'yellowgreenlabs@proton.me';
-export const SENDER_NAME = 'Wibe Stories';
+const SENDER_EMAIL = 'yellowgreenlabs@proton.me';
+const SENDER_NAME = 'Wibe Stories';
 
 const EMAIL_TIMEOUT_MS = 8000;
 const IMG_BASE = 'https://wibestories.vercel.app/assets/occasions/';
@@ -126,7 +126,12 @@ export function buildHtmlBody(occasion, email) {
       <td align="center" style="padding:32px 16px;">
         <table width="540" cellpadding="0" cellspacing="0" style="background-color:#ffffeb;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(26,26,26,0.08);border:1px solid #e0dcd0;">
           <tr>
-            <td style="background:linear-gradient(135deg,#1a1a1a,#2a2a2a);padding:40px 32px 24px;text-align:center;">
+            <td style="background:linear-gradient(135deg,#1a1a1a,#2a2a2a);padding:32px 32px 24px;text-align:center;">
+              <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 40px;">
+                <img src="https://wibestories.vercel.app/assets/ws-logo-blwbg.png" alt="Wibe Stories"
+                  style="display:block;height:40px;width:auto;" />
+                <span style="font-family:Inter,sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.3px;color:#ffffeb;">Wibe Stories</span>
+              </div>
               <img src="${occasion.img}" alt=""
                 style="display:block;margin:0 auto 0;width:130px;height:130px;object-fit:cover;pointer-events:none;-webkit-user-drag:none;user-select:none;" draggable="false" />
               <h1 style="color:#ffffeb;font-size:26px;margin:0 0 4px;font-weight:700;font-family:'Instrument Serif',Georgia,'Times New Roman',serif;">${occasion.name}</h1>
@@ -197,37 +202,30 @@ export function buildHtmlBody(occasion, email) {
 </html>`;
 }
 
-export async function sendOccasionEmail(brevoApiKey, email, occasion) {
+export async function sendOccasionEmail(resendApiKey, email, occasion) {
   const subject = buildSubject(occasion);
   const htmlContent = buildHtmlBody(occasion, email);
-  const payload = {
-    sender: { email: SENDER_EMAIL, name: SENDER_NAME },
-    to: [{ email, name: '' }],
-    subject,
-    htmlContent,
-  };
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 8000);
   try {
-    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+    const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
-        'api-key': brevoApiKey,
+        'Authorization': `Bearer ${resendApiKey}`,
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
       },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
+      body: JSON.stringify({
+        from: 'Wibe Stories <onboarding@resend.dev>',
+        to: [email],
+        subject,
+        html: htmlContent,
+      }),
     });
-    clearTimeout(timeoutId);
     if (!res.ok) {
       const errBody = await res.text();
-      console.error(`[OccasionEmail] Brevo error ${res.status} for ${email}:`, errBody);
-      return { ok: false, error: `Brevo ${res.status}: ${errBody}` };
+      console.error(`[OccasionEmail] Resend error ${res.status} for ${email}:`, errBody);
+      return { ok: false, error: `Resend ${res.status}: ${errBody}` };
     }
     return { ok: true };
   } catch (err) {
-    clearTimeout(timeoutId);
     console.error(`[OccasionEmail] Failed for ${email}:`, err.message);
     return { ok: false, error: err.message };
   }
