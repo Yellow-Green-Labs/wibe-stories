@@ -108,8 +108,8 @@
   },
   "dlChoice": {
     "title": "Download your card",
-    "png": "<i class=\"fa-solid fa-file-image\"></i> Download image",
-    "webm": "<i class=\"fa-solid fa-video\"></i> Download voice"
+    "png": "<i class=\"fa-solid fa-file-image\"></i> Download story card",
+    "webm": "<i class=\"fa-solid fa-video\"></i> Download with audio"
   },
   "cardEmpty": "Fill the details,<br />your card appears here",
   "cardPlaceholder": "Your story appears here as you speak or type.",

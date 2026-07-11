@@ -891,7 +891,11 @@ function updateSourceLabel() {
   const voiceIcon = "\u{1F399}\uFE0F";
   const storyIcon = "\u{1F58B}\uFE0F";
   if (isVoice) {
-    vl.textContent = voiceIcon + (isStyled ? " Voice Styled" : " Voice Original");
+    if (voiceAttached) {
+      vl.textContent = voiceIcon + " Voice Original with audio";
+    } else {
+      vl.textContent = voiceIcon + (isStyled ? " Voice Styled (no audio)" : " Voice Original (no audio)");
+    }
   } else {
     vl.textContent = storyIcon + (isStyled ? " Story Styled" : " Story Original");
   }
@@ -919,6 +923,14 @@ function updateVoiceBar() {
   if (inputSource === "voice" && audioBlob && webmCodecString && toneAllowsVoice && hasText) {
     bar.style.display = "flex";
     toggle.disabled = false;
+    info.style.display = audioDurationSec > 0 ? "flex" : "none";
+    if (audioDurationSec > 0) durLabel.textContent = formatDuration(audioDurationSec);
+  } else if (inputSource === "voice" && audioBlob && webmCodecString && hasText) {
+    // Tone is styled — show bar with toggle off so user can tap to auto-switch
+    bar.style.display = "flex";
+    toggle.disabled = false;
+    toggle.checked = false;
+    voiceAttached = false;
     info.style.display = audioDurationSec > 0 ? "flex" : "none";
     if (audioDurationSec > 0) durLabel.textContent = formatDuration(audioDurationSec);
   } else if (inputSource === "voice" && !audioBlob && toneAllowsVoice) {
@@ -2617,6 +2629,7 @@ if (typeof allLanguages !== 'undefined' && allLanguages.length) { updateSlTrigge
 document.addEventListener('languagesReady', function(){ updateSlTrigger(); updateMicState(); });
 
 function _showToneHint() {
+  if (isSupporter()) return;
   if (localStorage.getItem('ws_tone_hint_shown')) return;
   localStorage.setItem('ws_tone_hint_shown', '1');
   showToast('You get 1 free rewrite per tone per day. Pro = unlimited.', 4000);
@@ -2681,6 +2694,10 @@ document.getElementById("toneRow").addEventListener("click", async (e) => {
     window._pendingRewrite = cached.text;
     window._rewriteConfirmed = false;
     showRewritePreview(text, cached.text, tone);
+    if (isSupporter()) {
+      const toneLabel = typeof getI18nSync === "function" ? getI18nSync("tone." + tone) : tone;
+      showToast(toneLabel.charAt(0).toUpperCase() + toneLabel.slice(1) + " tone applied");
+    }
     saveDraft();
     return;
   }
@@ -2750,6 +2767,11 @@ document.getElementById("toneRow").addEventListener("click", async (e) => {
     saveDraft();
     // Show accept/cancel preview bar
     showRewritePreview(text, data.text, tone);
+    // For Pro users, confirm the tone was applied
+    if (isSupporter()) {
+      const toneLabel = typeof getI18nSync === "function" ? getI18nSync("tone." + tone) : tone;
+      showToast(toneLabel.charAt(0).toUpperCase() + toneLabel.slice(1) + " tone applied");
+    }
     // Cache the result so returning to this tone skips the API
     rewriteCache[tone] = { text: data.text, original: text };
   } catch (err) {
@@ -2972,7 +2994,7 @@ document.getElementById("sta").addEventListener("input", (e) => {
   var _slt = document.getElementById('speechLangTrigger');
   if (_slt) { _slt.style.pointerEvents = ''; _slt.style.opacity = ''; }
   // No auto-switch to "voice" for text input (paste, type, dictate).
-  // Only the mic recording path in finishRec() sets inputSource = "voice".
+  // mic recording (finishRec()) and audio upload (_processAudioFile()) both set inputSource = "voice".
   // User can manually toggle via the source label.
   if (voiceAttached && (e.data || "").length > 0) {
     voiceAttached = false;
@@ -3115,6 +3137,12 @@ document.getElementById("resetBtn").addEventListener("click", () => {
 });
 // Voice toggle
 document.getElementById("voiceToggle").addEventListener("change", function() {
+  if (this.checked && curTone !== "original") {
+    applyTone("original");
+    window._pendingRewrite = null;
+    window._rewriteConfirmed = false;
+    hideRewritePreview();
+  }
   voiceAttached = this.checked;
   updateCard();
   saveDraft();
@@ -3743,9 +3771,9 @@ function _estPngSize() {
 }
 function showDownloadChoice() {
   var pngEl = document.getElementById("dlChoicePng");
-  pngEl.innerHTML = '<i class="fa-solid fa-camera"></i> Download PNG';
+  pngEl.innerHTML = '<i class="fa-solid fa-camera"></i> Download story card';
   var webmEl = document.getElementById("dlChoiceWebm");
-  webmEl.innerHTML = '<i class="fa-solid fa-clapperboard"></i> Download WebM';
+  webmEl.innerHTML = '<i class="fa-solid fa-clapperboard"></i> Download with audio';
   document.getElementById("dlChoice").classList.add("open");
   document.body.classList.add("modal-open");
   _activateModal(document.getElementById("dlChoice"));
@@ -3831,6 +3859,10 @@ async function _makeSocialBlob(srcBlob) {
 }
 
 document.getElementById("btnS").addEventListener("click", async () => {
+  if (voiceAttached) {
+    showToast("Download the card to keep the voice");
+    return;
+  }
   _vibrate();
   const btn = document.getElementById("btnS");
   const generatingLabel = typeof getI18nSync === "function" ? getI18nSync("record.generating") : "Generating\u2026";
@@ -4050,6 +4082,10 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
 var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 var isAndroid = /Android/.test(navigator.userAgent);
 document.getElementById("shareCopyImage").addEventListener("click", async function () {
+  if (voiceAttached) {
+    showToast("Download the card to keep the voice");
+    return;
+  }
   if (!_shareBlob) return;
   var btn = document.getElementById("shareCopyImage");
   var origHTML = btn.innerHTML;

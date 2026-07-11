@@ -45,7 +45,7 @@ export default async function handler(req, res) {
   const homeUrl = origin + '/';
 
   // Fetch card metadata sidecar if available
-  let metaText = '', metaName = '', metaTone = 'original', metaP = '0', metaR = 'rounded';
+  let metaText = '', metaName = '', metaTone = 'original', metaP = '0', metaR = 'rounded', metaPro = false;
   try {
     const metaRes = await fetch(`https://${BLOB_HOST}/meta/${id}.json`);
     if (metaRes.ok) {
@@ -55,6 +55,7 @@ export default async function handler(req, res) {
       metaTone = meta.tone || 'original';
       metaP = meta.p || '0';
       metaR = meta.r || 'rounded';
+      metaPro = meta.pro === true;
     }
   } catch (e) {
     // Old cards without sidecar — fall through with defaults
@@ -74,7 +75,8 @@ export default async function handler(req, res) {
     if (cardBlob.uploadedAt) {
       const ageMs = Date.now() - new Date(cardBlob.uploadedAt).getTime();
       const daysElapsed = Math.floor(ageMs / 86400000);
-      const daysRemaining = Math.max(0, 7 - daysElapsed);
+      const maxAgeDays = metaPro ? 14 : 7;
+      const daysRemaining = Math.max(0, maxAgeDays - daysElapsed);
       if (daysRemaining > 5) { expiryHtml = `Expires in ${daysRemaining} days`; }
       else if (daysRemaining > 1) { expiryHtml = `Expires in ${daysRemaining} days`; }
       else if (daysRemaining === 1) { expiryHtml = 'Expires tomorrow'; }
@@ -191,7 +193,7 @@ html,body{
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:10px;
+  gap:16px;
   width:100%;
 }
 .branding{
@@ -223,6 +225,8 @@ html,body{
   height:100%;
   object-fit:contain;
   display:block;
+  -webkit-user-select:none;
+  user-select:none;
 }
 .cta{
   display:inline-block;
@@ -248,17 +252,9 @@ html,body{
 .landing-caption{font-size:clamp(13px,2vw,15px);color:#ffffeb;margin:0;text-align:center}
 .landing-meta{font-size:12px;color:#a5a596;text-align:center;line-height:1.5;margin:0}
 .watermark{font-size:11px;color:#555;text-align:center;margin-top:auto;padding-top:8px}
-.dl-btns{display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap}
-.dl-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:999px;font-size:12px;font-weight:600;text-decoration:none;cursor:pointer;border:none;transition:transform .15s,background .15s}
-.dl-btn:hover{transform:translateY(-1px)}
-.dl-btn-primary{background:#ffffeb;color:#1a1a1a}
-.dl-btn-primary:hover{background:#fff}
-.dl-btn-secondary{background:transparent;color:#ffffeb;border:1px solid #555}
-.dl-btn-secondary:hover{background:#333}
-.voice-btn{background:#f59e0b;color:#1a1a1a;border:none;border-radius:999px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:transform .15s,box-shadow .15s}
-.voice-btn:hover{transform:translateY(-1px)}
-.voice-btn.playing{background:#555;color:#ffffeb;box-shadow:none}
-.voice-btn.playing:hover{transform:none}
+.dl-btns{display:flex;justify-content:center;align-items:center;margin-top:4px}
+.dl-link{color:#ffffeb;font-weight:700;font-size:14px;text-decoration:underline;transition:opacity .15s}
+.dl-link:hover{opacity:.7}
 @media (max-height:600px){
   .branding{display:none}
   .center-content{gap:6px}
@@ -281,16 +277,15 @@ html,body{
   <div class="center-content">
     ${safeName ? `<p class="landing-caption"><strong>${safeName}</strong> shared a Wibe Story with you.</p>` : ''}
     <div class="card-img">
-      <img src="${safeCardUrl}" alt="${altText}">
+      <img src="${safeCardUrl}" alt="${altText}" oncontextmenu="return false">
     </div>
     <a class="cta" href="${safeAppUrl}">Create your own &rarr;</a>
     <p class="hook-line">${hookLine} <a class="hook-flow pulse" href="https://wisprflow.ai/r?BEST76" target="_blank" rel="noopener">→Wispr Flow</a></p>
     <hr class="divider">
     <p class="landing-meta">${hasVoice ? 'With voice' : 'Text only'}${expiryHtml ? ' · ' + expiryHtml : ''}</p>
+    ${hasVoice ? '<audio controls src="' + safeVoiceUrl + '" style="width:100%;max-width:280px;border-radius:8px;display:block;margin:0 auto"></audio>' : ''}
     <div class="dl-btns">
-      ${hasVoice ? '<button class="voice-btn" id="playVoice" onclick="var a=document.getElementById(\'voiceAudio\');if(a.paused){a.play();this.innerHTML=\'⏸ Playing\';this.classList.add(\'playing\')}else{a.pause();this.innerHTML=\'▶ Listen\';this.classList.remove(\'playing\')}">▶ Listen</button><audio id="voiceAudio" src="' + safeVoiceUrl + '" preload="none" onended="var b=document.getElementById(\'playVoice\');b.innerHTML=\'▶ Listen\';b.classList.remove(\'playing\')"></audio>' : ''}
-      <a class="dl-btn dl-btn-primary" href="/download/${id}" download="wibe-story.png">Download image</a>
-      ${hasVoice ? `<a class="dl-btn dl-btn-secondary" href="/download/${id}?type=voice" download="wibe-voice.webm">Download voice</a>` : ''}
+      <a class="dl-link" href="/download/${id}" download="wibe-story.png">Download story card</a>
     </div>
   </div>
   <p class="watermark">Wibe Stories · Turn your voice into something beautiful</p>
