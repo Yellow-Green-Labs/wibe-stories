@@ -1,3 +1,44 @@
+/* ---- Custom color picker hex input ---- */
+.cp-hex-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+}
+.cp-hex-input {
+  flex: 1;
+  font-family: "SF Mono", "Consolas", "Liberation Mono", monospace;
+  font-size: 13px;
+  background: var(--cream2);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: 7px 10px;
+  color: var(--ink);
+  outline: none;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  transition: border-color 0.15s;
+}
+.cp-hex-input:focus {
+  border-color: var(--feat-accent, #e69500);
+}
+.cp-hex-input::placeholder {
+  color: var(--ink3);
+  opacity: 0.6;
+  text-transform: none;
+}
+:root.dark .cp-hex-input {
+  background: rgba(255, 255, 235, 0.08);
+  border-color: rgba(255, 255, 235, 0.15);
+  color: #ffffeb;
+}
+:root.dark .cp-hex-input:focus {
+  border-color: var(--feat-accent, #e69500);
+}
+:root.dark .cp-hex-input::placeholder {
+  color: rgba(255, 255, 235, 0.4);
+}
+
 /* RECORD */
 .rec-row {
   display: flex;

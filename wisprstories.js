@@ -2470,6 +2470,7 @@ async function _processAudioFile(file) {
     updateMicState();
     updateVoiceBar();
     _updateResetBtnVisibility();
+    _computeWaveform(audioBlob).then(function(h) { _cardWaveform = h; if (document.getElementById("sta").value.trim()) { wave(document.getElementById("sta").value); } }).catch(function() { _cardWaveform = null; });
   } catch (err) {
     console.error('[Upload] Error:', err);
     showToast('Something went wrong. Try again.', 6000);
@@ -2842,6 +2843,7 @@ function _initIroPicker() {
       { component: iro.ui.Slider, options: { sliderType: "saturation" } },
       { component: iro.ui.Slider, options: { sliderType: "value" } },
     ],
+    input: '#cpHexInput',
   });
   _iroInstance.on('color:change', function(color) {
     customColor = color.hexString;
@@ -2850,6 +2852,16 @@ function _initIroPicker() {
     wave(document.getElementById("sta").value);
     document.getElementById("cpPreview").style.background = color.hexString;
   });
+  var hexInput = document.getElementById('cpHexInput');
+  if (hexInput) {
+    hexInput.addEventListener('blur', function() {
+      var val = this.value.trim();
+      if (val === '') return;
+      if (!/^#[0-9a-f]{6}$/i.test(val) && !/^#[0-9a-f]{3}$/i.test(val)) {
+        this.value = _iroInstance.color.hexString;
+      }
+    });
+  }
 }
 
 function _updateCpPreview() {
@@ -3866,6 +3878,7 @@ async function _makeSocialBlob(srcBlob) {
 }
 
 document.getElementById("btnS").addEventListener("click", async () => {
+  if (voiceAttached) { showToast("Download the card to keep the voice"); return; }
   _vibrate();
   const btn = document.getElementById("btnS");
   const generatingLabel = typeof getI18nSync === "function" ? getI18nSync("record.generating") : "Generating\u2026";
@@ -4576,7 +4589,13 @@ async function generateWebm() {
   var ext = audioBlob.type && (audioBlob.type.includes('mp4') || audioBlob.type.includes('aac') || audioBlob.type.includes('m4a')) ? '.mp4' : '.webm';
   await ffmpeg.writeFile('frame.png', new Uint8Array(await pngBlob.arrayBuffer()));
   await ffmpeg.writeFile('audio' + ext, new Uint8Array(await audioBlob.arrayBuffer()));
-  await ffmpeg.exec(['-loop','1','-i','frame.png','-i','audio' + ext,'-c:v','libvpx','-c:a','libopus','-shortest','-r','30','-vf','scale=trunc(iw/2)*2:trunc(ih/2)*2','out.webm'], undefined, function(p) { if (p && typeof p.progress === 'number') _setExportProgress(p.progress); });
+  var timeoutId2 = setTimeout(function() { _setExportStage("Taking longer than expected\u2026"); }, 45000);
+  try {
+    await Promise.race([
+      ffmpeg.exec(['-loop','1','-i','frame.png','-i','audio' + ext,'-c:v','libvpx','-c:a','libopus','-shortest','-r','30','-vf','scale=trunc(iw/2)*2:trunc(ih/2)*2','out.webm'], undefined, function(p) { if (p && typeof p.progress === 'number') _setExportProgress(p.progress); }),
+      new Promise(function(_, reject) { setTimeout(function() { reject(new Error("ffmpeg exec timed out")); }, 90000); })
+    ]);
+  } finally { clearTimeout(timeoutId2); }
   _setExportStage("Finalizing\u2026");
   var data = await ffmpeg.readFile('out.webm');
   var webmBlob = new Blob([data], { type: 'video/webm' });
@@ -4715,7 +4734,10 @@ async function _toBlobURL(url, mimeType, cb) {
   const maxRetries = 2;
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      const resp = await fetch(url);
+      const ac = new AbortController();
+      var t = setTimeout(function() { ac.abort(); }, 30000);
+      var resp;
+      try { resp = await fetch(url, { signal: ac.signal }); } finally { clearTimeout(t); }
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const total = parseInt(resp.headers.get('content-length') || '-1');
       const reader = resp.body.getReader();

@@ -886,7 +886,7 @@ body.modal-open .rewrite-bar {
   position: relative;
   background: var(--cream2);
   border-radius: 16px;
-  padding: 56px 32px 28px;
+  padding: 28px 32px;
   max-width: 640px;
   width: 90vw;
   box-shadow: 0 32px 96px rgba(0, 0, 0, 0.35);
@@ -899,20 +899,25 @@ body.modal-open .rewrite-bar {
   to { transform: translateY(0); opacity: 1; }
 }
 .pricing-close {
-  position: absolute;
-  top: 14px;
-  right: 16px;
   background: none;
   border: none;
-  font-size: clamp(20px, 0.5vw + 18px, 22px);
+  font-size: clamp(18px, 0.4vw + 16px, 20px);
+  font-weight: 800;
   color: var(--ink3);
   cursor: pointer;
   line-height: 1;
-  padding: 8px;
+  padding: 8px 10px;
   touch-action: manipulation;
+  transition: color 0.15s;
 }
 .pricing-close:hover {
   color: var(--ink);
+}
+.pricing-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
 }
 .pricing-tabs {
   display: flex;
@@ -920,7 +925,7 @@ body.modal-open .rewrite-bar {
   background: var(--cream);
   border-radius: 10px;
   padding: 3px;
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
 .pricing-tab {
   flex: 1;
@@ -950,7 +955,7 @@ body.modal-open .rewrite-bar {
 }
 .pricing-header {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 .pricing-title {
   font-family: var(--serif);
@@ -1073,20 +1078,7 @@ body.modal-open .rewrite-bar {
 .pricing-unlimited {
   color: var(--feat-accent, #e69500);
 }
-.pricing-pro-more {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 16px;
-  padding-top: 8px;
-  border-top: 1px solid var(--rule);
-  font-size: clamp(11px, 0.3vw + 10px, 12px);
-  color: var(--ink3);
-}
-.pricing-pro-more i {
-  font-size: 11px;
-  color: var(--feat-accent, #e69500);
-}
+
 .pricing-disabled {
   opacity: 0.4;
 }
@@ -1298,10 +1290,7 @@ body.modal-open .rewrite-bar {
 :root.dark .pricing-feature-row {
   border-color: rgba(255, 255, 235, 0.08);
 }
-:root.dark .pricing-pro-more {
-  border-color: rgba(255, 255, 235, 0.08);
-  color: rgba(255, 255, 235, 0.5);
-}
+
 :root.dark .pricing-cta-free {
   background: rgba(255, 255, 235, 0.08);
   color: #ffffeb;
@@ -1333,7 +1322,7 @@ body.modal-open .rewrite-bar {
     width: 100%;
     max-width: 100%;
     border-radius: 20px 20px 0 0;
-    padding: 48px 24px 28px;
+    padding: 24px 24px 28px;
     max-height: 92vh;
     max-height: 92dvh;
     overflow-y: auto;

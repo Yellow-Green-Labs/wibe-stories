@@ -90,10 +90,12 @@
   overlay.id = "pricingOverlay";
   overlay.innerHTML =
     '<div class="pricing-modal" id="pricingModal">' +
-    '<button class="pricing-close" id="pricingClose" aria-label="Close">\u2715</button>' +
+    '<div class="pricing-top-bar">' +
     '<div class="pricing-tabs">' +
     '<button class="pricing-tab active" data-tab="plans">Plans</button>' +
     '<button class="pricing-tab" data-tab="key">Activate Key</button>' +
+    "</div>" +
+    '<button class="pricing-close" id="pricingClose" aria-label="Close">\u2715</button>' +
     "</div>" +
     '<div class="pricing-panel pricing-panel-plans active">' +
     '<div class="pricing-header">' +
@@ -108,18 +110,16 @@
     "</div>" +
     '<div class="pricing-card-price">$3 <span class="pricing-pp-unit">/monthly</span></div>' +
     '<div class="pricing-card-features">' +
-    '<div class="pricing-feature-row"><span class="pricing-flabel">Palette colors</span><span class="pricing-fval">10</span></div>' +
-    '<div class="pricing-feature-row"><span class="pricing-flabel">Recording length</span><span class="pricing-fval">2x longer (30s)</span></div>' +
-    '<div class="pricing-feature-row"><span class="pricing-flabel">Daily recordings</span><span class="pricing-fval">10x more (50/day)</span></div>' +
+    '<div class="pricing-feature-row"><span class="pricing-flabel">Color Tools</span><span class="pricing-fval">Unlimited</span></div>' +
+    '<div class="pricing-feature-row"><span class="pricing-flabel">Recording</span><span class="pricing-fval">30s &middot; 50/day</span></div>' +
     '<div class="pricing-feature-row"><span class="pricing-flabel">Tone rewrites</span><span class="pricing-fval pricing-unlimited">Unlimited</span></div>' +
-    '<div class="pricing-feature-row"><span class="pricing-flabel">Textures</span><span class="pricing-fval">2</span></div>' +
-    '<div class="pricing-feature-row"><span class="pricing-flabel">Premium AI models</span><span class="pricing-fval pricing-check">&#10003;</span></div>' +
-    '<div class="pricing-feature-row"><span class="pricing-flabel">Tone-specific fonts</span><span class="pricing-fval pricing-check">&#10003;</span></div>' +
-    '<div class="pricing-feature-row"><span class="pricing-flabel">Pro badge</span><span class="pricing-fval pricing-check">&#10003;</span></div>' +
-    '<div class="pricing-feature-row"><span class="pricing-flabel">HD exports</span><span class="pricing-fval pricing-check">&#10003;</span></div>' +
+    '<div class="pricing-feature-row"><span class="pricing-flabel">Design tools</span><span class="pricing-fval">Full access</span></div>' +
+    '<div class="pricing-feature-row"><span class="pricing-flabel">AI Models</span><span class="pricing-fval">Premium</span></div>' +
     '<div class="pricing-feature-row"><span class="pricing-flabel">Card retention</span><span class="pricing-fval">14 days</span></div>' +
+    '<div class="pricing-feature-row"><span class="pricing-flabel">Priority support</span><span class="pricing-fval pricing-check">&#10003;</span></div>' +
+    '<div class="pricing-feature-row"><span class="pricing-flabel">Pro badge</span><span class="pricing-fval pricing-check">&#10003;</span></div>' +
     "</div>" +
-    '<div class="pricing-pro-more"><i class="fa-solid fa-crown"></i> 14-day retention period or longer retention period</div>' +
+
     '<a href="https://buymeacoffee.com/yg_labs/membership" class="pricing-cta pricing-cta-pro" target="_blank" rel="noopener"><span class="pricing-cta-text">Unlock Pro</span> <i class="fa-solid fa-arrow-right"></i></a>' +
     "</div>" +
     '<div class="pricing-card pricing-free">' +
@@ -128,17 +128,14 @@
     "</div>" +
     '<div class="pricing-card-price">$0</div>' +
     '<div class="pricing-card-features">' +
-    '<div class="pricing-feature-row"><span class="pricing-flabel">Palette colors</span><span class="pricing-fval">3</span></div>' +
-    '<div class="pricing-feature-row"><span class="pricing-flabel">Recording length</span><span class="pricing-fval">Standard (15s)</span></div>' +
-    '<div class="pricing-feature-row"><span class="pricing-flabel">Daily recordings</span><span class="pricing-fval">Standard (5/day)</span></div>' +
-    '<div class="pricing-feature-row"><span class="pricing-flabel">Tone rewrites</span><span class="pricing-fval">1 daily per tone</span></div>' +
-    '<div class="pricing-feature-row pricing-disabled"><span class="pricing-flabel">Textures</span><span class="pricing-fval pricing-na">&mdash;</span></div>' +
-    '<div class="pricing-feature-row pricing-disabled"><span class="pricing-flabel">Basic AI models</span><span class="pricing-fval pricing-na">&mdash;</span></div>' +
-    '<div class="pricing-feature-row pricing-disabled"><span class="pricing-flabel">Tone-specific fonts</span><span class="pricing-fval pricing-na">&mdash;</span></div>' +
-    '<div class="pricing-feature-row pricing-disabled"><span class="pricing-flabel">Pro badge</span><span class="pricing-fval pricing-na">&mdash;</span></div>' +
-    '<div class="pricing-feature-row pricing-disabled"><span class="pricing-flabel">HD exports</span><span class="pricing-fval pricing-na">&mdash;</span></div>' +
-    '<div class="pricing-feature-row pricing-disabled"><span class="pricing-flabel">Card retention</span><span class="pricing-fval pricing-na">&mdash;</span></div>' +
+    '<div class="pricing-feature-row"><span class="pricing-flabel">Color Tools</span><span class="pricing-fval">Limited</span></div>' +
+    '<div class="pricing-feature-row"><span class="pricing-flabel">Recording</span><span class="pricing-fval">15s &middot; 5/day</span></div>' +
+    '<div class="pricing-feature-row"><span class="pricing-flabel">Tone rewrites</span><span class="pricing-fval">1/day per tone</span></div>' +
+    '<div class="pricing-feature-row"><span class="pricing-flabel">Design tools</span><span class="pricing-fval">Standard</span></div>' +
+    '<div class="pricing-feature-row"><span class="pricing-flabel">AI Models</span><span class="pricing-fval">Basic</span></div>' +
+    '<div class="pricing-feature-row"><span class="pricing-flabel">Card retention</span><span class="pricing-fval">7 days</span></div>' +
     '<div class="pricing-feature-row pricing-disabled"><span class="pricing-flabel">Priority support</span><span class="pricing-fval pricing-na">&mdash;</span></div>' +
+    '<div class="pricing-feature-row pricing-disabled"><span class="pricing-flabel">Pro badge</span><span class="pricing-fval pricing-na">&mdash;</span></div>' +
     "</div>" +
     '<a href="#" onclick="hidePricingModal();return false;" class="pricing-cta pricing-cta-free"><span class="pricing-cta-text">Try it free</span> <i class="fa-solid fa-arrow-right"></i></a>' +
     "</div>" +
