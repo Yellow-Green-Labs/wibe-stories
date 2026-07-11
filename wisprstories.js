@@ -944,6 +944,13 @@ function updateVoiceBar() {
     toggle.checked = false;
     voiceAttached = false;
   }
+  _syncShareButton();
+}
+function _syncShareButton() {
+  var btn = document.getElementById("btnS");
+  if (!btn) return;
+  btn.disabled = voiceAttached || !cardReady;
+  btn.title = voiceAttached ? "Download the card to keep the voice" : "";
 }
 
 // Rewrite preview bar — shows Accept/Cancel after tone rewrite
@@ -3859,13 +3866,6 @@ async function _makeSocialBlob(srcBlob) {
 }
 
 document.getElementById("btnS").addEventListener("click", async () => {
-  if (voiceAttached) {
-    const btn = document.getElementById("btnS");
-    btn.disabled = true;
-    showToast("Download the card to keep the voice");
-    setTimeout(() => { btn.disabled = false; }, 2000);
-    return;
-  }
   _vibrate();
   const btn = document.getElementById("btnS");
   const generatingLabel = typeof getI18nSync === "function" ? getI18nSync("record.generating") : "Generating\u2026";
@@ -4726,7 +4726,7 @@ async function _toBlobURL(url, mimeType, cb) {
         if (done) break;
         chunks.push(value);
         received += value.length;
-        if (cb && total > 0) cb(received / total);
+        if (cb && total > 0) cb(Math.min(1, received / total));
       }
       const data = new Uint8Array(received);
       let pos = 0;
@@ -4751,10 +4751,10 @@ async function _loadFfmpeg() {
     _setExportStage("Preparing video tools\u2026 0%");
     await ffmpeg.load({
       coreURL: await _toBlobURL(base + '/ffmpeg-core.js', 'text/javascript', (p) => {
-        _setExportStage("Preparing video tools\u2026 " + Math.round(p * 100) + "%");
+        _setExportStage("Preparing video tools\u2026 " + Math.min(100, Math.round(p * 100)) + "%");
       }),
       wasmURL: await _toBlobURL(base + '/ffmpeg-core.wasm', 'application/wasm', (p) => {
-        _setExportStage("Preparing video tools\u2026 " + Math.round(p * 100) + "%");
+        _setExportStage("Preparing video tools\u2026 " + Math.min(100, Math.round(p * 100)) + "%");
       }),
       classWorkerURL: await _toBlobURL('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/worker.js', 'text/javascript'),
     });
