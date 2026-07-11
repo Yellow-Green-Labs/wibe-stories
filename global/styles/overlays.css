@@ -920,6 +920,7 @@ body.modal-open .rewrite-bar {
   margin-bottom: 8px;
 }
 .pricing-tabs {
+  flex: 1;
   display: flex;
   gap: 4px;
   background: var(--cream);

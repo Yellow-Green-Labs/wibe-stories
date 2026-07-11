@@ -2843,7 +2843,6 @@ function _initIroPicker() {
       { component: iro.ui.Slider, options: { sliderType: "saturation" } },
       { component: iro.ui.Slider, options: { sliderType: "value" } },
     ],
-    input: '#cpHexInput',
   });
   _iroInstance.on('color:change', function(color) {
     customColor = color.hexString;
@@ -2852,16 +2851,6 @@ function _initIroPicker() {
     wave(document.getElementById("sta").value);
     document.getElementById("cpPreview").style.background = color.hexString;
   });
-  var hexInput = document.getElementById('cpHexInput');
-  if (hexInput) {
-    hexInput.addEventListener('blur', function() {
-      var val = this.value.trim();
-      if (val === '') return;
-      if (!/^#[0-9a-f]{6}$/i.test(val) && !/^#[0-9a-f]{3}$/i.test(val)) {
-        this.value = _iroInstance.color.hexString;
-      }
-    });
-  }
 }
 
 function _updateCpPreview() {
