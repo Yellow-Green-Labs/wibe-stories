@@ -169,5 +169,5 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-09; v0.11.23.2: Subscription modal restyled — backdrop now matches onboarding (rgba(0,0,0,0.55) + blur(4px)), emoji standardized to 📬. Added `lib/allowed-emails.js` (Gmail, Outlook, Yahoo, Proton, iCloud, Tuta + regional variants). `api/subscribe-occasion.js` blocks disposable/disallowed domains + rate-limits 3/IP/day. Fetch URL changed from absolute to relative for CSP fix. Added `scripts/generate-email-gif.cjs` — reads 6 cards from `assets/cards/`, renders animated GIF (480×175, right→center→left cycling). `api/lib/occasion-email.js` tagline box replaced with `occasion-cards-animation.gif`. -->
+<!-- agsync: last-run 2026-07-10; v0.11.23.4: Pro email questions section improved to warm "Need help? We're here for you" format in api/webhook-bmac.js and api/resend-key.js. -->
 

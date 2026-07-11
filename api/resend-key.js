@@ -73,7 +73,7 @@ async function sendProKeyEmail(resendApiKey, { toEmail, toName, proKey }) {
               </div>
               <hr style="border:none;border-top:1px solid rgba(26,26,26,0.1);margin:0 0 16px" />
               <p style="margin:0;font-size:0.8rem;color:#77776a;line-height:1.5">
-                Questions? <a href="mailto:yellowgreenlabs@proton.me?subject=Pro%20Key%20Support" style="color:#d97706;font-weight:600">Email Us</a>
+                Need help? We're here for you &mdash; reach out anytime at <a href="mailto:yellowgreenlabs@proton.me" style="color:#d97706;font-weight:600">yellowgreenlabs@proton.me</a>.
               </p>
             </div>
             <div style="background:#f0f0df;padding:16px 28px;text-align:center;border-radius:0 0 12px 12px;border:1px solid rgba(26,26,26,0.1);border-top:0">

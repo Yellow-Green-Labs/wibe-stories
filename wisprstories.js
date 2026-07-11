@@ -4253,18 +4253,18 @@ async function generateBlob() {
   var texDataUrl = _curTexture !== null ? await _getTextureBgDataUrl(cw, ch, scale) : null;
   var customColorBgDataUrl = effectiveCustomColor ? await _getCustomColorBgDataUrl(effectiveCustomColor, cw, ch) : null;
   var activeBgDataUrl = texDataUrl || customColorBgDataUrl;
-  // Set background inline on live card BEFORE html2canvas creates its clone.
-  // This avoids html2canvas overriding inline styles set in onclone callback.
   var savedBgImage = card.style.backgroundImage;
   var savedBgSize = card.style.backgroundSize;
   var savedBgColor = card.style.backgroundColor;
   var savedBgDisplay = cardBg.style.display;
-  var exportBgUrl = activeBgDataUrl || getCardBgImage();
+  var savedBoxShadow = card.style.boxShadow;
+  var exportBgUrl = activeBgDataUrl || new URL(getCardBgImage(), location.href).href;
   card.style.background = "";
   card.style.backgroundImage = "url(" + exportBgUrl + ")";
   card.style.backgroundSize = "100% 100%";
   card.style.backgroundColor = "";
   cardBg.style.display = "none";
+  card.style.boxShadow = "none";
   const opt = {
     backgroundColor: null,
     scale: scale,
@@ -4277,6 +4277,7 @@ async function generateBlob() {
   card.style.backgroundSize = savedBgSize;
   card.style.backgroundColor = savedBgColor;
   cardBg.style.display = savedBgDisplay;
+  card.style.boxShadow = savedBoxShadow;
   return new Promise(function (resolve, reject) {
     canvas.toBlob(function (blob) {
       if (blob) {
@@ -4327,18 +4328,19 @@ async function _generateAnimatedWebm(blob, cacheKey) {
     var customColorBgDataUrl = _effCC ? await _getCustomColorBgDataUrl(_effCC, cw, ch) : null;
     var activeBgDataUrl2 = texDataUrl || customColorBgDataUrl;
 
-    // Set background inline on live card BEFORE html2canvas creates its clone
     var savedBgImg2 = card.style.backgroundImage;
     var savedBgSz2 = card.style.backgroundSize;
     var savedBgCl2 = card.style.backgroundColor;
     var cardBgEl = document.getElementById("cardBg");
     var savedBgDsp2 = cardBgEl.style.display;
-    var bgUrl2 = activeBgDataUrl2 || getCardBgImage();
+    var savedBxSh2 = card.style.boxShadow;
+    var bgUrl2 = activeBgDataUrl2 || new URL(getCardBgImage(), location.href).href;
     card.style.background = "";
     card.style.backgroundImage = "url(" + bgUrl2 + ")";
     card.style.backgroundSize = "100% 100%";
     card.style.backgroundColor = "";
     cardBgEl.style.display = "none";
+    card.style.boxShadow = "none";
 
     // Capture card base WITHOUT waveform bars (opacity:0 in clone — keeps layout)
     var baseCanvas = await html2canvas(card, {
@@ -4355,6 +4357,7 @@ async function _generateAnimatedWebm(blob, cacheKey) {
     card.style.backgroundSize = savedBgSz2;
     card.style.backgroundColor = savedBgCl2;
     cardBgEl.style.display = savedBgDsp2;
+    card.style.boxShadow = savedBxSh2;
 
     // Setup audio processing pipeline
     var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -4502,12 +4505,14 @@ async function generateWebm() {
   var svSz3 = card.style.backgroundSize;
   var svCl3 = card.style.backgroundColor;
   var svDsp3 = bgEl.style.display;
-  var bg3 = activeBgDataUrl3 || getCardBgImage();
+  var svBxS3 = card.style.boxShadow;
+  var bg3 = activeBgDataUrl3 || new URL(getCardBgImage(), location.href).href;
   card.style.background = "";
   card.style.backgroundImage = "url(" + bg3 + ")";
   card.style.backgroundSize = "100% 100%";
   card.style.backgroundColor = "";
   bgEl.style.display = "none";
+  card.style.boxShadow = "none";
   var canvas = await html2canvas(card, {
     backgroundColor: null,
     scale: scale,
@@ -4519,6 +4524,7 @@ async function generateWebm() {
   card.style.backgroundSize = svSz3;
   card.style.backgroundColor = svCl3;
   bgEl.style.display = svDsp3;
+  card.style.boxShadow = svBxS3;
   var pngBlob = await new Promise(function(resolve, reject) {
     canvas.toBlob(function(b) {
       if (b) resolve(b);
