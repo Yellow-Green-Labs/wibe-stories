@@ -3860,7 +3860,10 @@ async function _makeSocialBlob(srcBlob) {
 
 document.getElementById("btnS").addEventListener("click", async () => {
   if (voiceAttached) {
+    const btn = document.getElementById("btnS");
+    btn.disabled = true;
     showToast("Download the card to keep the voice");
+    setTimeout(() => { btn.disabled = false; }, 2000);
     return;
   }
   _vibrate();
@@ -4704,23 +4707,56 @@ window.ensureHtml2canvas = (function () {
 // Loaded on hover (preloader) so it's ready by the time the user clicks.
 let _ffmpegInstance = null;
 let _ffmpegPromise = null;
+// Custom toBlobURL replacement that reads the response body once and
+// retries on failure. Avoids the upstream @ffmpeg/util bug where
+// downloadWithProgress consumes the body via reader, then tries
+// resp.arrayBuffer() in the catch block — causing "body stream already read".
+async function _toBlobURL(url, mimeType, cb) {
+  const maxRetries = 2;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const total = parseInt(resp.headers.get('content-length') || '-1');
+      const reader = resp.body.getReader();
+      const chunks = [];
+      let received = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        received += value.length;
+        if (cb && total > 0) cb(received / total);
+      }
+      const data = new Uint8Array(received);
+      let pos = 0;
+      for (const chunk of chunks) {
+        data.set(chunk, pos);
+        pos += chunk.length;
+      }
+      return URL.createObjectURL(new Blob([data], { type: mimeType }));
+    } catch (e) {
+      if (attempt === maxRetries) throw e;
+      await new Promise(r => setTimeout(r, 1500));
+    }
+  }
+}
 async function _loadFfmpeg() {
   if (_ffmpegInstance) return _ffmpegInstance;
   if (_ffmpegPromise) return _ffmpegPromise;
   _ffmpegPromise = (async () => {
     const { FFmpeg } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js');
-    const { toBlobURL } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js');
     const ffmpeg = new FFmpeg();
     const base = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';
     _setExportStage("Preparing video tools\u2026 0%");
     await ffmpeg.load({
-      coreURL: await toBlobURL(base + '/ffmpeg-core.js', 'text/javascript', (p) => {
-        if (p && typeof p === 'number') _setExportStage("Preparing video tools\u2026 " + Math.round(p * 100) + "%");
+      coreURL: await _toBlobURL(base + '/ffmpeg-core.js', 'text/javascript', (p) => {
+        _setExportStage("Preparing video tools\u2026 " + Math.round(p * 100) + "%");
       }),
-      wasmURL: await toBlobURL(base + '/ffmpeg-core.wasm', 'application/wasm', (p) => {
-        if (p && typeof p === 'number') _setExportStage("Preparing video tools\u2026 " + Math.round(p * 100) + "%");
+      wasmURL: await _toBlobURL(base + '/ffmpeg-core.wasm', 'application/wasm', (p) => {
+        _setExportStage("Preparing video tools\u2026 " + Math.round(p * 100) + "%");
       }),
-      classWorkerURL: await toBlobURL('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/worker.js', 'text/javascript'),
+      classWorkerURL: await _toBlobURL('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/worker.js', 'text/javascript'),
     });
     _ffmpegInstance = ffmpeg;
     return ffmpeg;
