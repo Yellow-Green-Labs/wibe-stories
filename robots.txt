@@ -25,6 +25,22 @@ User-agent: Twitterbot
 Allow: /c/
 Allow: /api/og/*
 
+User-agent: LinkedInBot
+Allow: /c/
+Allow: /api/og/*
+
+User-agent: TelegramBot
+Allow: /c/
+Allow: /api/og/*
+
+User-agent: Slackbot
+Allow: /c/
+Allow: /api/og/*
+
+User-agent: Discordbot
+Allow: /c/
+Allow: /api/og/*
+
 # Block search engines from indexing ephemeral card pages
 User-agent: Googlebot
 Disallow: /c/

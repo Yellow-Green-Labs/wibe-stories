@@ -79,7 +79,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 
 - [ ] `documentation/WIBE_STORIES.md` — full product documentation
 - [ ] `documentation/DEVELOPER.md` — developer guide (architecture, code structure, deployment)
-- [ ] `documentation/API.md` — API reference (19 endpoints, error codes, webhooks)
+- [ ] `documentation/API.md` — API reference (25 endpoints, error codes, webhooks)
 - [ ] `docs/admin-setup.md` — admin activation setup
 - [ ] `docs/wispr_flow_company_intelligence.md` — Flow company background
 - [ ] `docs/wispr_flow_research.md` — Flow research notes
@@ -101,7 +101,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 
 - `documentation/WIBE_STORIES.md` — full product documentation (vision, architecture, features, roadmap)
 - `documentation/DEVELOPER.md` — developer guide (getting started, code structure, deployment)
-- `documentation/API.md` — API reference (19 endpoints, error codes, webhooks)
+- `documentation/API.md` — API reference (25 endpoints, error codes, webhooks)
 - `api/voice.js` — audio upload endpoint (called after PNG upload with `X-Short-Id`)
 - `api/rewrite-confirm.js` — tone rewrite commit endpoint (Redis INCR on per-tone counter)
 - `api/rewrite-status.js` — read-only GET endpoint for per-tone counts from Redis
@@ -121,7 +121,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `assets/occasions/` — 60 occasion images (.png)
 - `api/` — Vercel API routes
 - `api/lib/og-render.js` — OG image generator (composites card onto WS-OG-Image.png template)
-- `api/lib/occasion-email.js` — occasion email template builder (30 global occasions, Brevo transactional API)
+- `api/lib/occasion-email.js` — occasion email template builder (30 global occasions, Resend transactional API)
 - `api/lib/occasion-dates.json` — year-by-year date lookup for movable festival dates (2026-2030)
 - `api/cron/send-occasion-emails.js` — daily cron (8 AM UTC) that matches date to occasion and emails Pro + subscriber users
 - `api/subscribe-occasion.js` — email subscription endpoint (validates + stores in Redis)
@@ -154,7 +154,6 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `scripts/verify-cron-cleanup.mjs` — cleanup auth test
 - `scripts/verify-rewrite-status.mjs` — rewrite-status test
 - `scripts/migrate-pro-emails.mjs` — one-time Pro email backfill into Redis set for occasion campaigns
-- `docs/test-plans/` — test plans for verification scripts
 - `docs/every-design-decision-explained.md` — architecture Q&A
 - `docs/model-comparison.md` — model latency/pricing comparison for rewrite chains
 - `assets/card-bgs/spiral-overlay.webp` — grayscale spiral overlay for custom color background (used with `background-blend-mode: overlay`)
@@ -169,5 +168,5 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-10; v0.11.23.4: Pro email questions section improved to warm "Need help? We're here for you" format in api/webhook-bmac.js and api/resend-key.js. -->
+<!-- agsync: last-run 2026-07-12; Documented Resend sender domain situation across DEVELOPER.md, TECH-STACK.md, PENDING.md. Removed unused SENDER_EMAIL/SENDER_NAME dead code from api/lib/occasion-email.js. Confirmed zero BREVO references remain in project. -->
 

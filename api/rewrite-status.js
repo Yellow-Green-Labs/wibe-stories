@@ -14,7 +14,7 @@ import { getRedis, KEYS } from '../lib/redis.js';
 import { validateProKey } from '../lib/pro-key.js';
 
 const REWRITE_TONES = ["warm", "bold", "poetic", "playful", "reflective", "honest"];
-const FREE_MAX_PER_TONE = 5;
+const FREE_MAX_PER_TONE = 1;
 
 export default async function handler(req) {
   if (req.method !== 'GET') {

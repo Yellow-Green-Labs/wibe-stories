@@ -13,7 +13,7 @@ export const config = { runtime: 'edge' };
 import { getRedis, KEYS, secondsUntilMidnightUTC } from '../lib/redis.js';
 import { validateProKey } from '../lib/pro-key.js';
 
-const FREE_MAX_PER_TONE = 5;
+const FREE_MAX_PER_TONE = 1;
 
 export default async function handler(req) {
   if (req.method !== 'POST') {

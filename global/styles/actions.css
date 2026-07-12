@@ -136,9 +136,6 @@
 }
 
 /* EXAMPLES */
-.ex-section-wrap {
-  /* Bottom spacing owned by .left's gap (28px). */
-}
 .ex-lbl {
   font-size: clamp(11px, 0.3vw + 10px, 12px);
   color: var(--ink3);

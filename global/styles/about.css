@@ -150,16 +150,6 @@ body {
   margin-right: auto;
   text-shadow: none;
 }
-.eyebrow {
-  font-family: var(--serif);
-  font-size: clamp(11px, 0.8vw, 13px);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ws-text-accent);
-  margin-bottom: 12px;
-}
-
 /* === Hero Section (image background) === */
 .hero-dark {
   background-size: cover;

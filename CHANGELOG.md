@@ -1,5 +1,7 @@
 # Changelog
 
+> **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 65
+
 ## [v0.11.23.0] — Occasion Email Campaign Expansion (2026-07-09)
 
 ### Added
@@ -40,6 +42,18 @@
 - **WebM generation** — Waveform bar color uses `getCardColor()`.
 - **`updateStyleChipSummary()`** — Shows hex value as color name when custom color is active; swatch uses `getCardColor()`.
 - **`applyPal(idx)`** — Clears `customColor = null` when a palette swatch is clicked.
+
+## [v0.11.17.0] — OG Compositing + UX Polish (2026-07-07)
+
+### Changed
+- **Consolidated VERSION_HISTORY.md into CHANGELOG.md** — Single source of truth for version history. `global/footer-menu.js` now fetches `version.json` instead of parsing `VERSION_HISTORY.md`. `VERSION_HISTORY.md` deleted.
+- **Branded OG image via template compositing** — `api/upload.js` now composites the user's card PNG onto `WS-OG-Image.png` template instead of solid-color background. New `api/lib/og-render.js` handles compositing via sharp. Template cached in-memory; HTTP fetch with local filesystem fallback. Output: 1200×630 JPEG, ~43 KB. Card positioned at x=540, y=25 (570×570 inside template frame). Metadata parsing moved before OG generation.
+- **Upgrade modal footer** — Removed "— made for Wispr Flow" suffix. Footer now shows "Wibe Stories" only.
+- **Update toast color** — "Update available" toast now shows light purple (#f0d7ff) background to stand out from regular dark toasts.
+- **Build banner auto-update** — `wisprstories.js:1` console.log now reads version from `version.json` dynamically. No manual version updates needed.
+- **Share modal mobile layout** — Now matches upgrade modal on mobile (≤480px): bottom-sheet with rounded top corners, full-width, 92dvh max-height, scrollable. Preview image reduced to 35vh.
+- **Speech language trigger** — Disabled (non-clickable, dimmed) when an example sentence is selected, since examples already carry their own language. Re-enabled when user records voice, types, or pastes (was a bug — trigger stayed disabled after `_exampleLang` cleared).
+- **Hinglish voice input** — New "Hinglish" option in speech language picker enables Deepgram `language=multi` for Hindi+English code-switching. Web Speech API fallback uses single Hindi locale. Card font rendering for mixed Devanagari+Latin already works.
 
 ## [v0.11.16.0] — Complete Theme System Removal (2026-07-06)
 
@@ -131,46 +145,6 @@
 - **Footer menu fix** — Removed auto-hide check for "How to Use" link (was hidden because `footer-menu.js` loaded before `wisprstories.js` defined `showOnboarding`).
 - **Service worker** — `CACHE_NAME` bumped to `wispr-stories-shell-v14` to force cache invalidation.
 - **Version** — `v0.11.0.15` → `v0.11.1`.
-
-## [Unreleased] — 2026-07-08
-
-### Added
-- **Occasion-based email campaign for Pro subscribers** — New `api/lib/occasion-email.js` with branded email template (cream #ffffeb bg, amber #f59e0b CTA, dark header gradient, Georgia/Arial fonts), 8 global occasions (New Year, Valentine's, Mother's Day, Father's Day, Friendship Day, Halloween, Christmas, New Year's Eve), date matching with floating-date support.
-- **Daily cron for occasion emails** — `api/cron/send-occasion-emails.js` runs at 8 AM UTC, matches today's date against occasion config, fetches Pro emails from `wispr:pro-emails` Redis Set, deduplicates via `wispr:occasion-sent:{email}:{id}` keys (365-day TTL), and sends via Brevo transactional API with 5-concurrency batching.
-- **Pro email registration** — `api/webhook-bmac.js` now calls `SADD` on new Pro key creation to add the buyer's email to the `wispr:pro-emails` set.
-- **Redis key patterns** — `lib/redis.js` added `proEmailsSet` (`wispr:pro-emails`) and `occasionSent` (`wispr:occasion-sent:{email}:{id}`).
-- **Backfill migration script** — `scripts/migrate-pro-emails.mjs` scans all `wispr:emails:*` keys and populates the `wispr:pro-emails` set.
-- **Email template preview** — `occasion-email-preview.html` with interactive dropdown to preview all 8 occasions in-browser.
-
-### Changed
-- **vercel.json** — Added cron schedule `0 8 * * *` for `/api/cron/send-occasion-emails`.
-
----
-
-## [v0.11.17.0] — OG Compositing + UX Polish (2026-06-30)
-
-### Changed
-- **Consolidated VERSION_HISTORY.md into CHANGELOG.md** — Single source of truth for version history. `global/footer-menu.js` now fetches `version.json` instead of parsing `VERSION_HISTORY.md`. `VERSION_HISTORY.md` deleted.
-- **Branded OG image via template compositing** — `api/upload.js` now composites the user's card PNG onto `WS-OG-Image.png` template instead of solid-color background. New `api/lib/og-render.js` handles compositing via sharp. Template cached in-memory; HTTP fetch with local filesystem fallback. Output: 1200×630 JPEG, ~43 KB. Card positioned at x=540, y=25 (570×570 inside template frame). Metadata parsing moved before OG generation.
-- **Upgrade modal footer** — Removed "— made for Wispr Flow" suffix. Footer now shows "Wibe Stories" only.
-- **Update toast color** — "Update available" toast now shows light purple (#f0d7ff) background to stand out from regular dark toasts.
-- **Build banner auto-update** — `wisprstories.js:1` console.log now reads version from `version.json` dynamically. No manual version updates needed.
-- **Share modal mobile layout** — Now matches upgrade modal on mobile (≤480px): bottom-sheet with rounded top corners, full-width, 92dvh max-height, scrollable. Preview image reduced to 35vh.
-- **Speech language trigger** — Disabled (non-clickable, dimmed) when an example sentence is selected, since examples already carry their own language. Re-enabled when user records voice, types, or pastes (was a bug — trigger stayed disabled after `_exampleLang` cleared).
-- **Hinglish voice input** — New "Hinglish" option in speech language picker enables Deepgram `language=multi` for Hindi+English code-switching. Web Speech API fallback uses single Hindi locale. Card font rendering for mixed Devanagari+Latin already works.
-
-## [v0.11.16.0] — Complete Theme System Removal (2026-07-06)
-
-### Removed
-- **All theme system code from JS**: `curTheme`, `_themeAccent`, `_manualTextDark`, `_themeBrightnessCache`, `_themeAccentCache`, `applyTheme()`, `_initThemeRow()`, `_detectThemeBrightness()`, `_extractThemeAccent()`, `_getThemeVariantSrc()`, `_uploadHeaders()`, `setCardTextColors()`, `_toggleThemeBody()`, `_setTextContrast()`, `restoreDraftTheme()`, theme click/keydown handlers, theme draft restoration, roundness handler `curTheme` branch, collapse toggle, text contrast event listeners
-- **All theme HTML**: collapsible theme section, theme toggle header, theme body, theme row, text contrast buttons from `wisprstories.html` — replaced with flat palette row
-- **All theme CSS**: `.theme-section`, `.theme-toggle-header`, `.collapse-arrow`, `.theme-body`, `.theme-original-group`, `.theme-group`, `.theme-group-label`, `.theme-thumbs`, `.theme-thumb`, `.txt-contrast-section`, `.txt-contrast-btns`, `.txt-contrast-btn` from `global/styles/inputs.css`
-- **`theme` field from saveDraft()**: `sessionStorage` draft no longer stores `curTheme`
-- **`_uploadHeaders()` function**: removed; upload calls use inline headers without `X-Card-Theme`
-- **Stale texture stub**: removed `_curTexture`/`applyTexture` reference from `applyPal()` that had no backing implementation
-
-### Changed
-- **Color section heading**: "Card color" → "Original Colors" using `.lbl` class
 
 ## [v0.11.0.14] — Features Page: 5 Capability Sections + About Page Trim (2026-06-13)
 
@@ -311,10 +285,6 @@ Patch release: removes the now-redundant `audit.md` design-inconsistency audit. 
 ### Removed
 - **`audit.md`** (3.8KB, committed June 3 2026 in commit `37366b8`) — the 73-line design-inconsistency audit with 9 items (3 DONE, 5 NEEDS DECISION, 3 RETRACTED). All DONE items are integrated into `CHANGELOG.md` and `VERSION_HISTORY.md`. All RETRACTED items are by definition no longer relevant. The 3 still-open NEEDS DECISION items (resetBtn async race, spacebar duplication, tone badge fetch-failure gap) are tracked in AGENTS.md "Known bugs".
 
-### Notes
-- `remotion-demo/` was identified during the audit as a candidate for deletion but is a **marketing demo video project** created by a separate AI agent. **Do NOT delete** — it's a marketing asset, not part of the live app. AGENTS.md updated with explicit preservation note.
-- The historical references to `audit.md` in older `CHANGELOG.md` and `VERSION_HISTORY.md` entries are preserved as historical record (they document what the file was, not that it should still exist).
-
 ### Changed
 - **AGENTS.md** — Removed `audit.md` from "Key files" list. Updated `remotion-demo/` entries (lines 94, 143) to make explicit: "Marketing demo video project (Remotion/React). Created by a separate AI agent. Do NOT delete — it's a marketing asset, not part of the live app."
 - **Build banner** (`wisprstories.js:1`) — v0.11.0.5 → v0.11.0.6 (2026-06-04).
@@ -327,12 +297,6 @@ Patch release: removes the hidden SEO paragraph below the H1. The paragraph list
 - **`<p class="visually-hidden" data-i18n="hero.seo">...</p>`** (`wisprstories.html:236-244`) — 9-line paragraph below the H1 listing brand misspellings and a 3-sentence product description.
 - **`hero.seo` i18n key** (`assets/i18n/en.json`) — the source string for the deleted paragraph. 10 other locale files never had this key.
 - **`hero.seo` mention in v0.10.4.8 docs** — kept historical references accurate; this entry supersedes the v0.10.4.8 decision.
-
-### Notes
-- The `.visually-hidden` CSS class in `global/styles/base.css` is preserved (still useful as a utility, e.g., for future SEO content).
-- The JSON-LD `alternateName` array (`wisprstories.html:156-165`) keeps all 10 brand-misspelling variants.
-- The JSON-LD `featureList` (`wisprstories.html:176`) keeps the "Also known as WisprStories, Wisper Stories, or Whisper Stories" suffix.
-- The `<meta name="keywords">` keeps the brand variants.
 
 ### Changed
 - **Build banner** (`wisprstories.js:1`) — v0.11.0.4 → v0.11.0.5 (2026-06-04).
@@ -353,10 +317,6 @@ Patch release: fixes the "Acknowledged Logs" keyboard chord (Alt+Shift+W+S) on W
 - **Chord never fired on Windows** (`internal-logs/secret-shortcut.js`) — On Windows, `Alt+W` and `Alt+S` activate the menu bar (Window, Tools) before the keydown reaches the page. The chord handler still saw `keydown` for Alt and Shift but never got the W or S keydowns, so `heldLetters` never reached the size needed to fire. Fix: added a scoped `e.preventDefault()` in `onKeyDown` that fires only when `e.altKey && e.shiftKey` AND the key is `w`/`s` (case-insensitive). This suppresses the menu-bar activation for the two keys in the chord and lets the keydown reach the page. The `preventDefault` is intentionally narrow (W and S only, Alt+Shift only) so other browser shortcuts like Alt+Shift+T (Chrome reopen tab) still work.
 - **No diagnostics for "chord didn't fire"** (`internal-logs/secret-shortcut.js`) — Two `console.debug` lines added: one on script init (`[secret-shortcut] handler loaded; chord = Alt+Shift+W+S`) and one on chord fire (`[secret-shortcut] chord fired, opening <url>`). If the chord still does not work, open DevTools console and check whether the "handler loaded" line appears (script blocked or missing) and whether the "chord fired" line appears (chord logic works but popup blocked → location.href fallback kicks in).
 - **Build banner** (`wisprstories.js:1`) — v0.11.0.2 → v0.11.0.3 (2026-06-04).
-
-### Not changed
-- The Acknowledged Logs public content (`internal-logs/ilogs-ws.md` MIRROR block) is unchanged. v0.11.0.3 is a code fix only.
-- The `Alt+Shift+W+S` chord shape, the noopener/noreferrer popup, the `location.href` fallback, and the `window.blur` cleanup are all unchanged.
 
 ## [v0.11.0.2] — i18n `{max}` Placeholder Fix (2026-06-04)
 
@@ -383,19 +343,6 @@ Patch release: gives the textarea a small invisible grace so the system does not
 - **Limitation 8 in `internal-logs/ilogs-ws.md`** — new entry in the MIRROR TO NOTION block. Explains that the user-visible cap is 150, the actual cap is 160, and the 10-char grace is invisible by design.
 - **6th FAQ item in `about.html`** — "Why does the character counter sometimes go past 150?" Plugs the same explanation for curious users. Placed at the end of the FAQ list.
 
-### Not changed (and why)
-- **Server-side caps unchanged.** `api/rewrite.js` still caps LLM tone-rewrites at 150 chars; `api/og.js` still caps the card image at 150. The 10 grace chars are stored in the metadata sidecar (`meta/<shortId>.json`) and visible on the card's landing page, but they never reach the card image, the LLM, or the transcription.
-- **i18n strings unchanged.** "up to 150 characters" stays accurate because 150 is the user-visible cap. No new translation work.
-- **All 10 `.slice(0, 150)` sites in `wisprstories.js` unchanged** (lines 330, 376, 922, 1145, 1322, 1622, 1821, 2547, 2659, 2982, 3797). These are display/output paths; the 10 grace chars flow into metadata only.
-- **The ⚠️ warning at 120 chars unchanged.** Still fires as the "approaching limit" hint.
-
-### Tradeoffs
-- **Pros:** User can finish their last word (the original concern). Visible cap stays at 150. No aggressive cut. Card design and LLM cost unchanged. No i18n churn.
-- **Cons:** The grace is invisible; users may not know about it until they hit 150 and discover they can still type. The FAQ surfaces it for the curious.
-
-### Files touched
-`wisprstories.html`, `wisprstories.js`, `global/styles/inputs.css`, `internal-logs/ilogs-ws.md`, `about.html`.
-
 ## [v0.11.0.0] — Acknowledged Logs + Internal Source-of-Truth (2026-06-04)
 
 Major release: the "Acknowledged Logs" transparency system. A Notion page lists 5 known issues and 7 product-decision limitations in plain language for the Wispr Flow team. Reachable via direct URL or via a 4-key chord (Alt+Shift+W+S) on every public page.
@@ -413,14 +360,6 @@ Major release: the "Acknowledged Logs" transparency system. A Notion page lists 
 - **Build banner** (`wisprstories.js:1`) — v0.10.4.7 → v0.11.0.0 (2026-06-04).
 - **`.gitignore`** — added `internal-logs/` (git-ignored) with an un-ignore rule for `internal-logs/secret-shortcut.js` so the chord handler ships with the deployed site while the source-of-truth markdown stays in the team-only folder.
 - **Public content policy** — the public Notion page leads with an Apple-disclaimer callout acknowledging that the project is tested on Windows and Android only, and that Apple-platform behavior is based on published browser documentation and user reports rather than first-hand testing.
-
-### Files touched
-`wisprstories.js`, `wisprstories.html`, `about.html`, `language-stats.html`, `internal-logs/ilogs-ws.md` (new), `internal-logs/secret-shortcut.js` (new), `assets/i18n/{en,es,hi,it,ja,kn,ko,ta,te,th,zh}.json` (`ffNotice` removed), `.gitignore`.
-
-### Post-publish checklist
-1. Create the Notion page from the `MIRROR TO NOTION` block in `internal-logs/ilogs-ws.md`.
-2. Replace the `ACKNOWLEDGED_LOGS_URL` placeholder in `internal-logs/secret-shortcut.js` with the real Notion URL.
-3. Redeploy.
 
 ## [v0.10.4.8] — SEO for Brand Misspellings + Link Hygiene (2026-06-04)
 
@@ -497,9 +436,6 @@ Toast shortening, recording flow bug fixes, and i18n cleanup. Biggest change is 
 - **Style section i18n** — `i18nApplied` event listener added to call `updateStyleChipSummary()` on language change, so the style chip summary re-localizes.
 - **Duplicate JSON keys fixed** — Tone/color/shape/footer sections had duplicate keys in all 11 locale files.
 
-### Files touched
-`wisprstories.js`, `assets/i18n/en.json`, `assets/i18n/{es,hi,it,ja,kn,ko,ta,te,th,zh}.json`, `global/footer-menu.js`, `global/styles/layout.css`.
-
 ## [v0.10.4.5] — Friction Reduction Pass (2026-06-03)
 
 Friction-reduction pass: hides technical jargon (counter), warms the card-creation moment, moves toasts to top-center (eye line with the mic), and adds self-healing for the recording counter. Zero new UI for grandparents — every change fades in only when needed.
@@ -517,9 +453,6 @@ Friction-reduction pass: hides technical jargon (counter), warms the card-creati
 - **Permanent build banner in DevTools Console** — `[Build] Wibe Stories v0.10.4.5` in pink. Updates per release. Answers "which version is deployed?" permanently.
 - **Pro-unlock counter refresh** — `updateSupporterBadge()` now re-fetches limits so the counter shows Pro tier immediately (50/day vs 5/day).
 - **Diagnostic `console.debug("[Limits] ...")` lines (4 places, temporary)** — for diagnosing the "counter stuck at 5/5" bug. Use Chrome DevTools → Console → Verbose level.
-
-### Files touched
-`wisprstories.js`, `wisprstories.html`, `global/footer-menu.js`, `global/styles/inputs.css`, `global/styles/overlays.css`, `global/styles/responsive.css`, `global/styles/actions.css`, `assets/i18n/*.json` (11 locales).
 
 ## [v0.10.4.2] — Stage 1 Recording Flow Bug Fixes (2026-06-02)
 
@@ -795,9 +728,6 @@ Stage 1 implements the 7 bug fixes + 4 deep sub-fixes (2.1 Promise.all + Cancel 
 - **Duplicate font stack in `base.css`** — Removed; `fonts.css` is the single source. Hebrew dead fonts removed from font stacks.
 - **`PENDING.md` typo** — `sankranthi` → `sankranti`.
 
-### Known issues
-- **`shareModal.generating` vs `record.generating` key mismatch** — Still unfixed. Tracks with existing entry.
-
 ## [v0.9.5] — 2026-05-24
 
 ### Added
@@ -812,11 +742,6 @@ Stage 1 implements the 7 bug fixes + 4 deep sub-fixes (2.1 Promise.all + Cancel 
 ### Fixed
 - **Recording timer started at 14s instead of 15s** — `setInterval(fn, 1000)` fires first after ~1s, so `elapsed = 1` on the first tick. Displayed "14s remaining" instead of "15s". Fixed by showing `recMaxDuration + "s remaining"` before the interval starts. Both Deepgram and Web Speech paths fixed.
 - **OpenRouter Whisper 400 error** — `format` was sent as the full MIME type (`audio/webm;codecs=opus`) instead of the simple extension (`webm`). Added `(format || '').split(';')[0].split('/')[1] || 'webm'` sanitization in both `serve.cjs` and `api/stt.js`.
-
-### Known issues
-- **`shareModal.generating` vs `record.generating` key mismatch** — `wisprstories.js:1845` looks up `shareModal.generating` but every locale defines `record.generating`. Falls back to English "Generating…" in all locales. Two-line fix deferred.
-
----
 
 ## [v0.9.4] — 2026-05-23
 
@@ -845,15 +770,6 @@ Stage 1 implements the 7 bug fixes + 4 deep sub-fixes (2.1 Promise.all + Cancel 
 - **Rewrite cache no longer replays bad outputs** — Added `PROMPT_VERSION` constant to Redis cache key; old entries expire on their own 24h TTL.
 - **Rewrite no longer aborts on slow free-model responses** — Client timeout raised from 15s → 25s (server timeout is 20s).
 - **Page UI no longer flips to example sentence's language** — Removed two leaks: `autoDetectLangFromText()` no longer writes `localStorage.wsLang`; `loadDraft()` no longer calls `setLanguageByCode()`.
-
-### Decisions
-- **No Arabic (`ar.json`) or Urdu (`ur.json`) UI locale files** — RTL infrastructure remains in place; 20 UI locales confirmed.
-- **Total UI locales: 20** (`de, es, fr, gu, hi, id, it, ja, kn, ko, ml, pa, pt, ru, sv, ta, te, th, tr, zh`).
-
-### Known issues
-- **`shareModal.generating` vs `record.generating` key mismatch** — `wisprstories.js:1845` looks up `shareModal.generating` but every locale defines `record.generating`. Falls back to English "Generating…" in all locales. Two-line fix deferred.
-
----
 
 ## [v0.9.3] — 2026-05-22
 
@@ -884,30 +800,6 @@ Stage 1 implements the 7 bug fixes + 4 deep sub-fixes (2.1 Promise.all + Cancel 
 - Updated `AGENTS.md` — Updated "Deferred features," "Known bugs," "Key files" sections.
 - Updated `WISPR_STORIES_CANONICAL_BLUEPRINT.md` — Rewrote Section 8 (Technical Architecture) with full serverless route table, usage limits, cost safeguards; rewrote Section 15 (Open Questions) to reflect current state.
 - Updated `docs/INTERVIEW_GUIDE.md` — Added "Cost Awareness & Sustainable Scaling" section with 8 Q&A entries covering limits, Deepgram choice, abuse prevention, Pro tier, and scaling.
-
----
-
-## [v0.8.0] — In Progress (pre-implementation)
-
-### Planned
-- **STT provider migration** — Switch from OpenRouter Whisper-1 to Deepgram Nova-3 Multilingual (Batch). Deepgram outperforms Whisper on accuracy (5.26% vs 6.2% WER), has no hallucination problem, 90% faster latency (200-400ms vs 2-4s), and $200 free credit (~555 hrs) vs no free tier. Cost: $0.26/hr vs $0.36/hr.
-- **Daily user cap (99 users)** — Upstash Redis counter keyed by date (`wispr:daily:YYYY-MM-DD`). Graceful capacity page with playful tone ("We're overwhelmed with love!"). Existing sessions grandfathered. Pro users bypass cap.
-- **Recording limits** — Free: 5 rec/day, 15s max, 75s cumulative. Pro: 50 rec/day, 30s max, 15 min cumulative. Server-side enforcement.
-- **Silence detection** — Web Audio API RMS energy check before sending to Deepgram. Threshold: RMS < 0.01 over 2s = silence. Saves ~20% wasted API calls.
-- **Tone rewriting** — `api/rewrite.js` with DeepSeek V4 Flash Free (OpenRouter). 150-char limit with sentence-boundary truncation. 10/day free, unlimited Pro.
-- **i18n (23 languages)** — JSON translation files, `data-i18n` attribute system, RTL support for Arabic/Urdu, language selector in nav. Card content stays English.
-- **Onboarding banner** — First-launch detection, localStorage persistence, help icon trigger, dismiss animation.
-- **Upgrade system** — Upstash Redis key store, BuyMeACoffee webhook auto-generation, key format `WS-{OCCASION}-{YEAR}-{XXXX}`, server-side validation replaces localStorage stub.
-- **UI fix** — "Wispr Flow" in heading → bold/italic + clickable link to `https://wisprflow.ai?ref=wispr-stories`.
-
-### Documentation
-- Created `docs/cost-architecture.md` — Complete cost math, Deepgram pricing, scaling scenarios, 7 cost safeguards, interview talking points.
-- Created `docs/upgrade-system-design.md` — Upstash Redis architecture, key generation, BuyMeACoffee webhook, Pro tier limits, security considerations.
-- Created `docs/stt-provider-migration.md` — Migration plan, API comparison, fallback chain, benchmark data, rollback plan.
-- Updated `docs/interview-quick-reference.md` — Added cost & sustainability Q&A section (6 new questions), updated Pro system table, updated serverless function list.
-- Created `PENDING.md` — Master implementation checklist (to be deleted when complete).
-
----
 
 ## [v0.7.0]
 

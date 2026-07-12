@@ -37,7 +37,7 @@ No account, no install, no build step. The front end is plain HTML, CSS, and Jav
 
 **The idea:** voice tools are powerful but their output is invisible — dictation disappears into an email or a note, so nobody sees it and nobody discovers that speaking was an option. Wibe Stories makes one voice-created moment visible and shareable.
 
-> Wibe Stories is an independent, unofficial project — not affiliated, not sponsored. [Wispr Flow](https://wisprflow.ai/r?BEST76) is credited in the page footer and shared-link previews; the cards themselves carry only the user's words and a small Wibe Stories mark.
+> Wibe Stories is an independent project — not affiliated, not sponsored. Wispr Flow is credited in the page footer and shared-link previews; the cards themselves carry only the user's words and a small Wibe Stories mark.
 
 ## The grandparent test
 
@@ -55,19 +55,20 @@ No account, no install, no build step. The front end is plain HTML, CSS, and Jav
 
 - 🎙️ **Speak or type** — record your voice or just type
 - ✨ **AI tone rewriting** — tap a tone (Warm, Bold, Poetic, Playful, Reflective, Honest) and your message is rewritten to match
-- 🎨 **10 colour palettes** × 2 corner styles
+- 🎨 **20 card palettes** × 2 corner styles + custom hex color picker
 - 🌍 **44 speech languages**, with the UI translated into 11 languages
-- 🗓️ **53 auto-detected occasions** — birthdays, festivals, anniversaries, and more
+- 🗓️ **60 auto-detected occasions** — birthdays, festivals, anniversaries, and more
 - 📱 **Built for phones** — mobile-first, with native share
 - 🌙 **Dark mode** — follows your system preference
-- 🔒 **No accounts, no audio storage** — shared-link cards auto-expire after 36 hours
+- 🔒 **No accounts, no audio storage** — shared-link cards auto-expire after 7 days (14 for Pro)
+- 💎 **Pro subscription** — unlimited rewrites, 50 recordings/day, 14-day retention
 
 ## Documentation
 
 - **[Features](https://wibestories.vercel.app/features)** — the 5 capabilities: Speak, Write, Rewrite, Design, Share.
 - **[Product documentation](documentation/WIBE_STORIES.md)** — product vision, features, design system, architecture, and roadmap.
 - **[Developer guide](documentation/DEVELOPER.md)** — technical onboarding, code structure, deployment, and development workflow.
-- **[API reference](documentation/API.md)** — all 19 serverless endpoints, request/response specs, and error codes.
+- **[API reference](documentation/API.md)** — all 25 serverless endpoints, request/response specs, and error codes.
 
 ## License
 

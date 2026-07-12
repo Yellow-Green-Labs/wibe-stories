@@ -1,6 +1,3 @@
-const SENDER_EMAIL = 'yellowgreenlabs@proton.me';
-const SENDER_NAME = 'Wibe Stories';
-
 const EMAIL_TIMEOUT_MS = 8000;
 const IMG_BASE = 'https://wibestories.vercel.app/assets/occasions/';
 

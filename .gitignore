@@ -40,3 +40,9 @@ C_WS-updates.md
 # the `!` re-include rule from working (per Git docs).
 internal-logs/*
 !internal-logs/observer.js
+
+# Internal documentation files — local-only references for developers
+api/api-INTERNAL-DOC.md
+global/global-INTERNAL-DOC.md
+lib/lib-INTERNAL-DOC.md
+scripts/scripts-INTERNAL-DOC.md

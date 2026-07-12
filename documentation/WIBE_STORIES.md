@@ -18,7 +18,7 @@
 
 1. [Product Vision](#1-product-vision)
 2. [The problem](#2-the-problem)
-3. [Why this matters to Wispr Flow](#3-why-this-matters-to-wispr-flow)
+3. [Origin](#3-origin)
 4. [Target users and personas](#4-target-users-and-personas)
 5. [How it works](#5-how-it-works)
 6. [Feature summary](#6-feature-summary)
@@ -32,6 +32,7 @@
 14. [Roadmap](#14-roadmap)
 15. [Success metrics](#15-success-metrics)
 16. [Requirements](#16-requirements)
+17. [Tech Stack](#17-tech-stack)
 
 ---
 
@@ -61,15 +62,13 @@ Wibe Stories closes that gap. It gives anyone, in their own language, on any dev
 
 ---
 
-## 3. Why this matters to Wispr Flow
+## 3. Origin
 
-This section exists because the project was built as an interview artifact for Wispr Flow. It is framed honestly: Wibe Stories is an independent project, not an official campaign.
+Wibe Stories began as an independent project exploring a simple observation: voice dictation is fast and natural, but its output is invisible — it disappears into a note or email. Nothing dictated is naturally shareable.
 
-Wispr Flow is excellent at the hard part — fast, accurate dictation across apps. But its output is private by design. Nothing a user dictates is naturally shareable, so the product has no built-in word-of-mouth surface.
+The project was inspired by Wispr Flow's excellent dictation technology. Wibe Stories fills the gap that private dictation leaves open: it turns a voice-created moment into a public artifact that someone else can receive, save, and ask about. When someone asks "how did you make this?", that is how voice discovery spreads.
 
-Wibe Stories is a small experiment in that gap: it turns one voice-created moment into a public artifact that another person can receive, save, and ask about. When someone asks "how did you make this?", that is a discovery moment Wispr Flow does not get from a private dictation tool.
-
-The point of the project is not the card generator. The point is the funnel: making private voice creation visible enough to spread. The in-app call-to-action links to `https://wisprflow.ai/r?BEST76`, a referral URL that would let that discovery be measured.
+Wibe Stories is an independent project, not affiliated with or sponsored by Wispr Flow. Wispr Flow is credited in the page footer and shared-link previews; the cards themselves carry only the user's words and the Wibe Stories mark.
 
 ---
 
@@ -133,10 +132,10 @@ Marcus uses voice dictation for quick notes and board updates. He is technically
 2. (For voice) pick a recording language from the language modal. Typing and pasting work in any language without this step.
 3. Tap **Record** and speak. On stop, the transcript is placed into the text box automatically.
 4. Or type directly / paste text you already dictated elsewhere.
-5. Choose a tone, a card colour, and a corner style (rounded or sharp).
+5. Choose a tone, a card colour (from 20 presets or a custom hex picker), and a corner style (rounded or sharp).
 6. Optionally click an **example card** to auto-fill text, tone, and colour.
 7. Tap **Create my card** — the card renders with a short confirmation animation.
-8. Optionally tap a tone to **rewrite** the words with an LLM (5 per tone per day on the free tier).
+8. Optionally tap a tone to **rewrite** the words with an LLM (1 per tone per day on the free tier, unlimited for Pro).
 9. Tap **Share** — download the PNG, copy it, copy a link, or use the native share sheet to send the image straight to any app.
 
 ### What the card contains
@@ -155,19 +154,22 @@ The card image itself carries only the user's words and the Wibe Stories mark. W
 ## 6. Feature summary
 
 | Feature | Detail |
-|---|---|
+|---|---|---|
 | Voice input | Web Speech API in the browser, with a server STT fallback |
 | Typing / paste | Full fallback for any language or unsupported browser |
 | Voice attachment | Optional toggle to attach the original voice recording to a shared card |
-| AI tone rewriting | 6 tones (Warm, Bold, Poetic, Playful, Reflective, Honest) via OpenRouter |
-| Colour palettes | 10 colours × 2 corner styles = 20 backgrounds |
+| AI tone rewriting | 7 tones: Original + 6 rewrites (Warm, Bold, Poetic, Playful, Reflective, Honest) via OpenRouter. Free: 1 rewrite/tone/day |
+| Colour palettes | 10 colours × 2 corner styles = 20 backgrounds, plus a custom hex color picker |
 | Aspect ratio | 1:1 square (the only built ratio; others are designed, not shipped) |
 | Speech languages | 44 selectable languages |
 | UI languages | 11 locales (English + 10) |
-| Occasions | 53 auto-detected occasions |
+| Occasions | 60 auto-detected occasions, plus email reminder subscriptions |
 | Grace zone | Textarea maxlength 160 but UI shows 150; counter turns yellow at 120, red at 150+ |
 | Export | PNG download, clipboard copy, and shareable link |
 | Sharing | Web Share API (image + caption) on supported devices; 13 rotating Wispr Flow CTAs in share captions |
+| Pro subscription | Buy Me a Coffee payment → Pro key via email → unlimited rewrites, 50 recordings/day, 30s recording, 14-day retention |
+| Occasion email reminders | Subscribe from footer → daily cron → Resend email on matching occasions |
+| Color picker | Custom hex color input alongside the 20 preset card backgrounds |
 | Draft auto-save | Text and settings persist in localStorage across sessions |
 | Installable | Progressive Web App with offline typing |
 | Dark mode | Follows system preference |
@@ -220,7 +222,13 @@ Only the **1:1 square** ratio is built (asset prefix `2x2_`), optimised for the 
 
 ## 9. Occasion system
 
-The app ships **53 occasions** that auto-detect from the user's text — birthdays, Diwali, Christmas, Eid, Lunar New Year, regional Indian festivals, and many more. Detection supports plain-string triggers and regex across many languages, plus date-aware occasions keyed to the user's country. When a match is found, an occasion image appears on the card and the example prompts adapt to the occasion.
+The app ships **60 occasions** that auto-detect from the user's text — birthdays, Diwali, Christmas, Eid, Lunar New Year, regional Indian festivals, and many more. Detection supports plain-string triggers and regex across many languages, plus date-aware occasions keyed to the user's country. When a match is found, an occasion image appears on the card and the example prompts adapt to the occasion.
+
+### Occasion email reminders
+
+Users can subscribe to occasion reminder emails from the footer menu. The system validates the email against a domain allowlist (Gmail, Outlook, Yahoo, Proton, iCloud, Tuta + regional) and rate-limits to 3 requests per IP per day. Subscribers receive an email on the morning of a matching occasion, featuring the occasion image and a link to create a card.
+
+Pro users are automatically enrolled at key generation. All emails include a one-click unsubscribe link. Emails are sent via the Resend transactional API, triggered by a daily cron job at 08:00 UTC.
 
 ---
 
@@ -238,9 +246,11 @@ The card exports as a PNG via html2canvas. On devices with the Web Share API, th
 4. The share modal offers four actions: native share, download PNG, copy link, copy image.
 5. A social bot scraping the link gets OG metadata and renders a large preview; a human gets a landing page with the full card and a "Create your own" CTA.
 
-### Retention
+### Retention & metadata
 
-All shared content (card images, OG images, voice audio, metadata) auto-expires after 36 hours. No permanent storage.
+All shared content (card images, OG images, voice audio, metadata) auto-expires after 7 days. Pro-subscriber cards are kept for 14 days. Cleanup runs daily at 03:00 UTC via a Vercel Cron job.
+
+Each card has a **metadata sidecar** (`meta/<shortId>.json`) stored alongside the image, containing the card text, author name, tone, palette, corner style, and Pro status. This metadata personalises the shared-card landing page. Cards can also be downloaded directly via the `/download/[id]` proxy endpoint.
 
 ---
 
@@ -260,7 +270,7 @@ The app never reloads itself out from under the user. It polls for new versions 
 
 - No user accounts and no audio storage. Audio is sent to Deepgram or OpenRouter for transcription only and is not retained by Wibe Stories.
 - The transcript lives in the browser session and clears on refresh.
-- Card images and OG variants are stored in Vercel Blob and auto-deleted after 36 hours.
+- Card images and OG variants are stored in Vercel Blob and auto-deleted after 7 days (14 days for Pro).
 - Redis holds only rate-limit counters, caches, and Pro-key records — no personal content.
 
 ### Browser speech nuance
@@ -278,12 +288,13 @@ A full Content-Security-Policy is configured. Additional headers include X-Frame
 Known limitations are accessible in-app by pressing **Alt+F1**, which opens the "Acknowledged Logs" — an honest list of what the app does not yet handle well.
 
 | Area | Limitation |
-|---|---|
+|---|---|---|
 | Firefox | No Web Speech API — voice recording is unavailable. Typing and paste work. |
 | Safari / iOS | No native `.webm` playback; voice-attached-card playback is unsupported there. |
 | Aspect ratios | Only 1:1 square is built; 4:5, 16:9, 3:4, 9:16 are designed only. |
 | Browser STT accuracy | Web Speech API is less accurate than a dedicated dictation engine; the server fallback mitigates this. |
 | Privacy guarantee | Cannot guarantee on-device-only speech processing in the browser path (see [Section 12](#12-security-and-privacy)). |
+| Recording counter | The recording counter may briefly show a stale count after stopping (race between async state update and render). Cosmetic only — server is the source of truth. |
 
 ---
 
@@ -314,28 +325,46 @@ Known limitations are accessible in-app by pressing **Alt+F1**, which opens the 
 
 ## 16. Requirements
 
-### Must-have (v1.0)
+### Implemented
 
 - Voice recording in 44 languages (Web Speech API + Deepgram/Whisper fallback)
-- AI tone rewriting (6 tones) via OpenRouter
-- 10 colour palettes × 2 corner styles = 20 card backgrounds
+- AI tone rewriting (7 tones: Original + 6 rewrites) via OpenRouter
+- 10 colour palettes × 2 corner styles = 20 card backgrounds, plus custom hex color picker
 - Shareable link with OG metadata (social bot preview + human landing page)
-- Share via native share sheet, PNG download, or clipboard copy
-- Daily user cap (99 users/day) with server-side enforcement
-- 36-hour auto-expiry of all shared content
+- Share via native share sheet, PNG download, clipboard copy, or download proxy
+- Daily user cap (99 users/day) with server-side enforcement, bypass for Pro
+- 7-day auto-expiry for free cards, 14 days for Pro (daily cleanup cron)
 - PWA installable with offline typing support
+- Pro subscription system (Buy Me a Coffee → webhook → key generation → email delivery → Redis validation)
+- Occasion email campaigns (footer subscription → daily cron → Resend transactional email → one-click unsubscribe)
+- 60 auto-detected occasions with themed card images
+- Features page, About page, and Language Stats page with Chart.js
+- i18n in 11 UI locales with script-aware font mapping
 
-### Should-have (v1.x)
+### Not yet implemented
 
 - Additional aspect ratios (4:5, 16:9, 3:4, 9:16)
 - Mobile preview UX (floating "Preview" button)
 - Onboarding banner (first-launch hint)
-
-### Nice-to-have (v2.x)
-
 - Animated shareable links (live web page, not just static image)
-- Additional occasion images
-- Additional UI locales
+- Custom color picker for free tier (currently Pro-only)
+
+---
+
+---
+
+## 17. Tech Stack
+
+| Layer | Technology | Purpose |
+|---|---|---|
+| Frontend | Vanilla HTML, CSS, JavaScript (no framework) | Zero build step, edge-served |
+| Hosting | Vercel (serverless + static) | Global edge deployment, rewrites, CSP, cron |
+| Speech-to-text | Web Speech API (browser) + Deepgram Nova-3 + OpenRouter Whisper | Primary → fallback → secondary fallback |
+| AI rewriting | OpenRouter (Gemma, Kimi, Ling, Lunaris models) | 7 tones, same-language enforcement |
+| Storage | Vercel Blob | Card PNGs, OG images, voice audio, metadata |
+| Data / cache | Upstash Redis (2 instances) | Rate limits, keys, counters, rewrite cache, email subscriptions |
+| Payments | Buy Me a Coffee webhooks (HMAC-signed) | Pro key generation on donation |
+| Email | Resend transactional API | Pro key delivery, key recovery, occasion reminders |
 
 ---
 

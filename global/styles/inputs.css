@@ -175,9 +175,6 @@
 .font-size-info.on {
   color: var(--ink2, var(--ink));
 }
-.font-size-row.disabled .font-size-val {
-  opacity: 0.4;
-}
 .rec-btn.paused {
   background: var(--cream2);
   color: var(--ink3);

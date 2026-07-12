@@ -12,10 +12,11 @@
 4. [Front end](#4-front-end)
 5. [API routes](#5-api-routes)
 6. [Data stores](#6-data-stores)
-7. [Development workflow](#7-development-workflow)
-8. [Deployment](#8-deployment)
-9. [Testing](#9-testing)
-10. [Troubleshooting](#10-troubleshooting)
+7. [Occasion email campaigns](#7-occasion-email-campaigns)
+8. [Development workflow](#8-development-workflow)
+9. [Deployment](#9-deployment)
+10. [Testing](#10-testing)
+11. [Troubleshooting](#11-troubleshooting)
 
 ---
 
@@ -55,10 +56,16 @@ The front end has no build step. `package.json` exists for serverless dependenci
 | `BLOB_READ_WRITE_TOKEN` | Vercel Blob access |
 | `CRON_SECRET` | Authorises cleanup cron |
 | `BMAC_WEBHOOK_SECRET` | Buy Me a Coffee webhook HMAC |
-| `BREVO_API_KEY` | Pro-key email sending |
+| `RESEND_API_KEY` | Pro-key and occasion-email sending via Resend |
 | `WS_Acknowledged_Logs` | Internal redirect target (optional) |
 
 Routes degrade gracefully when a key is missing — the related feature is disabled.
+
+> **Resend sender domain:** All emails (Pro keys, key recovery, occasion reminders) currently use Resend's default test domain `onboarding@resend.dev`. This is a placeholder — it works for now but should be replaced with a custom sender once a domain is purchased and verified in the Resend dashboard. The sender is hardcoded in 3 files:
+> - `api/webhook-bmac.js:7` — `SENDER`
+> - `api/resend-key.js:6` — `SENDER`
+> - `api/lib/occasion-email.js:217` — `from`
+> Update all three when the custom domain is ready.
 
 ---
 
@@ -119,7 +126,7 @@ Recipient opens wibestories.vercel.app/c/<shortId>
 | `language-stats.js` | Language stats page behaviour |
 | `capacity-check.js` | Daily capacity check (99-user cap), admin/pro key headers |
 | `demo.js` | Demo animation (disabled, preserved for restoration) |
-| `occasions/` | 53-occasion detection (triggers, dates, countries) |
+| `occasions/` | 60-occasion detection (triggers, dates, countries) |
 | `styles/` | 14 CSS modules (`main.css` aggregates) |
 
 ### `assets/` — static assets
@@ -130,7 +137,7 @@ Recipient opens wibestories.vercel.app/c/<shortId>
 | `languages/` | 44 speech languages + loader |
 | `card-bgs/` | 20 baked WebP card backgrounds |
 | `og-1080/`, `og-1200x630/` | OG image templates |
-| `occasions/` | 53 occasion images |
+| `occasions/` | 60 occasion images |
 | `fontawesome/`, `html2canvas/`, `flag-icons/` | Vendored libraries |
 
 ### `api/` — serverless routes
@@ -185,7 +192,7 @@ See [Section 5](#5-api-routes) for the full list.
 
 ## 5. API routes
 
-19 serverless routes in `api/`.
+25 serverless routes in `api/`.
 
 | Route | Purpose | Runtime |
 |---|---|---|
@@ -197,6 +204,7 @@ See [Section 5](#5-api-routes) for the full list.
 | `c/[id].js` | Shared-card landing page + OG metadata | Node.js |
 | `card.js` | Card data endpoint | Node.js |
 | `og.js` | Dynamic OG image renderer (sharp + SVG) | Node.js |
+| `og/[id].js` | Serve card OG image JPEG from Blob | Node.js |
 | `voice.js` | Optional audio upload (voice-attached cards) | Node.js |
 | `usage.js` | Daily user-cap counter | Node.js |
 | `limits.js` | Per-user recording / rewrite limits | Node.js |
@@ -209,6 +217,18 @@ See [Section 5](#5-api-routes) for the full list.
 | `cleanup.js` | Daily blob cleanup (Vercel Cron, 03:00 UTC) | Node.js |
 | `admin-revoke.js` | Admin Pro-key revocation | Node.js |
 | `beacon.js` | Internal redirect helper (env-gated) | Node.js |
+| `subscribe-occasion.js` | Occasion email subscription (Edge) | Edge |
+| `unsubscribe-occasion.js` | Occasion email unsubscription | Node.js |
+| `test-send-occasion.js` | Debug endpoint for occasion email testing | Node.js |
+| `download/[id].js` | Download proxy (serves blob with Content-Disposition) | Node.js |
+
+Plus cron and lib files (non-route):
+| File | Purpose |
+|---|---|
+| `cron/send-occasion-emails.js` | Daily cron (08:00 UTC) for occasion reminder emails |
+| `lib/og-render.js` | OG image compositing (sharp) |
+| `lib/occasion-email.js` | Occasion email template builder (30 global occasions) |
+| `lib/occasion-dates.json` | Movable festival date lookup (2026–2030) |
 
 ### Buy Me a Coffee webhook setup
 
@@ -222,11 +242,11 @@ Before accepting Pro payments, configure the BMAC webhook:
    - `support_updated` (level changes, e.g. monthly → annual)
    - `support_refunded`
 4. Copy the webhook secret → set as `BMAC_WEBHOOK_SECRET` in Vercel env vars
-5. Ensure `BREVO_API_KEY` is set in Vercel env vars (for sending Pro key emails)
+5. Ensure `RESEND_API_KEY` is set in Vercel env vars (for sending Pro key emails)
 
-**If `BMAC_WEBHOOK_SECRET` or `BREVO_API_KEY` are missing**, the webhook returns 500 and logs an error. BMAC will retry delivery.
+**If `BMAC_WEBHOOK_SECRET` or `RESEND_API_KEY` are missing**, the webhook returns 500 and logs an error. BMAC will retry delivery.
 
-**Key recovery:** If the initial email fails (Brevo down), BMAC retries the webhook. On retry, the code re-sends the email using the stored key. If all retries fail, the user can use "Lost your key?" in the upgrade modal → enters their email → the `/api/resend-key` endpoint looks up and resends the key.
+**Key recovery:** If the initial email fails (Resend down), BMAC retries the webhook. On retry, the code re-sends the email using the stored key. If all retries fail, the user can use "Lost your key?" in the upgrade modal → enters their email → the `/api/resend-key` endpoint looks up and resends the key.
 
 **Test webhooks:** BMAC test pings (`payload.live_mode === false`) are skipped — they don't generate keys.
 
@@ -260,7 +280,7 @@ Prompts target ≤150 characters, force same-language/same-script output, and ar
 ### Vercel Blob
 
 - Card PNGs (`cards/`), OG images (`og/`), voice audio (`voice/`), metadata (`meta/`).
-- 36-hour auto-expiry via `api/cleanup.js` (Vercel Cron, 03:00 UTC).
+- 7-day auto-expiry for free cards, 14 days for Pro, via `api/cleanup.js` (Vercel Cron, 03:00 UTC).
 
 ### Card metadata sidecar
 
@@ -274,13 +294,41 @@ Prompts target ≤150 characters, force same-language/same-script output, and ar
 | Recordings / user / day | 5 | 50 |
 | Max recording length | 15s | 30s |
 | Cumulative audio / user / day | 75s | 900s (15 min) |
-| Tone rewrites / tone / day | 5 | Unlimited |
+| Tone rewrites / tone / day | 1 | Unlimited |
 
 All limits are enforced server-side via Redis; the client UI mirrors them but is never trusted as the source of truth.
 
 ---
 
-## 7. Development workflow
+## 7. Occasion email campaigns
+
+The app sends occasion reminder emails to subscribed users. The system has three parts:
+
+### Subscription (`api/subscribe-occasion.js`, `api/unsubscribe-occasion.js`)
+
+- Users subscribe from the footer menu. Email is validated against a domain allowlist (`lib/allowed-emails.js`: Gmail, Outlook, Yahoo, Proton, iCloud, Tuta + regional variants).
+- Rate-limited to 3 requests/IP/day (Redis key `wispr:sub-rate:{ip}:{date}`).
+- Stored in Redis set `wispr:email-subscribers`.
+- Unsubscribe uses a base64-encoded email token in the query string.
+- Pro users are auto-enrolled at key generation (`api/webhook-bmac.js` adds to `wispr:pro-emails` Redis set).
+
+### Cron schedule (`api/cron/send-occasion-emails.js`)
+
+- Runs daily at 08:00 UTC (defined in `vercel.json` crons block).
+- Matches today's date against `api/lib/occasion-dates.json` (movable festival dates computed for 2026–2030).
+- For each matching occasion, queries both subscriber sets (`wispr:email-subscribers` + `wispr:pro-emails`), deduplicates against `wispr:occasion-sent:{email}:{occasionId}`, and sends via Resend.
+
+### Email template (`api/lib/occasion-email.js`)
+
+- Builds HTML emails for 30 global occasions with images, occasion name, and a CTA link.
+- Sent via Resend REST API (`api.resend.com/emails`) with `RESEND_API_KEY`.
+- Each email includes a one-click unsubscribe link (`/api/unsubscribe-occasion?e=<base64>`).
+
+---
+
+## 8. Development workflow
+
+
 
 ### Making changes
 
@@ -305,7 +353,7 @@ When deploying:
 
 ---
 
-## 8. Deployment
+## 9. Deployment
 
 - **Platform:** Vercel
 - **Production URL:** `wibestories.vercel.app`
@@ -314,11 +362,12 @@ When deploying:
 
 ### Cron jobs
 
-- **Cleanup:** `api/cleanup.js` runs daily at 03:00 UTC, deletes blobs older than 36 hours. Authorised with `CRON_SECRET`.
+- **Cleanup:** `api/cleanup.js` runs daily at 03:00 UTC, deletes blobs older than 168 hours (7 days), or 336 hours (14 days) for Pro cards. Authorised with `CRON_SECRET`.
+- **Occasion emails:** `api/cron/send-occasion-emails.js` runs daily at 08:00 UTC, matches the current date against 30 global occasions and sends reminder emails to subscribers (Pro users auto-enrolled). Authorised with `CRON_SECRET`.
 
 ---
 
-## 9. Testing
+## 10. Testing
 
 ### Manual testing
 
@@ -336,7 +385,7 @@ The main app is tested manually against the user flow. Special attention to the 
 
 ---
 
-## 10. Troubleshooting
+## 11. Troubleshooting
 
 ### "New version" toast never fires
 

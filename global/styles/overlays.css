@@ -140,11 +140,6 @@
 
 /* Desktop: reorder share buttons — Copy link first (highlighted), Share to apps last */
 @media (min-width: 721px) {
-  .share-modal-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
   #shareCopyLink   { order: 1; }
   #shareCopyImage   { order: 2; }
   #shareDownload    { order: 3; }
@@ -259,11 +254,6 @@
 /* Prevent background scrolling while any modal is open */
 body.modal-open {
   overflow: hidden;
-}
-/* When a modal is open, hide the mobile rewrite-bar so its buttons don't
-   bleed through the modal backdrop and look like they're floating out. */
-body.modal-open .rewrite-bar {
-  display: none !important;
 }
 :root.dark .share-modal-content {
   background: #2a2a2a;
@@ -1036,17 +1026,11 @@ body.modal-open .rewrite-bar {
   letter-spacing: 0.02em;
   margin-bottom: 20px;
 }
-.pricing-pp-num {
-  font-size: inherit;
-}
 .pricing-pp-unit {
   font-size: 0.45em;
   font-weight: 400;
   color: var(--ink3);
   letter-spacing: 0.02em;
-}
-.pricing-free .pricing-card-price {
-  margin-bottom: 28px;
 }
 .pricing-card-features {
   display: flex;
@@ -1288,10 +1272,6 @@ body.modal-open .rewrite-bar {
 :root.dark .pricing-na {
   color: rgba(255, 255, 235, 0.3);
 }
-:root.dark .pricing-feature-row {
-  border-color: rgba(255, 255, 235, 0.08);
-}
-
 :root.dark .pricing-cta-free {
   background: rgba(255, 255, 235, 0.08);
   color: #ffffeb;

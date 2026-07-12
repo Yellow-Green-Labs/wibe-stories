@@ -85,7 +85,7 @@ These are constraints we chose on purpose. They are not bugs — they are produc
 
 **Q:** Why does Wibe Stories have a daily cap? And why those specific numbers?
 
-**A:** The free tier is capped at 5 recordings per day, 5 tone rewrites per day, and a 15-second recording length. A small Pro upgrade removes the caps, extends recordings to 30 seconds, and adds unlimited rewrites.
+**A:** The free tier is capped at 5 recordings per day, 1 tone rewrite per day per tone, and a 15-second recording length. A small Pro upgrade removes the caps, extends recordings to 30 seconds, and adds unlimited rewrites.
 
 The caps exist for two reasons.
 
@@ -111,13 +111,13 @@ The Pro upgrade is what lets us keep the free tier generous for genuine users wh
 
 **A:** We have found that shorter messages make for better-looking, more shareable cards. 150 characters is the sweet spot — long enough for a thoughtful sentence, short enough to never overflow the card design. Most of the example phrases we provide fit comfortably within this limit, and the limit is enforced gently: the counter turns red and the Done button disables when you go over, rather than blocking input, so you can see exactly what you would lose by shortening the text.
 
-## Limitation 4 — Shared links automatically expire after 36 hours
+## Limitation 4 — Shared links automatically expire after 7 days (14 for Pro)
 
 **Topic:** Share retention
 
-**Q:** I sent a Wibe Stories link to a friend, and a day and a half later it stopped working. What happened?
+**Q:** I sent a Wibe Stories link to a friend, and a week later it stopped working. What happened?
 
-**A:** Shared card links automatically delete themselves 36 hours after creation. We do this for two reasons. First, every stored card costs us a small amount of money in storage and bandwidth, and 36 hours is long enough for the link to be seen by everyone the sender intended to share with, while short enough that we are not paying to host stale links indefinitely. Second, the link contains a personal voice recording in some cases, and we want that recording's lifetime to be finite by default. If you want a card to last, download the image — downloaded cards are yours to keep forever.
+**A:** Shared card links automatically delete themselves 7 days after creation (14 days for Pro subscribers). We do this for two reasons. First, every stored card costs us a small amount of money in storage and bandwidth, and 7 days is long enough for the link to be seen by everyone the sender intended to share with, while short enough that we are not paying to host stale links indefinitely. Second, the link contains a personal voice recording in some cases, and we want that recording's lifetime to be finite by default. If you want a card to last, download the image — downloaded cards are yours to keep forever.
 
 ## Limitation 5 — We do not run automated content moderation
 

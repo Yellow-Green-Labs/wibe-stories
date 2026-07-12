@@ -1,6 +1,6 @@
 # Wibe Stories — API Reference
 
-> **Status:** Live prototype. 19 serverless routes on Vercel.
+> **Status:** Live prototype. 25 serverless API routes on Vercel (+ 4 shared library files).
 
 ---
 
@@ -18,7 +18,11 @@
 10. [Webhooks](#10-webhooks)
 11. [Admin](#11-admin)
 12. [Cleanup](#12-cleanup)
-13. [Error codes](#13-error-codes)
+13. [Card data endpoint](#14-card-data-endpoint)
+14. [Download proxy](#15-download-proxy)
+15. [Occasion email subscriptions](#16-occasion-email-subscriptions)
+16. [Debug / Test endpoints](#17-debug--test-endpoints)
+17. [Error codes](#18-error-codes)
 
 ---
 
@@ -297,8 +301,6 @@ Returns per-user recording and rewrite limits.
 {
   "recordingsUsed": 2,
   "recordingsMax": 5,
-  "rewriteUsed": 3,
-  "rewriteMax": 5,
   "cumulativeUsed": 30,
   "cumulativeMax": 75
 }
@@ -401,7 +403,7 @@ Buy Me a Coffee webhook handler. Generates Pro keys on successful donations.
 2. Check for test mode (`live_mode === false`)
 3. Extract donor data
 4. Generate Pro key
-5. Send key email via Brevo
+5. Send key email via Resend
 
 ---
 
@@ -448,12 +450,124 @@ Daily blob cleanup (Vercel Cron, 03:00 UTC).
 
 **Process:**
 1. List all blobs in `cards/`, `og/`, `voice/`, `meta/`
-2. Delete any older than 36 hours
-3. Return count of deleted items
+2. Delete any older than 168 hours (7 days) — free-tier cards
+3. Pro-subscriber cards are kept for 336 hours (14 days), checked via the card's metadata file (`meta/<shortId>.json`)
+4. Return count of deleted items
 
 ---
 
-## 13. Error codes
+## 14. Card data endpoint
+
+### `POST /api/card`
+
+Share-landing page that returns proper OG meta tags for social-crawler previews and auto-redirects human visitors into the editor with the card pre-loaded.
+
+**Runtime:** Node.js
+
+**No auth required.**
+
+**Query params:**
+- `img` — direct image URL mode (uses uploaded card PNG as OG image)
+- `text` — card text (falls back to legacy text-param mode)
+- `name` — author name
+- `tone` — tone ID
+- `p` — palette index 0–9
+- `r` — corner style (`rounded` / `sharp`)
+
+**Response:** HTML page with OG tags and inline CSS.
+
+---
+
+## 15. Download proxy
+
+### `GET /api/download/[id]`
+
+Serves a card's PNG from Vercel Blob with a `Content-Disposition: attachment` header, triggering a browser download.
+
+**Runtime:** Node.js
+
+**No auth required.**
+
+**Process:**
+1. Reads the `shortId` from the URL path
+2. Fetches the card PNG from Vercel Blob (`cards/<id>.png`)
+3. Returns it with download headers
+
+---
+
+## 16. Occasion email subscriptions
+
+### `POST /api/subscribe-occasion`
+
+Subscribe to occasion reminder emails. Validates email against a domain allowlist (Gmail, Outlook, Yahoo, Proton, iCloud, Tuta + regional) and rate-limits to 3 requests/IP/day.
+
+**Runtime:** Edge
+
+**Headers:**
+- `Content-Type: application/json`
+
+**Request body:**
+```json
+{
+  "email": "user@gmail.com"
+}
+```
+
+**Response:**
+```json
+{
+  "ok": true
+}
+```
+
+**Process:**
+1. Validates email format and allowed domain
+2. Rate-checks IP (3/day)
+3. Stores email in Redis set `wispr:email-subscribers`
+
+### `POST /api/unsubscribe-occasion`
+
+Unsubscribe from occasion reminder emails. Accepts a base64-encoded email token in the query string.
+
+**Runtime:** Node.js
+
+**Query params:**
+- `e` — base64-encoded email address
+
+**Response:** HTML confirmation page.
+
+**Process:**
+1. Decodes the base64 token
+2. Validates email format
+3. Removes email from Redis set `wispr:email-subscribers`
+
+---
+
+## 17. Debug / Test endpoints
+
+### `GET /api/test-send-occasion`
+
+Manually trigger an occasion email for testing. Requires `RESEND_API_KEY` to be set.
+
+**Runtime:** Node.js
+
+**Query params:**
+- `email` — recipient email (required)
+- `occasion` — occasion ID (optional; defaults to next upcoming occasion)
+
+**Response:**
+```json
+{
+  "ok": true,
+  "occasion": "birthday",
+  "name": "Birthday",
+  "sentTo": "user@example.com"
+}
+```
+
+---
+
+## 18. Error codes
 
 | Code | Meaning |
 |---|---|
