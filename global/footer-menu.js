@@ -164,6 +164,9 @@
       <a href="/language-stats" class="fmenu-link">
         <i class="fa-solid fa-chart-simple" aria-hidden="true"></i><span data-i18n="footer.langStats">Lang Stats</span>
       </a>
+      <a href="#" class="fmenu-link" id="fmenu-vault">
+        <i class="fa-solid fa-box-archive" aria-hidden="true"></i><span id="fmenu-vault-label">My World</span>
+      </a>
       <div class="fmenu-divider"></div>
       <a href="https://medium.com/" class="fmenu-link" rel="noopener noreferrer" target="_blank">
         <i class="fa-brands fa-medium" aria-hidden="true"></i><span data-i18n="footer.articles">Read Articles</span>
@@ -222,6 +225,14 @@
     panel.classList.add("hidden");
     toggle.setAttribute("aria-expanded", "false");
     if (typeof window.showPricingModal === "function") window.showPricingModal();
+  });
+
+  var vaultLink = wrapper.querySelector("#fmenu-vault");
+  vaultLink?.addEventListener("click", (e) => {
+    e.preventDefault();
+    panel.classList.add("hidden");
+    toggle.setAttribute("aria-expanded", "false");
+    if (typeof window.showVault === "function") window.showVault();
   });
 
   window.addEventListener("scroll", () => {

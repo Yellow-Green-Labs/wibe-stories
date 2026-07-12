@@ -18,7 +18,7 @@
 //   online. Only change CACHE_NAME when you want to force a full cache
 //   flush across all existing users (rare — major structural changes only).
 
-const CACHE_NAME = 'wispr-stories-shell-v17';
+const CACHE_NAME = 'wispr-stories-shell-v18';
 
 // Files seeded into the cache on install so the app works on first
 // offline visit. Keep this list to the true shell only — every entry
@@ -141,7 +141,25 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Everything else (CSS, images, fonts, icons) — cache-first for speed,
+  // CSS — network-first. Same reasoning as JS: the live site may ship new
+  // class names or layout rules that the cached CSS doesn't know about.
+  // Always fetch fresh; fall back to cache when offline.
+  if (url.pathname.endsWith('.css')) {
+    event.respondWith(
+      fetch(new Request(req, { cache: 'no-store' }))
+        .then((resp) => {
+          if (resp && resp.status === 200 && resp.type === 'basic') {
+            const clone = resp.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, clone)).catch(() => {});
+          }
+          return resp;
+        })
+        .catch(() => caches.match(req))
+    );
+    return;
+  }
+
+  // Everything else (images, fonts, icons) — cache-first for speed,
   // populate on miss, offline fallback to cached shell.
   event.respondWith(
     caches.match(req).then((cached) => {

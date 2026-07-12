@@ -43,7 +43,7 @@
   color: var(--cream);
 }
 .rewrite-preview-accept:hover {
-  background: #333;
+  background: var(--ink2);
 }
 .rewrite-preview-cancel {
   background: transparent;

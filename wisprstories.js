@@ -694,6 +694,8 @@ function updateSupporterBadge() {
   // not just on the next click of the mic.
   if (typeof _refreshLimitsFromServer === "function") _refreshLimitsFromServer();
   applyProGating();
+  // Sync vault menu label with Pro status
+  if (typeof window.updateMenuLabel === "function") window.updateMenuLabel();
 }
 
 function applyProGating() {
