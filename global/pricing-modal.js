@@ -118,6 +118,7 @@
     '<div class="pricing-feature-row"><span class="pricing-flabel">Card retention</span><span class="pricing-fval">14 days</span></div>' +
     '<div class="pricing-feature-row"><span class="pricing-flabel">Priority support</span><span class="pricing-fval pricing-check">&#10003;</span></div>' +
     '<div class="pricing-feature-row"><span class="pricing-flabel">Pro badge</span><span class="pricing-fval pricing-check">&#10003;</span></div>' +
+    '<div class="pricing-feature-row pricing-feature-highlight"><span class="pricing-flabel"><i class="fa-solid fa-vault"></i> Wibe Vault</span><span class="pricing-fval">Up to 50 cards</span></div>' +
     "</div>" +
 
     '<a href="https://buymeacoffee.com/yg_labs/membership" class="pricing-cta pricing-cta-pro" target="_blank" rel="noopener"><span class="pricing-cta-text">Unlock Pro</span> <i class="fa-solid fa-arrow-right"></i></a>' +
@@ -136,6 +137,7 @@
     '<div class="pricing-feature-row"><span class="pricing-flabel">Card retention</span><span class="pricing-fval">7 days</span></div>' +
     '<div class="pricing-feature-row pricing-disabled"><span class="pricing-flabel">Priority support</span><span class="pricing-fval pricing-na">&mdash;</span></div>' +
     '<div class="pricing-feature-row pricing-disabled"><span class="pricing-flabel">Pro badge</span><span class="pricing-fval pricing-na">&mdash;</span></div>' +
+    '<div class="pricing-feature-row pricing-disabled"><span class="pricing-flabel"><i class="fa-solid fa-vault"></i> Wibe Vault</span><span class="pricing-fval pricing-na">&mdash;</span></div>' +
     "</div>" +
     '<a href="#" onclick="hidePricingModal();return false;" class="pricing-cta pricing-cta-free"><span class="pricing-cta-text">Try it free</span> <i class="fa-solid fa-arrow-right"></i></a>' +
     "</div>" +

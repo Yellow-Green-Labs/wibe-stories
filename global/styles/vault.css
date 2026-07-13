@@ -1,4 +1,4 @@
-/* VAULT DRAWER — My World vault overlay */
+/* VAULT DRAWER — Wibe Vault overlay */
 
 .vault-overlay {
   position: fixed;
@@ -82,25 +82,34 @@
 }
 .vault-counter span { font-weight: 600; }
 
-/* ── CONTENT ── */
+/* ── CONTENT (thin hover-only scrollbar) ── */
 .vault-content {
   flex: 1;
   overflow-y: auto;
   padding: 12px 16px 24px;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.2s;
 }
+.vault-content:hover {
+  scrollbar-color: var(--sc-thumb) transparent;
+}
+.vault-content::-webkit-scrollbar { width: 4px; }
+.vault-content::-webkit-scrollbar-track { background: transparent; }
+.vault-content::-webkit-scrollbar-thumb { background: transparent; border-radius: 2px; transition: background 0.2s; }
+.vault-content:hover::-webkit-scrollbar-thumb { background: var(--sc-thumb); }
 
-/* ── GRID ── */
+/* ── GRID (CSS columns masonry) ── */
 .vault-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  column-count: 2;
+  column-gap: 12px;
 }
 @media (min-width: 600px) {
-  .vault-grid { grid-template-columns: repeat(3, 1fr); }
+  .vault-grid { column-count: 3; }
 }
 @media (min-width: 900px) {
-  .vault-grid { grid-template-columns: repeat(4, 1fr); }
+  .vault-grid { column-count: 4; }
 }
 
 /* ── TILE ── */
@@ -112,16 +121,15 @@
   background: var(--cream2);
   border: 1px solid var(--rule);
   transition: transform 0.15s, box-shadow 0.15s;
-  aspect-ratio: 3 / 4;
-  display: flex;
-  flex-direction: column;
+  break-inside: avoid;
+  margin-bottom: 12px;
 }
 .vault-tile:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 16px rgba(0,0,0,0.08);
 }
 .vault-tile-thumb {
-  flex: 1;
+  aspect-ratio: 1 / 1;
   background: var(--cream3);
   display: flex;
   align-items: center;
@@ -130,7 +138,6 @@
   color: var(--ink3);
   overflow: hidden;
   position: relative;
-  min-height: 0;
 }
 .vault-tile-thumb img {
   width: 100%;
@@ -151,7 +158,15 @@
   align-items: center;
   justify-content: center;
   font-size: 11px;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  touch-action: manipulation;
+  transition: background 0.15s;
+  z-index: 3;
 }
+.vault-tile-audio-badge:hover { background: rgba(0,0,0,0.7); }
+.vault-tile-audio-badge.playing { background: rgba(230, 149, 0, 0.8); }
 .vault-tile-info {
   padding: 8px 10px;
   min-height: 48px;
@@ -193,18 +208,19 @@
   align-items: center;
   justify-content: center;
   z-index: 2;
-  transition: background 0.15s;
+  transition: background 0.15s, border-color 0.15s;
 }
 .vault-tile-check.checked {
   background: #e69500;
   border-color: #e69500;
 }
-.vault-tile-check.checked::after {
-  content: "\f00c";
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
+.vault-tile-check i {
   font-size: 11px;
   color: #fff;
+  display: none;
+}
+.vault-tile-check.checked i {
+  display: block;
 }
 .vault-select-mode .vault-tile-check { display: flex; }
 .vault-select-mode .vault-tile { cursor: default; }
@@ -230,9 +246,13 @@
   font-size: 14px;
   color: var(--ink);
   font-weight: 600;
+  white-space: nowrap;
 }
 .vault-action-btns { display: flex; gap: 10px; }
 .vault-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   padding: 8px 18px;
   border-radius: 8px;
   border: none;
@@ -242,6 +262,7 @@
   touch-action: manipulation;
   transition: background 0.15s;
 }
+.vault-action-btn i { font-size: 12px; }
 .vault-action-btn-delete { background: #e74c3c; color: #fff; }
 .vault-action-btn-delete:hover { background: #c0392b; }
 .vault-action-btn-delete:disabled {
@@ -256,6 +277,25 @@
   color: var(--ink3);
   cursor: default;
 }
+
+/* ── SELECT ALL ── */
+.vault-select-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--rule);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: var(--sans);
+  background: var(--cream);
+  color: var(--ink);
+  touch-action: manipulation;
+  transition: background 0.15s;
+}
+.vault-select-all-btn:hover { background: var(--cream2); }
+.vault-select-all-btn i { font-size: 12px; }
 
 /* ── EMPTY STATE ── */
 .vault-empty {
@@ -447,8 +487,38 @@
 .vault-card-view-name { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
 .vault-card-view-detail { font-size: 13px; opacity: 0.7; }
 
+/* ── SAVE TOGGLE (Phase 2) ── */
+.vault-save-toggle {
+  padding: 10px 0 4px;
+  display: flex;
+  align-items: center;
+}
+.vault-save-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+  font-family: var(--sans);
+  user-select: none;
+  touch-action: manipulation;
+}
+.vault-save-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #e69500;
+  cursor: pointer;
+}
+.vault-save-label i {
+  color: var(--ink3);
+  font-size: 12px;
+}
+
 /* ── DARK MODE ── */
 :root.dark .vault-overlay { background: var(--cream); }
 :root.dark .vault-tile { background: var(--cream2); border-color: var(--rule); }
 :root.dark .vault-action-bar { background: var(--cream); border-color: var(--rule); }
 :root.dark .vault-confirm-box { background: var(--cream2); }
+:root.dark .vault-select-all-btn { background: var(--cream2); border-color: var(--rule); }
+:root.dark .vault-select-all-btn:hover { background: var(--cream3); }

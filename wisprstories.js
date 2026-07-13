@@ -3758,13 +3758,42 @@ document.getElementById("dlChoicePng")?.addEventListener("click", async () => {
   hideDownloadChoice();
   const btn = document.getElementById("dlBtn");
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting\u2026';
-  try { await _downloadPngOnly(); _flashDlBtn(btn); } catch(e) { btn.innerHTML = '<i class="fas fa-download"></i> Download card'; }
+  try {
+    await _downloadPngOnly();
+    _flashDlBtn(btn);
+    var vaultCheck = document.getElementById("vaultSaveCheck");
+    if (vaultCheck && vaultCheck.checked && typeof window.saveCardToVault === "function") {
+      window.saveCardToVault({
+        text: document.getElementById("sta").value,
+        name: document.getElementById("nin").value,
+        authorName: document.getElementById("nin").value,
+        tone: curTone || "original",
+        hasAudio: voiceAttached && !!audioBlob,
+        createdAt: new Date().toISOString()
+      });
+    }
+  } catch(e) { btn.innerHTML = '<i class="fas fa-download"></i> Download card'; }
 });
 document.getElementById("dlChoiceWebm")?.addEventListener("click", async () => {
   hideDownloadChoice();
   const btn = document.getElementById("dlBtn");
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting\u2026';
-  try { await _downloadWebmWithAudio(); _flashDlBtn(btn); } catch(e) { btn.innerHTML = '<i class="fas fa-download"></i> Download card'; }
+  try {
+    await _downloadPngOnly();
+    _flashDlBtn(btn);
+    // Save to Wibe Vault if toggle is on
+    var vaultCheck = document.getElementById("vaultSaveCheck");
+    if (vaultCheck && vaultCheck.checked && typeof window.saveCardToVault === "function") {
+      window.saveCardToVault({
+        text: document.getElementById("sta").value,
+        name: document.getElementById("nin").value,
+        authorName: document.getElementById("nin").value,
+        tone: curTone || "original",
+        hasAudio: voiceAttached && !!audioBlob,
+        createdAt: new Date().toISOString()
+      });
+    }
+  } catch(e) { btn.innerHTML = '<i class="fas fa-download"></i> Download card'; }
 });
 document.getElementById("dlChoiceClose")?.addEventListener("click", hideDownloadChoice);
 document.getElementById("dlChoiceBackdrop")?.addEventListener("click", hideDownloadChoice);
@@ -3885,6 +3914,18 @@ document.getElementById("btnS").addEventListener("click", async () => {
     _shareSocialBlob = await _makeSocialBlob(_shareBlob);
     btn.innerHTML = '<i class="fas fa-share-nodes"></i> Share card';
     btn.disabled = false;
+    // Save to Wibe Vault if toggle is on
+    var vaultCheck = document.getElementById("vaultSaveCheck");
+    if (vaultCheck && vaultCheck.checked && typeof window.saveCardToVault === "function") {
+      window.saveCardToVault({
+        text: document.getElementById("sta").value,
+        name: document.getElementById("nin").value,
+        authorName: document.getElementById("nin").value,
+        tone: curTone || "original",
+        hasAudio: voiceAttached && !!audioBlob,
+        createdAt: new Date().toISOString()
+      });
+    }
     const preview = document.getElementById("sharePreview");
     preview.innerHTML = '<img src="' + URL.createObjectURL(_shareBlob) + '" alt="Card preview" />';
     const file = new File([_shareBlob], "wibe-story.png", { type: "image/png" });
@@ -4886,4 +4927,40 @@ window.addEventListener('i18nApplied', function () {
       typeNext();
     }, 250);
   });
+
+  /* ── Wibe Vault save toggle (Phase 2) ── */
+  (function () {
+    var toggle = document.createElement("div");
+    toggle.className = "vault-save-toggle";
+    toggle.id = "vaultSaveToggle";
+    toggle.innerHTML = '<label class="vault-save-label"><input type="checkbox" id="vaultSaveCheck" /> <i class="fa-solid fa-vault"></i> Save to Wibe Vault</label>';
+    var actions = document.querySelector(".actions");
+    if (actions) actions.parentNode.insertBefore(toggle, actions);
+  })();
+
+  window.saveCardToVault = function (cardData) {
+    var existing = [];
+    try { existing = JSON.parse(localStorage.getItem("wsVaultCards") || "[]"); } catch (e) {}
+    if (existing.length >= 50) {
+      if (typeof showToast === "function") showToast("Vault full (50 cards) — remove some to save more");
+      return;
+    }
+    var id = "v" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    var card = {
+      id: id,
+      shortId: cardData.shortId || "",
+      name: cardData.name || "Untitled",
+      text: cardData.text || "",
+      authorName: cardData.authorName || "",
+      tone: cardData.tone || "original",
+      occasion: cardData.occasion || "",
+      hasAudio: !!cardData.hasAudio,
+      audioUrl: cardData.audioUrl || "",
+      createdAt: cardData.createdAt || new Date().toISOString(),
+      theme: cardData.theme || ""
+    };
+    existing.unshift(card);
+    localStorage.setItem("wsVaultCards", JSON.stringify(existing));
+    if (typeof showToast === "function") showToast("Saved to Wibe Vault");
+  };
 })();

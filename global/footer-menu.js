@@ -165,7 +165,7 @@
         <i class="fa-solid fa-chart-simple" aria-hidden="true"></i><span data-i18n="footer.langStats">Lang Stats</span>
       </a>
       <a href="#" class="fmenu-link" id="fmenu-vault">
-        <i class="fa-solid fa-box-archive" aria-hidden="true"></i><span id="fmenu-vault-label">My World</span>
+        <i class="fa-solid fa-vault" aria-hidden="true"></i><span id="fmenu-vault-label">Wibe Vault</span>
       </a>
       <div class="fmenu-divider"></div>
       <a href="https://medium.com/" class="fmenu-link" rel="noopener noreferrer" target="_blank">
