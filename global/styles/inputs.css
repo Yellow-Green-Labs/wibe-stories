@@ -579,7 +579,8 @@
 .shell:not(.has-card) #palRow .pd,
 .shell:not(.has-card) #sizeRow .sz,
 .shell:not(.has-card) #roundnessRow .sz,
-.shell:not(.has-card) #texRow .txd {
+.shell:not(.has-card) #texRow .txd,
+.shell:not(.has-card) .cp-trigger {
   opacity: 0.4;
   cursor: not-allowed;
   pointer-events: none;

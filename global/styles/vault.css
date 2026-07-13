@@ -361,18 +361,31 @@
   margin-bottom: 24px;
 }
 .vault-locked-btn {
-  background: #e69500;
-  color: #fff;
-  border: none;
-  padding: 12px 28px;
-  border-radius: 10px;
-  font-size: 15px;
+  background: #f59e0b;
+  color: #1a1a1a;
+  font-weight: 700;
+  font-size: clamp(16px, 0.5vw + 14px, 18px);
+  padding: 14px 20px;
+  border-radius: 8px;
+  border: 1px solid #f59e0b;
   cursor: pointer;
   font-family: var(--sans);
   touch-action: manipulation;
-  transition: opacity 0.15s;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
-.vault-locked-btn:hover { opacity: 0.85; }
+.vault-locked-btn:hover {
+  background: #e69500;
+  color: #1a1a1a;
+  border-color: #e69500;
+  transform: scale(0.95);
+}
+.vault-locked-btn:active {
+  transform: scale(0.95);
+}
 
 /* ── CONFIRM MODAL ── */
 .vault-confirm-overlay {
@@ -487,6 +500,28 @@
 .vault-card-view-info { text-align: center; color: #fff; }
 .vault-card-view-name { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
 .vault-card-view-detail { font-size: 13px; opacity: 0.7; }
+
+/* ── Main-page save toggle ── */
+.vault-save-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0 8px;
+  font-size: 13px;
+  color: var(--ink3);
+  cursor: pointer;
+  font-family: var(--sans);
+  user-select: none;
+}
+.vault-save-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #e69500;
+  cursor: pointer;
+}
+.vault-save-label i {
+  font-size: 12px;
+}
 
 /* ── DARK MODE ── */
 :root.dark .vault-overlay { background: var(--cream); }

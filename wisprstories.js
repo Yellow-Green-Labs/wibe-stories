@@ -1082,6 +1082,7 @@ function updateCard(preserveText) {
   cardReady = false;
   document.getElementById("btnS").disabled = true;
   document.getElementById("dlBtn").style.display = "none";
+  document.getElementById("vaultSaveLabel").style.display = "none";
   document.getElementById("wcta").classList.remove("show");
   const card = document.getElementById("card");
   if (raw.trim()) {
@@ -3214,7 +3215,7 @@ if (location.hash && location.hash.length > 1) {
   if (hName) document.getElementById("nin").value = stripControls([...hName].slice(0, 20).join(""));
   if (hTone) applyTone(hTone);
   if (hP != null) applyPal(parseInt(hP));
-  if (hText) { updateCard(); cardReady = true; document.getElementById("btnS").disabled = false; document.getElementById("wcta").classList.add("show"); document.getElementById("dlBtn").style.display = "block"; restored = true; }
+  if (hText) { updateCard(); cardReady = true; document.getElementById("btnS").disabled = false; document.getElementById("wcta").classList.add("show"); document.getElementById("dlBtn").style.display = "block"; document.getElementById("vaultSaveLabel").style.display = "flex"; restored = true; }
   updateSlNudge();
   updateMicState();
 }
@@ -3274,6 +3275,7 @@ try {
       document.getElementById("btnS").disabled = false;
       document.getElementById("wcta").classList.add("show");
       document.getElementById("dlBtn").style.display = "";
+      document.getElementById("vaultSaveLabel").style.display = "flex";
     }
   }
 } catch(e) {}
@@ -3601,6 +3603,7 @@ document.getElementById("exGrid").addEventListener("click", (e) => {
   document.getElementById("btnS").disabled = false;
   document.getElementById("wcta").classList.add("show");
   document.getElementById("dlBtn").style.display = "";
+  document.getElementById("vaultSaveLabel").style.display = "flex";
   if (window.innerWidth <= 720) {
     document.querySelector(".card-wrap").scrollIntoView({ behavior: "smooth", block: "center" });
   } else {
@@ -4927,15 +4930,6 @@ window.addEventListener('i18nApplied', function () {
       typeNext();
     }, 250);
   });
-
-  /* ── Wibe Vault save toggle (share modal) ── */
-  (function () {
-    var saveRow = document.createElement("div");
-    saveRow.className = "share-modal-save";
-    saveRow.innerHTML = '<label class="share-save-label"><input type="checkbox" id="vaultSaveCheck" /> <i class="fa-solid fa-vault"></i> Save to Wibe Vault</label>';
-    var shareActions = document.querySelector(".share-modal-actions");
-    if (shareActions) shareActions.appendChild(saveRow);
-  })();
 
   window.saveCardToVault = function (cardData) {
     var existing = [];
