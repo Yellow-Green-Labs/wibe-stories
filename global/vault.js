@@ -95,7 +95,7 @@
           '<div class="vault-locked-icon">\u{1F512}</div>' +
           '<div class="vault-locked-title">Wibe Vault is a Pro feature</div>' +
           '<div class="vault-locked-desc">Save your cards forever. Your collection, always there for you.</div>' +
-          '<button class="vault-locked-btn" id="vault-locked-btn">Upgrade to Pro</button>' +
+          '<button class="vault-locked-btn" id="vault-locked-btn"><span class="vault-locked-btn-text">Upgrade to Pro</span></button>' +
         '</div>' +
       '</div>' +
       '<div class="vault-action-bar" id="vault-action-bar">' +
@@ -158,44 +158,32 @@
     (function () {
       var btn = document.getElementById("vault-locked-btn");
       if (!btn || (typeof isMobile === "function" && isMobile())) return;
-      btn.addEventListener("mouseenter", function () {
-        var text = this.textContent;
-        this.dataset.origText = text;
-        this.innerHTML = "";
-        for (var i = 0; i < text.length; i++) {
+      var txt = btn.querySelector(".vault-locked-btn-text");
+      if (!txt) return;
+      function doWave() {
+        var text = txt.textContent;
+        txt.dataset.origText = text;
+        txt.innerHTML = "";
+        for (var i = 0, idx = 0; i < text.length; i++) {
           if (text[i] === " ") {
-            this.appendChild(document.createTextNode(" "));
+            txt.appendChild(document.createTextNode(" "));
           } else {
             var span = document.createElement("span");
             span.textContent = text[i];
             span.style.display = "inline-block";
-            span.style.animation = "wave-letter 0.7s ease-in-out " + (i * 0.05) + "s 1";
-            this.appendChild(span);
+            span.style.animation = "wave-letter 0.7s ease-in-out " + (idx * 0.05) + "s 1";
+            txt.appendChild(span);
+            idx++;
           }
         }
-      });
-      btn.addEventListener("mouseleave", function () {
-        this.textContent = this.dataset.origText || "Upgrade to Pro";
-      });
-      btn.addEventListener("focus", function () {
-        var text = this.textContent;
-        this.dataset.origText = text;
-        this.innerHTML = "";
-        for (var i = 0; i < text.length; i++) {
-          if (text[i] === " ") {
-            this.appendChild(document.createTextNode(" "));
-          } else {
-            var span = document.createElement("span");
-            span.textContent = text[i];
-            span.style.display = "inline-block";
-            span.style.animation = "wave-letter 0.7s ease-in-out " + (i * 0.05) + "s 1";
-            this.appendChild(span);
-          }
-        }
-      });
-      btn.addEventListener("blur", function () {
-        this.textContent = this.dataset.origText || "Upgrade to Pro";
-      });
+      }
+      function undoWave() {
+        txt.textContent = txt.dataset.origText || "Upgrade to Pro";
+      }
+      btn.addEventListener("mouseenter", doWave);
+      btn.addEventListener("mouseleave", undoWave);
+      btn.addEventListener("focus", doWave);
+      btn.addEventListener("blur", undoWave);
     })();
     document.getElementById("vault-del-btn").addEventListener("click", showDeleteConfirm);
     document.getElementById("vault-dl-btn").addEventListener("click", downloadSelected);
@@ -345,12 +333,13 @@
     selectMode = !selectMode;
     if (!selectMode) {
       selectedIds = {};
+      document.querySelectorAll("#vault-grid .vault-tile-check.checked").forEach(function(c) {
+        c.classList.remove("checked");
+      });
     }
-    var overlay = document.getElementById("vault-overlay");
-    overlay.classList.toggle("vault-select-mode", selectMode);
+    document.getElementById("vault-overlay").classList.toggle("vault-select-mode", selectMode);
     updateSelectBtnLabel();
     updateActionBar();
-    render();
   }
 
   function toggleTileSelect(tile) {
@@ -486,7 +475,7 @@
       setTimeout(function () { updateMenuLabel(retries + 1); }, 100);
       return;
     }
-    label.innerHTML = isPro() ? "Wibe Vault" : 'Wibe Vault <span class="pro-badge"><i class="fa-solid fa-crown"></i> Pro</span>';
+    label.innerHTML = isPro() ? "Wibe Vault" : 'Wibe Vault <b class="pro-badge">Pro</b>';
   }
 
   /* ── Open / Close ── */

@@ -144,6 +144,7 @@
   font-size: 0.8rem;
   font-weight: 500;
 }
+#fmenu-vault-label { white-space: nowrap; }
 .footer .fmenu-divider {
   height: 1px;
   background: currentColor;
