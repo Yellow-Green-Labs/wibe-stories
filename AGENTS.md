@@ -39,10 +39,10 @@ YOU ARE NOT DONE UNTIL THIS FILE IS UPDATED. Before ending your session, verify 
 
 At the end of every session that touched project files, you MUST mentally verify each:
 
-- [ ] Did I run `@agsync` to record this session's changes?
-- [ ] Did I update "Key files" if I added/removed/renamed files?
-- [ ] Did I update "Known bugs" if I fixed or introduced bugs?
-- [ ] Did I update any other section that my changes affect?
+- [x] Did I run `@agsync` to record this session's changes?
+- [x] Did I update "Key files" if I added/removed/renamed files?
+- [x] Did I update "Known bugs" if I fixed or introduced bugs?
+- [x] Did I update any other section that my changes affect?
 
 If any box is unchecked, you are not done. Fix it.
 
@@ -112,8 +112,10 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `global/fonts.js` — script font mapping
 - `global/demo.js` — demo animation (disabled, preserved for restoration)
 - `global/capacity-check.js` — daily capacity check (99-user cap), admin/pro key headers
-- `global/styles/` — CSS modules (15 files)
+- `global/styles/` — CSS modules (16 files)
 - `global/pricing-modal.js` — pricing comparison modal (triggered from footer menu)
+- `global/vault.js` — Wibe Vault overlay (browse, select, delete, audio playback, localStorage persistence)
+- `global/styles/vault.css` — Wibe Vault styles (CSS Grid layout, tile animations, audio badge, dark mode)
 - `global/styles/layout.css` — layout styles (footer menu divider)
 - `assets/i18n/` — 11 UI locales + `en.json`. **Do not regenerate deleted locales.**
 - `assets/i18n/i18n.js` — i18n loader with `data-i18n`, `getI18nSync()`
@@ -162,11 +164,22 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/beacon.js` — redirect handler (reads `WS_EP` env var)
 - `api/download/[id].js` — download proxy (serves Blob files with `Content-Disposition: attachment`)
 
+## Wibe Vault system
+
+- `global/vault.js` — full-screen overlay invoked from footer menu or creation flow
+- `global/styles/vault.css` — CSS Grid layout (`auto-fill, minmax(150px, 1fr)`), `tile-in` staggered animation, audio badge with play toggle, Select All/Delete flow
+- **Storage**: localStorage key `wsVaultCards` (50-card hard limit). `saveCardToVault()` in `wisprstories.js` saves from share modal toggle (`#vaultSaveCheck`)
+- **Lifecycle**: Open → load from localStorage (or sample fallback) → render grid → select/delete/download → persist on mutation
+- **Pricing**: "Up to 50 cards" highlighted in Pro row of pricing modal (`pricing-feature-highlight`)
+- **Non-Pro**: Select button hidden, locked indicator shown (`fa-lock`), button disabled
+- **Save toggle**: In share modal (`overlays.css:173-200`), checkbox with gold accent, labeled "Save to Wibe Vault"
+- **Audio**: Cards with audio show an audio badge; click to play (muted by default, toggleable)
+
 ## Card metadata sidecar system
 
 - `api/upload.js` stores `meta/<shortId>.json` alongside card images (`{ text, name, tone, p, r, theme, pro }`).
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-12; Documented Resend sender domain situation across DEVELOPER.md, TECH-STACK.md, PENDING.md. Removed unused SENDER_EMAIL/SENDER_NAME dead code from api/lib/occasion-email.js. Confirmed zero BREVO references remain in project. -->
+<!-- agsync: last-run 2026-07-13; Added Wibe Vault system section + vault.js/vault.css to Key files. Updated CSS count 15→16. Documented vault architecture: CSS Grid layout, localStorage persistence, share modal save toggle, audio badge, pricing highlight. -->
 

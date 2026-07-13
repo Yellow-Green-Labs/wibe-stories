@@ -4928,14 +4928,13 @@ window.addEventListener('i18nApplied', function () {
     }, 250);
   });
 
-  /* ── Wibe Vault save toggle (Phase 2) ── */
+  /* ── Wibe Vault save toggle (share modal) ── */
   (function () {
-    var toggle = document.createElement("div");
-    toggle.className = "vault-save-toggle";
-    toggle.id = "vaultSaveToggle";
-    toggle.innerHTML = '<label class="vault-save-label"><input type="checkbox" id="vaultSaveCheck" /> <i class="fa-solid fa-vault"></i> Save to Wibe Vault</label>';
-    var actions = document.querySelector(".actions");
-    if (actions) actions.parentNode.insertBefore(toggle, actions);
+    var saveRow = document.createElement("div");
+    saveRow.className = "share-modal-save";
+    saveRow.innerHTML = '<label class="share-save-label"><input type="checkbox" id="vaultSaveCheck" /> <i class="fa-solid fa-vault"></i> Save to Wibe Vault</label>';
+    var shareActions = document.querySelector(".share-modal-actions");
+    if (shareActions) shareActions.appendChild(saveRow);
   })();
 
   window.saveCardToVault = function (cardData) {

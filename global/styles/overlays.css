@@ -170,6 +170,35 @@
   }
 }
 
+/* ── Share modal: Save to Vault toggle ── */
+.share-modal-save {
+  padding: 6px 0 2px;
+  border-top: 1px solid var(--rule);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+}
+.share-save-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ink3);
+  cursor: pointer;
+  font-family: var(--sans);
+  user-select: none;
+  padding: 4px 0;
+}
+.share-save-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #e69500;
+  cursor: pointer;
+}
+.share-save-label i {
+  font-size: 12px;
+}
+
 /* TOAST */
 .toast {
   position: fixed;

@@ -69,8 +69,8 @@
 
     overlay.innerHTML =
       '<div class="vault-header">' +
-        '<button class="vault-back-btn" id="vault-back">' +
-          '<i class="fa-solid fa-arrow-left"></i> Back to App' +
+        '<button class="vault-back-btn" id="vault-back" aria-label="Back to App">' +
+          '<i class="fa-solid fa-arrow-left"></i>' +
         '</button>' +
         '<span class="vault-title"><i class="fa-solid fa-vault"></i> Wibe Vault</span>' +
         '<button class="vault-select-btn" id="vault-select-btn">Select</button>' +
@@ -218,8 +218,9 @@
       var c = allCards[i];
       var checked = selectedIds[c.id] ? " checked" : "";
       var emoji = getOccasionEmoji(c.occasion);
+      var delay = (i * 30) + 'ms';
       html +=
-        '<div class="vault-tile" data-id="' + c.id + '">' +
+        '<div class="vault-tile" style="animation-delay:' + delay + '" data-id="' + c.id + '">' +
           '<div class="vault-tile-check' + checked + '"><i class="fa-solid fa-check"></i></div>' +
           '<div class="vault-tile-thumb">' +
             '<span>' + emoji + '</span>' +
