@@ -61,6 +61,13 @@
     return typeof window.isSupporter === "function" && window.isSupporter();
   }
 
+  /* ── Inject wave-letter keyframe backup ── */
+  (function () {
+    var s = document.createElement("style");
+    s.textContent = "@keyframes wave-letter{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@media (prefers-reduced-motion: reduce){#vault-locked-btn span{animation:none!important;transform:none!important}}";
+    document.head.appendChild(s);
+  })();
+
   /* ── Create DOM ── */
   function buildVault() {
     var overlay = document.createElement("div");
@@ -88,7 +95,7 @@
           '<div class="vault-locked-icon">\u{1F512}</div>' +
           '<div class="vault-locked-title">Wibe Vault is a Pro feature</div>' +
           '<div class="vault-locked-desc">Save your cards forever. Your collection, always there for you.</div>' +
-          '<button class="vault-locked-btn" id="vault-locked-btn">\u{1F48E} Upgrade to Pro</button>' +
+          '<button class="vault-locked-btn" id="vault-locked-btn">Upgrade to Pro</button>' +
         '</div>' +
       '</div>' +
       '<div class="vault-action-bar" id="vault-action-bar">' +
@@ -147,6 +154,49 @@
         setTimeout(window.showPricingModal, 350);
       }
     });
+    /* ── Wave animation on locked button text ── */
+    (function () {
+      var btn = document.getElementById("vault-locked-btn");
+      if (!btn || (typeof isMobile === "function" && isMobile())) return;
+      btn.addEventListener("mouseenter", function () {
+        var text = this.textContent;
+        this.dataset.origText = text;
+        this.innerHTML = "";
+        for (var i = 0; i < text.length; i++) {
+          if (text[i] === " ") {
+            this.appendChild(document.createTextNode(" "));
+          } else {
+            var span = document.createElement("span");
+            span.textContent = text[i];
+            span.style.display = "inline-block";
+            span.style.animation = "wave-letter 0.7s ease-in-out " + (i * 0.05) + "s 1";
+            this.appendChild(span);
+          }
+        }
+      });
+      btn.addEventListener("mouseleave", function () {
+        this.textContent = this.dataset.origText || "Upgrade to Pro";
+      });
+      btn.addEventListener("focus", function () {
+        var text = this.textContent;
+        this.dataset.origText = text;
+        this.innerHTML = "";
+        for (var i = 0; i < text.length; i++) {
+          if (text[i] === " ") {
+            this.appendChild(document.createTextNode(" "));
+          } else {
+            var span = document.createElement("span");
+            span.textContent = text[i];
+            span.style.display = "inline-block";
+            span.style.animation = "wave-letter 0.7s ease-in-out " + (i * 0.05) + "s 1";
+            this.appendChild(span);
+          }
+        }
+      });
+      btn.addEventListener("blur", function () {
+        this.textContent = this.dataset.origText || "Upgrade to Pro";
+      });
+    })();
     document.getElementById("vault-del-btn").addEventListener("click", showDeleteConfirm);
     document.getElementById("vault-dl-btn").addEventListener("click", downloadSelected);
     document.getElementById("vault-select-all").addEventListener("click", selectAllCards);
@@ -436,7 +486,7 @@
       setTimeout(function () { updateMenuLabel(retries + 1); }, 100);
       return;
     }
-    label.textContent = isPro() ? "Wibe Vault" : "\u{1F512} Wibe Vault";
+    label.innerHTML = isPro() ? "Wibe Vault" : 'Wibe Vault <span class="pro-badge"><i class="fa-solid fa-crown"></i> Pro</span>';
   }
 
   /* ── Open / Close ── */
