@@ -181,5 +181,5 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-13; Added Wibe Vault system section + vault.js/vault.css to Key files. Updated CSS count 15→16. Documented vault architecture: CSS Grid layout, localStorage persistence, share modal save toggle, audio badge, pricing highlight. -->
+<!-- agsync: last-run 2026-07-13; Cost-architecture audit: found and fixed 15 issues in docs/cost-architecture.md (model chains, key patterns, line references, GB-hours, counts, metadata). Confirmed no BREVO references remain. Fixed DEVELOPER.md, TECH-STACK.md, PENDING.md Resend sender domain docs. Created internal docs for api/, global/, lib/, scripts/ folders. Rewrote docs/existing-redis.md (149→74 lines, 18 fixes). -->
 

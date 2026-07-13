@@ -46,3 +46,5 @@ api/api-INTERNAL-DOC.md
 global/global-INTERNAL-DOC.md
 lib/lib-INTERNAL-DOC.md
 scripts/scripts-INTERNAL-DOC.md
+
+.env*.local
