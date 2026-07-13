@@ -470,12 +470,15 @@
     if (retries === undefined) retries = 0;
     if (retries > 50) return;
     var label = document.getElementById("fmenu-vault-label");
-    if (!label) return;
+    var hmLabel = document.getElementById("hmVaultLabel");
+    if (!label && !hmLabel) return;
     if (typeof window.isSupporter !== "function") {
       setTimeout(function () { updateMenuLabel(retries + 1); }, 100);
       return;
     }
-    label.innerHTML = isPro() ? "Wibe Vault" : 'Wibe Vault <b class="pro-badge">Pro</b>';
+    var vaultText = isPro() ? "Wibe Vault" : 'Wibe Vault <b class="pro-badge">Pro</b>';
+    if (label) label.innerHTML = vaultText;
+    if (hmLabel) hmLabel.innerHTML = vaultText;
   }
 
   /* ── Open / Close ── */

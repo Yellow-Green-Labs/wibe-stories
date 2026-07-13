@@ -130,6 +130,9 @@
     "help": "How to Use",
     "license": "License & Terms"
   },
+  "hamburger": {
+    "subscribe": "Get occasion reminders"
+  },
   "shareModal": {
     "title": "Share your card",
     "sub": "Post the image directly, or share the app link so others can make their own cards.",
