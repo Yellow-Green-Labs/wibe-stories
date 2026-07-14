@@ -34,6 +34,8 @@ C_WS-updates.md
 
 .vercel
 
+NEEDS_DISCUSSION.md
+
 # Internal logs folder — team-only source files are git-ignored.
 # observer.js is un-ignored so it ships with the public site.
 # Note: must use `*` not `/` here — a directory-level ignore prevents

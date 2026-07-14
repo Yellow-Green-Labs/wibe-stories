@@ -30,7 +30,23 @@ export default async function handler(req) {
       ORDER BY created_at DESC
     `;
 
-    return new Response(JSON.stringify({ cards: rows }), {
+    const cards = rows.map(function (r) {
+      return {
+        id: r.client_id,
+        shortId: r.short_id,
+        name: r.name,
+        text: r.text,
+        authorName: r.author_name,
+        tone: r.tone,
+        occasion: r.occasion,
+        hasAudio: r.has_audio,
+        audioUrl: r.audio_url,
+        createdAt: r.created_at,
+        theme: r.theme
+      };
+    });
+
+    return new Response(JSON.stringify({ cards }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

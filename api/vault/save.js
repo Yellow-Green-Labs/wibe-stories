@@ -26,13 +26,41 @@ export default async function handler(req) {
     const { clientId, shortId, name, text, authorName, tone, occasion, hasAudio, audioUrl, createdAt, theme } = await req.json();
 
     const sql = getNeon();
+    const key = proKey.trim().toUpperCase();
+
+    const countRows = await sql`
+      SELECT COUNT(*) AS cnt FROM vault_cards WHERE pro_key = ${key}
+    `;
+    var currentCount = parseInt(countRows[0].cnt, 10);
+    if (currentCount >= 50) {
+      return new Response(JSON.stringify({ error: 'vault_full', message: 'Vault limit of 50 cards reached' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const rows = await sql`
       INSERT INTO vault_cards (client_id, pro_key, short_id, name, text, author_name, tone, occasion, has_audio, audio_url, created_at, theme)
-      VALUES (${clientId || ''}, ${proKey.trim().toUpperCase()}, ${shortId || ''}, ${name || 'Untitled'}, ${text || ''}, ${authorName || ''}, ${tone || 'original'}, ${occasion || ''}, ${!!hasAudio}, ${audioUrl || ''}, ${createdAt || new Date().toISOString()}, ${theme || ''})
+      VALUES (${clientId || ''}, ${key}, ${shortId || ''}, ${name || 'Untitled'}, ${text || ''}, ${authorName || ''}, ${tone || 'original'}, ${occasion || ''}, ${!!hasAudio}, ${audioUrl || ''}, ${createdAt || new Date().toISOString()}, ${theme || ''})
       RETURNING *
     `;
 
-    return new Response(JSON.stringify({ ok: true, card: rows[0] }), {
+    var r = rows[0];
+    var cardData = {
+      id: r.client_id,
+      shortId: r.short_id,
+      name: r.name,
+      text: r.text,
+      authorName: r.author_name,
+      tone: r.tone,
+      occasion: r.occasion,
+      hasAudio: r.has_audio,
+      audioUrl: r.audio_url,
+      createdAt: r.created_at,
+      theme: r.theme
+    };
+
+    return new Response(JSON.stringify({ ok: true, card: cardData }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

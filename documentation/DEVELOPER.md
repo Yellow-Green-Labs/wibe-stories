@@ -127,7 +127,7 @@ Recipient opens wibestories.vercel.app/c/<shortId>
 | `capacity-check.js` | Daily capacity check (99-user cap), admin/pro key headers |
 | `demo.js` | Demo animation (disabled, preserved for restoration) |
 | `occasions/` | 60-occasion detection (triggers, dates, countries) |
-| `styles/` | 14 CSS modules (`main.css` aggregates) |
+| `styles/` | 16 CSS modules (`main.css` aggregates) |
 
 ### `assets/` — static assets
 

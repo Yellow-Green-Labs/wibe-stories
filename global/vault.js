@@ -23,7 +23,50 @@
     return cards;
   }
 
-  function loadCards() {
+  function getProKey() {
+    try { return localStorage.getItem("wsProKey") || ""; } catch (e) { return ""; }
+  }
+
+  async function loadCards() {
+    if (isPro()) {
+      var key = getProKey();
+      if (key) {
+        try {
+          var res = await fetch("/api/vault/list", { headers: { "X-Pro-Key": key } });
+          if (res.ok) {
+            var data = await res.json();
+            if (data.cards && data.cards.length > 0) {
+              cards = data.cards;
+              _vaultIsLocal = false;
+              return;
+            }
+          }
+        } catch (e) {}
+        var stored = [];
+        try { stored = JSON.parse(localStorage.getItem("wsVaultCards") || "[]"); } catch (e2) {}
+        if (stored.length > 0) {
+          try {
+            await fetch("/api/vault/migrate", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "X-Pro-Key": key },
+              body: JSON.stringify({ cards: stored })
+            });
+            var res2 = await fetch("/api/vault/list", { headers: { "X-Pro-Key": key } });
+            if (res2.ok) {
+              var data2 = await res2.json();
+              if (data2.cards && data2.cards.length > 0) {
+                cards = data2.cards;
+                _vaultIsLocal = false;
+                return;
+              }
+            }
+          } catch (e2) {}
+          cards = stored;
+          _vaultIsLocal = false;
+          return;
+        }
+      }
+    }
     var stored = [];
     try { stored = JSON.parse(localStorage.getItem("wsVaultCards") || "[]"); } catch (e) {}
     if (stored.length > 0) {
@@ -406,10 +449,22 @@
     document.getElementById("vault-confirm").classList.remove("open");
   }
 
-  function confirmDelete() {
+  async function confirmDelete() {
+    if (isPro()) {
+      var key = getProKey();
+      if (key) {
+        try {
+          await fetch("/api/vault/delete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-Pro-Key": key },
+            body: JSON.stringify({ ids: Object.keys(selectedIds) })
+          });
+        } catch (e) {}
+      }
+    }
     cards = cards.filter(function (c) { return !selectedIds[c.id]; });
     selectedIds = {};
-    saveCards();
+    if (!isPro()) saveCards();
     if (selectMode) toggleSelectMode();
     hideDeleteConfirm();
     render();
@@ -454,10 +509,22 @@
     }
   }
 
-  function deleteCardView() {
+  async function deleteCardView() {
     if (!cardViewCard) return;
+    if (isPro()) {
+      var key = getProKey();
+      if (key) {
+        try {
+          await fetch("/api/vault/delete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-Pro-Key": key },
+            body: JSON.stringify({ ids: [cardViewCard.id] })
+          });
+        } catch (e) {}
+      }
+    }
     cards = cards.filter(function (c) { return c.id !== cardViewCard.id; });
-    saveCards();
+    if (!isPro()) saveCards();
     closeCardView();
     render();
     if (typeof window.showToast === "function") {
@@ -482,7 +549,7 @@
   }
 
   /* ── Open / Close ── */
-  function showVault() {
+  async function showVault() {
     var overlay = document.getElementById("vault-overlay");
     if (!overlay) return;
     overlay.classList.add("open");
@@ -490,7 +557,7 @@
     selectMode = false;
     selectedIds = {};
     document.getElementById("vault-overlay").classList.remove("vault-select-mode");
-    loadCards();
+    await loadCards();
     render();
   }
 

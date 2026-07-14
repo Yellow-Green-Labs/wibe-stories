@@ -4932,6 +4932,47 @@ window.addEventListener('i18nApplied', function () {
   });
 
   window.saveCardToVault = function (cardData) {
+    if (typeof isSupporter === "function" && isSupporter()) {
+      var proKey = "";
+      try { proKey = localStorage.getItem("wsProKey") || ""; } catch (e) {}
+      if (proKey) {
+        var clientId = "v" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+        (async function () {
+          try {
+            var res = await fetch("/api/vault/save", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "X-Pro-Key": proKey },
+              body: JSON.stringify({
+                clientId: clientId,
+                shortId: cardData.shortId || "",
+                name: cardData.name || "Untitled",
+                text: cardData.text || "",
+                authorName: cardData.authorName || "",
+                tone: cardData.tone || "original",
+                occasion: cardData.occasion || "",
+                hasAudio: !!cardData.hasAudio,
+                audioUrl: cardData.audioUrl || "",
+                createdAt: cardData.createdAt || new Date().toISOString(),
+                theme: cardData.theme || ""
+              })
+            });
+            if (res.ok) {
+              if (typeof showToast === "function") showToast("Saved to Wibe Vault");
+            } else {
+              var err = await res.json();
+              if (err.error === "vault_full") {
+                if (typeof showToast === "function") showToast("Vault full (50 cards) — remove some to save more");
+              } else {
+                if (typeof showToast === "function") showToast("Could not save to vault — try again");
+              }
+            }
+          } catch (e) {
+            if (typeof showToast === "function") showToast("Could not save to vault — check connection");
+          }
+        })();
+        return;
+      }
+    }
     var existing = [];
     try { existing = JSON.parse(localStorage.getItem("wsVaultCards") || "[]"); } catch (e) {}
     if (existing.length >= 50) {

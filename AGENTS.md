@@ -163,17 +163,25 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `internal-logs/observer.js` — keyboard shortcut handler for beacon redirect
 - `api/beacon.js` — redirect handler (reads `WS_EP` env var)
 - `api/download/[id].js` — download proxy (serves Blob files with `Content-Disposition: attachment`)
+- `lib/neon.js` — Neon Postgres connection singleton (edge-compatible HTTP query via `@neondatabase/serverless`)
+- `api/vault/list.js` — GET vault cards for a Pro key (Neon query, camelCase response)
+- `api/vault/save.js` — POST save a vault card (validates Pro key, enforces 50-card limit, Neon insert)
+- `api/vault/delete.js` — POST delete vault cards by client_id array (scoped to Pro key)
+- `api/vault/migrate.js` — POST batch-migrate localStorage cards to server (for new Pro users upgrading)
+- `scripts/setup-neon-table.mjs` — one-time Neon table + index creation (vault_cards)
 
 ## Wibe Vault system
 
 - `global/vault.js` — full-screen overlay invoked from footer menu or creation flow
 - `global/styles/vault.css` — CSS Grid layout (`auto-fill, minmax(150px, 1fr)`), `tile-in` staggered animation, audio badge with play toggle, Select All/Delete flow
-- **Storage**: localStorage key `wsVaultCards` (50-card hard limit). `saveCardToVault()` in `wisprstories.js` saves from share modal toggle (`#vaultSaveCheck`)
-- **Lifecycle**: Open → load from localStorage (or sample fallback) → render grid → select/delete/download → persist on mutation
+- **Storage**: Neon Postgres (`vault_cards` table) for Pro users, localStorage (`wsVaultCards`) for free users. `saveCardToVault()` in `wisprstories.js` saves from share modal toggle (`#vaultSaveCheck`)
+- **Lifecycle**: Open → load from Neon API (Pro) or localStorage (free) → render grid → select/delete/download (API for Pro, localStorage for free) → persist on mutation
 - **Pricing**: "Up to 50 cards" highlighted in Pro row of pricing modal (`pricing-feature-highlight`)
 - **Non-Pro**: Select button hidden, locked indicator shown (`fa-lock`), button disabled
 - **Save toggle**: In share modal (`overlays.css:173-200`), checkbox with gold accent, labeled "Save to Wibe Vault"
 - **Audio**: Cards with audio show an audio badge; click to play (muted by default, toggleable)
+- **API**: `api/vault/list.js` (GET), `api/vault/save.js` (POST), `api/vault/delete.js` (POST), `api/vault/migrate.js` (POST) — all guarded by Pro key validation
+- **DB**: `lib/neon.js` connection singleton, `vault_cards` table with indexes on `pro_key` and unique index on `(client_id, pro_key)`
 
 ## Card metadata sidecar system
 
@@ -181,5 +189,5 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-13; Cost-architecture audit: found and fixed 15 issues in docs/cost-architecture.md (model chains, key patterns, line references, GB-hours, counts, metadata). Confirmed no BREVO references remain. Fixed DEVELOPER.md, TECH-STACK.md, PENDING.md Resend sender domain docs. Created internal docs for api/, global/, lib/, scripts/ folders. Rewrote docs/existing-redis.md (149→74 lines, 18 fixes). -->
+<!-- agsync: last-run 2026-07-13; Phase 1 done: fixed WS_EP→WS_Acknowledged_Logs in api-INTERNAL-DOC.md, CSS count 14→16 in DEVELOPER.md, removed backup/ ghost dir + added missing global JS modules + fixed styles list in project-structure.md. -->
 
