@@ -33,6 +33,24 @@ export default async function handler(req) {
 
     const sql = getNeon();
     const key = proKey.trim().toUpperCase();
+    await sql`
+      CREATE TABLE IF NOT EXISTS vault_cards (
+        id SERIAL PRIMARY KEY,
+        client_id TEXT NOT NULL DEFAULT '',
+        pro_key TEXT NOT NULL,
+        short_id TEXT NOT NULL DEFAULT '',
+        name TEXT NOT NULL DEFAULT '',
+        text TEXT NOT NULL DEFAULT '',
+        author_name TEXT NOT NULL DEFAULT '',
+        tone TEXT NOT NULL DEFAULT 'original',
+        occasion TEXT NOT NULL DEFAULT '',
+        has_audio BOOLEAN NOT NULL DEFAULT FALSE,
+        audio_url TEXT NOT NULL DEFAULT '',
+        theme TEXT NOT NULL DEFAULT '',
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+    `;
     let migrated = 0;
 
     for (const card of cards) {

@@ -185,7 +185,7 @@
   opacity: 0;
   pointer-events: none;
   transition: all 0.25s;
-  z-index: 9999;
+  z-index: 999999;
   white-space: nowrap;
   max-width: 90vw;
   height: fit-content;
