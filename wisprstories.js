@@ -3921,8 +3921,7 @@ document.getElementById("btnS").addEventListener("click", async () => {
               hasAudio: voiceAttached && !!audioBlob,
               audioUrl: audioBlob ? URL.createObjectURL(audioBlob) : "",
               createdAt: new Date().toISOString(),
-              shortId: _shortId,
-              imageUrl: data.url
+              shortId: _shortId
             });
           }
         }
@@ -4928,8 +4927,7 @@ window.addEventListener('i18nApplied', function () {
                 hasAudio: !!cardData.hasAudio,
                 audioUrl: cardData.audioUrl || "",
                 createdAt: cardData.createdAt || new Date().toISOString(),
-                theme: cardData.theme || "",
-                imageUrl: cardData.imageUrl || ""
+                theme: cardData.theme || ""
               })
             });
             if (res.ok) {
@@ -4968,8 +4966,7 @@ window.addEventListener('i18nApplied', function () {
       hasAudio: !!cardData.hasAudio,
       audioUrl: cardData.audioUrl || "",
       createdAt: cardData.createdAt || new Date().toISOString(),
-      theme: cardData.theme || "",
-      imageUrl: cardData.imageUrl || ""
+      theme: cardData.theme || ""
     };
     existing.unshift(card);
     localStorage.setItem("wsVaultCards", JSON.stringify(existing));

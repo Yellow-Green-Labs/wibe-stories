@@ -303,8 +303,8 @@
       html +=
         '<div class="vault-tile" style="animation-delay:' + delay + '" data-id="' + c.id + '">' +
           '<div class="vault-tile-check' + checked + '"><i class="fa-solid fa-check"></i></div>' +
-          '<div class="vault-tile-thumb"' + (c.imageUrl ? ' style="background-image:url(' + escAttr(c.imageUrl) + ');background-size:cover;background-position:center"' : '') + '>' +
-            (c.imageUrl ? '' : '<span>' + emoji + '</span>') +
+          '<div class="vault-tile-thumb">' +
+            '<span>' + emoji + '</span>' +
             (c.hasAudio ? '<button class="vault-tile-audio-badge" data-id="' + c.id + '" title="Play recording"><i class="fa-solid fa-volume-xmark"></i></button>' : '') +
           '</div>' +
           '<div class="vault-tile-info">' +
@@ -369,9 +369,6 @@
     var d = document.createElement("div");
     d.textContent = s;
     return d.innerHTML;
-  }
-  function escAttr(s) {
-    return String(s).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
   /* ── Select mode ── */
@@ -486,13 +483,8 @@
     cardViewCard = cards.filter(function (c) { return c.id === id; })[0];
     if (!cardViewCard) return;
     document.getElementById("vault-cv-name").textContent = cardViewCard.name;
-    if (cardViewCard.imageUrl) {
-      document.getElementById("vault-cv-img").innerHTML =
-        '<img src="' + escAttr(cardViewCard.imageUrl) + '" alt="Card image" style="max-width:100%;max-height:200px;border-radius:8px;object-fit:contain">';
-    } else {
-      document.getElementById("vault-cv-img").innerHTML =
-        '<span style="font-size:64px">' + getOccasionEmoji(cardViewCard.occasion) + '</span>';
-    }
+    document.getElementById("vault-cv-img").innerHTML =
+      '<span style="font-size:64px">' + getOccasionEmoji(cardViewCard.occasion) + '</span>';
     var detail = formatDate(cardViewCard.createdAt);
     if (cardViewCard.occasion) detail += " \u00B7 " + cardViewCard.occasion.charAt(0).toUpperCase() + cardViewCard.occasion.slice(1);
     if (cardViewCard.hasAudio) detail += " \u00B7 \u{1F50A} Voice";
@@ -523,10 +515,8 @@
   }
 
   function downloadCardView() {
-    if (cardViewCard && cardViewCard.imageUrl) {
-      window.open(cardViewCard.imageUrl, "_blank");
-    } else {
-      showToast("Card image not available for download");
+    if (cardViewCard) {
+      showToast("Download will work when you save cards from the app");
     }
   }
 

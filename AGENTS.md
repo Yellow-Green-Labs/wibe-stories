@@ -176,15 +176,15 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `global/styles/vault.css` — CSS Grid layout (`auto-fill, minmax(150px, 1fr)`), `tile-in` staggered animation, audio badge with play toggle, Select All/Delete flow, toast Undo button
 - **Storage**: Neon Postgres (`vault_cards` table) for Pro users, localStorage (`wsVaultCards`) for free users. `saveCardToVault()` in `wisprstories.js` saves automatically after upload for Pro users
 - **Lifecycle**: Open → load from Neon API (Pro) or localStorage (free) → render grid → select/delete/download (API for Pro, localStorage for free) → persist on mutation
-- **Pro auto-save**: After upload in share flow, Pro users' cards are automatically saved to vault (with `imageUrl`) and a 6s Undo toast is shown
-- **Card images**: Vault tiles show card image as background thumbnail when `imageUrl` is present; card view shows full image
+- **Pro auto-save**: After upload in share flow, Pro users' cards are automatically saved to vault and a 6s Undo toast is shown
+- **Card images**: Card thumbnails show occasion emoji (imageUrl feature deferred — needs `image_url` column in vault_cards table)
 - **Share from vault**: Copies `/c/:shortId` link (via clipboard or Web Share)
-- **Download from vault**: Opens card image in new tab
+- **Download from vault**: Download handler shows placeholder message (image download deferred)
 - **Pricing**: "Up to 50 cards" highlighted in Pro row of pricing modal (`pricing-feature-highlight`)
 - **Non-Pro**: Select button hidden, locked indicator shown (`fa-lock`), button disabled
 - **Audio**: Cards with audio show an audio badge; click to play (muted by default, toggleable)
 - **API**: `api/vault/list.js` (GET), `api/vault/save.js` (POST), `api/vault/delete.js` (POST), `api/vault/migrate.js` (POST) — all guarded by Pro key validation
-- **DB**: `lib/neon.js` connection singleton, `vault_cards` table with indexes on `pro_key` and unique index on `(client_id, pro_key)`. `image_url TEXT` column added for card image display in vault
+- **DB**: `lib/neon.js` connection singleton, `vault_cards` table with indexes on `pro_key` and unique index on `(client_id, pro_key)`. `image_url TEXT` column not yet in DB — run `ALTER TABLE vault_cards ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT '';` in Neon SQL Editor to enable card image thumbnails in vault
 
 ## Card metadata sidecar system
 
@@ -192,5 +192,5 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-14; Phase 6 vault auto-save: removed vault save checkbox, added Pro auto-save after upload with imageUrl + Undo toast, added image_url column to vault_cards, updated vault JS/CSS for image thumbnails and card view, updated download/share handlers. -->
+<!-- agsync: last-run 2026-07-14; Phase 6 vault auto-save: removed vault save checkbox, added Pro auto-save after upload with Undo toast, removed image_url from INSERTs (column not in DB yet), cleaned up dead CSS. -->
 
