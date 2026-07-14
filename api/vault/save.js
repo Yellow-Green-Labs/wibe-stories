@@ -23,7 +23,7 @@ export default async function handler(req) {
       });
     }
 
-    const { clientId, shortId, name, text, authorName, tone, occasion, hasAudio, audioUrl, createdAt, theme } = await req.json();
+    const { clientId, shortId, name, text, authorName, tone, occasion, hasAudio, audioUrl, createdAt, theme, imageUrl } = await req.json();
 
     const sql = getNeon();
     const key = proKey.trim().toUpperCase();
@@ -40,8 +40,8 @@ export default async function handler(req) {
     }
 
     const rows = await sql`
-      INSERT INTO vault_cards (client_id, pro_key, short_id, name, text, author_name, tone, occasion, has_audio, audio_url, created_at, theme)
-      VALUES (${clientId || ''}, ${key}, ${shortId || ''}, ${name || 'Untitled'}, ${text || ''}, ${authorName || ''}, ${tone || 'original'}, ${occasion || ''}, ${!!hasAudio}, ${audioUrl || ''}, ${createdAt || new Date().toISOString()}, ${theme || ''})
+      INSERT INTO vault_cards (client_id, pro_key, short_id, name, text, author_name, tone, occasion, has_audio, audio_url, created_at, theme, image_url)
+      VALUES (${clientId || ''}, ${key}, ${shortId || ''}, ${name || 'Untitled'}, ${text || ''}, ${authorName || ''}, ${tone || 'original'}, ${occasion || ''}, ${!!hasAudio}, ${audioUrl || ''}, ${createdAt || new Date().toISOString()}, ${theme || ''}, ${imageUrl || ''})
       RETURNING *
     `;
 
@@ -57,7 +57,8 @@ export default async function handler(req) {
       hasAudio: r.has_audio,
       audioUrl: r.audio_url,
       createdAt: r.created_at,
-      theme: r.theme
+      theme: r.theme,
+      imageUrl: r.image_url
     };
 
     return new Response(JSON.stringify({ ok: true, card: cardData }), {

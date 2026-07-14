@@ -42,7 +42,8 @@ export default async function handler(req) {
         hasAudio: r.has_audio,
         audioUrl: r.audio_url,
         createdAt: r.created_at,
-        theme: r.theme
+        theme: r.theme,
+        imageUrl: r.image_url
       };
     });
 

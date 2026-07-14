@@ -1082,7 +1082,6 @@ function updateCard(preserveText) {
   cardReady = false;
   document.getElementById("btnS").disabled = true;
   document.getElementById("dlBtn").style.display = "none";
-  document.getElementById("vaultSaveLabel").style.display = "none";
   document.getElementById("wcta").classList.remove("show");
   const card = document.getElementById("card");
   if (raw.trim()) {
@@ -3215,7 +3214,7 @@ if (location.hash && location.hash.length > 1) {
   if (hName) document.getElementById("nin").value = stripControls([...hName].slice(0, 20).join(""));
   if (hTone) applyTone(hTone);
   if (hP != null) applyPal(parseInt(hP));
-  if (hText) { updateCard(); cardReady = true; document.getElementById("btnS").disabled = false; document.getElementById("wcta").classList.add("show"); document.getElementById("dlBtn").style.display = "block"; document.getElementById("vaultSaveLabel").style.display = "flex"; restored = true; }
+  if (hText) { updateCard(); cardReady = true; document.getElementById("btnS").disabled = false; document.getElementById("wcta").classList.add("show"); document.getElementById("dlBtn").style.display = "block"; restored = true; }
   updateSlNudge();
   updateMicState();
 }
@@ -3275,7 +3274,6 @@ try {
       document.getElementById("btnS").disabled = false;
       document.getElementById("wcta").classList.add("show");
       document.getElementById("dlBtn").style.display = "";
-      document.getElementById("vaultSaveLabel").style.display = "flex";
     }
   }
 } catch(e) {}
@@ -3603,7 +3601,6 @@ document.getElementById("exGrid").addEventListener("click", (e) => {
   document.getElementById("btnS").disabled = false;
   document.getElementById("wcta").classList.add("show");
   document.getElementById("dlBtn").style.display = "";
-  document.getElementById("vaultSaveLabel").style.display = "flex";
   if (window.innerWidth <= 720) {
     document.querySelector(".card-wrap").scrollIntoView({ behavior: "smooth", block: "center" });
   } else {
@@ -3764,17 +3761,6 @@ document.getElementById("dlChoicePng")?.addEventListener("click", async () => {
   try {
     await _downloadPngOnly();
     _flashDlBtn(btn);
-    var vaultCheck = document.getElementById("vaultSaveCheck");
-    if (vaultCheck && vaultCheck.checked && typeof window.saveCardToVault === "function") {
-      window.saveCardToVault({
-        text: document.getElementById("sta").value,
-        name: document.getElementById("nin").value,
-        authorName: document.getElementById("nin").value,
-        tone: curTone || "original",
-        hasAudio: voiceAttached && !!audioBlob,
-        createdAt: new Date().toISOString()
-      });
-    }
   } catch(e) { btn.innerHTML = '<i class="fas fa-download"></i> Download card'; }
 });
 document.getElementById("dlChoiceWebm")?.addEventListener("click", async () => {
@@ -3784,18 +3770,6 @@ document.getElementById("dlChoiceWebm")?.addEventListener("click", async () => {
   try {
     await _downloadPngOnly();
     _flashDlBtn(btn);
-    // Save to Wibe Vault if toggle is on
-    var vaultCheck = document.getElementById("vaultSaveCheck");
-    if (vaultCheck && vaultCheck.checked && typeof window.saveCardToVault === "function") {
-      window.saveCardToVault({
-        text: document.getElementById("sta").value,
-        name: document.getElementById("nin").value,
-        authorName: document.getElementById("nin").value,
-        tone: curTone || "original",
-        hasAudio: voiceAttached && !!audioBlob,
-        createdAt: new Date().toISOString()
-      });
-    }
   } catch(e) { btn.innerHTML = '<i class="fas fa-download"></i> Download card'; }
 });
 document.getElementById("dlChoiceClose")?.addEventListener("click", hideDownloadChoice);
@@ -3917,18 +3891,6 @@ document.getElementById("btnS").addEventListener("click", async () => {
     _shareSocialBlob = await _makeSocialBlob(_shareBlob);
     btn.innerHTML = '<i class="fas fa-share-nodes"></i> Share card';
     btn.disabled = false;
-    // Save to Wibe Vault if toggle is on
-    var vaultCheck = document.getElementById("vaultSaveCheck");
-    if (vaultCheck && vaultCheck.checked && typeof window.saveCardToVault === "function") {
-      window.saveCardToVault({
-        text: document.getElementById("sta").value,
-        name: document.getElementById("nin").value,
-        authorName: document.getElementById("nin").value,
-        tone: curTone || "original",
-        hasAudio: voiceAttached && !!audioBlob,
-        createdAt: new Date().toISOString()
-      });
-    }
     const preview = document.getElementById("sharePreview");
     preview.innerHTML = '<img src="' + URL.createObjectURL(_shareBlob) + '" alt="Card preview" />';
     const file = new File([_shareBlob], "wibe-story.png", { type: "image/png" });
@@ -3949,6 +3911,19 @@ document.getElementById("btnS").addEventListener("click", async () => {
           _shortId = data.shortId;
           if (voiceAttached && audioBlob) {
             try { await fetch("/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Voice] Upload failed:", ve); }
+          }
+          if (typeof isSupporter === "function" && isSupporter() && typeof window.saveCardToVault === "function") {
+            window.saveCardToVault({
+              text: document.getElementById("sta").value,
+              name: document.getElementById("nin").value,
+              authorName: document.getElementById("nin").value,
+              tone: curTone || "original",
+              hasAudio: voiceAttached && !!audioBlob,
+              audioUrl: audioBlob ? URL.createObjectURL(audioBlob) : "",
+              createdAt: new Date().toISOString(),
+              shortId: _shortId,
+              imageUrl: data.url
+            });
           }
         }
       } catch (e) { console.error("[Share] Pre-upload failed:", e); }
@@ -4953,11 +4928,13 @@ window.addEventListener('i18nApplied', function () {
                 hasAudio: !!cardData.hasAudio,
                 audioUrl: cardData.audioUrl || "",
                 createdAt: cardData.createdAt || new Date().toISOString(),
-                theme: cardData.theme || ""
+                theme: cardData.theme || "",
+                imageUrl: cardData.imageUrl || ""
               })
             });
             if (res.ok) {
-              if (typeof showToast === "function") showToast("Saved to Wibe Vault");
+              var card = await res.json();
+              if (typeof showToast === "function") showVaultUndoToast("Saved to Wibe Vault", card.card);
             } else {
               var err = await res.json();
               if (err.error === "vault_full") {
@@ -4991,10 +4968,42 @@ window.addEventListener('i18nApplied', function () {
       hasAudio: !!cardData.hasAudio,
       audioUrl: cardData.audioUrl || "",
       createdAt: cardData.createdAt || new Date().toISOString(),
-      theme: cardData.theme || ""
+      theme: cardData.theme || "",
+      imageUrl: cardData.imageUrl || ""
     };
     existing.unshift(card);
     localStorage.setItem("wsVaultCards", JSON.stringify(existing));
     if (typeof showToast === "function") showToast("Saved to Wibe Vault");
   };
+
+  function showVaultUndoToast(msg, card) {
+    if (!card) { showToast(msg); return; }
+    var t = document.getElementById("toast");
+    if (!t) return;
+    t.innerHTML = '<span>' + msg + '</span><button class="toast-undo-btn" id="toastUndoBtn">Undo</button>';
+    t.classList.remove("update-toast");
+    t.classList.add("show");
+    var timeout = setTimeout(function () {
+      t.classList.remove("show");
+      _toastShowing = false;
+    }, 6000);
+    var undoBtn = document.getElementById("toastUndoBtn");
+    if (undoBtn) {
+      undoBtn.addEventListener("click", function () {
+        clearTimeout(timeout);
+        t.classList.remove("show");
+        _toastShowing = false;
+        var proKey = "";
+        try { proKey = localStorage.getItem("wsProKey") || ""; } catch (e) {}
+        if (proKey) {
+          fetch("/api/vault/delete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-Pro-Key": proKey },
+            body: JSON.stringify({ ids: [card.id] })
+          }).catch(function () {});
+        }
+        showToast("Card removed from vault");
+      });
+    }
+  }
 })();
