@@ -47,8 +47,10 @@ export default async function handler(req) {
         audio_url TEXT NOT NULL DEFAULT '',
         theme TEXT NOT NULL DEFAULT '',
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        image_url TEXT NOT NULL DEFAULT ''
       );
+      ALTER TABLE vault_cards ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT '';
     `;
     const rows = await sql`
       DELETE FROM vault_cards

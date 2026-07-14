@@ -3632,6 +3632,12 @@ document.getElementById("btnC").addEventListener("click", async () => {
       btn.disabled = false;
       return;
     }
+    var curName = document.getElementById("nin").value.trim();
+    if (text === window._lastBtnCText && curName === window._lastBtnCName) {
+      showToast("This card already exists");
+      btn.disabled = false;
+      return;
+    }
     // If the user picked a tone and skipped Accept, auto-commit the rewrite
     // so the per-tone counter ticks. The rewrite is "used" the moment a
     // card is created with it — previewing then cancelling is free.
@@ -3685,6 +3691,8 @@ document.getElementById("btnC").addEventListener("click", async () => {
     }, 720);
     cardReady = true;
     saveDraft();
+    window._lastBtnCText = text;
+    window._lastBtnCName = document.getElementById("nin").value.trim();
     if (typeof isSupporter === "function" && isSupporter() && typeof window.saveCardToVault === "function") {
       _shortId = null;
       window._vaultAutoSaved = true;
@@ -3710,7 +3718,8 @@ document.getElementById("btnC").addEventListener("click", async () => {
               hasAudio: voiceAttached && !!audioBlob,
               audioUrl: audioBlob ? URL.createObjectURL(audioBlob) : "",
               createdAt: new Date().toISOString(),
-              shortId: _shortId
+              shortId: _shortId,
+              imageUrl: data.url || ""
             });
           }
         } catch (e) { console.error("[Auto-save] Failed:", e); window._vaultAutoSaved = false; }
@@ -3964,7 +3973,8 @@ document.getElementById("btnS").addEventListener("click", async () => {
               hasAudio: voiceAttached && !!audioBlob,
               audioUrl: audioBlob ? URL.createObjectURL(audioBlob) : "",
               createdAt: new Date().toISOString(),
-              shortId: _shortId
+              shortId: _shortId,
+              imageUrl: data.url || ""
             });
           }
         }
@@ -4970,7 +4980,8 @@ window.addEventListener('i18nApplied', function () {
                 hasAudio: !!cardData.hasAudio,
                 audioUrl: cardData.audioUrl || "",
                 createdAt: cardData.createdAt || new Date().toISOString(),
-                theme: cardData.theme || ""
+                theme: cardData.theme || "",
+                imageUrl: cardData.imageUrl || ""
               })
             });
             if (res.ok) {

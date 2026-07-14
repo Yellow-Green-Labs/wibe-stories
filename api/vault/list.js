@@ -39,8 +39,10 @@ export default async function handler(req) {
         audio_url TEXT NOT NULL DEFAULT '',
         theme TEXT NOT NULL DEFAULT '',
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        image_url TEXT NOT NULL DEFAULT ''
       );
+      ALTER TABLE vault_cards ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT '';
     `;
     const rows = await sql`
       SELECT * FROM vault_cards
@@ -60,7 +62,8 @@ export default async function handler(req) {
         hasAudio: r.has_audio,
         audioUrl: r.audio_url,
         createdAt: r.created_at,
-        theme: r.theme
+        theme: r.theme,
+        imageUrl: r.image_url
       };
     });
 

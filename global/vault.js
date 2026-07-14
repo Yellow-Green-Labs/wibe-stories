@@ -304,7 +304,7 @@
         '<div class="vault-tile" style="animation-delay:' + delay + '" data-id="' + c.id + '">' +
           '<div class="vault-tile-check' + checked + '"><i class="fa-solid fa-check"></i></div>' +
           '<div class="vault-tile-thumb">' +
-            '<span>' + emoji + '</span>' +
+            (c.imageUrl ? '<img src="' + c.imageUrl + '" alt="' + escHtml(c.name) + '" loading="lazy" />' : '<span>' + emoji + '</span>') +
             (c.hasAudio ? '<button class="vault-tile-audio-badge" data-id="' + c.id + '" title="Play recording"><i class="fa-solid fa-volume-xmark"></i></button>' : '') +
           '</div>' +
           '<div class="vault-tile-info">' +
@@ -484,7 +484,9 @@
     if (!cardViewCard) return;
     document.getElementById("vault-cv-name").textContent = cardViewCard.name;
     document.getElementById("vault-cv-img").innerHTML =
-      '<span style="font-size:64px">' + getOccasionEmoji(cardViewCard.occasion) + '</span>';
+      cardViewCard.imageUrl
+        ? '<img src="' + cardViewCard.imageUrl + '" alt="' + escHtml(cardViewCard.name) + '" style="width:100%;height:100%;object-fit:contain" />'
+        : '<span style="font-size:64px">' + getOccasionEmoji(cardViewCard.occasion) + '</span>';
     var detail = formatDate(cardViewCard.createdAt);
     if (cardViewCard.occasion) detail += " \u00B7 " + cardViewCard.occasion.charAt(0).toUpperCase() + cardViewCard.occasion.slice(1);
     if (cardViewCard.hasAudio) detail += " \u00B7 \u{1F50A} Voice";

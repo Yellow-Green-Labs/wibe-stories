@@ -48,15 +48,17 @@ export default async function handler(req) {
         audio_url TEXT NOT NULL DEFAULT '',
         theme TEXT NOT NULL DEFAULT '',
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        image_url TEXT NOT NULL DEFAULT ''
       );
+      ALTER TABLE vault_cards ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT '';
     `;
     let migrated = 0;
 
     for (const card of cards) {
       await sql`
-        INSERT INTO vault_cards (client_id, pro_key, short_id, name, text, author_name, tone, occasion, has_audio, audio_url, created_at, theme)
-        VALUES (${card.id || ''}, ${key}, ${card.shortId || ''}, ${card.name || 'Untitled'}, ${card.text || ''}, ${card.authorName || ''}, ${card.tone || 'original'}, ${card.occasion || ''}, ${!!card.hasAudio}, ${card.audioUrl || ''}, ${card.createdAt || new Date().toISOString()}, ${card.theme || ''})
+        INSERT INTO vault_cards (client_id, pro_key, short_id, name, text, author_name, tone, occasion, has_audio, audio_url, created_at, theme, image_url)
+        VALUES (${card.id || ''}, ${key}, ${card.shortId || ''}, ${card.name || 'Untitled'}, ${card.text || ''}, ${card.authorName || ''}, ${card.tone || 'original'}, ${card.occasion || ''}, ${!!card.hasAudio}, ${card.audioUrl || ''}, ${card.createdAt || new Date().toISOString()}, ${card.theme || ''}, ${card.imageUrl || ''})
         ON CONFLICT (client_id, pro_key) DO NOTHING
       `;
       migrated++;
