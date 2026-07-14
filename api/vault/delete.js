@@ -50,6 +50,8 @@ export default async function handler(req) {
         updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
         image_url TEXT NOT NULL DEFAULT ''
       );
+    `;
+    await sql`
       ALTER TABLE vault_cards ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT '';
     `;
     const rows = await sql`
