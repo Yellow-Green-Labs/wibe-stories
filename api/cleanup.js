@@ -1,17 +1,40 @@
 // Scheduled cleanup of expired card blobs.
 // Runs daily via Vercel Cron (see vercel.json `crons` block). Deletes any
-// blob in `cards/` or `og/` older than MAX_AGE_HOURS so shared cards live
-// ~7 days, never longer. Pro subscriber cards get 14 days (PRO_MAX_AGE_HOURS).
-// Pro status is checked from the card's metadata file (meta/<shortId>.json).
+// blob in `cards/`, `og/`, `voice/`, or `meta/` older than MAX_AGE_HOURS.
+// Pro subscriber cards get 14 days (PRO_MAX_AGE_HOURS) from their metadata.
+// Vault-protected cards (linked in vault_cards table) are never deleted.
 // Triggered by Vercel with `Authorization: Bearer ${CRON_SECRET}`;
 // rejects anything else with 401.
 
 import { list, del } from '@vercel/blob';
+import { getNeon } from '../lib/neon.js';
 
-const MAX_AGE_HOURS = 168; // 7 days — cards live for a week
-const PRO_MAX_AGE_HOURS = 336; // 14 days — Pro cards live for two weeks
+const MAX_AGE_HOURS = 168;
+const PRO_MAX_AGE_HOURS = 336;
 const PREFIXES = ['cards/', 'og/', 'voice/', 'meta/'];
 const DELETE_BATCH = 50;
+
+async function isVaultCard(shortId) {
+  try {
+    const sql = getNeon();
+    const rows = await sql`
+      SELECT 1 FROM vault_cards WHERE short_id = ${shortId} LIMIT 1
+    `;
+    return rows && rows.length > 0;
+  } catch {
+    return false;
+  }
+}
+
+function shortIdFromCardUrl(blobUrl) {
+  try {
+    const url = new URL(blobUrl);
+    const match = url.pathname.match(/\/cards\/(.+)\.png$/);
+    return match ? match[1] : null;
+  } catch {
+    return null;
+  }
+}
 
 async function isProCard(blobUrl) {
   try {
@@ -50,6 +73,13 @@ export default async function handler(req, res) {
         const page = await list({ prefix, cursor });
         for (const blob of page.blobs) {
           const ageMs = new Date(blob.uploadedAt).getTime();
+
+          // Vault-protected card — never delete, regardless of age
+          if (prefix === 'cards/') {
+            const sid = shortIdFromCardUrl(blob.url);
+            if (sid && await isVaultCard(sid)) continue;
+          }
+
           if (ageMs < cutoff14d) {
             expiredUrls.push(blob.url);
           } else if (ageMs < cutoff7d) {

@@ -8,7 +8,7 @@
 // POST /api/upload
 // Body: raw PNG bytes
 // Content-Type: image/png
-// Response: { shortId: "aB3xK9mP" }
+// Response: { shortId: "aB3xK9mP", url: "https://..." }
 
 import { put } from '@vercel/blob';
 import { generateOgImage } from './lib/og-render.js';
@@ -17,7 +17,6 @@ const VALID_TONES = new Set([
   'original', 'warm', 'bold', 'poetic', 'playful', 'reflective', 'honest',
 ]);
 const PAL_COUNT = 10;
-const PALS = ['#7c3aed','#f59e0b','#dc2626','#059669','#0284c7','#db2777','#ea580c','#0d9488','#c026d3','#4f46e5'];
 const VALID_CORNERS = new Set(['rounded', 'sharp']);
 
 function safeTone(value) {
@@ -89,7 +88,7 @@ export default async function handler(req, res) {
     const cardPro = req.headers['x-card-pro'] === '1';
 
     // Upload original card PNG (used by the landing page hero image)
-    await put(`cards/${shortId}.png`, pngBuffer, {
+    const { url } = await put(`cards/${shortId}.png`, pngBuffer, {
       access: 'public',
       addRandomSuffix: false,
       cacheControlMaxAge: 60 * 60 * 24 * 5, // 5 days
@@ -122,7 +121,7 @@ export default async function handler(req, res) {
     res.setHeader('Content-Type', 'application/json');
     // Restrict CORS to own origin — upload should only be callable from the app itself.
     res.setHeader('Access-Control-Allow-Origin', 'https://wibestories.vercel.app');
-    res.end(JSON.stringify({ shortId }));
+    res.end(JSON.stringify({ shortId, url }));
   } catch (e) {
     res.statusCode = 500;
     res.setHeader('Content-Type', 'text/plain');
