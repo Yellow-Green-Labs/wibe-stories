@@ -176,7 +176,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `global/styles/vault.css` — CSS Grid layout (`auto-fill, minmax(150px, 1fr)`), `tile-in` staggered animation, audio badge with play toggle, Select All/Delete flow, toast Undo button
 - **Storage**: Neon Postgres (`vault_cards` table) for Pro users, localStorage (`wsVaultCards`) for free users. `saveCardToVault()` in `wisprstories.js` saves automatically after upload for Pro users
 - **Lifecycle**: Open → load from Neon API (Pro) or localStorage (free) → render grid → select/delete/download (API for Pro, localStorage for free) → persist on mutation
-- **Pro auto-save**: After upload in share flow, Pro users' cards are automatically saved to vault and a 6s Undo toast is shown
+- **Pro auto-save**: On Create Card click (btnC), Pro users' cards are automatically uploaded in the background and saved to vault with a 6s Undo toast. Share button (btnS) detects the `_vaultAutoSaved` flag and skips re-uploading/re-saving — reuses the same `_shareBlob` and `_shortId`
 - **Card images**: Card thumbnails show occasion emoji (imageUrl feature deferred — needs `image_url` column in vault_cards table)
 - **Share from vault**: Copies `/c/:shortId` link (via clipboard or Web Share)
 - **Download from vault**: Download handler shows placeholder message (image download deferred)
@@ -185,6 +185,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - **Audio**: Cards with audio show an audio badge; click to play (muted by default, toggleable)
 - **API**: `api/vault/list.js` (GET), `api/vault/save.js` (POST), `api/vault/delete.js` (POST), `api/vault/migrate.js` (POST) — all guarded by Pro key validation
 - **DB**: `lib/neon.js` connection singleton, `vault_cards` table with indexes on `pro_key` and unique index on `(client_id, pro_key)`. `image_url TEXT` column not yet in DB — run `ALTER TABLE vault_cards ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT '';` in Neon SQL Editor to enable card image thumbnails in vault
+- **Auto-create table**: All 4 vault API endpoints (`save.js`, `list.js`, `delete.js`, `migrate.js`) include `CREATE TABLE IF NOT EXISTS vault_cards (...)` on every request — self-healing if the table is missing in Neon. Schema matches `scripts/setup-neon-table.mjs` (no `image_url` column). Indices not auto-created.
 
 ## Card metadata sidecar system
 
@@ -192,5 +193,5 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-14; Phase 6 vault auto-save: removed vault save checkbox, added Pro auto-save after upload with Undo toast, removed image_url from INSERTs (column not in DB yet), cleaned up dead CSS. -->
+<!-- agsync: last-run 2026-07-14; Phase 6 vault auto-save: removed vault save checkbox, added Pro auto-save on Create Card (btnC), not just Share (btnS), with _vaultAutoSaved guard to prevent btnS from re-saving; added CREATE TABLE IF NOT EXISTS to all 4 vault API endpoints; fixed toast z-index from 9999 to 999999. -->
 

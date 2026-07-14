@@ -3685,6 +3685,37 @@ document.getElementById("btnC").addEventListener("click", async () => {
     }, 720);
     cardReady = true;
     saveDraft();
+    if (typeof isSupporter === "function" && isSupporter() && typeof window.saveCardToVault === "function") {
+      _shortId = null;
+      window._vaultAutoSaved = true;
+      (async () => {
+        try {
+          await window.ensureHtml2canvas();
+          if (!window.html2canvas) throw new Error("html2canvas not loaded");
+          await document.fonts.ready;
+          _shareBlob = await generateBlobWithProgress();
+          _shareSocialBlob = await _makeSocialBlob(_shareBlob);
+          var res = await fetch("/api/upload", { method: "POST", body: _shareBlob, headers: { "Content-Type": "image/png", "X-Card-Text": encodeURIComponent(document.getElementById("sta").value), "X-Card-Name": encodeURIComponent(document.getElementById("nin").value), "X-Card-Tone": curTone || "", "X-Card-P": String(curP), "X-Card-R": useRounded ? "rounded" : "sharp", "X-Card-Pro": "1" } });
+          if (res.ok) {
+            var data = await res.json();
+            _shortId = data.shortId;
+            if (voiceAttached && audioBlob) {
+              try { await fetch("/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Auto-save] Voice upload failed:", ve); }
+            }
+            window.saveCardToVault({
+              text: document.getElementById("sta").value,
+              name: document.getElementById("nin").value,
+              authorName: document.getElementById("nin").value,
+              tone: curTone || "original",
+              hasAudio: voiceAttached && !!audioBlob,
+              audioUrl: audioBlob ? URL.createObjectURL(audioBlob) : "",
+              createdAt: new Date().toISOString(),
+              shortId: _shortId
+            });
+          }
+        } catch (e) { console.error("[Auto-save] Failed:", e); window._vaultAutoSaved = false; }
+      })();
+    }
     document.getElementById("btnS").disabled = false;
     document.getElementById("wcta").classList.add("show");
     const dl = document.getElementById("dlBtn");
@@ -3878,6 +3909,18 @@ document.getElementById("btnS").addEventListener("click", async () => {
   if (voiceAttached) { showToast("Download the card to keep the voice"); return; }
   _vibrate();
   const btn = document.getElementById("btnS");
+  if (window._vaultAutoSaved && _shareBlob && _shortId) {
+    btn.innerHTML = '<i class="fas fa-share-nodes"></i> Share card';
+    btn.disabled = false;
+    const preview = document.getElementById("sharePreview");
+    preview.innerHTML = '<img src="' + URL.createObjectURL(_shareBlob) + '" alt="Card preview" />';
+    const file = new File([_shareBlob], "wibe-story.png", { type: "image/png" });
+    document.getElementById("shareNative").style.display = navigator.share ? "" : "none";
+    document.getElementById("shareModal").classList.add("open");
+    document.body.classList.add("modal-open");
+    _activateModal(document.getElementById("shareModal"));
+    return;
+  }
   const generatingLabel = typeof getI18nSync === "function" ? getI18nSync("record.generating") : "Generating\u2026";
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + generatingLabel;
   btn.disabled = true;
@@ -3912,7 +3955,7 @@ document.getElementById("btnS").addEventListener("click", async () => {
           if (voiceAttached && audioBlob) {
             try { await fetch("/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Voice] Upload failed:", ve); }
           }
-          if (typeof isSupporter === "function" && isSupporter() && typeof window.saveCardToVault === "function") {
+          if (!window._vaultAutoSaved && typeof isSupporter === "function" && isSupporter() && typeof window.saveCardToVault === "function") {
             window.saveCardToVault({
               text: document.getElementById("sta").value,
               name: document.getElementById("nin").value,
