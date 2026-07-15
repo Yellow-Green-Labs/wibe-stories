@@ -88,6 +88,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - [ ] `CHANGELOG.md` — session history
 - [ ] `docs/daily-capacity-system.md` — daily capacity system
 - [ ] `docs/Tanay-linkedin-posts.md` — Wispr Flow CEO thinking (mandatory per Tanay lens rule)
+- [ ] `frontlogs/EMAILS.md` — email types catalog (10 types, 3 implemented)
 
 ## Project overview
 
@@ -127,7 +128,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/lib/occasion-dates.json` — year-by-year date lookup for movable festival dates (2026-2030)
 - `api/cron/send-occasion-emails.js` — daily cron (8 AM UTC) that matches date to occasion and emails Pro + subscriber users
 - `api/subscribe-occasion.js` — email subscription endpoint (validates + stores in Redis)
-- `occasion-email-preview.html` — standalone preview of the occasion email template (30 occasions with images)
+- `frontlogs/` — internal planning files (git-ignored): `EMAILS.md` (10-type email catalog), `PENDING.md` (pending changes), `NEEDS_DISCUSSION.md` (re-engagement email design), `ups_pres/` (email preview HTML files)
 - `lib/redis.js` — Upstash Redis client
 - `lib/allowed-emails.js` — email domain allowlist (Gmail, Outlook, Yahoo, Proton, iCloud, Tuta + regional variants)
 - `lib/lang-stats-redis.js` — separate Redis client for lang usage stats
@@ -193,5 +194,5 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-15; Phase 6 fix round: removed btnS vault save block entirely (btnS never saves to vault — fixes duplicate card bug); CSS vault grid minmax 150px→250px; spam guard extended with localStorage persistence (wsLastCard key) for cross-session dedup; ALTER TABLE split into separate sql() calls in all 4 vault API endpoints to fix 500 error with @neondatabase/serverless HTTP. -->
+<!-- agsync: last-run 2026-07-15; Phase 7 desktop nav grid menu + footer popup trim + i18n rename + Pricing modal Wibe Pass + frontlogs/ folder: desktop nav gets grid button (⊞) with dropdown panel (6 items...) using .fmenu-panel/.fmenu-link classes; footer [?] popup trimmed to Read Articles, Submit Issues, How to Use, License & Terms + version; i18n key `footer.support` renamed to `footer.pricing` across all 11 locale JSONs; hamburger and grid both hide "Get occasion reminders" for Pro users; pricing modal: "Wibe Pro" → "Wibe Pass", "$3 /monthly" → "$6" + "Pre-paid · 1–12 months", CTA "Unlock Pro" → "Get Wibe Pass" linking to BMAC main page, footnote "No subscription · No auto-renewal" added. frontlogs/ folder created with EMAILS.md (10-type catalog), PENDING.md/NEEDS_DISCUSSION.md inside, ups_pres/ subfolder for email preview HTMLs; .gitignore simplified with single frontlogs/ entry. -->
 

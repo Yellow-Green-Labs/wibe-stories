@@ -124,11 +124,11 @@ async function sendProKeyEmail(resendApiKey, { toEmail, toName, proKey }) {
               <p style="margin:0 0 6px;font-size:0.8rem;color:#1a1a1a;font-weight:600">How to activate</p>
               <ol style="margin:0 0 20px;padding-left:16px;font-size:0.8rem;color:#555548;line-height:1.8">
                 <li>Open <a href="https://wibestories.vercel.app" style="color:#d97706;font-weight:600">Wibe Stories</a> and create a card</li>
-                <li>Tap the <span style="font-weight:600">Unlock</span> button that appears, or tap <span style="font-weight:600">?</span> in the footer then <span style="font-weight:600">Pricing</span></li>
+                <li>Tap the <span style="font-weight:600">Unlock</span> button that appears, or tap <span style="font-weight:600">&#8864;</span> in the nav bar then <span style="font-weight:600">Unlock Pro</span></li>
                 <li>Paste your Pro key and tap <span style="font-weight:600">Activate</span></li>
               </ol>
               <p style="margin:0 0 20px;font-size:0.8rem;color:#77776a;line-height:1.5">
-                &#128273; Lost your key? Open the <span style="font-weight:600">Pricing</span> menu and tap <span style="font-weight:600">Activate Key</span> - we will resend it to this email.
+                &#128273; Lost your key? Open the nav menu, tap <span style="font-weight:600">Unlock Pro</span> then <span style="font-weight:600">Activate Key</span> - we will resend it to this email.
               </p>
               <hr style="border:none;border-top:1px solid rgba(26,26,26,0.1);margin:0 0 16px" />
               <p style="margin:0;font-size:0.8rem;color:#77776a;line-height:1.5">

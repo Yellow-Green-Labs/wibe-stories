@@ -106,9 +106,10 @@
     '<div class="pricing-cards">' +
     '<div class="pricing-card pricing-pro">' +
     '<div class="pricing-card-header">' +
-    '<div class="pricing-card-tier pricing-pro-tier">Wibe Pro</div>' +
+    '<div class="pricing-card-tier pricing-pro-tier">Wibe Pass</div>' +
     "</div>" +
-    '<div class="pricing-card-price">$3 <span class="pricing-pp-unit">/monthly</span></div>' +
+    '<div class="pricing-card-price">$6</div>' +
+    '<div class="pricing-price-sub">Pre-paid &middot; 1&ndash;12 months</div>' +
     '<div class="pricing-card-features">' +
     '<div class="pricing-feature-row"><span class="pricing-flabel">Color Tools</span><span class="pricing-fval">Unlimited</span></div>' +
     '<div class="pricing-feature-row"><span class="pricing-flabel">Recording</span><span class="pricing-fval">30s &middot; 50/day</span></div>' +
@@ -121,7 +122,8 @@
     '<div class="pricing-feature-row pricing-feature-highlight"><span class="pricing-flabel"><i class="fa-solid fa-vault"></i> Wibe Vault</span><span class="pricing-fval">Up to 50 cards</span></div>' +
     "</div>" +
 
-    '<a href="https://buymeacoffee.com/yg_labs/membership" class="pricing-cta pricing-cta-pro" target="_blank" rel="noopener"><span class="pricing-cta-text">Unlock Pro</span> <i class="fa-solid fa-arrow-right"></i></a>' +
+    '<a href="https://buymeacoffee.com/yg_labs" class="pricing-cta pricing-cta-pro" target="_blank" rel="noopener"><span class="pricing-cta-text">Get Wibe Pass</span> <i class="fa-solid fa-arrow-right"></i></a>' +
+    '<div class="pricing-price-footnote">No subscription &middot; No auto-renewal</div>' +
     "</div>" +
     '<div class="pricing-card pricing-free">' +
     '<div class="pricing-card-header">' +

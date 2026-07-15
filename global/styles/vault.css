@@ -60,6 +60,12 @@
   left: 50%;
   transform: translateX(-50%);
 }
+.vault-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
 .vault-select-btn {
   background: none;
   border: 1px solid var(--rule);
@@ -71,10 +77,35 @@
   font-family: var(--sans);
   touch-action: manipulation;
   visibility: hidden;
+  white-space: nowrap;
 }
 .vault-select-btn.visible { visibility: visible; }
 .vault-select-btn:hover { background: var(--cream2); }
 .vault-select-btn.active {
+  background: var(--ink);
+  color: var(--cream);
+  border-color: var(--ink);
+}
+.vault-select-all-header-btn {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--rule);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: var(--sans);
+  background: var(--cream);
+  color: var(--ink);
+  touch-action: manipulation;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.vault-select-all-header-btn.visible { display: inline-flex; }
+.vault-select-all-header-btn:hover { background: var(--cream2); }
+.vault-select-all-header-btn i { font-size: 12px; }
+.vault-select-all-header-btn.all-selected {
   background: var(--ink);
   color: var(--cream);
   border-color: var(--ink);
@@ -278,25 +309,6 @@
   color: var(--ink3);
   cursor: default;
 }
-
-/* ── SELECT ALL ── */
-.vault-select-all-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 8px 18px;
-  border-radius: 8px;
-  border: 1px solid var(--rule);
-  font-size: 13px;
-  cursor: pointer;
-  font-family: var(--sans);
-  background: var(--cream);
-  color: var(--ink);
-  touch-action: manipulation;
-  transition: background 0.15s;
-}
-.vault-select-all-btn:hover { background: var(--cream2); }
-.vault-select-all-btn i { font-size: 12px; }
 
 /* ── EMPTY STATE ── */
 .vault-empty {
@@ -506,5 +518,6 @@
 :root.dark .vault-tile { background: var(--cream2); border-color: var(--rule); }
 :root.dark .vault-action-bar { background: var(--cream); border-color: var(--rule); }
 :root.dark .vault-confirm-box { background: var(--cream2); }
-:root.dark .vault-select-all-btn { background: var(--cream2); border-color: var(--rule); }
-:root.dark .vault-select-all-btn:hover { background: var(--cream3); }
+:root.dark .vault-select-all-header-btn { background: var(--cream2); border-color: var(--rule); }
+:root.dark .vault-select-all-header-btn:hover { background: var(--cream3); }
+:root.dark .vault-select-all-header-btn.all-selected { background: var(--ink); color: var(--cream); border-color: var(--ink); }

@@ -123,7 +123,10 @@
           '<i class="fa-solid fa-arrow-left"></i>' +
         '</button>' +
         '<span class="vault-title"><i class="fa-solid fa-vault"></i> Wibe Vault</span>' +
-        '<button class="vault-select-btn" id="vault-select-btn">Select</button>' +
+        '<div class="vault-header-right">' +
+          '<button class="vault-select-all-header-btn" id="vault-select-all-header"><i class="fa-solid fa-check-double"></i> Select All</button>' +
+          '<button class="vault-select-btn" id="vault-select-btn">Select</button>' +
+        '</div>' +
       '</div>' +
       '<div class="vault-counter" id="vault-counter"></div>' +
       '<div class="vault-content" id="vault-content">' +
@@ -143,7 +146,6 @@
       '</div>' +
       '<div class="vault-action-bar" id="vault-action-bar">' +
         '<span class="vault-action-count" id="vault-action-count">0 selected</span>' +
-        '<button class="vault-select-all-btn" id="vault-select-all"><i class="fa-solid fa-check-double"></i> Select All</button>' +
         '<div class="vault-action-btns">' +
           '<button class="vault-action-btn vault-action-btn-download" id="vault-dl-btn"><i class="fa-solid fa-download"></i> Download</button>' +
           '<button class="vault-action-btn vault-action-btn-delete" id="vault-del-btn"><i class="fa-solid fa-trash-can"></i> Delete</button>' +
@@ -230,7 +232,7 @@
     })();
     document.getElementById("vault-del-btn").addEventListener("click", showDeleteConfirm);
     document.getElementById("vault-dl-btn").addEventListener("click", downloadSelected);
-    document.getElementById("vault-select-all").addEventListener("click", selectAllCards);
+    document.getElementById("vault-select-all-header").addEventListener("click", selectAllCards);
     document.getElementById("vault-confirm-cancel").addEventListener("click", hideDeleteConfirm);
     document.getElementById("vault-confirm-ok").addEventListener("click", confirmDelete);
     document.getElementById("vault-card-view").addEventListener("click", function (e) {
@@ -266,6 +268,7 @@
       locked.classList.add("visible");
       counter.textContent = "";
       selectBtn.classList.remove("visible");
+      document.getElementById("vault-select-all-header").classList.remove("visible");
       document.getElementById("vault-action-bar").classList.remove("visible");
       updateMenuLabel();
       return;
@@ -280,6 +283,7 @@
       grid.innerHTML = "";
       empty.classList.add("visible");
       selectBtn.classList.remove("visible");
+      document.getElementById("vault-select-all-header").classList.remove("visible");
       counter.textContent = "\u{1F4BE} 0 of 50 cards saved";
       document.getElementById("vault-action-bar").classList.remove("visible");
       updateMenuLabel();
@@ -379,8 +383,12 @@
       document.querySelectorAll("#vault-grid .vault-tile-check.checked").forEach(function(c) {
         c.classList.remove("checked");
       });
+      var headerBtn = document.getElementById("vault-select-all-header");
+      headerBtn.classList.remove("all-selected");
+      headerBtn.innerHTML = '<i class="fa-solid fa-check-double"></i> Select All';
     }
     document.getElementById("vault-overlay").classList.toggle("vault-select-mode", selectMode);
+    document.getElementById("vault-select-all-header").classList.toggle("visible", selectMode);
     updateSelectBtnLabel();
     updateActionBar();
   }
@@ -399,8 +407,18 @@
 
   function selectAllCards() {
     var allCards = getCards();
-    selectedIds = {};
-    allCards.forEach(function (c) { selectedIds[c.id] = true; });
+    var headerBtn = document.getElementById("vault-select-all-header");
+    var allSelected = !headerBtn.classList.contains("all-selected");
+    if (allSelected) {
+      selectedIds = {};
+      allCards.forEach(function (c) { selectedIds[c.id] = true; });
+      headerBtn.classList.add("all-selected");
+      headerBtn.innerHTML = '<i class="fa-solid fa-times"></i> Deselect All';
+    } else {
+      selectedIds = {};
+      headerBtn.classList.remove("all-selected");
+      headerBtn.innerHTML = '<i class="fa-solid fa-check-double"></i> Select All';
+    }
     updateActionBar();
     render();
   }
@@ -419,7 +437,6 @@
   function updateActionBar() {
     var count = Object.keys(selectedIds).length;
     var bar = document.getElementById("vault-action-bar");
-    var selectAll = document.getElementById("vault-select-all");
     var countEl = document.getElementById("vault-action-count");
     var btns = document.querySelector(".vault-action-btns");
 
@@ -429,7 +446,6 @@
     }
 
     bar.classList.add("visible");
-    if (selectAll) selectAll.style.display = count === 0 ? "inline-flex" : "none";
     if (countEl) {
       countEl.style.display = count === 0 ? "none" : "";
       countEl.textContent = count + " selected";
@@ -438,6 +454,8 @@
   }
 
   /* ── Delete ── */
+  var _pendingCardViewDeleteId = null;
+
   function showDeleteConfirm() {
     var count = Object.keys(selectedIds).length;
     document.getElementById("vault-confirm-desc").textContent =
@@ -445,11 +463,44 @@
     document.getElementById("vault-confirm").classList.add("open");
   }
 
+  function showCardViewDeleteConfirm() {
+    document.getElementById("vault-confirm-desc").textContent = "Remove this card from your vault?";
+    document.getElementById("vault-confirm").classList.add("open");
+  }
+
   function hideDeleteConfirm() {
+    _pendingCardViewDeleteId = null;
     document.getElementById("vault-confirm").classList.remove("open");
   }
 
   async function confirmDelete() {
+    if (_pendingCardViewDeleteId) {
+      var id = _pendingCardViewDeleteId;
+      _pendingCardViewDeleteId = null;
+      if (isPro()) {
+        var key = getProKey();
+        if (key) {
+          try {
+            await fetch("/api/vault/delete", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "X-Pro-Key": key },
+              body: JSON.stringify({ ids: [id] })
+            });
+          } catch (e) {}
+        }
+      }
+      var delCard = cards.filter(function (c) { return c.id === id; })[0];
+      cards = cards.filter(function (c) { return c.id !== id; });
+      if (!isPro()) saveCards();
+      closeCardView();
+      hideDeleteConfirm();
+      render();
+      if (delCard && window._lastBtnCText !== undefined && (delCard.text || "").trim() === window._lastBtnCText && (delCard.name || "").trim() === window._lastBtnCName) {
+        window._lastBtnCText = undefined; window._lastBtnCName = undefined; window._lastBtnCColor = undefined; window._lastBtnCTone = undefined; window._lastBtnCRounded = undefined; window._lastBtnCFontBump = undefined; window._lastBtnCTexture = undefined; window._lastBtnCVoice = undefined;
+      }
+      if (typeof window.showToast === "function") window.showToast("Card removed from vault");
+      return;
+    }
     if (isPro()) {
       var key = getProKey();
       if (key) {
@@ -462,12 +513,20 @@
         } catch (e) {}
       }
     }
+    var deletedCards = cards.filter(function (c) { return selectedIds[c.id]; });
+    for (var i = 0; i < deletedCards.length; i++) {
+      if (window._lastBtnCText !== undefined && (deletedCards[i].text || "").trim() === window._lastBtnCText && (deletedCards[i].name || "").trim() === window._lastBtnCName) {
+        window._lastBtnCText = undefined; window._lastBtnCName = undefined; window._lastBtnCColor = undefined; window._lastBtnCTone = undefined; window._lastBtnCRounded = undefined; window._lastBtnCFontBump = undefined; window._lastBtnCTexture = undefined; window._lastBtnCVoice = undefined;
+        break;
+      }
+    }
     cards = cards.filter(function (c) { return !selectedIds[c.id]; });
     selectedIds = {};
     if (!isPro()) saveCards();
     if (selectMode) toggleSelectMode();
     hideDeleteConfirm();
     render();
+    if (typeof window.showToast === "function") window.showToast("Card removed from vault");
   }
 
   /* ── Download ── */
@@ -524,25 +583,8 @@
 
   async function deleteCardView() {
     if (!cardViewCard) return;
-    if (isPro()) {
-      var key = getProKey();
-      if (key) {
-        try {
-          await fetch("/api/vault/delete", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "X-Pro-Key": key },
-            body: JSON.stringify({ ids: [cardViewCard.id] })
-          });
-        } catch (e) {}
-      }
-    }
-    cards = cards.filter(function (c) { return c.id !== cardViewCard.id; });
-    if (!isPro()) saveCards();
-    closeCardView();
-    render();
-    if (typeof window.showToast === "function") {
-      window.showToast("Card removed from vault");
-    }
+    _pendingCardViewDeleteId = cardViewCard.id;
+    showCardViewDeleteConfirm();
   }
 
   /* ── Menu label ── */

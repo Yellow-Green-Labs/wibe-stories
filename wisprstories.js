@@ -13,7 +13,6 @@ const PALS = [
 ];
 const PAL_NAMES = ['violet', 'amber', 'crimson', 'emerald', 'ocean', 'rose', 'orange', 'teal', 'fuchsia', 'indigo'];
 let customColor = null;
-try { var _wsLast = JSON.parse(localStorage.getItem("wsLastCard") || "null"); if (_wsLast) { window._lastBtnCText = _wsLast.text; window._lastBtnCName = _wsLast.name; } } catch (e) {}
 
 
 function isCustomColor() { return customColor !== null; }
@@ -160,7 +159,7 @@ let _updatePending = false;
 let _versionUpToDate = false;
 let _versionPollTimer = null;
 const VERSION_POLL_INTERVAL_MS = 60 * 1000; // 60 seconds
-const CURRENT_VERSION = "v0.11.23.0";
+const CURRENT_VERSION = "v0.11.24.0";
 
 // Shows the "new version available" notice. Persists until clicked — unlike
 // the generic showToast() which auto-dismisses after 3.2s. Clicking triggers
@@ -3635,7 +3634,10 @@ document.getElementById("btnC").addEventListener("click", async () => {
       return;
     }
     var curName = document.getElementById("nin").value.trim();
-    if (text === window._lastBtnCText && curName === window._lastBtnCName) {
+    if (text === window._lastBtnCText && curName === window._lastBtnCName &&
+        getCardColor() === window._lastBtnCColor && curTone === window._lastBtnCTone &&
+        useRounded === window._lastBtnCRounded && cardFontBump === window._lastBtnCFontBump &&
+        _curTexture === window._lastBtnCTexture && voiceAttached === window._lastBtnCVoice) {
       showToast("This card already exists");
       btn.disabled = false;
       return;
@@ -3695,7 +3697,12 @@ document.getElementById("btnC").addEventListener("click", async () => {
     saveDraft();
     window._lastBtnCText = text;
     window._lastBtnCName = document.getElementById("nin").value.trim();
-    try { localStorage.setItem("wsLastCard", JSON.stringify({text: text, name: window._lastBtnCName})); } catch (e) {}
+    window._lastBtnCColor = getCardColor();
+    window._lastBtnCTone = curTone;
+    window._lastBtnCRounded = useRounded;
+    window._lastBtnCFontBump = cardFontBump;
+    window._lastBtnCTexture = _curTexture;
+    window._lastBtnCVoice = voiceAttached;
     if (typeof isSupporter === "function" && isSupporter() && typeof window.saveCardToVault === "function") {
       _shortId = null;
       window._vaultAutoSaved = true;
@@ -3725,7 +3732,7 @@ document.getElementById("btnC").addEventListener("click", async () => {
               imageUrl: data.url || ""
             });
           }
-        } catch (e) { console.error("[Auto-save] Failed:", e); window._vaultAutoSaved = false; }
+        } catch (e) { console.error("[Auto-save] Failed:", e); window._vaultAutoSaved = false; window._lastBtnCText = undefined; window._lastBtnCName = undefined; window._lastBtnCColor = undefined; window._lastBtnCTone = undefined; window._lastBtnCRounded = undefined; window._lastBtnCFontBump = undefined; window._lastBtnCTexture = undefined; window._lastBtnCVoice = undefined; }
       })();
     }
     document.getElementById("btnS").disabled = false;
@@ -5043,6 +5050,9 @@ window.addEventListener('i18nApplied', function () {
             headers: { "Content-Type": "application/json", "X-Pro-Key": proKey },
             body: JSON.stringify({ ids: [card.id] })
           }).catch(function () {});
+        }
+        if (card && window._lastBtnCText !== undefined && (card.text || "").trim() === window._lastBtnCText && (card.name || "").trim() === window._lastBtnCName) {
+          window._lastBtnCText = undefined; window._lastBtnCName = undefined; window._lastBtnCColor = undefined; window._lastBtnCTone = undefined; window._lastBtnCRounded = undefined; window._lastBtnCFontBump = undefined; window._lastBtnCTexture = undefined; window._lastBtnCVoice = undefined;
         }
         showToast("Card removed from vault");
       });

@@ -152,22 +152,6 @@
     >[ <i class="fa-solid fa-question"></i> ]</a>
 
     <div class="fmenu-panel hidden" id="fmenu-panel">
-      <a href="/features" class="fmenu-link">
-        <i class="fa-solid fa-star" aria-hidden="true"></i><span data-i18n="footer.features">Features</span>
-      </a>
-      <a href="#" class="fmenu-link" id="fmenu-pricing">
-        <i class="fa-solid fa-dollar-sign" aria-hidden="true"></i><span data-i18n="footer.support">Pricing</span>
-      </a>
-      <a href="/about" class="fmenu-link">
-        <i class="fa-solid fa-book-open" aria-hidden="true"></i><span data-i18n="footer.about">About</span>
-      </a>
-      <a href="/language-stats" class="fmenu-link">
-        <i class="fa-solid fa-chart-simple" aria-hidden="true"></i><span data-i18n="footer.langStats">Lang Stats</span>
-      </a>
-      <a href="#" class="fmenu-link" id="fmenu-vault">
-        <i class="fa-solid fa-vault" aria-hidden="true"></i><span id="fmenu-vault-label">Wibe Vault</span>
-      </a>
-      <div class="fmenu-divider"></div>
       <a href="https://medium.com/" class="fmenu-link" rel="noopener noreferrer" target="_blank">
         <i class="fa-brands fa-medium" aria-hidden="true"></i><span data-i18n="footer.articles">Read Articles</span>
       </a>
@@ -217,22 +201,6 @@
     panel.classList.add("hidden");
     toggle.setAttribute("aria-expanded", "false");
     if (typeof window.showOnboarding === "function") window.showOnboarding();
-  });
-
-  var pricingLink = wrapper.querySelector("#fmenu-pricing");
-  pricingLink?.addEventListener("click", (e) => {
-    e.preventDefault();
-    panel.classList.add("hidden");
-    toggle.setAttribute("aria-expanded", "false");
-    if (typeof window.showPricingModal === "function") window.showPricingModal();
-  });
-
-  var vaultLink = wrapper.querySelector("#fmenu-vault");
-  vaultLink?.addEventListener("click", (e) => {
-    e.preventDefault();
-    panel.classList.add("hidden");
-    toggle.setAttribute("aria-expanded", "false");
-    if (typeof window.showVault === "function") window.showVault();
   });
 
   window.addEventListener("scroll", () => {
@@ -511,6 +479,7 @@
 
   // ── Insert " | 📬 Get reminders" inside <p> beside "Wibe Stories" ──
   function addSubLink() {
+    if (typeof window.isSupporter === 'function' && window.isSupporter()) return;
     var pEl = document.querySelector('.footer p[data-i18n="footer.text"]');
     if (!pEl) return;
     if (pEl.querySelector('.fmenu-sub-link')) return;

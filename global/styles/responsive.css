@@ -461,6 +461,19 @@
 .hamburger-btn {
   display: none;
 }
+/* Nav grid dropdown — positioned below the button in .nav-right */
+#navDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  left: auto;
+  z-index: 300;
+}
+/* Hide grid button and its dropdown on mobile */
+@media (max-width: 720px) {
+  #gridMenuBtn { display: none; }
+  #navDropdown { display: none; }
+}
 /* Hide footer popup menu on mobile — replaced by hamburger */
 @media (max-width: 720px) {
   .fmenu-root { display: none; }

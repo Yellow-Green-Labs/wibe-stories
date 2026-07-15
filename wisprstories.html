@@ -225,6 +225,20 @@
         >
           <i class="fa-solid fa-moon"></i>
         </button>
+        <button id="gridMenuBtn" class="theme-toggle" aria-label="Menu" title="Menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+          </svg>
+        </button>
+        <div class="fmenu-panel hidden" id="navDropdown">
+          <a href="#" class="fmenu-link" id="navOccasionSub"><i class="fa-solid fa-bell" aria-hidden="true"></i><span data-i18n="hamburger.subscribe">Get occasion reminders</span></a>
+          <a href="/features" class="fmenu-link"><i class="fa-solid fa-star" aria-hidden="true"></i><span data-i18n="footer.features">Features</span></a>
+          <a href="#" class="fmenu-link" id="navPricing"><i class="fa-solid fa-dollar-sign" aria-hidden="true"></i><span data-i18n="footer.pricing">Unlock Pro</span></a>
+          <a href="/about" class="fmenu-link"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span data-i18n="footer.about">About</span></a>
+          <a href="/language-stats" class="fmenu-link"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i><span data-i18n="footer.langStats">Lang Stats</span></a>
+          <a href="#" class="fmenu-link" id="navVault"><i class="fa-solid fa-vault" aria-hidden="true"></i><span id="navVaultLabel">Wibe Vault</span></a>
+        </div>
         <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu" aria-expanded="false">
           <i class="fa-solid fa-bars"></i>
         </button>
@@ -1094,7 +1108,7 @@
       <div class="hamburger-items">
         <a href="#" class="hamburger-link" id="hmOccasionSub"><i class="fa-solid fa-envelope"></i> <span data-i18n="hamburger.subscribe">Get occasion reminders</span></a>
         <a href="/features" class="hamburger-link"><i class="fa-solid fa-star"></i> <span data-i18n="footer.features">Features</span></a>
-        <a href="#" class="hamburger-link" id="hmPricing"><i class="fa-solid fa-dollar-sign"></i> <span data-i18n="footer.support">Pricing</span></a>
+        <a href="#" class="hamburger-link" id="hmPricing"><i class="fa-solid fa-dollar-sign"></i> <span data-i18n="footer.pricing">Unlock Pro</span></a>
         <a href="/about" class="hamburger-link"><i class="fa-solid fa-book-open"></i> <span data-i18n="footer.about">About</span></a>
         <a href="/language-stats" class="hamburger-link"><i class="fa-solid fa-chart-simple"></i> <span data-i18n="footer.langStats">Lang Stats</span></a>
         <a href="#" class="hamburger-link" id="hmVault"><i class="fa-solid fa-vault"></i> <span id="hmVaultLabel">Wibe Vault</span></a>
@@ -1126,6 +1140,11 @@
       var hmVaultLabel = document.getElementById('hmVaultLabel');
       if (hmVaultLabel && typeof window.isSupporter === 'function') {
         hmVaultLabel.innerHTML = window.isSupporter() ? 'Wibe Vault' : 'Wibe Vault <b class="pro-badge">Pro</b>';
+      }
+      // Hide occasion reminder for Pro users (they get auto-emailed)
+      if (typeof window.isSupporter === 'function' && window.isSupporter()) {
+        var hmOccasion = document.getElementById('hmOccasionSub');
+        if (hmOccasion) hmOccasion.style.display = 'none';
       }
 
       function openMenu() {
@@ -1193,6 +1212,65 @@
           if (el && d.version) el.textContent = 'v' + d.version;
         })
         .catch(function() {});
+    })();
+
+    // ── Nav grid dropdown ──
+    (function() {
+      var btn = document.getElementById('gridMenuBtn');
+      var panel = document.getElementById('navDropdown');
+      if (!btn || !panel) return;
+
+      // Hide occasion reminder for Pro users
+      if (typeof window.isSupporter === 'function' && window.isSupporter()) {
+        var occLink = document.getElementById('navOccasionSub');
+        if (occLink) occLink.style.display = 'none';
+      }
+
+      // Set vault label
+      var navVaultLabel = document.getElementById('navVaultLabel');
+      if (navVaultLabel && typeof window.isSupporter === 'function') {
+        navVaultLabel.innerHTML = window.isSupporter() ? 'Wibe Vault' : 'Wibe Vault <b class="pro-badge">Pro</b>';
+      }
+
+      function openDropdown() { panel.classList.remove('hidden'); }
+      function closeDropdown() { panel.classList.add('hidden'); }
+
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (panel.classList.contains('hidden')) openDropdown();
+        else closeDropdown();
+      });
+
+      document.addEventListener('click', function(e) {
+        if (!btn.contains(e.target) && !panel.contains(e.target)) closeDropdown();
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeDropdown();
+      });
+
+      // Link handlers
+      document.getElementById('navOccasionSub')?.addEventListener('click', function(e) {
+        e.preventDefault(); closeDropdown();
+        var modal = document.getElementById('fmenuSubModal');
+        if (modal) {
+          modal.classList.add('open');
+          document.body.classList.add('modal-open');
+          document.body.style.overflow = 'hidden';
+          var emailInput = document.getElementById('fmenuSubEmail');
+          if (emailInput) setTimeout(function() { emailInput.focus(); }, 300);
+        }
+      });
+
+      document.getElementById('navPricing')?.addEventListener('click', function(e) {
+        e.preventDefault(); closeDropdown();
+        if (typeof window.showPricingModal === 'function') window.showPricingModal();
+      });
+
+      document.getElementById('navVault')?.addEventListener('click', function(e) {
+        e.preventDefault(); closeDropdown();
+        if (typeof window.showVault === 'function') window.showVault();
+      });
     })();
     </script>
   </body>

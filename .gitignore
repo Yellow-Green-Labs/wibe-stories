@@ -1,6 +1,6 @@
 SHAREABLE_PLATFORMS.md
 AGENTS.md
-PENDING.md
+frontlogs/
 remotion-demo/
 assets/i18n/NATIVE-REVIEW.md
 .claude/
@@ -21,20 +21,10 @@ backup/
 prototype-waveform-play.html
 prototype-voice-cards.html
 mockup-og-option-c.html
-preview-email.html
-occasion-email-preview.html
-pro-email-preview.html
 _start-dev.cmd
-
 .vercel
-C_WS-updates.md
 .env
 .env*.local
-.vercel
-
-.vercel
-
-NEEDS_DISCUSSION.md
 
 # Internal logs folder — team-only source files are git-ignored.
 # observer.js is un-ignored so it ships with the public site.

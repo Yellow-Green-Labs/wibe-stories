@@ -1047,6 +1047,22 @@ body.modal-open {
   color: var(--ink3);
   letter-spacing: 0.02em;
 }
+.pricing-price-sub {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--ink3);
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: -12px;
+}
+.pricing-price-footnote {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: var(--ink4, #77776a);
+  text-align: center;
+  margin-top: 8px;
+  font-style: italic;
+}
 .pricing-card-features {
   display: flex;
   flex-direction: column;

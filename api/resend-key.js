@@ -54,10 +54,10 @@ async function sendProKeyEmail(resendApiKey, { toEmail, toName, proKey }) {
               </div>
               <p style="margin:0 0 6px;font-size:0.8rem;color:#1a1a1a;font-weight:600">How to activate — two ways</p>
               <div style="background:#f0f0df;border-radius:8px;padding:14px 16px;margin-bottom:10px">
-                <p style="margin:0 0 6px;font-size:0.75rem;color:#77776a;text-transform:uppercase;letter-spacing:1px;font-weight:600">Via the footer menu</p>
+                <p style="margin:0 0 6px;font-size:0.75rem;color:#77776a;text-transform:uppercase;letter-spacing:1px;font-weight:600">Via the nav menu</p>
                 <ol style="margin:0;padding-left:14px;font-size:0.78rem;color:#555548;line-height:1.7">
                   <li>Open <a href="https://wibestories.vercel.app" style="color:#d97706;font-weight:600">Wibe Stories</a></li>
-                  <li>Tap the <span style="font-weight:600">?</span> icon in the footer, then tap <span style="font-weight:600">Pricing</span></li>
+                  <li>Tap the <span style="font-weight:600">&#8864;</span> grid icon in the nav bar, then tap <span style="font-weight:600">Unlock Pro</span></li>
                   <li>Go to the <span style="font-weight:600">Activate Key</span> tab</li>
                   <li>Paste your Pro key and tap <span style="font-weight:600">Continue</span></li>
                 </ol>

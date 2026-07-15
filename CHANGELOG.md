@@ -2,6 +2,11 @@
 
 > **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 65
 
+## [v0.11.24.0] — Vault Select UX Redesign (2026-07-15)
+
+### Changed
+- **Vault selection controls** — Select All moved from bottom action bar to header, unified alongside the Select/Cancel toggle. Select All toggles to Deselect All on click. Action bar now shows only count + Download/Delete actions.
+
 ## [v0.11.23.0] — Occasion Email Campaign Expansion (2026-07-09)
 
 ### Added
