@@ -173,10 +173,10 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 ## Wibe Vault system
 
 - `global/vault.js` — full-screen overlay invoked from footer menu or creation flow
-- `global/styles/vault.css` — CSS Grid layout (`auto-fill, minmax(150px, 1fr)`), `tile-in` staggered animation, audio badge with play toggle, Select All/Delete flow, toast Undo button
+- `global/styles/vault.css` — CSS Grid layout (`auto-fill, minmax(250px, 1fr)`), `tile-in` staggered animation, audio badge with play toggle, Select All/Delete flow, toast Undo button
 - **Storage**: Neon Postgres (`vault_cards` table) for Pro users, localStorage (`wsVaultCards`) for free users. `saveCardToVault()` in `wisprstories.js` saves automatically after upload for Pro users
 - **Lifecycle**: Open → load from Neon API (Pro) or localStorage (free) → render grid → select/delete/download (API for Pro, localStorage for free) → persist on mutation
-- **Pro auto-save**: On Create Card click (btnC), Pro users' cards are automatically uploaded in the background and saved to vault with a 6s Undo toast. Share button (btnS) detects the `_vaultAutoSaved` flag and skips re-uploading/re-saving — reuses the same `_shareBlob` and `_shortId`
+- **Pro auto-save**: On Create Card click (btnC), Pro users' cards are automatically uploaded in the background and saved to vault with a 6s Undo toast. Share button (btnS) never saves to vault — it reuses btnC's `_shareBlob` and `_shortId` via the `_vaultAutoSaved` shortcut path, or uploads fresh for the share flow without vault save
 - **Card images**: Card thumbnails show actual card image (`<img src="imageUrl">`) when `image_url` is stored in DB; falls back to occasion emoji
 - **Share from vault**: Copies `/c/:shortId` link (via clipboard or Web Share)
 - **Download from vault**: Download handler shows placeholder message (image download deferred)
@@ -193,5 +193,5 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-14; Phase 6 vault auto-save: removed vault save checkbox, added Pro auto-save on Create Card (btnC), not just Share (btnS), with _vaultAutoSaved guard to prevent btnS from re-saving; added CREATE TABLE IF NOT EXISTS to all 4 vault API endpoints; fixed toast z-index from 9999 to 999999; added image_url column to vault_cards table + ALL API endpoints; card images now display in vault tiles and card view; added spam prevention guard (_lastBtnCText/_lastBtnCName) to btnC handler. -->
+<!-- agsync: last-run 2026-07-15; Phase 6 fix round: removed btnS vault save block entirely (btnS never saves to vault — fixes duplicate card bug); CSS vault grid minmax 150px→250px; spam guard extended with localStorage persistence (wsLastCard key) for cross-session dedup; ALTER TABLE split into separate sql() calls in all 4 vault API endpoints to fix 500 error with @neondatabase/serverless HTTP. -->
 

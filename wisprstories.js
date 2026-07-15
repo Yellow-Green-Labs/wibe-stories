@@ -13,6 +13,8 @@ const PALS = [
 ];
 const PAL_NAMES = ['violet', 'amber', 'crimson', 'emerald', 'ocean', 'rose', 'orange', 'teal', 'fuchsia', 'indigo'];
 let customColor = null;
+try { var _wsLast = JSON.parse(localStorage.getItem("wsLastCard") || "null"); if (_wsLast) { window._lastBtnCText = _wsLast.text; window._lastBtnCName = _wsLast.name; } } catch (e) {}
+
 
 function isCustomColor() { return customColor !== null; }
 
@@ -3693,6 +3695,7 @@ document.getElementById("btnC").addEventListener("click", async () => {
     saveDraft();
     window._lastBtnCText = text;
     window._lastBtnCName = document.getElementById("nin").value.trim();
+    try { localStorage.setItem("wsLastCard", JSON.stringify({text: text, name: window._lastBtnCName})); } catch (e) {}
     if (typeof isSupporter === "function" && isSupporter() && typeof window.saveCardToVault === "function") {
       _shortId = null;
       window._vaultAutoSaved = true;
@@ -3964,19 +3967,7 @@ document.getElementById("btnS").addEventListener("click", async () => {
           if (voiceAttached && audioBlob) {
             try { await fetch("/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Voice] Upload failed:", ve); }
           }
-          if (!window._vaultAutoSaved && typeof isSupporter === "function" && isSupporter() && typeof window.saveCardToVault === "function") {
-            window.saveCardToVault({
-              text: document.getElementById("sta").value,
-              name: document.getElementById("nin").value,
-              authorName: document.getElementById("nin").value,
-              tone: curTone || "original",
-              hasAudio: voiceAttached && !!audioBlob,
-              audioUrl: audioBlob ? URL.createObjectURL(audioBlob) : "",
-              createdAt: new Date().toISOString(),
-              shortId: _shortId,
-              imageUrl: data.url || ""
-            });
-          }
+          // btnS never saves to vault — only btnC does
         }
       } catch (e) { console.error("[Share] Pre-upload failed:", e); }
     })();
