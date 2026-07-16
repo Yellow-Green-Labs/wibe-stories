@@ -189,10 +189,12 @@
         }
       }
     </script>
-    <script
-      src="https://js.sentry-cdn.com/2f532076fe099af23434206521f33835.min.js"
-      crossorigin="anonymous"
-    ></script>
+    <script src="assets/sentry/sentry.min.js"></script>
+    <script>
+      Sentry.init({
+        dsn: "https://2f532076fe099af23434206521f33835@o4511740959391744.ingest.us.sentry.io/4511743715377152"
+      });
+    </script>
   </head>
   <body id="top">
     <nav class="nav">
@@ -1279,7 +1281,6 @@
     })();
 
     // Sentry verify
-    Sentry.metrics.count('test_counter', 1);
     myUndefinedFunction();
     </script>
   </body>
