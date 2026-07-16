@@ -55,7 +55,7 @@ If any box is unchecked, you are not done. Fix it.
 
 # SEO & Security configuration
 
-See `documentation/WIBE_STORIES.md` for full details. A full Content-Security-Policy **is** set in `vercel.json` (allows `unpkg.com`, Google Fonts, and Vercel Blob). It does **not** break the Web Speech API, which is browser-native and needs no `connect-src` entry. All other security headers are in `vercel.json` too.
+See `documentation/WIBE_STORIES.md` for full details. A full Content-Security-Policy **is** set in `vercel.json` (allows `unpkg.com`, Google Fonts, Vercel Blob, Sentry CDN, and Sentry ingest). It does **not** break the Web Speech API, which is browser-native and needs no `connect-src` entry. All other security headers are in `vercel.json` too.
 
 # Deployment
 
