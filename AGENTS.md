@@ -89,6 +89,8 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - [ ] `docs/daily-capacity-system.md` — daily capacity system
 - [ ] `docs/Tanay-linkedin-posts.md` — Wispr Flow CEO thinking (mandatory per Tanay lens rule)
 - [ ] `frontlogs/EMAILS.md` — email types catalog (10 types, 3 implemented)
+- [ ] `frontlogs/USEFUL_SERVICES.md` — planned services (Sentry, Tally, ImageKit)
+- [ ] `frontlogs/PENDING.md` — pending changes (12 tracked changes)
 
 ## Project overview
 
@@ -119,6 +121,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `global/styles/vault.css` — Wibe Vault styles (CSS Grid layout, tile animations, audio badge, dark mode)
 - `global/styles/layout.css` — layout styles (footer menu divider)
 - `assets/i18n/` — 11 UI locales + `en.json`. **Do not regenerate deleted locales.**
+- `legal.html` — Legal page (License + Terms of Service & Privacy with Sentry disclosure)
 - `assets/i18n/i18n.js` — i18n loader with `data-i18n`, `getI18nSync()`
 - `assets/i18n/NATIVE-REVIEW.md` — per-locale review checklist
 - `assets/occasions/` — 60 occasion images (.png)
@@ -194,5 +197,5 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-15; Phase 7 desktop nav grid menu + footer popup trim + i18n rename + Pricing modal Wibe Pass + frontlogs/ folder: desktop nav gets grid button (⊞) with dropdown panel (6 items...) using .fmenu-panel/.fmenu-link classes; footer [?] popup trimmed to Read Articles, Submit Issues, How to Use, License & Terms + version; i18n key `footer.support` renamed to `footer.pricing` across all 11 locale JSONs; hamburger and grid both hide "Get occasion reminders" for Pro users; pricing modal: "Wibe Pro" → "Wibe Pass", "$3 /monthly" → "$6" + "Pre-paid · 1–12 months", CTA "Unlock Pro" → "Get Wibe Pass" linking to BMAC main page, footnote "No subscription · No auto-renewal" added. frontlogs/ folder created with EMAILS.md (10-type catalog), PENDING.md/NEEDS_DISCUSSION.md inside, ups_pres/ subfolder for email preview HTMLs; .gitignore simplified with single frontlogs/ entry. -->
+<!-- agsync: last-run 2026-07-16; Sentry integration + legal.html: Sentry SDK (loader script) added to wisprstories.html <head> with all options enabled (error monitoring, logs, metrics, tracing, session replay); Sentry verify snippet (intentional error) added before </body>; legal.html created with #license (proprietary license) and #terms (Terms of Service & Privacy with Sentry disclosure, vault access clause, third-party services list); /legal rewrite added to vercel.json; footer-menu.js split single "License & Terms" link into "License" → /legal#license and "Terms & Privacy" → /legal#terms; hamburger menu same split; footer.terms i18n key added to all 11 locale JSONs; about.html data privacy FAQ now links to /legal; AGENTS.md updated. -->
 

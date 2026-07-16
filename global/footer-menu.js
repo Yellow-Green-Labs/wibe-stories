@@ -161,8 +161,11 @@
       <a href="#" class="fmenu-link" id="fmenu-help">
         <i class="fa-solid fa-circle-question" aria-hidden="true"></i><span data-i18n="footer.help">How to Use</span>
       </a>
-      <a href="#" class="fmenu-link">
-        <i class="fa-solid fa-file-shield" aria-hidden="true"></i><span data-i18n="footer.license">License &amp; Terms</span>
+      <a href="/legal#license" class="fmenu-link">
+        <i class="fa-solid fa-file-lines" aria-hidden="true"></i><span data-i18n="footer.license">License</span>
+      </a>
+      <a href="/legal#terms" class="fmenu-link">
+        <i class="fa-solid fa-shield-halved" aria-hidden="true"></i><span data-i18n="footer.terms">Terms &amp; Privacy</span>
       </a>
       <div class="fmenu-version" id="fmenu-version">
         <span class="fmenu-version-number" id="fmenu-version-number"></span>
