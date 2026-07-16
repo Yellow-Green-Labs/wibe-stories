@@ -55,7 +55,7 @@ If any box is unchecked, you are not done. Fix it.
 
 # SEO & Security configuration
 
-See `documentation/WIBE_STORIES.md` for full details. A full Content-Security-Policy **is** set in `vercel.json` (allows `unpkg.com`, Google Fonts, Vercel Blob, Sentry CDN, and Sentry ingest). It does **not** break the Web Speech API, which is browser-native and needs no `connect-src` entry. All other security headers are in `vercel.json` too.
+See `docs/WIBE_STORIES.md` for full details. A full Content-Security-Policy **is** set in `vercel.json` (allows `unpkg.com`, Google Fonts, Vercel Blob, Sentry CDN, and Sentry ingest). It does **not** break the Web Speech API, which is browser-native and needs no `connect-src` entry. All other security headers are in `vercel.json` too.
 
 # Deployment
 
@@ -65,7 +65,7 @@ See `documentation/WIBE_STORIES.md` for full details. A full Content-Security-Po
 
 # Testing
 
-Main app testing is manual. See `documentation/WIBE_STORIES.md` for test scenarios.
+Main app testing is manual. See `docs/WIBE_STORIES.md` for test scenarios.
 
 Runnable verification scripts (Node.js 18+, Windows-friendly):
 - `node scripts/stress-test-99-cap.mjs` (add `--base=https://...` to test prod)
@@ -77,9 +77,9 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 
 # Documents referenced every session
 
-- [ ] `documentation/WIBE_STORIES.md` — full product documentation
-- [ ] `documentation/DEVELOPER.md` — developer guide (architecture, code structure, deployment)
-- [ ] `documentation/API.md` — API reference (25 endpoints, error codes, webhooks)
+- [ ] `docs/WIBE_STORIES.md` — full product documentation
+- [ ] `docs-internal/DEVELOPER.md` — developer guide (architecture, code structure, deployment)
+- [ ] `docs-internal/API.md` — API reference (25 endpoints, error codes, webhooks)
 - [ ] `docs/admin-setup.md` — admin activation setup
 - [ ] `docs/wispr_flow_company_intelligence.md` — Flow company background
 - [ ] `docs/wispr_flow_research.md` — Flow research notes
@@ -88,9 +88,13 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - [ ] `CHANGELOG.md` — session history
 - [ ] `docs/daily-capacity-system.md` — daily capacity system
 - [ ] `docs/Tanay-linkedin-posts.md` — Wispr Flow CEO thinking (mandatory per Tanay lens rule)
-- [ ] `frontlogs/EMAILS.md` — email types catalog (10 types, 3 implemented)
-- [ ] `frontlogs/USEFUL_SERVICES.md` — planned services (Sentry, Tally, ImageKit)
-- [ ] `frontlogs/PENDING.md` — pending changes (12 tracked changes)
+- [ ] `frontlogs/EMAILS.md` — email types catalog (10 types, 3 implemented, Resend/Loops split)
+- [ ] `frontlogs/USEFUL_SERVICES.md` — planned services (Sentry, Tally, Better Stack, Unkey, Loops, ImageKit, Ahrefs)
+- [ ] `frontlogs/PENDING.md` — pending changes (14 tracked changes)
+- [ ] `frontlogs/CURRENT.md` — current phase, task, next task
+- [ ] `frontlogs/DECISIONS.md` — decisions & reasoning
+
+If any of the `frontlogs/` files above are missing, tell the user to type `/checkpoint` to create them.
 
 ## Project overview
 
@@ -102,9 +106,12 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 
 ## Key files
 
-- `documentation/WIBE_STORIES.md` — full product documentation (vision, architecture, features, roadmap)
-- `documentation/DEVELOPER.md` — developer guide (getting started, code structure, deployment)
-- `documentation/API.md` — API reference (25 endpoints, error codes, webhooks)
+- `docs/WIBE_STORIES.md` — full product documentation (vision, architecture, features, roadmap)
+- `docs-internal/DEVELOPER.md` — developer guide (getting started, code structure, deployment)
+- `docs-internal/API.md` — API reference (25 endpoints, error codes, webhooks)
+- `docs/TRUST_CENTER.md` — services used (Deepgram, OpenRouter, Vercel, etc.)
+- `docs/ACKNOWLEDGEMENTS.md` — known issues (WebM audio, Firefox, translations)
+- `docs/LIMITATIONS.md` — product limitations (caps, expiry, moderation)
 - `api/voice.js` — audio upload endpoint (called after PNG upload with `X-Short-Id`)
 - `api/rewrite-confirm.js` — tone rewrite commit endpoint (Redis INCR on per-tone counter)
 - `api/rewrite-status.js` — read-only GET endpoint for per-tone counts from Redis
@@ -121,7 +128,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `global/styles/vault.css` — Wibe Vault styles (CSS Grid layout, tile animations, audio badge, dark mode)
 - `global/styles/layout.css` — layout styles (footer menu divider)
 - `assets/i18n/` — 11 UI locales + `en.json`. **Do not regenerate deleted locales.**
-- `legal.html` — Legal page (License + Terms of Service & Privacy with Sentry disclosure)
+- `legal/legal-index.html` — Legal hub (3 separate pages for License, Terms, Privacy)
 - `assets/i18n/i18n.js` — i18n loader with `data-i18n`, `getI18nSync()`
 - `assets/i18n/NATIVE-REVIEW.md` — per-locale review checklist
 - `assets/occasions/` — 60 occasion images (.png)
@@ -151,6 +158,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `global/about.js` — About page JS
 - `global/features.js` — Features page JS
 - `vercel.json` — deployment config, CSP security headers
+- `docs.json` — Mintlify documentation site config (navigation, Legal anchor)
 - `.vercelignore` — excludes remotion-demo/ from deployments
 - `sw.js` — service worker for offline font caching
 - `global/footer-menu.js` — footer menu rendering, i18n, reorder, occasion email subscription popup
@@ -162,11 +170,13 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `scripts/migrate-pro-emails.mjs` — one-time Pro email backfill into Redis set for occasion campaigns
 - `docs/every-design-decision-explained.md` — architecture Q&A
 - `docs/model-comparison.md` — model latency/pricing comparison for rewrite chains
+- `docs/PRICING.md` — pricing documentation (cost breakdown, profitability math, tiers, key naming, purchase flow, expiry timeline)
 - `assets/card-bgs/spiral-overlay.webp` — grayscale spiral overlay for custom color background (used with `background-blend-mode: overlay`)
 - `internal-logs/ilogs-ws.md` — acknowledged logs source-of-truth (git-ignored)
 - `internal-logs/observer.js` — keyboard shortcut handler for beacon redirect
 - `api/beacon.js` — redirect handler (reads `WS_EP` env var)
 - `api/download/[id].js` — download proxy (serves Blob files with `Content-Disposition: attachment`)
+- `docs/ROADMAP.md` — Product roadmap placeholder
 - `lib/neon.js` — Neon Postgres connection singleton (edge-compatible HTTP query via `@neondatabase/serverless`)
 - `api/vault/list.js` — GET vault cards for a Pro key (Neon query, camelCase response)
 - `api/vault/save.js` — POST save a vault card (validates Pro key, enforces 50-card limit, Neon insert)
@@ -197,5 +207,6 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-16; Sentry integration + legal.html: Sentry SDK (loader script) added to wisprstories.html <head> with all options enabled (error monitoring, logs, metrics, tracing, session replay); Sentry verify snippet (intentional error) added before </body>; legal.html created with #license (proprietary license) and #terms (Terms of Service & Privacy with Sentry disclosure, vault access clause, third-party services list); /legal rewrite added to vercel.json; footer-menu.js split single "License & Terms" link into "License" → /legal#license and "Terms & Privacy" → /legal#terms; hamburger menu same split; footer.terms i18n key added to all 11 locale JSONs; about.html data privacy FAQ now links to /legal; AGENTS.md updated. -->
+<!-- agsync: last-run 2026-07-17; Mintlify docs restructure + legal hub. Docs: API.md/DEVELOPER.md moved to docs-internal/, TRUST_CENTER.md/ACKNOWLEDGEMENTS.md/LIMITATIONS.md created, docs.json at repo root with Mintlify nav + Legal anchor. Legal: single legal.html → legal/ folder with hub + 3 sub-pages (license.html, terms.html, privacy.html), legal.css, legal.js. Vercel routes /legal, /legal/license, /legal/terms, /legal/privacy. Footer and hamburger menu links updated. AGENTS.md/docs/CHANGELOG updated. -->
+
 

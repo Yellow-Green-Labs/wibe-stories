@@ -129,7 +129,8 @@
     "issues": "Submit Issues",
     "help": "How to Use",
     "license": "License",
-    "terms": "Terms & Privacy"
+    "terms": "Terms & Privacy",
+    "docs": "Documentation"
   },
   "hamburger": {
     "subscribe": "Get occasion reminders"

@@ -9,7 +9,7 @@ mobile.ps1
 start-mobile.ps1
 .bak/
 legacy/
-docs/*
+docs-internal/
 Birthday cake-pana.svg
 server.log
 *.log

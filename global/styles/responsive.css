@@ -463,11 +463,24 @@
 }
 /* Nav grid dropdown — positioned below the button in .nav-right */
 #navDropdown {
+  --fmenu-bg: #2a2a2a;
+  --fmenu-border: rgba(255, 255, 235, 0.12);
+  --fmenu-text: #c0c0b0;
+  --fmenu-text-dim: #a0a090;
+  --fmenu-accent: #f59e0b;
+  --fmenu-font-main: "Space Grotesk", sans-serif;
   position: absolute;
   top: calc(100% + 8px);
+  bottom: auto;
   right: 0;
   left: auto;
   z-index: 300;
+}
+:root:not(.dark) #navDropdown {
+  --fmenu-bg: #f5f1e6;
+  --fmenu-border: rgba(26, 26, 26, 0.12);
+  --fmenu-text: #555548;
+  --fmenu-text-dim: #77776a;
 }
 /* Hide grid button and its dropdown on mobile */
 @media (max-width: 720px) {

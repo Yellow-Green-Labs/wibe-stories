@@ -66,9 +66,9 @@ No account, no install, no build step. The front end is plain HTML, CSS, and Jav
 ## Documentation
 
 - **[Features](https://wibestories.vercel.app/features)** — the 5 capabilities: Speak, Write, Rewrite, Design, Share.
-- **[Product documentation](documentation/WIBE_STORIES.md)** — product vision, features, design system, architecture, and roadmap.
-- **[Developer guide](documentation/DEVELOPER.md)** — technical onboarding, code structure, deployment, and development workflow.
-- **[API reference](documentation/API.md)** — all 25 serverless endpoints, request/response specs, and error codes.
+- **[Product documentation](docs/WIBE_STORIES.md)** — product vision, features, design system, architecture, and roadmap.
+- **[Developer guide](docs-internal/DEVELOPER.md)** — technical onboarding, code structure, deployment, and development workflow.
+- **[API reference](docs-internal/API.md)** — all 25 serverless endpoints, request/response specs, and error codes.
 
 ## License
 

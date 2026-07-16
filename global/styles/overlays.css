@@ -1063,6 +1063,154 @@ body.modal-open {
   margin-top: 8px;
   font-style: italic;
 }
+
+/* Gift banner above pricing cards */
+.pricing-gift-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(217, 119, 6, 0.25);
+  background: rgba(217, 119, 6, 0.06);
+}
+.pricing-gift-icon {
+  font-size: clamp(20px, 0.5vw + 18px, 24px);
+  flex-shrink: 0;
+  line-height: 1;
+}
+.pricing-gift-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.pricing-gift-title {
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.pricing-gift-desc {
+  font-size: clamp(10px, 0.2vw + 10px, 11px);
+  color: var(--ink3);
+  line-height: 1.3;
+}
+.pricing-gift-cta {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: clamp(11px, 0.2vw + 11px, 12px);
+  font-weight: 600;
+  color: var(--feat-accent, #e69500);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(217, 119, 6, 0.3);
+  transition: background 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.pricing-gift-cta:hover {
+  background: rgba(217, 119, 6, 0.1);
+}
+.pricing-gift-cta i {
+  font-size: 10px;
+}
+
+/* Tier list inside Pro card */
+.pricing-tiers {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 18px;
+}
+.pricing-tier-row {
+  display: flex;
+  align-items: center;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--rule);
+  background: var(--cream2);
+  transition: border-color 0.15s, background 0.15s;
+}
+.pricing-tier-row:hover {
+  border-color: var(--feat-accent);
+  background: rgba(230, 149, 0, 0.04);
+}
+.pricing-tier-label {
+  flex: 1;
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  font-weight: 600;
+  color: var(--ink);
+  min-width: 0;
+}
+.pricing-tier-badge {
+  display: inline-block;
+  font-size: 0.7em;
+  font-weight: 700;
+  color: var(--feat-accent, #e69500);
+  margin-left: 4px;
+  vertical-align: middle;
+}
+.pricing-tier-price {
+  font-weight: 700;
+  font-size: clamp(14px, 0.3vw + 13px, 16px);
+  color: var(--ink);
+  margin-right: 6px;
+  font-family: var(--serif);
+}
+.pricing-tier-unit {
+  font-size: clamp(10px, 0.2vw + 10px, 11px);
+  color: var(--ink3);
+  white-space: nowrap;
+}
+.pricing-tier-best {
+  border-color: var(--feat-accent, #e69500);
+  background: rgba(230, 149, 0, 0.06);
+}
+:root.dark .pricing-tier-row {
+  background: rgba(255, 255, 235, 0.05);
+  border-color: rgba(255, 255, 235, 0.12);
+}
+:root.dark .pricing-tier-row:hover {
+  border-color: var(--feat-accent);
+}
+:root.dark .pricing-tier-best {
+  background: rgba(230, 149, 0, 0.04);
+  border-color: var(--feat-accent);
+}
+:root.dark .pricing-tier-label {
+  color: #ffffeb;
+}
+:root.dark .pricing-tier-price {
+  color: #ffffeb;
+}
+:root.dark .pricing-gift-banner {
+  background: rgba(230, 149, 0, 0.04);
+  border-color: rgba(217, 119, 6, 0.2);
+}
+:root.dark .pricing-gift-title {
+  color: #ffffeb;
+}
+:root.dark .pricing-gift-cta {
+  border-color: rgba(217, 119, 6, 0.3);
+}
+:root.dark .pricing-gift-cta:hover {
+  background: rgba(230, 149, 0, 0.08);
+}
+
+@media (max-width: 540px) {
+  .pricing-gift-banner {
+    flex-wrap: wrap;
+  }
+  .pricing-gift-cta {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 .pricing-card-features {
   display: flex;
   flex-direction: column;

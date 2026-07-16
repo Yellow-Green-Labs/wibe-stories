@@ -1,0 +1,39 @@
+# Limitations
+
+These are constraints we chose on purpose. They are not bugs — they are product decisions listed here so you understand what we have prioritized.
+
+## Daily caps exist to keep the service sustainable
+
+Free tier: 5 recordings per day, 1 tone rewrite per tone per day, 15-second recording length. Pro removes the caps and extends recordings to 30 seconds. Caps prevent abuse and keep infrastructure costs manageable.
+
+## Recordings are 15 seconds (free) or 30 seconds (Pro)
+
+Long enough for one complete thought. Multiple thoughts are better as separate cards. The cap is driven by speech-to-text costs.
+
+## Card text is capped at 150 characters
+
+Shorter messages make better-looking, more shareable cards. 150 characters fits a thoughtful sentence without overflowing the card design. A 10-character invisible grace zone prevents cutting mid-word.
+
+## Shared links expire after 7 days (14 for Pro)
+
+Stale cards cost storage and bandwidth. 7 days is long enough for recipients to see the card, while keeping hosting costs finite. Downloaded images are yours to keep forever.
+
+## We do not run automated content moderation
+
+No automated filter exists for card text or voice recordings. Daily caps make bulk abuse impractical, but a determined user can create any content. We review reported content manually and plan to address this gap in the future.
+
+## Older Safari versions show slightly different layouts
+
+The current Safari version and two previous majors are fully supported. Older versions may show tighter spacing and different card aspect ratios — graceful degradations, not bugs.
+
+## Cards are available in one size only (1:1 square)
+
+We previously offered four sizes. On mobile, the wider sizes got cropped and the background illustration was cut off. The 1:1 square is the one size that looks right on every screen and fits every social media share preview.
+
+## Textarea has an invisible 10-character grace
+
+The visible cap is 150 characters, but the system quietly allows up to 160. The extra 10 characters exist so the system does not aggressively cut your message mid-word. The card image, transcription, and tone rewriting all use the first 150 characters.
+
+## Uploaded audio transcription may not exactly match the card text
+
+When you upload a WAV or MP3 file, the audio runs through the same speech-to-text engine as live recordings. Background noise, accent, speaking speed, and audio quality all affect accuracy. You can edit the text box manually or tap reset to try again.

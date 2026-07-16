@@ -115,7 +115,8 @@
     "issues": "Submit Issues",
     "help": "How to Use",
     "license": "License",
-    "terms": "Terms & Privacy"
+    "terms": "Terms & Privacy",
+    "docs": "Documentation"
   },
   "shareModal": {
     "title": "카드 공유하기",

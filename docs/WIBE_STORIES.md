@@ -1,6 +1,6 @@
 # Wibe Stories — Product Documentation
 
-> For the developer guide (architecture, code structure, deployment), see [DEVELOPER.md](DEVELOPER.md).
+> For the developer guide (architecture, code structure, deployment), see [DEVELOPER.md](../docs-internal/DEVELOPER.md).
 
 > **Branding note**
 >

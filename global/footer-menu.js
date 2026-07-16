@@ -161,10 +161,13 @@
       <a href="#" class="fmenu-link" id="fmenu-help">
         <i class="fa-solid fa-circle-question" aria-hidden="true"></i><span data-i18n="footer.help">How to Use</span>
       </a>
-      <a href="/legal#license" class="fmenu-link">
+      <a href="/kb" class="fmenu-link">
+        <i class="fa-solid fa-book" aria-hidden="true"></i><span data-i18n="footer.docs">Documentation</span>
+      </a>
+      <a href="/legal/license" class="fmenu-link">
         <i class="fa-solid fa-file-lines" aria-hidden="true"></i><span data-i18n="footer.license">License</span>
       </a>
-      <a href="/legal#terms" class="fmenu-link">
+      <a href="/legal/terms" class="fmenu-link">
         <i class="fa-solid fa-shield-halved" aria-hidden="true"></i><span data-i18n="footer.terms">Terms &amp; Privacy</span>
       </a>
       <div class="fmenu-version" id="fmenu-version">

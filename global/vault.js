@@ -593,7 +593,8 @@
     if (retries > 50) return;
     var label = document.getElementById("fmenu-vault-label");
     var hmLabel = document.getElementById("hmVaultLabel");
-    if (!label && !hmLabel) return;
+    var navLabel = document.getElementById("navVaultLabel");
+    if (!label && !hmLabel && !navLabel) return;
     if (typeof window.isSupporter !== "function") {
       setTimeout(function () { updateMenuLabel(retries + 1); }, 100);
       return;
@@ -601,6 +602,7 @@
     var vaultText = isPro() ? "Wibe Vault" : 'Wibe Vault <b class="pro-badge">Pro</b>';
     if (label) label.innerHTML = vaultText;
     if (hmLabel) hmLabel.innerHTML = vaultText;
+    if (navLabel) navLabel.innerHTML = vaultText;
   }
 
   /* ── Open / Close ── */
