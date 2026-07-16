@@ -1,27 +1,37 @@
 # Changelog
 
-> **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 65
+> **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 71
 
-## [Unreleased] — Pricing Overhaul & Wibe Pass
+## [v0.11.24.1] — Docs Restructure + Legal Hub (2026-07-17)
 
 ### Added
-- `docs/ROADMAP.md` — Placeholder roadmap document linked from footer menu.
-- Footer Documentation link (`fa-book`) in footer menu pointing to `/kb`.
+- **Mintlify docs restructure** — API.md/DEVELOPER.md moved to `docs-internal/`; TRUST_CENTER.md, ACKNOWLEDGEMENTS.md, LIMITATIONS.md created in `docs/`; `docs.json` at repo root with 5 nav groups + Legal anchor.
+- **Legal hub** — Single `legal.html` replaced with `legal/` folder: hub page (`legal-index.html`) + 3 sub-pages (license.html, terms.html, privacy.html) with `legal.css` and `legal.js`. Vercel routes for `/legal`, `/legal/license`, `/legal/terms`, `/legal/privacy`.
+- **Legal wiring** — Footer and hamburger menu links updated from `/legal#license` to `/legal/license`, `/legal#terms` to `/legal/terms`.
+- `docs/ROADMAP.md` — Placeholder roadmap linked from footer menu.
+- Footer Documentation link (`fa-book`) pointing to `/kb`.
 - `footer.docs` i18n key in all 11 locale files.
-- Vercel rewrites proxying `/kb` to Mintlify (`wibestories.mintlify.site/kb`).
-- CSP `style-src` added `cdn.jsdelivr.net` for Calendar Drawer.
-- `docs/PRICING.md` — Full pricing documentation with cost breakdown, 4-tier Wibe Pass, stackable credit system.
-- Gift card banner (amber) above pricing cards with BMAC link.
+- Vercel rewrites proxying `/kb` to Mintlify.
+- CSP `style-src` added `cdn.jsdelivr.net`.
+- `docs/PRICING.md` — Full pricing documentation, 4-tier Wibe Pass, stackable credit system.
+- Gift card banner (amber) in pricing modal with BMAC link.
 - 3-tier pricing rows in Pro card (1mo $6, 3mo $16, 12mo $60).
 
 ### Changed
+- `CHANGELOG.md` — Condensed from ~850 verbose lines to concise one-liners per version.
 - `global/pricing-modal.js` — Replaced single $6 card with 4-tier layout + gift banner.
-- `global/styles/overlays.css` — Added gift banner and tier-list styles.
-- `frontlogs/*` — Platform column in EMAILS.md, Better Stack/Unkey in USEFUL_SERVICES.md, CHANGE 13 in PENDING.md.
-- `AGENTS.md` — Updated docs references, added pricing session summary.
+- `global/styles/overlays.css` — Added gift banner and tier-list CSS.
+- `global/styles/responsive.css` — Nav dropdown dark/light mode CSS variables.
+- `global/vault.js` — Grid menu vault label support.
+- `legal.html` → `legal/` folder with hub + 3 sub-pages.
+- `vercel.json` — Legal routes updated, Mintlify proxy added.
+- `wisprstories.html` — Hamburger menu legal links updated.
+- `AGENTS.md`, `README.md` — Updated doc paths.
 
 ### Removed
-- Subscription model — Replaced with Wibe Pass stackable credit model (no existing subscribers to transition).
+- Subscription model — Replaced with Wibe Pass stackable credit.
+- Old `legal.html` — Replaced by `legal/` folder.
+- `docs/internal/` — Content moved to `docs-internal/`.
 
 ## [v0.11.24.0] — Vault Select UX Redesign (2026-07-15)
 
