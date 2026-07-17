@@ -27,6 +27,9 @@ YOU ARE NOT DONE UNTIL THIS FILE IS UPDATED. Before ending your session, verify 
 - Delegate smaller/parallel tasks to subagents aggressively.
 - Start with **Explore** (read-only) when uncertain; switch to **General** only when a bounded task is clear.
 - Keep all changes reversible when possible.
+- **Documentation truth rule (public docs):** `docs-src/` must state *what and why*, never *how* — omit service names (Redis, Neon, Postgres, Vercel Blob), storage keys, session mechanics, rate limits, internal endpoints, cron schedules, exact thresholds, and file paths. If a public doc needs to reference an internal detail, link to the internal file instead.
+- **Documentation truth rule (internal docs):** `docs-internal/` must be 100% truthful with no gaps. Every constraint, mechanism, and threshold that exists in the code must be documented somewhere in `docs-internal/`.
+- **Leak detection**: Before writing or editing any public doc, cross-check every number, name, and mechanism against the leak list above. If uncertain, move the detail to `docs-internal/` and link.
 
 ## MANDATORY: Self-update rule
 
@@ -83,7 +86,8 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - [ ] `docs-src/.vitepress/config.js` — VitePress configuration (cleanUrls, logo, nav, sidebar, base path, fonts)
 - [ ] `docs-src/.vitepress/theme/custom.css` — VitePress custom theme (fonts, colors, links)
 - [ ] `docs-internal/DEVELOPER.md` — developer guide (architecture, code structure, deployment)
-- [ ] `docs-internal/API.md` — API reference (25 endpoints, error codes, webhooks)
+- [ ] `docs-internal/API.md` — API reference (29 endpoints, error codes, webhooks)
+- [ ] `docs-internal/limitations.md` — internal truth counterpart to public limitations
 - [ ] `docs-internal/admin-setup.md` — admin activation setup
 - [ ] `docs-internal/wispr_flow_company_intelligence.md` — Flow company background
 - [ ] `docs-internal/wispr_flow_research.md` — Flow research notes
@@ -126,7 +130,8 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `docs-src/updates/changelog.md` — version history
 - `docs-src/legal/` — 4 legal pages (License, Terms, Privacy, Refund Policy) in VitePress Markdown, path-keyed sidebar under `/legal/`
 - `docs-internal/DEVELOPER.md` — developer guide (getting started, code structure, deployment)
-- `docs-internal/API.md` — API reference (25 endpoints, error codes, webhooks)
+- `docs-internal/API.md` — API reference (29 endpoints, error codes, webhooks)
+- `docs-internal/limitations.md` — internal truth counterpart to public limitations
 - `api/voice.js` — audio upload endpoint (called after PNG upload with `X-Short-Id`)
 - `api/rewrite-confirm.js` — tone rewrite commit endpoint (Redis INCR on per-tone counter)
 - `api/rewrite-status.js` — read-only GET endpoint for per-tone counts from Redis
@@ -219,6 +224,6 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-17; Legal docs migrated to VitePress: deleted legal/ folder (6 files), created docs-src/legal/*.md (4 pages), path-keyed sidebar in config.js, single "Legal" footer link, vercel.json redirects, en.json i18n key. -->
+<!-- agsync: last-run 2026-07-17; Legal docs migrated to VitePress: deleted legal/ folder (6 files), created docs-src/legal/*.md (4 pages), path-keyed sidebar in config.js, single "Legal" footer link, vercel.json redirects, en.json i18n key. Created docs-internal/limitations.md as internal truth counterpart. Added Documentation truth rules to mandatory rules. Added vault endpoints (13. Wibe Vault) to docs-internal/API.md. Rewrote docs-src/reference/limitations.md with all leaks removed. Rewrote docs-src/product-guide/wibe-stories.md — fixed 7 leaks, corrected RTL claim (disabled), synced roadmap (links to roadmap.md), replaced Tech Stack with trust-center link, updated "Pro subscription" → "Wibe Pass", removed "Live prototype" → "Live product", fixed LLM→AI language, removed cron/UTC/endpoint leaks. -->
 
 

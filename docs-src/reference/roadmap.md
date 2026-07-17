@@ -21,7 +21,7 @@ This roadmap outlines what we're building next and what we've recently shipped. 
 ### Recently Shipped
 
 - **Wibe Pass pricing** — Stackable credit system replacing subscriptions. Four tiers from $6 to $60.
-- **Pro vault** — Server-side card storage with Neon Postgres, 50-card limit, cross-device sync via Pro key.
+- **Pro vault** — Server-side card storage with 50-card limit, cross-device sync via Pro key.
 - **Occasion email campaigns** — Daily occasion reminders for 30 global dates.
 - **Custom color picker** — Full color wheel with sliders for Pro users.
 - **46 speech languages, 11 UI locales** — Expanded language support.

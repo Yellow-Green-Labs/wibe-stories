@@ -31,12 +31,19 @@
     headers['X-Admin-Secret'] = adminSecret;
   }
 
-  // Include Pro key header (server validates it — no separate /api/pro-status call needed)
-  var storedKey;
-  try { storedKey = localStorage.getItem('wsProKey'); } catch (_e) {}
-  var isPro = !!storedKey;
-  if (storedKey) {
-    headers['X-Pro-Key'] = storedKey;
+  // Include Pro session token or raw key (backward compat) — server validates both
+  var storedToken;
+  try { storedToken = localStorage.getItem('wsSessionToken'); } catch (e) {}
+  var isPro = !!storedToken;
+  if (storedToken) {
+    headers['X-Session-Token'] = storedToken;
+  } else {
+    var storedKey;
+    try { storedKey = localStorage.getItem('wsProKey'); } catch (e) {}
+    if (storedKey) {
+      headers['X-Pro-Key'] = storedKey;
+      isPro = true;
+    }
   }
 
   // Call /api/usage

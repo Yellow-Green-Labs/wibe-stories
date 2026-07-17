@@ -58,7 +58,7 @@
       .then(function (r) { return r.json(); })
       .then(function (data) {
         if (data.isPro === true) {
-          try { localStorage.setItem("wsSupporter", "true"); localStorage.setItem("wsProKey", key); localStorage.setItem("wsSupporterVerifiedAt", String(Date.now())); } catch (e) {}
+          try { localStorage.setItem("wsSupporter", "true"); localStorage.setItem("wsSessionToken", data.sessionToken || ""); localStorage.setItem("wsSupporterVerifiedAt", String(Date.now())); if (data.sessionToken) localStorage.removeItem("wsProKey"); } catch (e) {}
           if (typeof window.updateSupporterBadge === "function") window.updateSupporterBadge();
           setMsg("pricingKeyMsg", "\u2713 Pro activated! You can close this window.", true);
         } else {
@@ -236,7 +236,7 @@
     document.getElementById("pricingOverlay").classList.add("show");
     document.body.classList.add("modal-open");
     var hasKey = false;
-    try { hasKey = !!localStorage.getItem("wsProKey"); } catch (e) {}
+    try { hasKey = !!localStorage.getItem("wsSessionToken") || !!localStorage.getItem("wsProKey"); } catch (e) {}
     switchTab(hasKey ? "key" : "plans");
     setTimeout(positionProSlider, 50);
   }

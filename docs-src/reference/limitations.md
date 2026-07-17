@@ -8,54 +8,68 @@ title: Limitations
 
 These are constraints we chose on purpose. They are not bugs — they are product decisions listed here so you understand what we have prioritized.
 
+### No user accounts
+
+Wibe Stories does not require a login or sign-up. You open the page and start creating cards immediately — no email, no password, no account to create.
+
+- Your cards, settings, and preferences are tied to the browser you are using. They do not follow you across devices.
+- Clearing browser data removes everything associated with that session.
+- A Pro key is the way to access your stored cards from any browser. As long as you have the key, your cards are available on any device.
+
+**Why no accounts?**
+
+User accounts would require a server-side identity layer — authentication, password management, email verification, session tokens — that does not align with the current scope of the app. The Pro key system solves the one case where cross-device access matters without a full account system.
+
+We may revisit this decision in the future, but have no concrete plans to build a full account system.
+
 ### Daily caps keep the service sustainable
 
-Free tier: 5 recordings per day, 1 tone rewrite per tone per day, 15-second max recording length, 75 seconds cumulative audio per day. Pro raises recordings to 50 per day and cumulative audio to 900 seconds (15 minutes), and makes rewrites unlimited.
+Free tier: 5 recordings per day, 1 tone rewrite per tone per day, 15-second max recording length. Pro raises recordings to 50 per day and makes rewrites unlimited.
 
-- **Sustainability:** STT costs per audio second and LLM rewrite costs per call both scale with usage. Caps keep infrastructure bills predictable.
-- **Abuse prevention:** Scripts that create hundreds of cards per minute for SEO spam farms or scrape rewritten phrases for training datasets are blocked by daily limits.
+- **Sustainability:** Speech-to-text and tone rewrite costs both scale with usage. Caps keep infrastructure bills predictable.
+- **Abuse prevention:** Scripts that create large numbers of cards per minute or scrape rewritten phrases are blocked by daily limits.
 - **Pro accounts** provide a verified payment method that can be revoked if abuse is detected.
-- The counter color degrades visually: gray (0–119 used) → yellow (120–150) → red (151–160). At the cap a "5/5" toast appears and recordings are blocked.
+- The recording counter changes color as you approach the limit, and recordings are blocked once you reach it.
 
-### The free tier has a shared 99-user daily capacity pool
+### The free tier has a shared daily capacity pool
 
-Free users share a 99-user-per-day pool. When the pool is reached, new users see a full-screen capacity overlay; users already active are grandfathered in.
+Free users share a daily capacity pool. When the pool is reached, new users see a full-screen overlay; users already active are not affected.
 
-- This caps the maximum daily infrastructure cost, not individual usage — the 99-user pool keeps the service free for everyone.
+- This caps the maximum daily infrastructure cost, not individual usage.
 - Pro users bypass this cap entirely.
-- The cap resets at midnight UTC daily.
+- The cap resets daily.
 
 ### Recordings are 15 seconds (free) or 30 seconds (Pro)
 
-The limit is driven by STT cost structure, which charges per audio second.
+The limit is driven by speech-to-text costs.
 
-- 15 seconds captures one complete thought. Longer recordings tend to contain multiple thoughts (better as separate cards) or silence.
-- The recording toolbar shows a live countdown timer with the last 3 seconds highlighted in red.
-- Uploaded WAV or MP3 files (up to 6 MB) run through the same STT engine with the same length limits. Accuracy depends on file quality, background noise, and accent. Edit the text box or tap reset to try again.
+- 15 seconds captures one complete thought. Longer recordings tend to contain multiple thoughts or silence.
+- The recording toolbar shows a live countdown timer with the last seconds highlighted in red.
+- Uploaded WAV or MP3 files run through the same transcription engine with the same length limits. Accuracy depends on file quality, background noise, and accent. Edit the text box or tap reset to try again.
 
 ### Card text is capped at 150 characters
 
 Shorter messages make better-looking, more shareable cards.
 
-- 150 characters fits a thoughtful sentence without overflowing the card canvas. Most stock example phrases fit comfortably.
-- The counter turns red and the Done button disables past 150, but the textarea does not block input — you can see what you would lose by shortening.
-- An invisible 10-character grace zone (up to 160) prevents cutting a final word like "friend" mid-letter. The card image, transcription, and tone rewriting all use the first 150 characters.
+- 150 characters fits a thoughtful sentence without overflowing the card canvas. Most example phrases fit comfortably.
+- The counter turns red and the Done button disables past 150, but the text area does not block input — you can see what you would lose by shortening.
+- An invisible grace zone of a few extra characters prevents cutting a final word mid-letter. The card image, transcription, and tone rewriting all use the first 150 characters.
 
 ### Shared links expire after 7 days (14 for Pro)
 
-A daily cleanup cron at midnight UTC removes expired card data.
+A cleanup process runs daily to remove expired card data.
 
-- **Deleted:** card image (Vercel Blob), voice recording (Blob), and metadata sidecar (`meta/<id>.json`).
-- **Preserved:** Downloaded images are yours forever. Cards saved to the vault are exempt from cleanup (cross-referenced against the `vault_cards` Neon table on every cleanup pass).
+- **Deleted:** card image, voice recording, and associated metadata.
+- **Preserved:** Downloaded images are yours forever. Cards saved to the vault are exempt from cleanup.
 
 ### We do not run automated content moderation
 
 No automated filter exists for card text or voice recordings.
 
-- Daily caps make bulk automated abuse impractical — a script creating 1,000 cards per minute hits the cap in seconds.
+- Daily caps make bulk automated abuse impractical.
 - A determined user can create any content. A reporting mechanism is planned but not yet implemented.
 
-### Cards are available in one size only (square)
+### Cards are available in one size only
 
 We previously offered four sizes (1:1, 9:16, 4:5, 16:9). On mobile, the wider sizes got cropped, the background illustration was cut off, and social media previews were inconsistent. After testing across multiple devices, only the square works reliably on every screen.
 
@@ -63,30 +77,20 @@ We previously offered four sizes (1:1, 9:16, 4:5, 16:9). On mobile, the wider si
 
 ### Vault storage is capped at 50 cards for Pro users
 
-Pro vault cards are stored server-side in Neon Postgres and persist across sessions. The 50-card limit protects the shared database from bulk abuse.
+Pro vault cards are stored on the server and persist across sessions. The 50-card limit protects against bulk abuse.
 
-- Free users' vault data lives in browser localStorage — no cap, but data is lost on browser storage clear.
-- The vault shows a count badge ("5/50") to make the limit visible. Select and delete to stay under the cap.
+- Free users' vault data stays in the browser — no cap, but data is lost on browser data clear.
+- The vault shows a count badge to make the limit visible. Select and delete to stay under the cap.
 
-### Audio uploads are limited to 6 MB, WAV or MP3 only
+### Audio uploads are limited in size and format
 
-Uploaded audio files are validated both client-side and server-side.
+Uploaded audio files are validated before processing.
 
-- Client validates: MIME type (`audio/wav`, `audio/mpeg`, etc.) and file extension (`.wav`, `.mp3`).
-- Server validates: total size ≤ 6 MB, duration via AudioContext decode.
-- Larger files or unsupported formats are rejected with a clear toast message.
-
-### No user accounts — everything is session-based
-
-There is no login, no sign-up, and no persistent user identity. A session ID in sessionStorage identifies you for the current browsing session.
-
-- Your recordings, cards, and draft text reset on browser data clear.
-- The Pro key (stored in localStorage) is the only persistent identifier — it unlocks vault sync across devices. Without it, everything is ephemeral.
-- This is an intentional trade-off: no account friction means instant use, at the cost of cross-device state.
+- Accepted formats: WAV and MP3.
+- Files that exceed the size limit are rejected with a clear message.
 
 ### Older Safari versions may show slightly different layouts
 
 Older Safari versions may show tighter spacing and slightly different card aspect ratios — graceful degradations, not bugs.
 
 ---
-

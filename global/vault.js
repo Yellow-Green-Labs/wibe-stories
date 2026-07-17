@@ -23,16 +23,16 @@
     return cards;
   }
 
-  function getProKey() {
-    try { return localStorage.getItem("wsProKey") || ""; } catch (e) { return ""; }
+  function getSessionToken() {
+    try { return localStorage.getItem("wsSessionToken") || localStorage.getItem("wsProKey") || ""; } catch (e) { return ""; }
   }
 
   async function loadCards() {
     if (isPro()) {
-      var key = getProKey();
-      if (key) {
+      var token = getSessionToken();
+      if (token) {
         try {
-          var res = await fetch("/api/vault/list", { headers: { "X-Pro-Key": key } });
+          var res = await fetch("/api/vault/list", { headers: { "X-Session-Token": token } });
           if (res.ok) {
             var data = await res.json();
             if (data.cards && data.cards.length > 0) {
@@ -48,10 +48,10 @@
           try {
             await fetch("/api/vault/migrate", {
               method: "POST",
-              headers: { "Content-Type": "application/json", "X-Pro-Key": key },
+              headers: { "Content-Type": "application/json", "X-Session-Token": token },
               body: JSON.stringify({ cards: stored })
             });
-            var res2 = await fetch("/api/vault/list", { headers: { "X-Pro-Key": key } });
+            var res2 = await fetch("/api/vault/list", { headers: { "X-Session-Token": token } });
             if (res2.ok) {
               var data2 = await res2.json();
               if (data2.cards && data2.cards.length > 0) {
@@ -478,12 +478,12 @@
       var id = _pendingCardViewDeleteId;
       _pendingCardViewDeleteId = null;
       if (isPro()) {
-        var key = getProKey();
-        if (key) {
+        var token = getSessionToken();
+        if (token) {
           try {
             await fetch("/api/vault/delete", {
               method: "POST",
-              headers: { "Content-Type": "application/json", "X-Pro-Key": key },
+              headers: { "Content-Type": "application/json", "X-Session-Token": token },
               body: JSON.stringify({ ids: [id] })
             });
           } catch (e) {}
@@ -502,12 +502,12 @@
       return;
     }
     if (isPro()) {
-      var key = getProKey();
-      if (key) {
+      var token = getSessionToken();
+      if (token) {
         try {
           await fetch("/api/vault/delete", {
             method: "POST",
-            headers: { "Content-Type": "application/json", "X-Pro-Key": key },
+            headers: { "Content-Type": "application/json", "X-Session-Token": token },
             body: JSON.stringify({ ids: Object.keys(selectedIds) })
           });
         } catch (e) {}

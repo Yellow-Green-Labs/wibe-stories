@@ -1,7 +1,7 @@
 export const config = { runtime: 'edge' };
 
 import { getRedis, KEYS } from '../lib/redis.js';
-import { validateProKey } from '../lib/pro-key.js';
+import { resolveProKey } from '../lib/session.js';
 
 // Free-tier quota is enforced per tone, per day.
 // Each tone has its own 1-rewrite daily budget (1 x 6 tones = 6 max/day).
@@ -122,14 +122,14 @@ export default async function handler(req) {
       });
     }
 
-    // Validate pro status server-side — checks revoked and expiresAt.
+    // Validate pro status server-side via session token or raw key.
     // Never trust the client-sent isPro flag — proKey is validated here directly.
     // Fail closed: if Redis is unavailable, treat as free user.
     let isPro = false;
     if (proKey) {
       try {
         const redis = getRedis();
-        const result = await validateProKey(redis, proKey);
+        const result = await resolveProKey(redis, proKey);
         isPro = result.valid;
       } catch (proErr) {
         console.warn('[Rewrite] Pro key check failed, treating as free:', proErr.message);

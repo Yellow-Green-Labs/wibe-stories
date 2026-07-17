@@ -1,7 +1,7 @@
 export const config = { runtime: 'edge' };
 
 import { getRedis, KEYS, secondsUntilMidnightUTC } from '../lib/redis.js';
-import { validateProKey } from '../lib/pro-key.js';
+import { resolveProKey } from '../lib/session.js';
 
 const FREE_MAX_RECORDINGS = 5;
 const PRO_MAX_RECORDINGS = 50;
@@ -30,13 +30,12 @@ export default async function handler(req) {
       });
     }
 
-    // Validate pro status server-side — never trust client-sent isPro alone
-    // Checks revoked and expiresAt so cancelled/expired keys don't bypass limits.
+    // Validate pro status server-side via session token or raw key
     let validatedPro = false;
     if (proKey) {
       try {
         const redis = getRedis();
-        const result = await validateProKey(redis, proKey);
+        const result = await resolveProKey(redis, proKey);
         validatedPro = result.valid;
       } catch (e) {
         console.warn('[Limits] Pro key check failed, treating as free:', e.message);

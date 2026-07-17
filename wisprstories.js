@@ -1036,7 +1036,7 @@ async function confirmRewrite(tone) {
       body: JSON.stringify({
         tone,
         sessionId,
-        proKey: localStorage.getItem("wsProKey") || null,
+        proKey: localStorage.getItem("wsSessionToken") || localStorage.getItem("wsProKey") || null,
       }),
     });
     if (!res.ok) {
@@ -2733,7 +2733,7 @@ document.getElementById("toneRow").addEventListener("click", async (e) => {
     const res = await fetch("/api/rewrite", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, tone, sessionId, proKey: localStorage.getItem("wsProKey") || null }),
+      body: JSON.stringify({ text, tone, sessionId, proKey: localStorage.getItem("wsSessionToken") || localStorage.getItem("wsProKey") || null }),
       signal: controller.signal,
     });
     clearTimeout(timeoutId);
@@ -3243,7 +3243,7 @@ syncToneCountsFromServer();
 function syncToneCountsFromServer() {
   var sessionId = localStorage.getItem("wsSessionId");
   if (!sessionId) return;
-  var proKey = localStorage.getItem("wsProKey") || "";
+  var proKey = localStorage.getItem("wsSessionToken") || localStorage.getItem("wsProKey") || "";
   var url = "/api/rewrite-status?sessionId=" + encodeURIComponent(sessionId);
   if (proKey) url += "&proKey=" + encodeURIComponent(proKey);
   fetch(url).then(function(r) { return r.json(); }).then(function(data) {
@@ -3362,7 +3362,6 @@ async function revalidateProKey() {
   if (!isMarkedPro) return;
 
   // One-time migration: wsProKey moved from sessionStorage → localStorage.
-  // Run before the bypass check so existing supporters aren't logged out on first load.
   try {
     const legacyKey = sessionStorage.getItem("wsProKey");
     if (legacyKey && !localStorage.getItem("wsProKey")) {
@@ -3371,17 +3370,47 @@ async function revalidateProKey() {
     }
   } catch (_e) {}
 
-  const storedKey = localStorage.getItem("wsProKey");
-  if (!storedKey) {
-    // wsSupporter=true but no key stored — clear the flag (manual bypass attempt)
-    localStorage.removeItem("wsSupporter");
-    updateSupporterBadge();
-    return;
-  }
-
   const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
   const verifiedAt = parseInt(localStorage.getItem("wsSupporterVerifiedAt") || "0", 10);
   if (Date.now() - verifiedAt < TWENTY_FOUR_HOURS) return; // Still fresh — skip network call
+
+  // Prefer session token. If wsSessionToken exists, verify via /api/pro-verify.
+  const sessionToken = localStorage.getItem("wsSessionToken");
+  if (sessionToken) {
+    try {
+      const res = await fetch("/api/pro-verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Session-Token": sessionToken },
+        body: JSON.stringify({}),
+      });
+      const data = await res.json();
+      if (data.isPro) {
+        localStorage.setItem("wsSupporter", "true");
+        localStorage.setItem("wsSupporterVerifiedAt", Date.now().toString());
+        updateSupporterBadge();
+      } else {
+        localStorage.removeItem("wsSupporter");
+        localStorage.removeItem("wsSessionToken");
+        localStorage.removeItem("wsSupporterVerifiedAt");
+        updateSupporterBadge();
+        if (data.reason === "expired") {
+          showToast("Pro access has expired. Visit Buy Me a Coffee to renew.");
+        }
+      }
+    } catch (e) {
+      console.warn("[Pro] Session re-validation failed, keeping current status:", e.message);
+    }
+    return;
+  }
+
+  // No session token — try raw Pro key and migrate to session token
+  const storedKey = localStorage.getItem("wsProKey");
+  if (!storedKey) {
+    localStorage.removeItem("wsSupporter");
+    localStorage.removeItem("wsSessionToken");
+    updateSupporterBadge();
+    return;
+  }
 
   try {
     const res = await fetch("/api/pro-status", {
@@ -3394,9 +3423,15 @@ async function revalidateProKey() {
     if (data.isPro) {
       localStorage.setItem("wsSupporter", "true");
       localStorage.setItem("wsSupporterVerifiedAt", Date.now().toString());
+      // Migrate to session token — raw key no longer needed in browser
+      if (data.sessionToken) {
+        localStorage.setItem("wsSessionToken", data.sessionToken);
+        localStorage.removeItem("wsProKey");
+      }
       updateSupporterBadge();
     } else {
       localStorage.removeItem("wsSupporter");
+      localStorage.removeItem("wsSessionToken");
       localStorage.removeItem("wsProKey");
       localStorage.removeItem("wsSupporterVerifiedAt");
       updateSupporterBadge();
@@ -4958,15 +4993,15 @@ window.addEventListener('i18nApplied', function () {
 
   window.saveCardToVault = function (cardData) {
     if (typeof isSupporter === "function" && isSupporter()) {
-      var proKey = "";
-      try { proKey = localStorage.getItem("wsProKey") || ""; } catch (e) {}
-      if (proKey) {
+      var proAuth = "";
+      try { proAuth = localStorage.getItem("wsSessionToken") || localStorage.getItem("wsProKey") || ""; } catch (e) {}
+      if (proAuth) {
         var clientId = "v" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
         (async function () {
           try {
             var res = await fetch("/api/vault/save", {
               method: "POST",
-              headers: { "Content-Type": "application/json", "X-Pro-Key": proKey },
+              headers: { "Content-Type": "application/json", "X-Session-Token": proAuth },
               body: JSON.stringify({
                 clientId: clientId,
                 shortId: cardData.shortId || "",
@@ -5042,12 +5077,12 @@ window.addEventListener('i18nApplied', function () {
         clearTimeout(timeout);
         t.classList.remove("show");
         _toastShowing = false;
-        var proKey = "";
-        try { proKey = localStorage.getItem("wsProKey") || ""; } catch (e) {}
-        if (proKey) {
+        var proAuth = "";
+        try { proAuth = localStorage.getItem("wsSessionToken") || localStorage.getItem("wsProKey") || ""; } catch (e) {}
+        if (proAuth) {
           fetch("/api/vault/delete", {
             method: "POST",
-            headers: { "Content-Type": "application/json", "X-Pro-Key": proKey },
+            headers: { "Content-Type": "application/json", "X-Session-Token": proAuth },
             body: JSON.stringify({ ids: [card.id] })
           }).catch(function () {});
         }

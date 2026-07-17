@@ -6,8 +6,6 @@ title: 'Wibe Stories — Product Documentation'
 
 *Last updated: Jul 17, 2026*
 
-> For the developer guide (architecture, code structure, deployment), see [DEVELOPER.md](https://github.com/YellowGreenLabs/wispr-stories/blob/main/docs-internal/DEVELOPER.md).
-
 > **Branding note**
 >
 > Wibe Stories began as an early prototype under the name "Wispr Stories." As the project grew into a product with a direction of its own, it was renamed to give it a clearer, independent identity: Wibe Stories.
@@ -16,7 +14,7 @@ title: 'Wibe Stories — Product Documentation'
 >
 > Wibe Stories is an independent project, not affiliated with Wispr Flow.
 
-> **Status:** Live prototype. This document is the single source of truth for the product.
+> **Status:** Live product. This document is the single source of truth for the product.
 
 ---
 
@@ -138,10 +136,10 @@ Marcus uses voice dictation for quick notes and board updates. He is technically
 2. (For voice) pick a recording language from the language modal. Typing and pasting work in any language without this step.
 3. Tap **Record** and speak. On stop, the transcript is placed into the text box automatically.
 4. Or type directly / paste text you already dictated elsewhere.
-5. Choose a tone, a card colour (from 20 presets or a custom hex picker), and a corner style (rounded or sharp).
+5. Choose a tone, a card colour (from 20 presets or, for Wibe Pass users, a custom hex picker), and a corner style (rounded or sharp).
 6. Optionally click an **example card** to auto-fill text, tone, and colour.
 7. Tap **Create my card** — the card renders with a short confirmation animation.
-8. Optionally tap a tone to **rewrite** the words with an LLM (1 per tone per day on the free tier, unlimited for Pro).
+8. Optionally tap a tone to **rewrite** the words using AI (free tier has daily limits, unlimited for Pro).
 9. Tap **Share** — download the PNG, copy it, copy a link, or use the native share sheet to send the image straight to any app.
 
 ### What the card contains
@@ -150,7 +148,7 @@ Marcus uses voice dictation for quick notes and board updates. He is technically
 - A pre-rendered decorative background (one of 20 baked WebP images).
 - An inner white panel holding the user's text and name.
 - An audio waveform motif, signalling voice-created content.
-- A source label with emoji: 🎙️ **Voice Original** / 🎙️ **Voice Styled** (when recorded), or ✏️ **Story Original** / ✏️ **Story Styled** (when typed). *Styled* appears when an LLM tone rewrite has been applied.
+- A source label with emoji: 🎙️ **Voice Original** / 🎙️ **Voice Styled** (when recorded), or ✏️ **Story Original** / ✏️ **Story Styled** (when typed). *Styled* appears when an AI tone rewrite has been applied.
 - A small **Wibe Stories** wordmark, logo, and the tagline **"speak · scribe · share"**.
 
 The card image itself carries only the user's words and the Wibe Stories mark. Wispr Flow attribution lives on the page (footer and the "Try Wispr Flow" CTA), not baked into the card.
@@ -164,8 +162,8 @@ The card image itself carries only the user's words and the Wibe Stories mark. W
 | Voice input | Web Speech API in the browser, with a server STT fallback |
 | Typing / paste | Full fallback for any language or unsupported browser |
 | Voice attachment | Optional toggle to attach the original voice recording to a shared card |
-| AI tone rewriting | 7 tones: Original + 6 rewrites (Warm, Bold, Poetic, Playful, Reflective, Honest) via OpenRouter. Free: 1 rewrite/tone/day |
-| Colour palettes | 10 colours × 2 corner styles = 20 backgrounds, plus a custom hex color picker |
+| AI tone rewriting | 7 tones: Original + 6 rewrites (Warm, Bold, Poetic, Playful, Reflective, Honest). Free tier has daily limits |
+| Colour palettes | 10 colours × 2 corner styles = 20 backgrounds, plus a custom hex color picker (Pro-only) |
 | Aspect ratio | 1:1 square (the only built ratio; others are designed, not shipped) |
 | Speech languages | 46 selectable languages |
 | UI languages | 11 locales (English + 10) |
@@ -173,9 +171,9 @@ The card image itself carries only the user's words and the Wibe Stories mark. W
 | Grace zone | Textarea maxlength 160 but UI shows 150; counter turns yellow at 120, red at 150+ |
 | Export | PNG download, clipboard copy, and shareable link |
 | Sharing | Web Share API (image + caption) on supported devices; 13 rotating Wispr Flow CTAs in share captions |
-| Pro subscription | Buy Me a Coffee payment → Pro key via email → unlimited rewrites, 50 recordings/day, 30s recording, 14-day retention |
-| Occasion email reminders | Subscribe from footer → daily cron → Resend email on matching occasions |
-| Color picker | Custom hex color input alongside the 20 preset card backgrounds |
+| Wibe Pass | Buy Me a Coffee payment → Pro key via email → unlimited rewrites, 50 recordings/day, 30s recording, 14-day retention |
+| Occasion email reminders | Subscribe from footer to receive an email on matching occasions |
+| Color picker | Custom hex color input (Pro-only) alongside the 20 preset card backgrounds |
 | Draft auto-save | Text and settings persist in localStorage across sessions |
 | Installable | Progressive Web App with offline typing |
 | Dark mode | Follows system preference |
@@ -213,7 +211,7 @@ Seven tone entries: the six rewrite tones (Warm, Bold, Poetic, Playful, Reflecti
 
 ### Aspect ratio
 
-Only the **1:1 square** ratio is built (asset prefix `2x2_`), optimised for the large WhatsApp link preview. The 4:5, 16:9, 3:4, and 9:16 layouts are designed but not implemented.
+Only the **1:1 square** ratio is built, optimised for the large WhatsApp link preview. The 4:5, 16:9, 3:4, and 9:16 layouts are designed but not implemented.
 
 ---
 
@@ -222,7 +220,7 @@ Only the **1:1 square** ratio is built (asset prefix `2x2_`), optimised for the 
 - **Speech languages (46):** Shown in a 2-column modal. Relevant only when recording.
 - **UI locales (11):** English plus Hindi, Spanish, Italian, Japanese, Kannada, Korean, Telugu, Tamil, Thai, and Chinese. Arabic and Urdu were removed intentionally; RTL infrastructure remains for future re-enablement.
 - **Script-aware fonts:** 20 script types are mapped to a font family per tone. Mixed-script text is split into segments, each wrapped in a span with the right font. Japanese is detected before Chinese (via Hiragana/Katakana), and Korean via Hangul, to disambiguate CJK.
-- **RTL:** Arabic, Hebrew, Farsi, and Urdu trigger right-to-left on the card panel automatically.
+- **RTL:** Script detection for Arabic, Hebrew, Farsi, and Urdu is built in, but right-to-left card rendering is currently disabled.
 
 ---
 
@@ -232,9 +230,9 @@ The app ships **60 occasions** that auto-detect from the user's text — birthda
 
 ### Occasion email reminders
 
-Users can subscribe to occasion reminder emails from the footer menu. The system validates the email against a domain allowlist (Gmail, Outlook, Yahoo, Proton, iCloud, Tuta + regional) and rate-limits to 3 requests per IP per day. Subscribers receive an email on the morning of a matching occasion, featuring the occasion image and a link to create a card.
+Users can subscribe to occasion reminder emails from the footer menu. The system validates the email against common email providers and rate-limits repeated signups from the same source. Subscribers receive an email on the morning of a matching occasion, featuring the occasion image and a link to create a card.
 
-Pro users are automatically enrolled at key generation. All emails include a one-click unsubscribe link. Emails are sent via the Resend transactional API, triggered by a daily cron job at 08:00 UTC.
+Pro users are automatically enrolled at key generation. All emails include a one-click unsubscribe link.
 
 ---
 
@@ -247,22 +245,22 @@ The card exports as a PNG via html2canvas. On devices with the Web Share API, th
 ### Shareable link
 
 1. On share, html2canvas captures the card as a PNG.
-2. The server stores the PNG in Vercel Blob and generates an OG image.
-3. The server returns an 8-character `shortId`.
+2. The server stores the image and generates an OG image.
+3. The server returns an 8-character short ID.
 4. The share modal offers four actions: native share, download PNG, copy link, copy image.
 5. A social bot scraping the link gets OG metadata and renders a large preview; a human gets a landing page with the full card and a "Create your own" CTA.
 
 ### Retention & metadata
 
-All shared content (card images, OG images, voice audio, metadata) auto-expires after 7 days. Pro-subscriber cards are kept for 14 days. Cleanup runs daily at 03:00 UTC via a Vercel Cron job.
+All shared content (card images, OG images, voice audio, metadata) auto-expires after 7 days. Wibe Pass users' cards are kept for 14 days. Cleanup runs daily.
 
-Each card has a **metadata sidecar** (`meta/<shortId>.json`) stored alongside the image, containing the card text, author name, tone, palette, corner style, and Pro status. This metadata personalises the shared-card landing page. Cards can also be downloaded directly via the `/download/[id]` proxy endpoint.
+Each card has accompanying metadata stored alongside the image, containing the card text, author name, tone, palette, corner style, and Pro status. This metadata personalises the shared-card landing page. Cards can also be downloaded directly via a download link.
 
 ---
 
 ## 11. PWA and offline behaviour
 
-The app is an installable Progressive Web App with three-tier caching: network-only for API calls, stale-while-revalidate for fonts, and cache-first for static assets. Offline: typing still works. Recording, font loading, and image export need connectivity.
+The app is an installable Progressive Web App — API calls are always fetched from the network, fonts use a stale-while-revalidate strategy, and static assets are cache-first. Additional caching is applied for HTML, JavaScript, and CSS files. Offline: typing still works. Recording, font loading, and image export need connectivity.
 
 ### Update behavior
 
@@ -274,10 +272,10 @@ The app never reloads itself out from under the user. It polls for new versions 
 
 ### Data handling
 
-- No user accounts and no audio storage. Audio is sent to Deepgram or OpenRouter for transcription only and is not retained by Wibe Stories.
+- No user accounts and no audio storage. Audio is sent to a third-party transcription service for transcription only and is not retained by Wibe Stories.
 - The transcript lives in the browser session and clears on refresh.
-- Card images and OG variants are stored in Vercel Blob and auto-deleted after 7 days (14 days for Pro).
-- Redis holds only rate-limit counters, caches, and Pro-key records — no personal content.
+- Card images and OG variants are stored on the server and auto-deleted after 7 days (14 days for Pro).
+- The server holds only rate-limit counters, caches, and Pro-key records — no personal content.
 
 ### Browser speech nuance
 
@@ -306,12 +304,7 @@ Known limitations are accessible in-app by pressing **Alt+F1**, which opens the 
 
 ## 14. Roadmap
 
-| Priority | Item | Notes |
-|---|---|---|
-| Medium | Additional aspect ratios | 4:5, 16:9, 3:4, 9:16 layouts |
-| Medium | Mobile preview UX | A floating "Preview" button so the card is not hidden below the inputs |
-| Medium | Onboarding banner | First-launch hint, designed but not built |
-| Low | Animated shareable links | Open a card as a live web page, not just a static image |
+See the [Roadmap](/reference/roadmap) page for the current plan.
 
 ---
 
@@ -333,16 +326,16 @@ Known limitations are accessible in-app by pressing **Alt+F1**, which opens the 
 
 ### Implemented
 
-- Voice recording in 46 languages (Web Speech API + Deepgram/Whisper fallback)
-- AI tone rewriting (7 tones: Original + 6 rewrites) via OpenRouter
+- Voice recording in 46 languages (Web Speech API + server fallback)
+- AI tone rewriting (7 tones: Original + 6 rewrites)
 - 10 colour palettes × 2 corner styles = 20 card backgrounds, plus custom hex color picker
 - Shareable link with OG metadata (social bot preview + human landing page)
-- Share via native share sheet, PNG download, clipboard copy, or download proxy
-- Daily user cap (99 users/day) with server-side enforcement, bypass for Pro
-- 7-day auto-expiry for free cards, 14 days for Pro (daily cleanup cron)
+- Share via native share sheet, PNG download, clipboard copy, or download link
+- Daily user cap with server-side enforcement, bypass for Pro
+- 7-day auto-expiry for free cards, 14 days for Pro (cleanup runs daily)
 - PWA installable with offline typing support
-- Pro subscription system (Buy Me a Coffee → webhook → key generation → email delivery → Redis validation)
-- Occasion email campaigns (footer subscription → daily cron → Resend transactional email → one-click unsubscribe)
+- Wibe Pass system (Buy Me a Coffee payment → key generation → email delivery)
+- Occasion email campaigns (footer subscription → one-click unsubscribe)
 - 60 auto-detected occasions with themed card images
 - Features page, About page, and Language Stats page with Chart.js
 - i18n in 11 UI locales with script-aware font mapping
@@ -359,13 +352,4 @@ Known limitations are accessible in-app by pressing **Alt+F1**, which opens the 
 
 ## 17. Tech Stack
 
-| Layer | Technology | Purpose |
-|---|---|---|
-| Frontend | Vanilla HTML, CSS, JavaScript (no framework) | Zero build step, edge-served |
-| Hosting | Vercel (serverless + static) | Global edge deployment, rewrites, CSP, cron |
-| Speech-to-text | Web Speech API (browser) + Deepgram Nova-3 + OpenRouter Whisper | Primary → fallback → secondary fallback |
-| AI rewriting | OpenRouter (Gemma, Kimi, Ling, Lunaris models) | 7 tones, same-language enforcement |
-| Storage | Vercel Blob | Card PNGs, OG images, voice audio, metadata |
-| Data / cache | Upstash Redis (2 instances) | Rate limits, keys, counters, rewrite cache, email subscriptions |
-| Payments | Buy Me a Coffee webhooks (HMAC-signed) | Pro key generation on donation |
-| Email | Resend transactional API | Pro key delivery, key recovery, occasion reminders |
+See the [Trust Center](/product-guide/trust-center) for the services we use and how your data is handled.

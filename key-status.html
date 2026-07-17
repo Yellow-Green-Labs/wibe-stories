@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wibe Pass &mdash; Wibe Stories &mdash; voice-to-card app</title>
+<meta name="description" content="Your Wibe Pass plan details, expiry date, and days remaining.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="assets/ws-logo-whblbg.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Instrument+Serif:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="global/styles/main.css" />
+<link rel="stylesheet" href="global/styles/key-status.css" />
+<link rel="stylesheet" href="assets/fontawesome/css/fontawesome.min.css" />
+<link rel="stylesheet" href="assets/fontawesome/css/solid.min.css" />
+<link rel="stylesheet" href="assets/fontawesome/css/brands.min.css" />
+<script src="global/capacity-check.js"></script>
+    <script>
+      if (
+        "serviceWorker" in navigator &&
+        location.hostname === "wibestories.vercel.app"
+      ) {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker
+            .register("/sw.js", { scope: "/" })
+            .catch(function () {});
+        });
+      }
+    </script>
+</head>
+<body>
+
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <a href="/" class="nav-brand">
+    <img src="assets/ws-logo-blwbg.png" alt="Wibe Stories" class="nav-logo" />
+    <span class="nav-brand-text">Wibe Stories</span>
+    <span class="custom-tip">Just vibes &nbsp;</span>
+  </a>
+  <div class="nav-links">
+    <a href="/features" class="nav-link">Features</a>
+    <a href="/about" class="nav-link">About</a>
+    <a href="/language-stats" class="nav-link">Language Stats</a>
+  </div>
+  <div class="nav-right">
+    <a href="mailto:yellowgreenlabs@proton.me?subject=Wibe%20Stories%20Feedback" class="nav-support-link" title="Contact us">Support</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" aria-pressed="false">
+      <i class="fa-solid fa-moon"></i>
+    </button>
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="Menu" aria-expanded="false">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+</nav>
+
+<main id="ksMain">
+  <div class="ks-loading">
+    <div class="ks-spinner"></div>
+    <p>Loading your plan&hellip;</p>
+  </div>
+</main>
+
+<button class="back-to-top" id="backToTop" aria-label="Scroll to top">
+  <i class="fa-solid fa-chevron-up"></i>
+</button>
+
+<footer class="footer">
+  <p>
+    <a href="/" class="footer-wave wave-on-hover">Wibe Stories</a>
+  </p>
+  <span>Independent project &middot; Not affiliated with Wispr Flow</span>
+  <span class="footer-copyright">&copy; 2026 <span class="footer-sep" aria-hidden="true">|</span><script src="global/footer-menu.js"></script></span>
+</footer>
+
+<div class="hamburger-overlay" id="hamburgerOverlay"></div>
+<div class="hamburger-panel" id="hamburgerPanel">
+  <div class="hamburger-header">
+    <span class="hamburger-title">Menu</span>
+    <button class="hamburger-close" id="hamburgerClose">&times;</button>
+  </div>
+  <div class="hamburger-items">
+    <a href="/features" class="hamburger-link">Features</a>
+    <a href="/about" class="hamburger-link">About</a>
+    <a href="/language-stats" class="hamburger-link">Language Stats</a>
+    <div class="hamburger-divider"></div>
+    <a href="https://buymeacoffee.com/yg_labs/membership" class="hamburger-link" target="_blank" rel="noopener">Support</a>
+    <a href="mailto:yellowgreenlabs@proton.me?subject=Wibe%20Stories%20Feedback" class="hamburger-link">Submit issues / feedback</a>
+    <div class="hamburger-divider"></div>
+    <div class="hamburger-version" id="hamburgerVersion"></div>
+    <div class="hamburger-divider"></div>
+    <button class="hamburger-link hamburger-theme-toggle" id="hamburgerThemeToggle">
+      <i class="fa-solid fa-moon"></i> <span>Dark mode</span>
+    </button>
+  </div>
+</div>
+
+<script src="global/pricing-modal.js"></script>
+<script src="global/key-status.js"></script>
+<script src="/internal-logs/observer.js" defer></script>
+<script>
+(function() {
+  var btn = document.getElementById('hamburgerBtn');
+  var panel = document.getElementById('hamburgerPanel');
+  var overlay = document.getElementById('hamburgerOverlay');
+  var closeBtn = document.getElementById('hamburgerClose');
+  var themeBtn = document.getElementById('hamburgerThemeToggle');
+  var versionEl = document.getElementById('hamburgerVersion');
+
+  function openMenu() {
+    panel.classList.add('open');
+    overlay.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+  }
+  function closeMenu() {
+    panel.classList.remove('open');
+    overlay.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  btn.addEventListener('click', function() {
+    if (panel.classList.contains('open')) closeMenu();
+    else openMenu();
+  });
+  closeBtn.addEventListener('click', closeMenu);
+  overlay.addEventListener('click', closeMenu);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeMenu(); });
+
+  if (themeBtn) {
+    themeBtn.addEventListener('click', function() {
+      document.documentElement.classList.toggle('dark');
+      var isDark = document.documentElement.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      var icon = themeBtn.querySelector('i');
+      var label = themeBtn.querySelector('span');
+      if (isDark) { icon.className = 'fa-solid fa-sun'; label.textContent = 'Light mode'; }
+      else { icon.className = 'fa-solid fa-moon'; label.textContent = 'Dark mode'; }
+    });
+  }
+
+  fetch('/version.json').then(function(r){return r.json()}).then(function(d){
+    if (d.version && versionEl) versionEl.textContent = 'v' + d.version;
+  }).catch(function(){});
+})();
+</script>
+</body>
+</html>

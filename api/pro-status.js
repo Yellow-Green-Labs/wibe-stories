@@ -2,6 +2,7 @@ export const config = { runtime: 'edge' };
 
 import { getRedis } from '../lib/redis.js';
 import { validateProKey } from '../lib/pro-key.js';
+import { createSessionToken } from '../lib/session.js';
 
 const RATE_LIMIT_MAX = 10;
 const RATE_LIMIT_WINDOW_SEC = 60;
@@ -66,13 +67,30 @@ export default async function handler(req) {
       });
     }
 
-    // Never return PII — email and purchase date stay server-side only
+    // Create session token — raw key never stored in browser
+    const tier = result.keyData.tier || 'pro';
+    const expiresAt = result.keyData.expiresAt || null;
+    const sessionToken = await createSessionToken(redis, key, tier, expiresAt);
+
+    // Set httpOnly cookie (primary auth — invisible to JS)
+    const ttlSeconds = expiresAt
+      ? Math.max(60, Math.floor((new Date(expiresAt).getTime() - Date.now()) / 1000))
+      : 30 * 24 * 60 * 60;
+    const cookie = `ws_session=${sessionToken}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${ttlSeconds}`;
+
+    const responseHeaders = new Headers({
+      'Content-Type': 'application/json',
+    });
+    responseHeaders.append('Set-Cookie', cookie);
+
     return new Response(JSON.stringify({
       isPro: true,
-      tier: result.keyData.tier || 'pro',
+      tier,
+      sessionToken,
+      expiresAt,
     }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: responseHeaders,
     });
   } catch (e) {
     console.error('[ProStatus] Error:', e.message);

@@ -1,7 +1,7 @@
 export const config = { runtime: 'edge' };
 
 import { getRedis } from '../lib/redis.js';
-import { validateProKey } from '../lib/pro-key.js';
+import { resolveProKey } from '../lib/session.js';
 
 const RATE_LIMIT_MAX = 10;
 const RATE_LIMIT_WINDOW_SEC = 60;
@@ -48,7 +48,7 @@ export default async function handler(req) {
       // Fail open — don't block legitimate users if Redis is unavailable
     }
 
-    const result = await validateProKey(redis, key);
+    const result = await resolveProKey(redis, key);
 
     if (!result.valid) {
       return new Response(JSON.stringify({ valid: false, reason: result.reason }), {

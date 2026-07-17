@@ -1,7 +1,7 @@
 export const config = { runtime: 'edge' };
 
 import { getRedis } from '../../lib/redis.js';
-import { validateProKey } from '../../lib/pro-key.js';
+import { resolveProKey } from '../../lib/session.js';
 import { getNeon } from '../../lib/neon.js';
 
 export default async function handler(req) {
@@ -13,20 +13,21 @@ export default async function handler(req) {
   }
 
   try {
-    const proKey = req.headers.get('x-pro-key') || '';
+    const authValue = req.headers.get('x-session-token') || req.headers.get('x-pro-key') || '';
     const redis = getRedis();
-    const result = await validateProKey(redis, proKey);
-    if (!result.valid) {
+    const result = await resolveProKey(redis, authValue);
+    if (!result.valid || !result.proKey) {
       return new Response(JSON.stringify({ error: 'invalid_key' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
+    const key = result.proKey;
+
     const { clientId, shortId, name, text, authorName, tone, occasion, hasAudio, audioUrl, createdAt, theme, imageUrl } = await req.json();
 
     const sql = getNeon();
-    const key = proKey.trim().toUpperCase();
 
     await sql`
       CREATE TABLE IF NOT EXISTS vault_cards (
