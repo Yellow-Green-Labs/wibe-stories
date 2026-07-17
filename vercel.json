@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npx vitepress build docs",
+  "buildCommand": "npx vitepress build docs-src",
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/", "destination": "/wisprstories.html" },
@@ -14,7 +14,7 @@
     { "source": "/card", "destination": "/api/card" },
     { "source": "/c/:id", "destination": "/api/c/[id]" },
     { "source": "/download/:id", "destination": "/api/download/:id" },
-    { "source": "/docs/:path*", "destination": "/docs/.vitepress/dist/:path*" }
+    { "source": "/docs/:path*", "destination": "/docs-src/.vitepress/dist/:path*" }
   ],
   "redirects": [
     { "source": "/about.html", "destination": "/about", "statusCode": 301 },
