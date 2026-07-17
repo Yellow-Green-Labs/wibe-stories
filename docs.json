@@ -59,6 +59,7 @@
     "links": []
   },
   "fonts": {
+    "family": "Inter",
     "heading": {
       "family": "Inter"
     },
