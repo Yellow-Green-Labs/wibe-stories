@@ -1,11 +1,14 @@
 ---
-title: "Wibe Stories — Product Documentation"
-description: "Full product documentation covering vision, architecture, features, and roadmap."
+title: Wibe Stories — Product Documentation
+excerpt: Full product documentation covering vision, architecture, features, and roadmap.
+category:
+  uri: product-guide
+icon: book
 ---
 
 # Wibe Stories — Product Documentation
 
-> For the developer guide (architecture, code structure, deployment), see [DEVELOPER.md](../docs-internal/DEVELOPER.md).
+> For the developer guide (architecture, code structure, deployment), see [DEVELOPER.md](https://github.com/YellowGreenLabs/wispr-stories/blob/main/docs-internal/DEVELOPER.md).
 
 > **Branding note**
 >
@@ -293,7 +296,7 @@ A full Content-Security-Policy is configured. Additional headers include X-Frame
 Known limitations are accessible in-app by pressing **Alt+F1**, which opens the "Acknowledged Logs" — an honest list of what the app does not yet handle well.
 
 | Area | Limitation |
-|---|---|---|
+|---|---|
 | Firefox | No Web Speech API — voice recording is unavailable. Typing and paste work. |
 | Safari / iOS | No native `.webm` playback; voice-attached-card playback is unsupported there. |
 | Aspect ratios | Only 1:1 square is built; 4:5, 16:9, 3:4, 9:16 are designed only. |

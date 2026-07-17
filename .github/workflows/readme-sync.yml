@@ -1,0 +1,13 @@
+name: Sync docs to ReadMe
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sync docs to ReadMe
+        run: npx rdme docs upload ./docs --key=${{ secrets.README_API_KEY }}

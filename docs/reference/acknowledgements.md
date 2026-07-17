@@ -1,7 +1,9 @@
 ---
-title: "Acknowledged Logs"
-icon: "file-doc"
-mode: "custom"
+title: Known Issues
+excerpt: Bugs and behavior gaps we know about.
+category:
+  uri: reference
+icon: bug
 ---
 
 # Known Issues

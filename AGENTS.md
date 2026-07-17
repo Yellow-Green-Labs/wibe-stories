@@ -77,7 +77,8 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 
 # Documents referenced every session
 
-- [ ] `docs/WIBE_STORIES.mdx` — full product documentation (Mintlify)
+- [ ] `docs/` — ReadMe.com documentation content (7 pages, Markdown + YAML frontmatter, _order.yaml navigation)
+- [ ] `.github/workflows/readme-sync.yml` — GitHub Action auto-syncs docs/ to ReadMe on push
 - [ ] `docs-internal/DEVELOPER.md` — developer guide (architecture, code structure, deployment)
 - [ ] `docs-internal/API.md` — API reference (25 endpoints, error codes, webhooks)
 - [ ] `docs/admin-setup.md` — admin activation setup
@@ -85,7 +86,6 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - [ ] `docs/wispr_flow_research.md` — Flow research notes
 - [ ] `docs/wispr_flow_improvement_areas.md` — Flow improvement areas
 - [ ] `docs/interview-quick-reference.md` — interview prep source of truth
-- [ ] `CHANGELOG.mdx` — session history
 - [ ] `docs/daily-capacity-system.md` — daily capacity system
 - [ ] `docs/Tanay-linkedin-posts.md` — Wispr Flow CEO thinking (mandatory per Tanay lens rule)
 - [ ] `frontlogs/EMAILS.md` — email types catalog (10 types, 3 implemented, Resend/Loops split)
@@ -106,19 +106,22 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 
 ## Key files
 
-- `index.mdx` — Mintlify home page
-- `docs/WIBE_STORIES.mdx` — full product documentation (vision, architecture, features, roadmap)
+- `docs/` — ReadMe.com documentation content (7 pages, Markdown + YAML frontmatter, _order.yaml navigation)
+- `docs/welcome/index.md` — ReadMe home page
+- `docs/product-guide/wibe-stories.md` — full product documentation (vision, architecture, features, roadmap)
+- `docs/product-guide/trust-center.md` — services used (Deepgram, OpenRouter, Vercel, etc.)
+- `docs/reference/acknowledgements.md` — known issues (WebM audio, Firefox, translations)
+- `docs/reference/limitations.md` — product limitations (caps, expiry, moderation)
+- `docs/reference/roadmap.md` — Product roadmap placeholder
+- `docs/updates/changelog.md` — session history (ReadMe format)
+- `.github/workflows/readme-sync.yml` — GitHub Action auto-syncs docs/ to ReadMe on push
 - `docs-internal/DEVELOPER.md` — developer guide (getting started, code structure, deployment)
 - `docs-internal/API.md` — API reference (25 endpoints, error codes, webhooks)
-- `docs/TRUST_CENTER.mdx` — services used (Deepgram, OpenRouter, Vercel, etc.)
-- `docs/ACKNOWLEDGEMENTS.mdx` — known issues (WebM audio, Firefox, translations)
-- `docs/LIMITATIONS.mdx` — product limitations (caps, expiry, moderation)
 - `api/voice.js` — audio upload endpoint (called after PNG upload with `X-Short-Id`)
 - `api/rewrite-confirm.js` — tone rewrite commit endpoint (Redis INCR on per-tone counter)
 - `api/rewrite-status.js` — read-only GET endpoint for per-tone counts from Redis
 - `api/stt.js` — STT via Deepgram Nova-3 + Whisper/OpenRouter, Edge runtime
 - `api/resend-key.js` — automated Pro key recovery via email (resends key by email lookup)
-- `CHANGELOG.mdx` — session history (Mintlify format)
 - `wisprstories.html` — main HTML
 - `wisprstories.js` — app logic (STT, recording, card creation, share, tones, i18n)
 - `global/fonts.js` — script font mapping
@@ -160,7 +163,6 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `global/about.js` — About page JS
 - `global/features.js` — Features page JS
 - `vercel.json` — deployment config, CSP security headers
-- `docs.json` — Mintlify documentation site config (navigation, Legal anchor)
 - `.vercelignore` — excludes remotion-demo/ from deployments
 - `sw.js` — service worker for offline font caching
 - `global/footer-menu.js` — footer menu rendering, i18n, reorder, occasion email subscription popup
@@ -178,7 +180,6 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `internal-logs/observer.js` — keyboard shortcut handler for beacon redirect
 - `api/beacon.js` — redirect handler (reads `WS_EP` env var)
 - `api/download/[id].js` — download proxy (serves Blob files with `Content-Disposition: attachment`)
-- `docs/ROADMAP.mdx` — Product roadmap placeholder
 - `lib/neon.js` — Neon Postgres connection singleton (edge-compatible HTTP query via `@neondatabase/serverless`)
 - `api/vault/list.js` — GET vault cards for a Pro key (Neon query, camelCase response)
 - `api/vault/save.js` — POST save a vault card (validates Pro key, enforces 50-card limit, Neon insert)
@@ -209,6 +210,6 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-17; v0.11.24.3 release — Mintlify content pages. Converted docs from .md to .mdx (Mintlify native format), created index.mdx as Mintlify home page, kept README.md for GitHub. Updated docs.json navigation "README"→"index". Removed old .md files. -->
+<!-- agsync: last-run 2026-07-17; ReadMe migration complete — Mintlify files deleted, ReadMe content moved to docs/, GitHub Action created at .github/workflows/readme-sync.yml. Docs auto-sync on push to main. Site: wibe-stories.readme.io -->
 
 

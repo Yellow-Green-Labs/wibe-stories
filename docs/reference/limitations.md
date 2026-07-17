@@ -1,7 +1,9 @@
 ---
-title: "Limitations"
-icon: "hand-paper"
-mode: "custom"
+title: Limitations
+excerpt: Product decisions explained.
+category:
+  uri: reference
+icon: hand-paper
 ---
 
 These are constraints we chose on purpose. They are not bugs — they are product decisions listed here so you understand what we have prioritized.
