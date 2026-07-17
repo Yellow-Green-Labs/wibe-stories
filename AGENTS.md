@@ -216,6 +216,6 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-17; Vault audit — 10 gap items identified vs Google Drive/Dropbox (download, share modal, bulk zip, sort, loading state, error handling, search, rename, audio DL, audio playback). CHANGE 4 version sync marked done. CHANGE 15 added to PENDING.md. Audio playback in vault documented as broken (no Audio.play(), session-only blob). -->
+<!-- agsync: last-run 2026-07-17; Docs audit — 7 files fixed: 44→46 speech langs, Safari claim corrected, H3-List format for acknowledgements, last-updated dates on all doc files. v0.11.24.3 deployed. -->
 
 
