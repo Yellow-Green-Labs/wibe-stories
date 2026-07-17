@@ -62,12 +62,12 @@ A full Content-Security-Policy **is** set in `vercel.json` (allows `unpkg.com`, 
 - **Platform**: Vercel (production URL `wibestories.vercel.app`; legacy deploy slug `wisprstories.vercel.app`, code/filenames stay `wisprstories`)
 - **Deploy**: `vercel --prod` from project root
 - **Local dev**: `vercel dev` or open `wisprstories.html` directly in browser
-- **Docs local dev**: `npx vitepress dev docs` (starts VitePress dev server on port 5173)
-- **Docs build**: `npx vitepress build docs` (outputs to `docs/.vitepress/dist/`)
+- **Docs local dev**: `npx vitepress dev docs-src` (starts VitePress dev server on port 5173)
+- **Docs build**: `npx vitepress build docs-src` (outputs to `docs-src/.vitepress/dist/`)
 
 # Testing
 
-Main app testing is manual. See `docs/wibe-stories.md` for test scenarios.
+Main app testing is manual. See `docs/product-guide/wibe-stories.md` for test scenarios.
 
 Runnable verification scripts (Node.js 18+, Windows-friendly):
 - `node scripts/stress-test-99-cap.mjs` (add `--base=https://...` to test prod)
@@ -79,18 +79,18 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 
 # Documents referenced every session
 
-- [ ] `docs/` — VitePress documentation source (7 pages, Markdown frontmatter, custom theme)
-- [ ] `docs/.vitepress/config.js` — VitePress configuration (sidebar, base path, theme)
-- [ ] `docs/.vitepress/theme/custom.css` — VitePress custom theme (fonts, colors, links)
+- [ ] `docs-src/` — VitePress documentation source (7 pages, Markdown frontmatter, custom theme)
+- [ ] `docs-src/.vitepress/config.js` — VitePress configuration (sidebar, base path, theme)
+- [ ] `docs-src/.vitepress/theme/custom.css` — VitePress custom theme (fonts, colors, links)
 - [ ] `docs-internal/DEVELOPER.md` — developer guide (architecture, code structure, deployment)
 - [ ] `docs-internal/API.md` — API reference (25 endpoints, error codes, webhooks)
-- [ ] `docs/admin-setup.md` — admin activation setup
-- [ ] `docs/wispr_flow_company_intelligence.md` — Flow company background
-- [ ] `docs/wispr_flow_research.md` — Flow research notes
-- [ ] `docs/wispr_flow_improvement_areas.md` — Flow improvement areas
-- [ ] `docs/interview-quick-reference.md` — interview prep source of truth
-- [ ] `docs/daily-capacity-system.md` — daily capacity system
-- [ ] `docs/Tanay-linkedin-posts.md` — Wispr Flow CEO thinking (mandatory per Tanay lens rule)
+- [ ] `docs-internal/admin-setup.md` — admin activation setup
+- [ ] `docs-internal/wispr_flow_company_intelligence.md` — Flow company background
+- [ ] `docs-internal/wispr_flow_research.md` — Flow research notes
+- [ ] `docs-internal/wispr_flow_improvement_areas.md` — Flow improvement areas
+- [ ] `docs-internal/interview-quick-reference.md` — interview prep source of truth
+- [ ] `docs-internal/daily-capacity-system.md` — daily capacity system
+- [ ] `docs-internal/Tanay-linkedin-posts.md` — Wispr Flow CEO thinking (mandatory per Tanay lens rule)
 - [ ] `frontlogs/EMAILS.md` — email types catalog (10 types, 3 implemented, Resend/Loops split)
 - [ ] `frontlogs/USEFUL_SERVICES.md` — planned services (Sentry, Tally, Better Stack, Unkey, Loops, ImageKit, Ahrefs)
 - [ ] `frontlogs/PENDING.md` — pending changes (14 tracked changes)
@@ -104,22 +104,22 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - Tagline: "Turn your voice into shareable cards, in your language, in seconds."
 - Hero subtitle: "Record with the mic or dictate with Wispr Flow. Style and share with love."
 - Multi-file vanilla HTML/CSS/JS voice-to-card app. No build step for the app itself. Open `wisprstories.html` to run.
-- VitePress documentation in `docs/` has a build step (`npx vitepress build docs`) that runs on Vercel deploy. Docs served at `/docs/`.
+- VitePress documentation in `docs-src/` has a build step (`npx vitepress build docs-src`) that runs on Vercel deploy. Docs served at `/docs/`.
 - Serverless API routes via Vercel. `package.json` must exist for dependency install.
 - `remotion-demo/` — **Marketing demo video project** (Remotion/React). Created by a separate AI agent. **Do NOT delete** — it's a marketing asset, not part of the live app. Gitignored + .vercelignored.
 
 ## Key files
 
-- `docs/` — VitePress documentation content (7 pages, Markdown + YAML frontmatter, VitePress theme)
-- `docs/.vitepress/config.js` — VitePress config (nav, sidebar, base: /docs/, fonts)
-- `docs/.vitepress/theme/custom.css` — custom theme (DM Sans, heading/body/link colors)
-- `docs/index.md` — VitePress home page
-- `docs/product-guide/wibe-stories.md` — full product documentation (vision, architecture, features, roadmap)
-- `docs/product-guide/trust-center.md` — services used (Deepgram, OpenRouter, Vercel, etc.)
-- `docs/reference/acknowledgements.md` — known issues (WebM audio, Firefox, translations)
-- `docs/reference/limitations.md` — product limitations (caps, expiry, moderation)
-- `docs/reference/roadmap.md` — Product roadmap placeholder
-- `docs/updates/changelog.md` — version history
+- `docs-src/` — VitePress documentation source (7 pages, Markdown + YAML frontmatter, VitePress theme)
+- `docs-src/.vitepress/config.js` — VitePress config (nav, sidebar, base: /docs/, fonts)
+- `docs-src/.vitepress/theme/custom.css` — custom theme (DM Sans, heading/body/link colors)
+- `docs-src/index.md` — VitePress home page
+- `docs-src/product-guide/wibe-stories.md` — full product documentation (vision, architecture, features, roadmap)
+- `docs-src/product-guide/trust-center.md` — services used (Deepgram, OpenRouter, Vercel, etc.)
+- `docs-src/reference/acknowledgements.md` — known issues (WebM audio, Firefox, translations)
+- `docs-src/reference/limitations.md` — product limitations (caps, expiry, moderation)
+- `docs-src/reference/roadmap.md` — Product roadmap placeholder
+- `docs-src/updates/changelog.md` — version history
 - `docs-internal/DEVELOPER.md` — developer guide (getting started, code structure, deployment)
 - `docs-internal/API.md` — API reference (25 endpoints, error codes, webhooks)
 - `api/voice.js` — audio upload endpoint (called after PNG upload with `X-Short-Id`)
@@ -156,9 +156,9 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/track-usage.js` — card creation usage tracking
 - `api/lang-stats.js` — language counters GET
 - `language-stats.html` — Language Stats page with Chart.js + data table
-- `docs/existing-redis.md` — Upstash Redis architecture
-- `docs/daily-capacity-system.md` — 99-user capacity system
-- `docs/language-stats-page.md` — stats page architecture
+- `docs-internal/existing-redis.md` — Upstash Redis architecture
+- `docs-internal/daily-capacity-system.md` — 99-user capacity system
+- `docs-internal/language-stats-page.md` — stats page architecture
 - `global/styles/language-stats.css` — stats page CSS
 - `global/language-stats.js` — stats page JS
 - `about.html` — About page
@@ -177,9 +177,9 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `scripts/verify-cron-cleanup.mjs` — cleanup auth test
 - `scripts/verify-rewrite-status.mjs` — rewrite-status test
 - `scripts/migrate-pro-emails.mjs` — one-time Pro email backfill into Redis set for occasion campaigns
-- `docs/every-design-decision-explained.md` — architecture Q&A
-- `docs/model-comparison.md` — model latency/pricing comparison for rewrite chains
-- `docs/PRICING.md` — pricing documentation (cost breakdown, profitability math, tiers, key naming, purchase flow, expiry timeline)
+- `docs-internal/every-design-decision-explained.md` — architecture Q&A
+- `docs-internal/model-comparison.md` — model latency/pricing comparison for rewrite chains
+- `docs-internal/PRICING.md` — pricing documentation (cost breakdown, profitability math, tiers, key naming, purchase flow, expiry timeline)
 - `assets/card-bgs/spiral-overlay.webp` — grayscale spiral overlay for custom color background (used with `background-blend-mode: overlay`)
 - `internal-logs/ilogs-ws.md` — acknowledged logs source-of-truth (git-ignored)
 - `internal-logs/observer.js` — keyboard shortcut handler for beacon redirect
@@ -215,6 +215,6 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-17; VitePress migration complete — Mintlify files deleted, ReadMe GitHub Action deleted, VitePress config created at docs/.vitepress/config.js. Docs built on Vercel deploy, served at /docs/. -->
+<!-- agsync: last-run 2026-07-17; VitePress migration complete — Mintlify files deleted, ReadMe GitHub Action deleted, VitePress source at docs-src/.vitepress/config.js. Docs built on Vercel deploy, served at /docs/. -->
 
 
