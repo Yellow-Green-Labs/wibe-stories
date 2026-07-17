@@ -2,6 +2,11 @@
 
 > **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 71
 
+## [v0.11.24.2] — Mintlify Footer Link Fix (2026-07-17)
+
+### Fixed
+- **Footer Documentation link 404** — Changed `/kb` internal link to direct `https://wibestories.mintlify.site` external link (`target="_blank"`). Updated Vercel rewrites to proxy `/kb` → Mintlify root (not `/kb` subpath), so `/kb/docs/WIBE_STORIES` correctly maps to `wibestories.mintlify.site/docs/WIBE_STORIES`.
+
 ## [v0.11.24.1] — Docs Restructure + Legal Hub (2026-07-17)
 
 ### Added

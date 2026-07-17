@@ -207,6 +207,6 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-17; v0.11.24.1 release — docs restructure + legal hub. Docs: API.md/DEVELOPER.md moved to docs-internal/, TRUST_CENTER.md/ACKNOWLEDGEMENTS.md/LIMITATIONS.md created, docs.json at repo root with Mintlify nav + Legal anchor. Legal: single legal.html → legal/ folder with hub + 3 sub-pages (license.html, terms.html, privacy.html), legal.css, legal.js. Vercel routes /legal, /legal/license, /legal/terms, /legal/privacy. Footer and hamburger menu links updated. CHANGELOG condensed to concise one-liners. Version bump v0.11.24.0 → v0.11.24.1. -->
+<!-- agsync: last-run 2026-07-17; v0.11.24.2 release — Mintlify footer link fix. Changed footer Documentation link from `/kb` to direct `https://wibestories.mintlify.site` (external, new tab). Fixed Vercel rewrites to proxy `/kb` to Mintlify root instead of `/kb` subpath. -->
 
 
