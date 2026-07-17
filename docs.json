@@ -30,16 +30,11 @@
         "pages": ["CHANGELOG"]
       }
     ],
-    "products": [
+    "anchors": [
       {
-        "product": "Documents",
-        "anchors": [
-          {
-            "anchor": "Legal",
-            "icon": "legal",
-            "href": "https://wibestories.vercel.app/legal"
-          }
-        ]
+        "anchor": "Legal",
+        "icon": "scale",
+        "href": "https://wibestories.vercel.app/legal"
       }
     ]
   },
