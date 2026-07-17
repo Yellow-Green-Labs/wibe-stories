@@ -41,5 +41,6 @@ scripts/scripts-INTERNAL-DOC.md
 
 .env*.local
 
-# VitePress build output
-docs-src/.vitepress/dist/
+# VitePress build cache (keep dist/ for Vercel deployment)
+docs-src/.vitepress/.temp/
+docs-src/.vitepress/cache/
