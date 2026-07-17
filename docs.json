@@ -1,9 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "almond",
   "name": "Wibe Stories",
   "colors": {
-    "primary": "#f59e0b"
+    "primary": "#ffa946",
+    "light": "#fffffe",
+    "dark": "#1a1a1a"
   },
   "navigation": {
     "groups": [
@@ -28,12 +30,57 @@
         "pages": ["CHANGELOG"]
       }
     ],
-    "anchors": [
+    "products": [
       {
-        "anchor": "Legal",
-        "icon": "scale",
-        "href": "https://wibestories.vercel.app/legal"
+        "product": "Documents",
+        "anchors": [
+          {
+            "anchor": "Legal",
+            "icon": "legal",
+            "href": "https://wibestories.vercel.app/legal"
+          }
+        ]
       }
     ]
-  }
+  },
+  "logo": {
+    "light": "/images/ws-logo-blwbg.png",
+    "dark": "/images/ws-logo-whblbg.png"
+  },
+  "favicon": {
+    "light": "/images/ws-logo-blwbg.png",
+    "dark": "/images/ws-logo-whblbg.png"
+  },
+  "background": {
+    "color": {
+      "light": "#ffffeb",
+      "dark": "#1a1a1a"
+    }
+  },
+  "icons": {
+    "library": "fontawesome"
+  },
+  "navbar": {
+    "links": []
+  },
+  "fonts": {
+    "heading": {
+      "family": "Inter"
+    },
+    "body": {
+      "family": "Roboto"
+    }
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view"
+    ],
+    "display": "header"
+  },
+  "variables": {
+    ".copy": "© 2026 YGLabs",
+    ".ws": "Wibe Stories"
+  },
+  "description": "Turn your voice into shareable cards, in your language, in seconds."
 }

@@ -1,4 +1,8 @@
-# Limitations
+---
+title: "Limitations"
+icon: "hand-paper"
+mode: "custom"
+---
 
 These are constraints we chose on purpose. They are not bugs — they are product decisions listed here so you understand what we have prioritized.
 
@@ -37,3 +41,5 @@ The visible cap is 150 characters, but the system quietly allows up to 160. The 
 ## Uploaded audio transcription may not exactly match the card text
 
 When you upload a WAV or MP3 file, the audio runs through the same speech-to-text engine as live recordings. Background noise, accent, speaking speed, and audio quality all affect accuracy. You can edit the text box manually or tap reset to try again.
+
+---
