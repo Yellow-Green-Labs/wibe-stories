@@ -1,6 +1,4 @@
 {
-  "buildCommand": "npx vitepress build docs-src",
-  "outputDirectory": ".",
   "rewrites": [
     { "source": "/", "destination": "/wisprstories.html" },
     { "source": "/features", "destination": "/features.html" },
