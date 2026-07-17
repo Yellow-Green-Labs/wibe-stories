@@ -158,7 +158,7 @@ The card image itself carries only the user's words and the Wibe Stories mark. W
 ## 6. Feature summary
 
 | Feature | Detail |
-|---|---|---|
+|---|---|
 | Voice input | Web Speech API in the browser, with a server STT fallback |
 | Typing / paste | Full fallback for any language or unsupported browser |
 | Voice attachment | Optional toggle to attach the original voice recording to a shared card |

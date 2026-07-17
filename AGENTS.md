@@ -80,7 +80,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 # Documents referenced every session
 
 - [ ] `docs-src/` — VitePress documentation source (7 pages, Markdown frontmatter, custom theme)
-- [ ] `docs-src/.vitepress/config.js` — VitePress configuration (sidebar, base path, theme)
+- [ ] `docs-src/.vitepress/config.js` — VitePress configuration (cleanUrls, logo, nav, sidebar, base path, fonts)
 - [ ] `docs-src/.vitepress/theme/custom.css` — VitePress custom theme (fonts, colors, links)
 - [ ] `docs-internal/DEVELOPER.md` — developer guide (architecture, code structure, deployment)
 - [ ] `docs-internal/API.md` — API reference (25 endpoints, error codes, webhooks)
@@ -111,8 +111,9 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 ## Key files
 
 - `docs-src/` — VitePress documentation source (7 pages, Markdown + YAML frontmatter, VitePress theme)
-- `docs-src/.vitepress/config.js` — VitePress config (nav, sidebar, base: /docs/, fonts)
-- `docs-src/.vitepress/theme/custom.css` — custom theme (DM Sans, heading/body/link colors)
+- `docs-src/.vitepress/config.js` — VitePress config (nav, sidebar, base: /docs/, cleanUrls, logo, fonts)
+- `docs-src/.vitepress/theme/custom.css` — custom theme (DM Sans, heading/body/link colors, light/dark + table styles)
+- `docs-src/.vitepress/public/assets/` — logo images (logo-light.png, logo-dark.png) for VitePress nav
 - `docs-src/index.md` — VitePress home page
 - `docs-src/product-guide/wibe-stories.md` — full product documentation (vision, architecture, features, roadmap)
 - `docs-src/product-guide/trust-center.md` — services used (Deepgram, OpenRouter, Vercel, etc.)
@@ -167,7 +168,7 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `global/styles/features.css` — Features page CSS
 - `global/about.js` — About page JS
 - `global/features.js` — Features page JS
-- `vercel.json` — deployment config, CSP security headers
+- `vercel.json` — deployment config, CSP security headers, .html redirect
 - `.vercelignore` — excludes remotion-demo/ from deployments
 - `sw.js` — service worker for offline font caching
 - `global/footer-menu.js` — footer menu rendering, i18n, reorder, occasion email subscription popup
@@ -215,6 +216,6 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-17; VitePress migration complete — Mintlify files deleted, ReadMe GitHub Action deleted, VitePress source at docs-src/.vitepress/config.js. Docs built on Vercel deploy, served at /docs/. -->
+<!-- agsync: last-run 2026-07-17; Docs fixes — cleanUrls:true, logo config, custom.css rewrite (light/dark+tables), wibe-stories.md table separator fix, vercel.json .html redirect + CSP img-src for simpleicons. v0.11.24.3 added to changelog. -->
 
 

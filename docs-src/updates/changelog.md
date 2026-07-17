@@ -6,6 +6,20 @@ title: Changelog
 
 > **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 71
 
+## [v0.11.24.3] — Docs Fixes: cleanUrls, Logo, CSS Rewrite (2026-07-17)
+
+### Fixed
+- **VitePress subpage 404s** — Set `cleanUrls: true` in VitePress config so internal links avoid `.html` extension. Added 301 redirect from `.html` URLs to clean URLs in `vercel.json` for backward compatibility.
+- **Feature summary table not rendering** — Fixed malformed table separator (`---|---|---|---|` → `---|---|---|`) in `wibe-stories.md`.
+- **Trust center icons invisible** — Added `cdn.simpleicons.org` to CSP `img-src` in `vercel.json`.
+
+### Changed
+- **VitePress custom.css** — Rewrote with comprehensive light/dark mode styling, table styles (striped rows, brand border), blockquotes, nav, sidebar, code, and link polish.
+- **Logo** — Added light/dark logo images at `.vitepress/public/assets/logo-{light,dark}.png`, configured in VitePress `themeConfig.logo`.
+
+### Added
+- `vite.publicDir` in VitePress config so public directory files copy to build output.
+
 ## [v0.11.24.2] — Mintlify Footer Link Fix (2026-07-17)
 
 ### Fixed

@@ -1,7 +1,7 @@
 {
   "private": true,
   "type": "module",
-  "version": "0.11.24.0",
+  "version": "0.11.24.3",
   "description": "Turn your voice into shareable cards, in your language, in seconds.",
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

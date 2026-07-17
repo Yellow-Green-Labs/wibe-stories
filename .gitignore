@@ -44,3 +44,7 @@ scripts/scripts-INTERNAL-DOC.md
 # VitePress build cache (keep dist/ for Vercel deployment)
 docs-src/.vitepress/.temp/
 docs-src/.vitepress/cache/
+docs-src/.vitepress/public/
+
+# Root public/ — likely a VitePress build artifact at project root
+public/

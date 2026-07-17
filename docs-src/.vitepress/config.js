@@ -1,10 +1,15 @@
 import { defineConfig } from 'vitepress'
+import { fileURLToPath } from 'url'
 
 export default defineConfig({
   title: 'Wibe Stories',
   description: 'Turn your voice into shareable cards, in your language, in seconds.',
   base: '/docs/',
   lang: 'en-US',
+  cleanUrls: true,
+  vite: {
+    publicDir: fileURLToPath(new URL('./public', import.meta.url)),
+  },
   head: [
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
@@ -12,6 +17,10 @@ export default defineConfig({
   ],
   themeConfig: {
     siteTitle: 'Wibe Stories',
+    logo: {
+      light: '/assets/logo-light.png',
+      dark: '/assets/logo-dark.png',
+    },
     nav: [
       { text: 'Overview', link: '/' },
       { text: 'App', link: 'https://wibestories.vercel.app' },
