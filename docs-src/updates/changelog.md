@@ -1,14 +1,17 @@
 ---
 title: Changelog
+outline: [2, 2]
 ---
 
 # Changelog
 
 *Last updated: Jul 17, 2026*
 
-> **Project planned:** May 8, 2026 · **First commit:** June 8, 2026
+> **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 71
 
-## [v0.11.24.3] — Docs Fixes: cleanUrls, Logo, CSS Rewrite (2026-07-17)
+## v0.11.24.3 — 2026-07-17
+
+Docs Fixes: cleanUrls, Logo, CSS Rewrite.
 
 ### Fixed
 - **VitePress subpage 404s** — Set `cleanUrls: true` in VitePress config so internal links avoid `.html` extension. Added 301 redirect from `.html` URLs to clean URLs in `vercel.json` for backward compatibility.
@@ -22,12 +25,16 @@ title: Changelog
 ### Added
 - `vite.publicDir` in VitePress config so public directory files copy to build output.
 
-## [v0.11.24.2] — Mintlify Footer Link Fix (2026-07-17)
+## v0.11.24.2 — 2026-07-17
+
+Mintlify Footer Link Fix.
 
 ### Fixed
 - **Footer Documentation link 404** — Changed `/kb` internal link to direct `https://wibestories.mintlify.site` external link (`target="_blank"`). Updated Vercel rewrites to proxy `/kb` → Mintlify root (not `/kb` subpath), so `/kb/docs/WIBE_STORIES` correctly maps to `wibestories.mintlify.site/docs/WIBE_STORIES`.
 
-## [v0.11.24.1] — Docs Restructure + Legal Hub (2026-07-17)
+## v0.11.24.1 — 2026-07-17
+
+Docs Restructure + Legal Hub.
 
 ### Added
 - **Mintlify docs restructure** — API.md/DEVELOPER.md moved to `docs-internal/`; TRUST_CENTER.md, ACKNOWLEDGEMENTS.md, LIMITATIONS.md created in `docs/`; `docs.json` at repo root with 5 nav groups + Legal anchor.
@@ -58,12 +65,16 @@ title: Changelog
 - Old `legal.html` — Replaced by `legal/` folder.
 - `docs/internal/` — Content moved to `docs-internal/`.
 
-## [v0.11.24.0] — Vault Select UX Redesign (2026-07-15)
+## v0.11.24.0 — 2026-07-15
+
+Vault Select UX Redesign.
 
 ### Changed
 - Vault selection controls — Select All moved to header, unified with Select/Cancel toggle. Action bar shows count + actions only.
 
-## [v0.11.23.0] — Occasion Email Campaign Expansion (2026-07-09)
+## v0.11.23.0 — 2026-07-09
+
+Occasion Email Campaign Expansion.
 
 ### Added
 - 30 occasion email campaigns (was 8) covering fixed, floating weekday, date range, and movable/lunar dates.
@@ -82,7 +93,9 @@ title: Changelog
 ### Removed
 - Old OCCASIONS list — Replaced 13 emoji entries with 30 image-based entries.
 
-## [v0.11.22.0] — Custom Color Picker (2026-07-08)
+## v0.11.22.0 — 2026-07-08
+
+Custom Color Picker.
 
 ### Added
 - Custom color picker (iro.js) for Pro users — color wheel + sliders, rainbow gradient trigger.
@@ -92,7 +105,9 @@ title: Changelog
 ### Changed
 - All render/export paths (`_applyBackground`, `_applyCloneBg`, `_getTextureBgDataUrl`, `generateBlob`, `_makeSocialBlob`, `wave()`, WebM, style chip) use `getCardColor()` instead of `PALS[curP]`.
 
-## [v0.11.17.0] — OG Compositing + UX Polish (2026-07-07)
+## v0.11.17.0 — 2026-07-07
+
+OG Compositing + UX Polish.
 
 ### Changed
 - Branded OG image compositing via sharp (card PNG onto WS-OG-Image template, 1200×630 JPEG, ~43 KB).
@@ -104,7 +119,9 @@ title: Changelog
 - Speech language trigger: re-enabled when user types/records (was stuck disabled after examples).
 - Hinglish voice input: new option in speech language picker (Deepgram `language=multi`).
 
-## [v0.11.16.0] — Complete Theme System Removal (2026-07-06)
+## v0.11.16.0 — 2026-07-06
+
+Complete Theme System Removal.
 
 ### Removed
 - Entire theme system: `curTheme`, `applyTheme()`, `_initThemeRow()`, `_detectThemeBrightness()`, `_extractThemeAccent()`, `_getThemeVariantSrc()`, `_uploadHeaders()`, `setCardTextColors()`, `_toggleThemeBody()`, `_setTextContrast()`, theme draft restoration, all theme HTML/CSS.
@@ -112,7 +129,9 @@ title: Changelog
 - `_uploadHeaders()` function — uploads use inline headers.
 - Color section heading: "Color" → "Original Colors".
 
-## [v0.11.13.1] — Bug Fixes (2026-07-03)
+## v0.11.13.1 — 2026-07-03
+
+Bug Fixes.
 
 ### Added
 - Download proxy endpoint (`api/download/[id].js`) — serves Blob files with `Content-Disposition: attachment`.
@@ -129,7 +148,9 @@ title: Changelog
 - Card Not Found on valid links: zero-width space in URLs stripped via `.replace(/[^\w-]/g, '')`.
 - Update toast false positive on hard refresh (added `_versionUpToDate` flag + 3s delay).
 
-## [v0.11.13] — UX Polish + Occasion Fixes (2026-07-01)
+## v0.11.13 — 2026-07-01
+
+UX Polish + Occasion Fixes.
 
 ### Added
 - Landing page: download buttons, expiry countdown badge, voice status label.
@@ -145,7 +166,9 @@ title: Changelog
 ### Fixed
 - Occasion false positives: removed short triggers (`rip`, `luck`, `pride`, etc.) and cross-occasion duplicates.
 
-## [v0.11.2] — Audio File Upload (2026-06-24)
+## v0.11.2 — 2026-06-24
+
+Audio File Upload.
 
 ### Added
 - WAV/MP3 audio upload via `AudioContext` decode → PCM WAV conversion → STT.
@@ -153,7 +176,9 @@ title: Changelog
 - Mutual exclusion with mic recording.
 - `api/voice.js` max bytes: 2MB → 6MB.
 
-## [v0.11.1] — Features Page (2026-06-21)
+## v0.11.1 — 2026-06-21
+
+Features Page.
 
 ### Changed
 - Features page: 5 capability sections with WebP images (Speak, Write, Rewrite, Design, Share).
@@ -161,7 +186,9 @@ title: Changelog
 - Stats updated: "6 Tone styles" → "7".
 - Footer menu: removed auto-hide check for "How to Use".
 
-## [v0.11.0.14] — Features Page + About Page Trim (2026-06-13)
+## v0.11.0.14 — 2026-06-13
+
+Features Page + About Page Trim.
 
 ### Added
 - `features.html`, `global/features.js`, `global/styles/features.css`.
@@ -170,11 +197,15 @@ title: Changelog
 ### Changed
 - `about.html` trimmed to pure story/mission/origin content.
 
-## [v0.11.0.13] — Patch (2026-06-13)
+## v0.11.0.13 — 2026-06-13
+
+Patch.
 
 Bug fixes and improvements.
 
-## [v0.11.0.12] — Mobile Share + Landing Page Fixes (2026-06-13)
+## v0.11.0.12 — 2026-06-13
+
+Mobile Share + Landing Page Fixes.
 
 ### Fixed
 - WhatsApp share caption: removed ZWS from URL.
@@ -182,11 +213,15 @@ Bug fixes and improvements.
 - Landing page scrollable on small screens.
 - Wispr Flow CTA animation on mobile (removed media query guard).
 
-## [v0.11.0.11] — Patch (2026-06-09)
+## v0.11.0.11 — 2026-06-09
+
+Patch.
 
 Bug fixes and improvements.
 
-## [v0.11.0.10] — Share Polish (2026-06-09)
+## v0.11.0.10 — 2026-06-09
+
+Share Polish.
 
 ### Fixed
 - `robots.txt` — allowlist-based for WhatsApp/Telegram OG previews.
@@ -200,7 +235,9 @@ Bug fixes and improvements.
 ### Changed
 - Brand rename: "Wispr Stories" → "Wibe Stories" in 11 files.
 
-## [v0.11.0.9] — Documentation Restructuring (2026-06-09)
+## v0.11.0.9 — 2026-06-09
+
+Documentation Restructuring.
 
 ### Added
 - `DEVELOPER.md` and `API.md` docs.
@@ -210,7 +247,9 @@ Bug fixes and improvements.
 - README.md trimmed.
 - `WIBE_STORIES_CANONICAL_BLUEPRINT.md` → `docs/WIBE_STORIES.md`.
 
-## [v0.11.0.8] — Stats Leak + Voice Mislabeling Fixes (2026-06-08)
+## v0.11.0.8 — 2026-06-08
+
+Stats Leak + Voice Mislabeling Fixes.
 
 ### Fixed
 - `api/track-usage.js` — Redis write guarded by `VERCEL_ENV === 'production'`.
@@ -218,45 +257,61 @@ Bug fixes and improvements.
 - BMAC webhook — test event check before HMAC, new event types, idempotency key fallback.
 - Pro key email redesigned.
 
-## [v0.11.0.7] — Grace Zone (2026-06-05)
+## v0.11.0.7 — 2026-06-05
+
+Grace Zone.
 
 ### Changed
 - Counter color scheme: traffic-light (gray 0-119, yellow 120-150, red 151-160).
 - Counter format: `X (Grace)` with clickable link to `/about#faq-grace`.
 
-## [v0.11.0.6] — Delete audit.md (2026-06-04)
+## v0.11.0.6 — 2026-06-04
+
+Delete audit.md.
 
 ### Removed
 - `audit.md` — content integrated into CHANGELOG.md across prior versions.
 
-## [v0.11.0.5] — Remove SEO Paragraph (2026-06-04)
+## v0.11.0.5 — 2026-06-04
+
+Remove SEO Paragraph.
 
 ### Removed
 - Hidden SEO paragraph below H1 (brand misspellings).
 
-## [v0.11.0.4] — Chord Handler Path Fix (2026-06-04)
+## v0.11.0.4 — 2026-06-04
+
+Chord Handler Path Fix.
 
 ### Fixed
 - Chord script 404 on non-home pages — relative → absolute path.
 
-## [v0.11.0.3] — Windows Menu Fix (2026-06-04)
+## v0.11.0.3 — 2026-06-04
+
+Windows Menu Fix.
 
 ### Fixed
 - Chord never fired on Windows — added `e.preventDefault()` for W/S keys with Alt+Shift.
 
-## [v0.11.0.2] — i18n Placeholder Fix (2026-06-04)
+## v0.11.0.2 — 2026-06-04
+
+i18n Placeholder Fix.
 
 ### Fixed
 - Toasts showed literal `{max}` instead of actual seconds — added `.replace("{max}", value)`.
 
-## [v0.11.0.1] — Textarea Grace Zone (2026-06-04)
+## v0.11.0.1 — 2026-06-04
+
+Textarea Grace Zone.
 
 ### Changed
 - `maxlength` 150 → 160 (invisible 10-char grace).
 - Counter visual: orange `.grace` state at >150.
 - Added Limitation 8 to ilogs-ws.md, FAQ item to about.html.
 
-## [v0.11.0.0] — Acknowledged Logs (2026-06-04)
+## v0.11.0.0 — 2026-06-04
+
+Acknowledged Logs.
 
 ### Added
 - `internal-logs/` — source-of-truth markdown + keyboard chord handler (Alt+Shift+W+S).
@@ -265,7 +320,9 @@ Bug fixes and improvements.
 ### Removed
 - Dead `ffNotice` i18n key from all 11 locales.
 
-## [v0.10.4.8] — SEO + Link Hygiene (2026-06-04)
+## v0.10.4.8 — 2026-06-04
+
+SEO + Link Hygiene.
 
 ### Added
 - JSON-LD `alternateName` (10 brand variants), `hreflang` tags, `.visually-hidden` CSS.
@@ -274,7 +331,9 @@ Bug fixes and improvements.
 - Link hygiene: 39 `wisprflow.ai?ref=wispr-stories` → `wisprflow.ai/r?BEST76`.
 - Sitemap rewritten with clean URLs.
 
-## [v0.10.4.7] — liveBox Removal + Counter Safety Net (2026-06-04)
+## v0.10.4.7 — 2026-06-04
+
+liveBox Removal + Counter Safety Net.
 
 ### Removed
 - liveBox UI element (~110 lines CSS, 64 JS references).
@@ -285,7 +344,9 @@ Bug fixes and improvements.
 ### Fixed
 - Deepgram `recSt` stuck on "Starting...", mic stream leak, timer font size.
 
-## [v0.10.4.6] — Toast Shortening + Recording Fixes (2026-06-03)
+## v0.10.4.6 — 2026-06-03
+
+Toast Shortening + Recording Fixes.
 
 ### Changed
 - 23 toasts kept and shortened, 17 removed.
@@ -294,7 +355,9 @@ Bug fixes and improvements.
 ### Fixed
 - Pre-flight mic setup, readyTimer race, `trySpeechFallback()` undefined, `clearInterval` → `clearTimeout`.
 
-## [v0.10.4.5] — Friction Reduction (2026-06-03)
+## v0.10.4.5 — 2026-06-03
+
+Friction Reduction.
 
 ### Changed
 - Counter hidden by default (appears at 3+ recordings).
@@ -302,12 +365,16 @@ Bug fixes and improvements.
 - Card creation button flashes green "Beautiful!" for 1.5s.
 - Recording counter auto-heals via `_refreshLimitsFromServer()`.
 
-## [v0.10.4.2] — Recording Flow Bug Fixes (2026-06-02)
+## v0.10.4.2 — 2026-06-02
+
+Recording Flow Bug Fixes.
 
 ### Added
 - Onboarding Quick Reference (collapsible), STT health-check cache (10-min TTL), `_startRecTimer` helper.
 
-## [v0.10.4.1] — Tone Counter & WhatsApp Fixes (2026-06-02)
+## v0.10.4.1 — 2026-06-02
+
+Tone Counter & WhatsApp Fixes.
 
 ### Added
 - `api/rewrite-confirm.js` — tone rewrite commit endpoint.
@@ -318,57 +385,79 @@ Bug fixes and improvements.
 - WhatsApp share preview: 1200×1200 1:1 OG image.
 - Web Share API: uses 1:1 blob instead of 9:16.
 
-## [v0.10.4] — About Page Polish (2026-05-29)
+## v0.10.4 — 2026-05-29
+
+About Page Polish.
 
 ### Added
 - Scroll-reveal animations, mosaic stagger, count-up animation, FAQ auto-scroll.
 
-## [v0.10.3] — Language Stats Redesign (2026-05-29)
+## v0.10.3 — 2026-05-29
+
+Language Stats Redesign.
 
 ### Added
 - Major UI overhaul: hero section, insights cards, region chips, chart animation, table sorting, medal badges.
 
-## [v0.10.2] — Download Flow Improvements (2026-05-28)
+## v0.10.2 — 2026-05-28
+
+Download Flow Improvements.
 
 ### Added
 - Determinate progress bar, file size + time estimates, toast queue, ESC modal close, focus trapping, haptic feedback.
 
-## [v0.10.1] — WebM Generation Fixes (2026-05-27)
+## v0.10.1 — 2026-05-27
+
+WebM Generation Fixes.
 
 ### Fixed
 - WebM caching, 30 FPS, frame readiness, dark overlay elimination, syntax error crash.
 
-## [v0.10.0] — Language Expansion + About Page (2026-05-26)
+## v0.10.0 — 2026-05-26
+
+Language Expansion + About Page.
 
 ### Added
 - 15 new speech languages (44 total), About page, "How to Use" in footer menu.
 
-## [v0.9.8] — Landing Page Metadata (2026-05-26)
+## v0.9.8 — 2026-05-26
+
+Landing Page Metadata.
 
 ### Added
 - Sender name display, card metadata sidecar (`meta/<id>.json`).
 
-## [v0.9.7] — "Native" Language Option (2026-05-25)
+## v0.9.7 — 2026-05-25
+
+"Native" Language Option.
 
 ### Added
 - "Native" speech language option, auto-detect card label, mic recording guard.
 
-## [v0.9.6] — Hero Subtitle i18n + Cleanup (2026-05-24)
+## v0.9.6 — 2026-05-24
+
+Hero Subtitle i18n + Cleanup.
 
 ### Added
 - Hero subtitle i18n for 21 locales, speech-lang modal i18n, Republic Day occasion.
 
-## [v0.9.5] — Hybrid STT Routing (2026-05-24)
+## v0.9.5 — 2026-05-24
+
+Hybrid STT Routing.
 
 ### Added
 - Dual STT: Deepgram Nova-3 + OpenRouter Whisper for CJK/Thai/Malayalam/Punjabi.
 
-## [v0.9.4] — i18n Synchronous Lookup + Polish (2026-05-23)
+## v0.9.4 — 2026-05-23
+
+i18n Synchronous Lookup + Polish.
 
 ### Added
 - `getI18nSync()` helper, unified notice system, style chip summary, Remotion demo project.
 
-## [v0.9.3] — Rewrite Language Preservation (2026-05-22)
+## v0.9.3 — 2026-05-22
+
+Rewrite Language Preservation.
 
 ### Fixed
 - Rewrite preserves input language/script via `detectScript()` classifier and positive `LANGUAGE RULE`.
@@ -376,12 +465,16 @@ Bug fixes and improvements.
 - Client timeout raised 15s → 25s.
 - Page UI no longer flips to example sentence's language.
 
-## [v0.8.0] — i18n, Tone Preview, Silence Detection (2026-05-20)
+## v0.8.0 — 2026-05-20
+
+i18n, Tone Preview, Silence Detection.
 
 ### Added
 - 23 language i18n system, tone rewrite preview (Accept/Cancel), silence detection via RMS energy.
 
-## [v0.7.0] — Blob Cleanup, WhatsApp OG Fix (2026-05-20)
+## v0.7.0 — 2026-05-20
+
+Blob Cleanup, WhatsApp OG Fix.
 
 ### Added
 - Real blob cleanup via Vercel Cron (daily, 36h TTL).

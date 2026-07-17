@@ -25,35 +25,48 @@ export default defineConfig({
       { text: 'Overview', link: '/' },
       { text: 'App', link: 'https://wibestories.vercel.app' },
     ],
-    sidebar: [
-      {
-        text: 'Welcome',
-        items: [
-          { text: 'Overview', link: '/' },
-        ],
-      },
-      {
-        text: 'Product Guide',
-        items: [
-          { text: 'Wibe Stories', link: '/product-guide/wibe-stories' },
-          { text: 'Trust Center', link: '/product-guide/trust-center' },
-        ],
-      },
-      {
-        text: 'Reference',
-        items: [
-          { text: 'Known Issues', link: '/reference/acknowledgements' },
-          { text: 'Limitations', link: '/reference/limitations' },
-          { text: 'Roadmap', link: '/reference/roadmap' },
-        ],
-      },
-      {
-        text: 'Updates',
-        items: [
-          { text: 'Changelog', link: '/updates/changelog' },
-        ],
-      },
-    ],
+    sidebar: {
+      '/legal/': [
+        {
+          text: 'Legal',
+          items: [
+            { text: 'License', link: '/legal/license' },
+            { text: 'Terms of Service', link: '/legal/terms' },
+            { text: 'Privacy Policy', link: '/legal/privacy' },
+            { text: 'Refund Policy', link: '/legal/refund' },
+          ],
+        },
+      ],
+      '/': [
+        {
+          text: 'Welcome',
+          items: [
+            { text: 'Overview', link: '/' },
+          ],
+        },
+        {
+          text: 'Product Guide',
+          items: [
+            { text: 'Wibe Stories', link: '/product-guide/wibe-stories' },
+            { text: 'Trust Center', link: '/product-guide/trust-center' },
+          ],
+        },
+        {
+          text: 'Reference',
+          items: [
+            { text: 'Known Issues', link: '/reference/acknowledgements' },
+            { text: 'Limitations', link: '/reference/limitations' },
+            { text: 'Roadmap', link: '/reference/roadmap' },
+          ],
+        },
+        {
+          text: 'Updates',
+          items: [
+            { text: 'Changelog', link: '/updates/changelog' },
+          ],
+        },
+      ],
+    },
     socialLinks: [
       { icon: 'github', link: 'https://github.com/Yellow-Green-Labs/wibe-stories' },
     ],

@@ -98,6 +98,9 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - [ ] `frontlogs/DECISIONS.md` — decisions & reasoning
 
 If any of the `frontlogs/` files above are missing, tell the user to type `/checkpoint` to create them.
+- [ ] `frontlogs/DECISIONS.md` — decisions & reasoning
+
+If any of the `frontlogs/` files above are missing, tell the user to type `/checkpoint` to create them.
 
 ## Project overview
 
@@ -121,6 +124,7 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `docs-src/reference/limitations.md` — product limitations (caps, expiry, moderation)
 - `docs-src/reference/roadmap.md` — Product roadmap placeholder
 - `docs-src/updates/changelog.md` — version history
+- `docs-src/legal/` — 4 legal pages (License, Terms, Privacy, Refund Policy) in VitePress Markdown, path-keyed sidebar under `/legal/`
 - `docs-internal/DEVELOPER.md` — developer guide (getting started, code structure, deployment)
 - `docs-internal/API.md` — API reference (25 endpoints, error codes, webhooks)
 - `api/voice.js` — audio upload endpoint (called after PNG upload with `X-Short-Id`)
@@ -139,7 +143,6 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `global/styles/vault.css` — Wibe Vault styles (CSS Grid layout, tile animations, audio badge, dark mode)
 - `global/styles/layout.css` — layout styles (footer menu divider)
 - `assets/i18n/` — 11 UI locales + `en.json`. **Do not regenerate deleted locales.**
-- `legal/legal-index.html` — Legal hub (3 separate pages for License, Terms, Privacy)
 - `assets/i18n/i18n.js` — i18n loader with `data-i18n`, `getI18nSync()`
 - `assets/i18n/NATIVE-REVIEW.md` — per-locale review checklist
 - `assets/occasions/` — 60 occasion images (.png)
@@ -216,6 +219,6 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-17; Docs audit — 7 files fixed: 44→46 speech langs, Safari claim corrected, H3-List format for acknowledgements, last-updated dates on all doc files. v0.11.24.3 deployed. -->
+<!-- agsync: last-run 2026-07-17; Legal docs migrated to VitePress: deleted legal/ folder (6 files), created docs-src/legal/*.md (4 pages), path-keyed sidebar in config.js, single "Legal" footer link, vercel.json redirects, en.json i18n key. -->
 
 

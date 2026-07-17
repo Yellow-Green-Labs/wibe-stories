@@ -8,40 +8,85 @@ title: Limitations
 
 These are constraints we chose on purpose. They are not bugs — they are product decisions listed here so you understand what we have prioritized.
 
-## Daily caps exist to keep the service sustainable
+### Daily caps keep the service sustainable
 
-Free tier: 5 recordings per day, 1 tone rewrite per tone per day, 15-second recording length. Pro removes the caps and extends recordings to 30 seconds. Caps prevent abuse and keep infrastructure costs manageable.
+Free tier: 5 recordings per day, 1 tone rewrite per tone per day, 15-second max recording length, 75 seconds cumulative audio per day. Pro raises recordings to 50 per day and cumulative audio to 900 seconds (15 minutes), and makes rewrites unlimited.
 
-## Recordings are 15 seconds (free) or 30 seconds (Pro)
+- **Sustainability:** STT costs per audio second and LLM rewrite costs per call both scale with usage. Caps keep infrastructure bills predictable.
+- **Abuse prevention:** Scripts that create hundreds of cards per minute for SEO spam farms or scrape rewritten phrases for training datasets are blocked by daily limits.
+- **Pro accounts** provide a verified payment method that can be revoked if abuse is detected.
+- The counter color degrades visually: gray (0–119 used) → yellow (120–150) → red (151–160). At the cap a "5/5" toast appears and recordings are blocked.
 
-Long enough for one complete thought. Multiple thoughts are better as separate cards. The cap is driven by speech-to-text costs.
+### The free tier has a shared 99-user daily capacity pool
 
-## Card text is capped at 150 characters
+Free users share a 99-user-per-day pool. When the pool is reached, new users see a full-screen capacity overlay; users already active are grandfathered in.
 
-Shorter messages make better-looking, more shareable cards. 150 characters fits a thoughtful sentence without overflowing the card design. A 10-character invisible grace zone prevents cutting mid-word.
+- This caps the maximum daily infrastructure cost, not individual usage — the 99-user pool keeps the service free for everyone.
+- Pro users bypass this cap entirely.
+- The cap resets at midnight UTC daily.
 
-## Shared links expire after 7 days (14 for Pro)
+### Recordings are 15 seconds (free) or 30 seconds (Pro)
 
-Stale cards cost storage and bandwidth. 7 days is long enough for recipients to see the card, while keeping hosting costs finite. Downloaded images are yours to keep forever.
+The limit is driven by STT cost structure, which charges per audio second.
 
-## We do not run automated content moderation
+- 15 seconds captures one complete thought. Longer recordings tend to contain multiple thoughts (better as separate cards) or silence.
+- The recording toolbar shows a live countdown timer with the last 3 seconds highlighted in red.
+- Uploaded WAV or MP3 files (up to 6 MB) run through the same STT engine with the same length limits. Accuracy depends on file quality, background noise, and accent. Edit the text box or tap reset to try again.
 
-No automated filter exists for card text or voice recordings. Daily caps make bulk abuse impractical, but a determined user can create any content. We review reported content manually and plan to address this gap in the future.
+### Card text is capped at 150 characters
 
-## Older Safari versions may show slightly different layouts
+Shorter messages make better-looking, more shareable cards.
 
-The app detects Safari and adjusts behavior for compatibility. Older versions may show tighter spacing and different card aspect ratios — graceful degradations, not bugs.
+- 150 characters fits a thoughtful sentence without overflowing the card canvas. Most stock example phrases fit comfortably.
+- The counter turns red and the Done button disables past 150, but the textarea does not block input — you can see what you would lose by shortening.
+- An invisible 10-character grace zone (up to 160) prevents cutting a final word like "friend" mid-letter. The card image, transcription, and tone rewriting all use the first 150 characters.
 
-## Cards are available in one size only (square)
+### Shared links expire after 7 days (14 for Pro)
 
-We previously offered four sizes. On mobile, the wider sizes got cropped and the background illustration was cut off. The square is the one size that looks right on every screen and fits every social media share preview.
+A daily cleanup cron at midnight UTC removes expired card data.
 
-## Textarea has an invisible 10-character grace
+- **Deleted:** card image (Vercel Blob), voice recording (Blob), and metadata sidecar (`meta/<id>.json`).
+- **Preserved:** Downloaded images are yours forever. Cards saved to the vault are exempt from cleanup (cross-referenced against the `vault_cards` Neon table on every cleanup pass).
 
-The visible cap is 150 characters, but the system quietly allows up to 160. The extra 10 characters exist so the system does not aggressively cut your message mid-word. The card image, transcription, and tone rewriting all use the first 150 characters.
+### We do not run automated content moderation
 
-## Uploaded audio transcription may not exactly match the card text
+No automated filter exists for card text or voice recordings.
 
-When you upload a WAV or MP3 file, the audio runs through the same speech-to-text engine as live recordings. Background noise, accent, speaking speed, and audio quality all affect accuracy. You can edit the text box manually or tap reset to try again.
+- Daily caps make bulk automated abuse impractical — a script creating 1,000 cards per minute hits the cap in seconds.
+- A determined user can create any content. A reporting mechanism is planned but not yet implemented.
+
+### Cards are available in one size only (square)
+
+We previously offered four sizes (1:1, 9:16, 4:5, 16:9). On mobile, the wider sizes got cropped, the background illustration was cut off, and social media previews were inconsistent. After testing across multiple devices, only the square works reliably on every screen.
+
+- This is a deliberate product decision, not a missing feature.
+
+### Vault storage is capped at 50 cards for Pro users
+
+Pro vault cards are stored server-side in Neon Postgres and persist across sessions. The 50-card limit protects the shared database from bulk abuse.
+
+- Free users' vault data lives in browser localStorage — no cap, but data is lost on browser storage clear.
+- The vault shows a count badge ("5/50") to make the limit visible. Select and delete to stay under the cap.
+
+### Audio uploads are limited to 6 MB, WAV or MP3 only
+
+Uploaded audio files are validated both client-side and server-side.
+
+- Client validates: MIME type (`audio/wav`, `audio/mpeg`, etc.) and file extension (`.wav`, `.mp3`).
+- Server validates: total size ≤ 6 MB, duration via AudioContext decode.
+- Larger files or unsupported formats are rejected with a clear toast message.
+
+### No user accounts — everything is session-based
+
+There is no login, no sign-up, and no persistent user identity. A session ID in sessionStorage identifies you for the current browsing session.
+
+- Your recordings, cards, and draft text reset on browser data clear.
+- The Pro key (stored in localStorage) is the only persistent identifier — it unlocks vault sync across devices. Without it, everything is ephemeral.
+- This is an intentional trade-off: no account friction means instant use, at the cost of cross-device state.
+
+### Older Safari versions may show slightly different layouts
+
+Older Safari versions may show tighter spacing and slightly different card aspect ratios — graceful degradations, not bugs.
 
 ---
+

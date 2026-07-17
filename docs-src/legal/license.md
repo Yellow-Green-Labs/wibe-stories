@@ -1,0 +1,30 @@
+---
+title: License
+---
+
+# License
+
+*Last updated: Jul 16, 2026*
+
+### Copyright
+
+**Wibe Stories — Proprietary License**  
+Copyright &copy; 2026 Yellow Green Labs. All rights reserved.
+
+This software, its source code, design, and all associated files (the "Software") are the private and proprietary work of the author. The Software is made available publicly for one purpose only: demonstration and evaluation of the author's work (for example, as a portfolio piece or interview submission).
+
+### License Grant
+
+**NO LICENSE OR PERMISSION IS GRANTED** to any person or entity to use, copy, modify, merge, publish, distribute, sublicense, sell, host, deploy, or create derivative works from the Software or any part of it, in whole or in part, without the prior written consent of the author.
+
+### Permitted Use
+
+You may view the contents of this repository solely to evaluate the author's work. Any other use is prohibited.
+
+### Warranty Disclaimer
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+
+### Trademark Notice
+
+"Wibe Stories" is an independent project and is not affiliated with, sponsored by, or endorsed by Wispr Flow. "Wispr Flow" and related marks belong to their respective owners.
