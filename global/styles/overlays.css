@@ -1072,8 +1072,12 @@ body.modal-open {
   padding: 10px 14px;
   margin-bottom: 14px;
   border-radius: 10px;
-  border: 1px solid rgba(217, 119, 6, 0.25);
-  background: rgba(217, 119, 6, 0.06);
+  border: 1px solid rgba(3, 105, 70, 0.25);
+  background: rgba(3, 79, 70, 0.06);
+}
+:root.dark .pricing-gift-banner {
+  background: rgb(3, 79, 70);
+  border-color: rgb(3, 105, 70);
 }
 .pricing-gift-icon {
   font-size: clamp(20px, 0.5vw + 18px, 24px);
@@ -1102,18 +1106,27 @@ body.modal-open {
   white-space: nowrap;
   font-size: clamp(11px, 0.2vw + 11px, 12px);
   font-weight: 600;
-  color: var(--feat-accent, #e69500);
+  color: #1a1a1a;
+  background-color: #febbf1;
+  border: 1px solid #febbf1;
   text-decoration: none;
   padding: 6px 12px;
   border-radius: 8px;
-  border: 1px solid rgba(217, 119, 6, 0.3);
   transition: background 0.15s;
   display: inline-flex;
   align-items: center;
   gap: 4px;
 }
 .pricing-gift-cta:hover {
-  background: rgba(217, 119, 6, 0.1);
+  background-color: #e8a0d8;
+  border-color: #e8a0d8;
+}
+:root.dark .pricing-gift-cta {
+  border-color: #febbf1;
+}
+:root.dark .pricing-gift-cta:hover {
+  background-color: #e8a0d8;
+  border-color: #e8a0d8;
 }
 .pricing-gift-cta i {
   font-size: 10px;
@@ -1176,6 +1189,99 @@ body.modal-open {
 }
 :root.dark .pricing-tier-row:hover {
   border-color: var(--feat-accent);
+}
+
+/* ── Pro price picker (horizontal layout) ── */
+.pricing-pro-picker {
+  display: none;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+@media (min-width: 541px) {
+  .pricing-pro-picker { display: flex; }
+  .pricing-pro .pricing-tiers { display: none; }
+}
+.pricing-pro-cost {
+  flex-shrink: 0;
+  text-align: center;
+  min-width: 90px;
+}
+.pricing-pro-cost-amount {
+  font-weight: 700;
+  font-size: clamp(34px, 3vw, 42px);
+  line-height: 1;
+  font-family: var(--serif);
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  transition: opacity 0.15s ease;
+}
+.pricing-pro-cost-detail {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--ink3);
+  margin-top: 4px;
+  transition: opacity 0.15s ease;
+}
+.pricing-pro-best {
+  display: inline-block;
+  font-size: 0.75em;
+  font-weight: 700;
+  color: var(--feat-accent, #e69500);
+  margin-left: 4px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.pricing-pro-toggle {
+  flex: 1;
+  min-width: 0;
+}
+.pricing-pro-toggle-track {
+  position: relative;
+  display: flex;
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 3px;
+}
+.pricing-pro-toggle-slider {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  background: var(--feat-accent, #e69500);
+  border-radius: 7px;
+  transition: left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 1;
+}
+.pricing-pro-toggle-btn {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  padding: 10px 8px;
+  font-size: clamp(12px, 0.3vw + 11px, 13px);
+  font-weight: 600;
+  font-family: var(--sans);
+  border-radius: 7px;
+  touch-action: manipulation;
+  transition: color 0.2s;
+  white-space: nowrap;
+  text-align: center;
+}
+.pricing-pro-toggle-btn.active {
+  color: #1a1a1a;
+}
+:root.dark .pricing-pro-toggle-track {
+  background: #1a1a1a;
+}
+:root.dark .pricing-pro-toggle-btn {
+  color: rgba(255, 255, 255, 0.75);
+}
+:root.dark .pricing-pro-toggle-btn.active {
+  color: #1a1a1a;
 }
 :root.dark .pricing-tier-best {
   background: rgba(230, 149, 0, 0.04);
@@ -1488,6 +1594,12 @@ body.modal-open {
   }
   .pricing-card {
     width: 100%;
+  }
+  .pricing-pro-picker {
+    display: none !important;
+  }
+  .pricing-pro .pricing-tiers {
+    display: flex !important;
   }
   .pricing-title-1,
   .pricing-title-2 {

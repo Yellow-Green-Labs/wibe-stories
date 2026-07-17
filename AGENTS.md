@@ -93,7 +93,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - [ ] `docs-internal/Tanay-linkedin-posts.md` — Wispr Flow CEO thinking (mandatory per Tanay lens rule)
 - [ ] `frontlogs/EMAILS.md` — email types catalog (10 types, 3 implemented, Resend/Loops split)
 - [ ] `frontlogs/USEFUL_SERVICES.md` — planned services (Sentry, Tally, Better Stack, Unkey, Loops, ImageKit, Ahrefs)
-- [ ] `frontlogs/PENDING.md` — pending changes (14 tracked changes)
+- [ ] `frontlogs/PENDING.md` — pending changes (15 tracked changes)
 - [ ] `frontlogs/CURRENT.md` — current phase, task, next task
 - [ ] `frontlogs/DECISIONS.md` — decisions & reasoning
 
@@ -205,7 +205,7 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - **Download from vault**: Download handler shows placeholder message (image download deferred)
 - **Pricing**: "Up to 50 cards" highlighted in Pro row of pricing modal (`pricing-feature-highlight`)
 - **Non-Pro**: Select button hidden, locked indicator shown (`fa-lock`), button disabled
-- **Audio**: Cards with audio show an audio badge; click to play (muted by default, toggleable)
+- **Audio**: Cards with audio show an audio badge; toggle icon changes but no Audio element is created — playback is broken (no `.play()` call; `audioUrl` is session-only blob)
 - **API**: `api/vault/list.js` (GET), `api/vault/save.js` (POST), `api/vault/delete.js` (POST), `api/vault/migrate.js` (POST) — all guarded by Pro key validation
 - **DB**: `lib/neon.js` connection singleton, `vault_cards` table with indexes on `pro_key` and unique index on `(client_id, pro_key)`. `image_url TEXT` column now in DB (auto-added via `ALTER TABLE ADD COLUMN IF NOT EXISTS` in all 4 vault API endpoints). Card images now display in vault tiles and card view.
 - **Auto-create table**: All 4 vault API endpoints (`save.js`, `list.js`, `delete.js`, `migrate.js`) include `CREATE TABLE IF NOT EXISTS vault_cards (...)` on every request — self-healing if the table is missing in Neon. Schema matches `scripts/setup-neon-table.mjs` plus `image_url TEXT NOT NULL DEFAULT ''`. Each endpoint also runs `ALTER TABLE vault_cards ADD COLUMN IF NOT EXISTS image_url` for existing tables. Indices not auto-created.
@@ -216,6 +216,6 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-17; Docs fixes — cleanUrls:true, logo config, custom.css rewrite (light/dark+tables), wibe-stories.md table separator fix, vercel.json .html redirect + CSP img-src for simpleicons. v0.11.24.3 added to changelog. -->
+<!-- agsync: last-run 2026-07-17; Vault audit — 10 gap items identified vs Google Drive/Dropbox (download, share modal, bulk zip, sort, loading state, error handling, search, rename, audio DL, audio playback). CHANGE 4 version sync marked done. CHANGE 15 added to PENDING.md. Audio playback in vault documented as broken (no Audio.play(), session-only blob). -->
 
 

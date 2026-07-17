@@ -133,6 +133,20 @@
     '<span class="pricing-tier-unit">$5.00/mo</span>' +
     '</div>' +
     '</div>' +
+    '<div class="pricing-pro-picker">' +
+      '<div class="pricing-pro-cost">' +
+        '<div class="pricing-pro-cost-amount" id="proCostAmount">$6</div>' +
+        '<div class="pricing-pro-cost-detail" id="proCostDetail">$6/mo</div>' +
+      '</div>' +
+      '<div class="pricing-pro-toggle">' +
+        '<div class="pricing-pro-toggle-track">' +
+          '<div class="pricing-pro-toggle-slider" id="proToggleSlider"></div>' +
+          '<button class="pricing-pro-toggle-btn active" data-plan="1">1mo</button>' +
+          '<button class="pricing-pro-toggle-btn" data-plan="3">3mo</button>' +
+          '<button class="pricing-pro-toggle-btn" data-plan="12">12mo</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
     '<div class="pricing-card-features">' +
     '<div class="pricing-feature-row"><span class="pricing-flabel">Color Tools</span><span class="pricing-fval">Unlimited</span></div>' +
     '<div class="pricing-feature-row"><span class="pricing-flabel">Recording</span><span class="pricing-fval">30s &middot; 50/day</span></div>' +
@@ -203,12 +217,28 @@
     });
   }
 
+  function positionProSlider() {
+    var active = document.querySelector(".pricing-pro-toggle-btn.active");
+    if (!active) return;
+    var buttons = document.querySelectorAll(".pricing-pro-toggle-btn");
+    var slider = document.getElementById("proToggleSlider");
+    if (!slider) return;
+    var track = slider.parentElement;
+    var pad = 3;
+    var btnW = (track.offsetWidth - pad * 2) / buttons.length;
+    if (btnW <= 0) return;
+    var idx = Array.from(buttons).indexOf(active);
+    slider.style.left = (pad + idx * btnW) + "px";
+    slider.style.width = btnW + "px";
+  }
+
   function show() {
     document.getElementById("pricingOverlay").classList.add("show");
     document.body.classList.add("modal-open");
     var hasKey = false;
     try { hasKey = !!localStorage.getItem("wsProKey"); } catch (e) {}
     switchTab(hasKey ? "key" : "plans");
+    setTimeout(positionProSlider, 50);
   }
   function hide() {
     document.getElementById("pricingOverlay").classList.remove("show");
@@ -243,4 +273,77 @@
   document.getElementById("pricingEmailGo").addEventListener("click", handleEmail);
   document.getElementById("pricingKeyInput").addEventListener("keydown", function (e) { if (e.key === "Enter") handleKey(); });
   document.getElementById("pricingEmailInput").addEventListener("keydown", function (e) { if (e.key === "Enter") handleEmail(); });
+
+  /* ── Pro pricing selector ── */
+  var _proPickerInit = false;
+  function initProPicker() {
+    if (_proPickerInit) return;
+    _proPickerInit = true;
+    var buttons = document.querySelectorAll(".pricing-pro-toggle-btn");
+    var slider = document.getElementById("proToggleSlider");
+    var costEl = document.getElementById("proCostAmount");
+    var detailEl = document.getElementById("proCostDetail");
+    if (!buttons.length || !slider || !costEl || !detailEl) return;
+
+    var plans = {
+      "1": { price: "$6", detail: "$6/mo" },
+      "3": { price: "$16", detail: "$5.33/mo" },
+      "12": { price: "$60", detail: '$5/mo <span class="pricing-pro-best">\u{1F3C6} Best Value</span>' }
+    };
+
+    function slideTo(btn) {
+      var idx = Array.from(buttons).indexOf(btn);
+      var track = slider.parentElement;
+      var pad = 3;
+      var btnW = (track.offsetWidth - pad * 2) / buttons.length;
+      if (btnW <= 0) return;
+      slider.style.left = (pad + idx * btnW) + "px";
+      slider.style.width = btnW + "px";
+      buttons.forEach(function(b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+      var p = plans[btn.dataset.plan];
+      costEl.style.opacity = "0";
+      detailEl.style.opacity = "0";
+      setTimeout(function() {
+        costEl.textContent = p.price;
+        detailEl.innerHTML = p.detail;
+        costEl.style.opacity = "1";
+        detailEl.style.opacity = "1";
+      }, 120);
+    }
+
+    var initial = document.querySelector(".pricing-pro-toggle-btn.active");
+    if (initial) slideTo(initial);
+
+    buttons.forEach(function(btn) {
+      btn.addEventListener("click", function() { slideTo(btn); });
+    });
+
+    var _rszTimer;
+    window.addEventListener("resize", function() {
+      clearTimeout(_rszTimer);
+      _rszTimer = setTimeout(function() {
+        var a = document.querySelector(".pricing-pro-toggle-btn.active");
+        if (a) {
+          var idx = Array.from(buttons).indexOf(a);
+          var track = slider.parentElement;
+          var pad = 3;
+          var btnW = (track.offsetWidth - pad * 2) / buttons.length;
+          if (btnW <= 0) return;
+          slider.style.left = (pad + idx * btnW) + "px";
+          slider.style.width = btnW + "px";
+        }
+      }, 100);
+    });
+  }
+
+  /* Init on first Plans tab show */
+  var _origSwitchTab = switchTab;
+  switchTab = function(name) {
+    _origSwitchTab(name);
+    if (name === "plans") {
+      initProPicker();
+      setTimeout(positionProSlider, 50);
+    }
+  };
 })();

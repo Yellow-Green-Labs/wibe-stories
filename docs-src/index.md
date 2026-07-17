@@ -2,13 +2,17 @@
 title: Welcome to Wibe Stories
 ---
 
-# Wibe Stories
+Getting Started
+
+# Welcome to Wibe Stories
 
 Turn your voice into shareable cards, in your language, in seconds.
 
 No account needed. No install. 44 speech languages, 11 UI languages.
 
+::: App
 [Launch Wibe Stories →](https://wibestories.vercel.app)
+::: 
 
 ## Quick links
 

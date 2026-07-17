@@ -165,3 +165,8 @@
   font-size: 0.75em;
   color: var(--vp-c-text-2);
 }
+
+.vp-doc p > a > img {
+  height: 1.4em;
+  vertical-align: middle;
+}
