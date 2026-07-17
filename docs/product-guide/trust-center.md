@@ -1,9 +1,9 @@
 ---
 title: Trust Center
-excerpt: Services we use, what they do, and how your data is handled.
 category:
   uri: product-guide
-icon: shield-check
+content:
+  excerpt: 'Services we use, what they do, and how your data is handled.'
 ---
 
 # Trust Center

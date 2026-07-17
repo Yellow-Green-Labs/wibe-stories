@@ -1,9 +1,9 @@
 ---
 title: Changelog
-excerpt: Version history and release notes for Wibe Stories.
 category:
   uri: updates
-icon: megaphone
+content:
+  excerpt: Version history and release notes for Wibe Stories.
 ---
 
 # Changelog

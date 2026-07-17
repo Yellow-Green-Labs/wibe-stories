@@ -1,9 +1,11 @@
 ---
 title: Wibe Stories — Product Documentation
-excerpt: Full product documentation covering vision, architecture, features, and roadmap.
 category:
   uri: product-guide
-icon: book
+content:
+  excerpt: >-
+    Full product documentation covering vision, architecture, features, and
+    roadmap.
 ---
 
 # Wibe Stories — Product Documentation

@@ -1,9 +1,9 @@
 ---
 title: Welcome to Wibe Stories
-excerpt: Turn your voice into shareable cards, in your language, in seconds.
 category:
   uri: welcome
-icon: hand-wave
+content:
+  excerpt: 'Turn your voice into shareable cards, in your language, in seconds.'
 ---
 
 # Wibe Stories
