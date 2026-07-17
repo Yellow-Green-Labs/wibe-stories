@@ -1,3 +1,8 @@
+---
+title: "Wibe Stories — Product Documentation"
+description: "Full product documentation covering vision, architecture, features, and roadmap."
+---
+
 # Wibe Stories — Product Documentation
 
 > For the developer guide (architecture, code structure, deployment), see [DEVELOPER.md](../docs-internal/DEVELOPER.md).
@@ -351,8 +356,6 @@ Known limitations are accessible in-app by pressing **Alt+F1**, which opens the 
 
 ---
 
----
-
 ## 17. Tech Stack
 
 | Layer | Technology | Purpose |
@@ -365,7 +368,3 @@ Known limitations are accessible in-app by pressing **Alt+F1**, which opens the 
 | Data / cache | Upstash Redis (2 instances) | Rate limits, keys, counters, rewrite cache, email subscriptions |
 | Payments | Buy Me a Coffee webhooks (HMAC-signed) | Pro key generation on donation |
 | Email | Resend transactional API | Pro key delivery, key recovery, occasion reminders |
-
----
-
-*All facts in this document were verified against the codebase. Where the implementation and an older note disagreed, the implementation is treated as the source of truth.*

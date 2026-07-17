@@ -55,7 +55,7 @@ If any box is unchecked, you are not done. Fix it.
 
 # SEO & Security configuration
 
-See `docs/WIBE_STORIES.md` for full details. A full Content-Security-Policy **is** set in `vercel.json` (allows `unpkg.com`, Google Fonts, Vercel Blob, Sentry CDN, and Sentry ingest). It does **not** break the Web Speech API, which is browser-native and needs no `connect-src` entry. All other security headers are in `vercel.json` too.
+See `docs/WIBE_STORIES.mdx` for full details. A full Content-Security-Policy **is** set in `vercel.json` (allows `unpkg.com`, Google Fonts, Vercel Blob, Sentry CDN, and Sentry ingest). It does **not** break the Web Speech API, which is browser-native and needs no `connect-src` entry. All other security headers are in `vercel.json` too.
 
 # Deployment
 
@@ -65,7 +65,7 @@ See `docs/WIBE_STORIES.md` for full details. A full Content-Security-Policy **is
 
 # Testing
 
-Main app testing is manual. See `docs/WIBE_STORIES.md` for test scenarios.
+Main app testing is manual. See `docs/WIBE_STORIES.mdx` for test scenarios.
 
 Runnable verification scripts (Node.js 18+, Windows-friendly):
 - `node scripts/stress-test-99-cap.mjs` (add `--base=https://...` to test prod)
@@ -77,7 +77,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 
 # Documents referenced every session
 
-- [ ] `docs/WIBE_STORIES.md` — full product documentation
+- [ ] `docs/WIBE_STORIES.mdx` — full product documentation (Mintlify)
 - [ ] `docs-internal/DEVELOPER.md` — developer guide (architecture, code structure, deployment)
 - [ ] `docs-internal/API.md` — API reference (25 endpoints, error codes, webhooks)
 - [ ] `docs/admin-setup.md` — admin activation setup
@@ -85,7 +85,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - [ ] `docs/wispr_flow_research.md` — Flow research notes
 - [ ] `docs/wispr_flow_improvement_areas.md` — Flow improvement areas
 - [ ] `docs/interview-quick-reference.md` — interview prep source of truth
-- [ ] `CHANGELOG.md` — session history
+- [ ] `CHANGELOG.mdx` — session history
 - [ ] `docs/daily-capacity-system.md` — daily capacity system
 - [ ] `docs/Tanay-linkedin-posts.md` — Wispr Flow CEO thinking (mandatory per Tanay lens rule)
 - [ ] `frontlogs/EMAILS.md` — email types catalog (10 types, 3 implemented, Resend/Loops split)
@@ -106,17 +106,19 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 
 ## Key files
 
-- `docs/WIBE_STORIES.md` — full product documentation (vision, architecture, features, roadmap)
+- `index.mdx` — Mintlify home page
+- `docs/WIBE_STORIES.mdx` — full product documentation (vision, architecture, features, roadmap)
 - `docs-internal/DEVELOPER.md` — developer guide (getting started, code structure, deployment)
 - `docs-internal/API.md` — API reference (25 endpoints, error codes, webhooks)
-- `docs/TRUST_CENTER.md` — services used (Deepgram, OpenRouter, Vercel, etc.)
-- `docs/ACKNOWLEDGEMENTS.md` — known issues (WebM audio, Firefox, translations)
-- `docs/LIMITATIONS.md` — product limitations (caps, expiry, moderation)
+- `docs/TRUST_CENTER.mdx` — services used (Deepgram, OpenRouter, Vercel, etc.)
+- `docs/ACKNOWLEDGEMENTS.mdx` — known issues (WebM audio, Firefox, translations)
+- `docs/LIMITATIONS.mdx` — product limitations (caps, expiry, moderation)
 - `api/voice.js` — audio upload endpoint (called after PNG upload with `X-Short-Id`)
 - `api/rewrite-confirm.js` — tone rewrite commit endpoint (Redis INCR on per-tone counter)
 - `api/rewrite-status.js` — read-only GET endpoint for per-tone counts from Redis
 - `api/stt.js` — STT via Deepgram Nova-3 + Whisper/OpenRouter, Edge runtime
 - `api/resend-key.js` — automated Pro key recovery via email (resends key by email lookup)
+- `CHANGELOG.mdx` — session history (Mintlify format)
 - `wisprstories.html` — main HTML
 - `wisprstories.js` — app logic (STT, recording, card creation, share, tones, i18n)
 - `global/fonts.js` — script font mapping
@@ -176,7 +178,7 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `internal-logs/observer.js` — keyboard shortcut handler for beacon redirect
 - `api/beacon.js` — redirect handler (reads `WS_EP` env var)
 - `api/download/[id].js` — download proxy (serves Blob files with `Content-Disposition: attachment`)
-- `docs/ROADMAP.md` — Product roadmap placeholder
+- `docs/ROADMAP.mdx` — Product roadmap placeholder
 - `lib/neon.js` — Neon Postgres connection singleton (edge-compatible HTTP query via `@neondatabase/serverless`)
 - `api/vault/list.js` — GET vault cards for a Pro key (Neon query, camelCase response)
 - `api/vault/save.js` — POST save a vault card (validates Pro key, enforces 50-card limit, Neon insert)
@@ -207,6 +209,6 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-17; v0.11.24.2 release — Mintlify footer link fix. Changed footer Documentation link from `/kb` to direct `https://wibestories.mintlify.site` (external, new tab). Fixed Vercel rewrites to proxy `/kb` to Mintlify root instead of `/kb` subpath. -->
+<!-- agsync: last-run 2026-07-17; v0.11.24.3 release — Mintlify content pages. Converted docs from .md to .mdx (Mintlify native format), created index.mdx as Mintlify home page, kept README.md for GitHub. Updated docs.json navigation "README"→"index". Removed old .md files. -->
 
 
