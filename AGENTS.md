@@ -55,17 +55,19 @@ If any box is unchecked, you are not done. Fix it.
 
 # SEO & Security configuration
 
-See `docs/WIBE_STORIES.mdx` for full details. A full Content-Security-Policy **is** set in `vercel.json` (allows `unpkg.com`, Google Fonts, Vercel Blob, Sentry CDN, and Sentry ingest). It does **not** break the Web Speech API, which is browser-native and needs no `connect-src` entry. All other security headers are in `vercel.json` too.
+A full Content-Security-Policy **is** set in `vercel.json` (allows `unpkg.com`, Google Fonts, Vercel Blob, Sentry CDN, and Sentry ingest). It does **not** break the Web Speech API, which is browser-native and needs no `connect-src` entry. All other security headers are in `vercel.json` too.
 
 # Deployment
 
 - **Platform**: Vercel (production URL `wibestories.vercel.app`; legacy deploy slug `wisprstories.vercel.app`, code/filenames stay `wisprstories`)
 - **Deploy**: `vercel --prod` from project root
 - **Local dev**: `vercel dev` or open `wisprstories.html` directly in browser
+- **Docs local dev**: `npx vitepress dev docs` (starts VitePress dev server on port 5173)
+- **Docs build**: `npx vitepress build docs` (outputs to `docs/.vitepress/dist/`)
 
 # Testing
 
-Main app testing is manual. See `docs/WIBE_STORIES.mdx` for test scenarios.
+Main app testing is manual. See `docs/wibe-stories.md` for test scenarios.
 
 Runnable verification scripts (Node.js 18+, Windows-friendly):
 - `node scripts/stress-test-99-cap.mjs` (add `--base=https://...` to test prod)
@@ -77,8 +79,9 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 
 # Documents referenced every session
 
-- [ ] `docs/` — ReadMe.com documentation content (7 pages, Markdown + YAML frontmatter, _order.yaml navigation)
-- [ ] `.github/workflows/readme-sync.yml` — GitHub Action auto-syncs docs/ to ReadMe on push
+- [ ] `docs/` — VitePress documentation source (7 pages, Markdown frontmatter, custom theme)
+- [ ] `docs/.vitepress/config.js` — VitePress configuration (sidebar, base path, theme)
+- [ ] `docs/.vitepress/theme/custom.css` — VitePress custom theme (fonts, colors, links)
 - [ ] `docs-internal/DEVELOPER.md` — developer guide (architecture, code structure, deployment)
 - [ ] `docs-internal/API.md` — API reference (25 endpoints, error codes, webhooks)
 - [ ] `docs/admin-setup.md` — admin activation setup
@@ -100,21 +103,23 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 
 - Tagline: "Turn your voice into shareable cards, in your language, in seconds."
 - Hero subtitle: "Record with the mic or dictate with Wispr Flow. Style and share with love."
-- Multi-file vanilla HTML/CSS/JS voice-to-card app. No build step. Open `wisprstories.html` to run.
+- Multi-file vanilla HTML/CSS/JS voice-to-card app. No build step for the app itself. Open `wisprstories.html` to run.
+- VitePress documentation in `docs/` has a build step (`npx vitepress build docs`) that runs on Vercel deploy. Docs served at `/docs/`.
 - Serverless API routes via Vercel. `package.json` must exist for dependency install.
 - `remotion-demo/` — **Marketing demo video project** (Remotion/React). Created by a separate AI agent. **Do NOT delete** — it's a marketing asset, not part of the live app. Gitignored + .vercelignored.
 
 ## Key files
 
-- `docs/` — ReadMe.com documentation content (7 pages, Markdown + YAML frontmatter, _order.yaml navigation)
-- `docs/welcome/index.md` — ReadMe home page
+- `docs/` — VitePress documentation content (7 pages, Markdown + YAML frontmatter, VitePress theme)
+- `docs/.vitepress/config.js` — VitePress config (nav, sidebar, base: /docs/, fonts)
+- `docs/.vitepress/theme/custom.css` — custom theme (DM Sans, heading/body/link colors)
+- `docs/index.md` — VitePress home page
 - `docs/product-guide/wibe-stories.md` — full product documentation (vision, architecture, features, roadmap)
 - `docs/product-guide/trust-center.md` — services used (Deepgram, OpenRouter, Vercel, etc.)
 - `docs/reference/acknowledgements.md` — known issues (WebM audio, Firefox, translations)
 - `docs/reference/limitations.md` — product limitations (caps, expiry, moderation)
 - `docs/reference/roadmap.md` — Product roadmap placeholder
-- `docs/updates/changelog.md` — session history (ReadMe format)
-- `.github/workflows/readme-sync.yml` — GitHub Action auto-syncs docs/ to ReadMe on push
+- `docs/updates/changelog.md` — version history
 - `docs-internal/DEVELOPER.md` — developer guide (getting started, code structure, deployment)
 - `docs-internal/API.md` — API reference (25 endpoints, error codes, webhooks)
 - `api/voice.js` — audio upload endpoint (called after PNG upload with `X-Short-Id`)
@@ -210,6 +215,6 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-17; ReadMe migration complete — Mintlify files deleted, ReadMe content moved to docs/, GitHub Action created at .github/workflows/readme-sync.yml. Docs auto-sync on push to main. Site: wibe-stories.readme.io -->
+<!-- agsync: last-run 2026-07-17; VitePress migration complete — Mintlify files deleted, ReadMe GitHub Action deleted, VitePress config created at docs/.vitepress/config.js. Docs built on Vercel deploy, served at /docs/. -->
 
 

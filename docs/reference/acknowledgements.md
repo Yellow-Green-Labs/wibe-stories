@@ -1,9 +1,5 @@
 ---
 title: Known Issues
-category:
-  uri: reference
-content:
-  excerpt: Bugs and behavior gaps we know about.
 ---
 
 # Known Issues

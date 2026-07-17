@@ -1,9 +1,5 @@
 ---
 title: Trust Center
-category:
-  uri: product-guide
-content:
-  excerpt: 'Services we use, what they do, and how your data is handled.'
 ---
 
 # Trust Center

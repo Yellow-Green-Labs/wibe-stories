@@ -1,9 +1,5 @@
 ---
 title: Limitations
-category:
-  uri: reference
-content:
-  excerpt: Product decisions explained.
 ---
 
 These are constraints we chose on purpose. They are not bugs — they are product decisions listed here so you understand what we have prioritized.

@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
+
+:root {
+  --vp-font-family-base: 'DM Sans', Inter, sans-serif;
+  --vp-font-family-heading: 'DM Sans', Inter, sans-serif;
+  --vp-c-brand-1: #F59E0B;
+  --vp-c-brand-2: #d48700;
+  --vp-c-brand-3: #b87300;
+}
+
+.dark {
+  --vp-c-text-1: #777777;
+  --vp-c-text-2: #666666;
+  --vp-c-bg: #111111;
+  --vp-c-bg-alt: #1a1a1a;
+  --vp-c-bg-elvt: #222222;
+  --vp-c-border: #2a2a2a;
+  --vp-c-divider: #2a2a2a;
+}
+
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+  color: #FFFFFF;
+}

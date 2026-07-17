@@ -40,3 +40,6 @@ lib/lib-INTERNAL-DOC.md
 scripts/scripts-INTERNAL-DOC.md
 
 .env*.local
+
+# VitePress build output
+docs/.vitepress/dist/

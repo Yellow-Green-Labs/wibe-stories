@@ -1,4 +1,6 @@
 {
+  "buildCommand": "npx vitepress build docs",
+  "outputDirectory": ".",
   "rewrites": [
     { "source": "/", "destination": "/wisprstories.html" },
     { "source": "/features", "destination": "/features.html" },
@@ -8,13 +10,11 @@
     { "source": "/legal/license", "destination": "/legal/license.html" },
     { "source": "/legal/terms", "destination": "/legal/terms.html" },
     { "source": "/legal/privacy", "destination": "/legal/privacy.html" },
-    { "source": "/kb", "destination": "https://wibestories.mintlify.site" },
-    { "source": "/kb/:match*", "destination": "https://wibestories.mintlify.site/:match*" },
-    { "source": "/_mintlify/:path*", "destination": "https://wibestories.mintlify.site/_mintlify/:path*" },
-    { "source": "/mintlify-assets/:path+", "destination": "https://wibestories.mintlify.site/mintlify-assets/:path+" },
+
     { "source": "/card", "destination": "/api/card" },
     { "source": "/c/:id", "destination": "/api/c/[id]" },
-    { "source": "/download/:id", "destination": "/api/download/:id" }
+    { "source": "/download/:id", "destination": "/api/download/:id" },
+    { "source": "/docs/:path*", "destination": "/docs/.vitepress/dist/:path*" }
   ],
   "redirects": [
     { "source": "/about.html", "destination": "/about", "statusCode": 301 },

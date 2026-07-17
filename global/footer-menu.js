@@ -161,7 +161,7 @@
       <a href="#" class="fmenu-link" id="fmenu-help">
         <i class="fa-solid fa-circle-question" aria-hidden="true"></i><span data-i18n="footer.help">How to Use</span>
       </a>
-      <a href="https://wibestories.mintlify.site" class="fmenu-link" rel="noopener noreferrer" target="_blank">
+      <a href="/docs/" class="fmenu-link">
         <i class="fa-solid fa-book" aria-hidden="true"></i><span data-i18n="footer.docs">Documentation</span>
       </a>
       <a href="/legal/license" class="fmenu-link">
