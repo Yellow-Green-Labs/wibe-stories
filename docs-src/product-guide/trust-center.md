@@ -4,6 +4,8 @@ title: Trust Center
 
 # Trust Center
 
+*Last updated: Jul 17, 2026*
+
 > The services we rely on to run Wibe Stories, what they do, and how your data is handled.
 
 ## Hosting and Infrastructure

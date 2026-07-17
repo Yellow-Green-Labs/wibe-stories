@@ -4,7 +4,9 @@ title: Changelog
 
 # Changelog
 
-> **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 71
+*Last updated: Jul 17, 2026*
+
+> **Project planned:** May 8, 2026 · **First commit:** June 8, 2026
 
 ## [v0.11.24.3] — Docs Fixes: cleanUrls, Logo, CSS Rewrite (2026-07-17)
 

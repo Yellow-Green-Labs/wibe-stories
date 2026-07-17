@@ -4,6 +4,8 @@ title: 'Wibe Stories — Product Documentation'
 
 # Wibe Stories — Product Documentation
 
+*Last updated: Jul 17, 2026*
+
 > For the developer guide (architecture, code structure, deployment), see [DEVELOPER.md](https://github.com/YellowGreenLabs/wispr-stories/blob/main/docs-internal/DEVELOPER.md).
 
 > **Branding note**
@@ -165,7 +167,7 @@ The card image itself carries only the user's words and the Wibe Stories mark. W
 | AI tone rewriting | 7 tones: Original + 6 rewrites (Warm, Bold, Poetic, Playful, Reflective, Honest) via OpenRouter. Free: 1 rewrite/tone/day |
 | Colour palettes | 10 colours × 2 corner styles = 20 backgrounds, plus a custom hex color picker |
 | Aspect ratio | 1:1 square (the only built ratio; others are designed, not shipped) |
-| Speech languages | 44 selectable languages |
+| Speech languages | 46 selectable languages |
 | UI languages | 11 locales (English + 10) |
 | Occasions | 60 auto-detected occasions, plus email reminder subscriptions |
 | Grace zone | Textarea maxlength 160 but UI shows 150; counter turns yellow at 120, red at 150+ |
@@ -217,7 +219,7 @@ Only the **1:1 square** ratio is built (asset prefix `2x2_`), optimised for the 
 
 ## 8. Internationalization
 
-- **Speech languages (44):** Shown in a 2-column modal. Relevant only when recording.
+- **Speech languages (46):** Shown in a 2-column modal. Relevant only when recording.
 - **UI locales (11):** English plus Hindi, Spanish, Italian, Japanese, Kannada, Korean, Telugu, Tamil, Thai, and Chinese. Arabic and Urdu were removed intentionally; RTL infrastructure remains for future re-enablement.
 - **Script-aware fonts:** 20 script types are mapped to a font family per tone. Mixed-script text is split into segments, each wrapped in a span with the right font. Japanese is detected before Chinese (via Hiragana/Katakana), and Korean via Hangul, to disambiguate CJK.
 - **RTL:** Arabic, Hebrew, Farsi, and Urdu trigger right-to-left on the card panel automatically.
@@ -331,7 +333,7 @@ Known limitations are accessible in-app by pressing **Alt+F1**, which opens the 
 
 ### Implemented
 
-- Voice recording in 44 languages (Web Speech API + Deepgram/Whisper fallback)
+- Voice recording in 46 languages (Web Speech API + Deepgram/Whisper fallback)
 - AI tone rewriting (7 tones: Original + 6 rewrites) via OpenRouter
 - 10 colour palettes × 2 corner styles = 20 card backgrounds, plus custom hex color picker
 - Shareable link with OG metadata (social bot preview + human landing page)

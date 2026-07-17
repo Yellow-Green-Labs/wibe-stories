@@ -4,9 +4,11 @@ title: Known Issues
 
 # Known Issues
 
+*Last updated: Jul 17, 2026*
+
 These are bugs and behavior gaps we know about. We list them here because hiding a known issue is worse than naming it.
 
-### Voice-attached downloads may not play on Mac and iPhone
+### WebM not playable on Apple devices
 
 - Voice-attached cards use the WebM format, which Apple's QuickTime and iOS Photos app do not play natively. 
 - On Android and Windows the file opens in the default media player. 
@@ -14,7 +16,7 @@ These are bugs and behavior gaps we know about. We list them here because hiding
 
 **Workaround:** Open the card via the share link on Apple devices, or download on a non-Apple device first.
 
-### Voice is lost on PNG download; share link voice upload can silently fail
+### Voice lost on PNG; share link upload fails silently
 
 **PNG downloads do not preserve audio**
 
@@ -32,31 +34,21 @@ These are bugs and behavior gaps we know about. We list them here because hiding
 
 **Workaround:** For voice, download the WebM file or use the share link. Verify the voice plays in the preview before sending a share link. The image is always present.
 
-### Firefox cannot record voice
+### Firefox cannot use browser transcription
 
-**Firefox does not support real-time voice transcription**
+Firefox does not support the Web Speech API, which provides browser-native speech-to-text. However, voice recording and server-based transcription via Deepgram work normally in Firefox.
 
-- Firefox does not currently support the Web Speech API that enables real-time speech-to-text transcription during voice recording.
-- As a result, live transcription is unavailable when using Firefox.
+- The Web Speech API (`SpeechRecognition`) is unavailable in Firefox. This only affects the browser-based fallback transcription path.
+- Voice recording (`MediaRecorder` + `getUserMedia`) works in Firefox.
+- Transcription via the Deepgram server API works in Firefox — it is browser-independent.
+- If the Deepgram server is unavailable, Firefox has no fallback transcription method. Chrome, Edge, and Safari can fall back to the Web Speech API in this scenario.
 
-**Supported browsers**
+**Workaround:** Use Chrome, Edge, or Safari for voice recording with full browser-based fallback. In Firefox, type your message directly into the text input.
 
-- Real-time voice transcription is supported in Google Chrome, Microsoft Edge, Safari, and most modern mobile browsers that implement the Web Speech API.
-
-**Alternative for Firefox users**
-
-- If you are using Firefox, you can still enter your message manually by typing it into the text input field.
-- All other text-based functionality remains available even though voice transcription is not supported.
-
-**Workaround:** Use Chrome, Edge, or Safari for voice recording. Or type your message in Firefox.
-
-### Parts of the interface are still in English in ten of eleven languages
+### Most UI translations incomplete
 
 Eleven languages are supported for the card interface, but only English is fully translated. The other ten languages fall back to English for some buttons and messages. The card text itself renders correctly in all languages.
 
 **Workaround:** Use the app in English for the most complete experience. We plan to complete translations in a future update.
 
--- End of the file --
-
 ---
-<sup>Wibe Stories</sup><br /><sup>© 2026 YGLabs</sup> 

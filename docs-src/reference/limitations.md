@@ -2,6 +2,10 @@
 title: Limitations
 ---
 
+# Limitations
+
+*Last updated: Jul 17, 2026*
+
 These are constraints we chose on purpose. They are not bugs — they are product decisions listed here so you understand what we have prioritized.
 
 ## Daily caps exist to keep the service sustainable
@@ -24,13 +28,13 @@ Stale cards cost storage and bandwidth. 7 days is long enough for recipients to 
 
 No automated filter exists for card text or voice recordings. Daily caps make bulk abuse impractical, but a determined user can create any content. We review reported content manually and plan to address this gap in the future.
 
-## Older Safari versions show slightly different layouts
+## Older Safari versions may show slightly different layouts
 
-The current Safari version and two previous majors are fully supported. Older versions may show tighter spacing and different card aspect ratios — graceful degradations, not bugs.
+The app detects Safari and adjusts behavior for compatibility. Older versions may show tighter spacing and different card aspect ratios — graceful degradations, not bugs.
 
-## Cards are available in one size only (1:1 square)
+## Cards are available in one size only (square)
 
-We previously offered four sizes. On mobile, the wider sizes got cropped and the background illustration was cut off. The 1:1 square is the one size that looks right on every screen and fits every social media share preview.
+We previously offered four sizes. On mobile, the wider sizes got cropped and the background illustration was cut off. The square is the one size that looks right on every screen and fits every social media share preview.
 
 ## Textarea has an invisible 10-character grace
 
