@@ -1,4 +1,6 @@
 {
+  "buildCommand": "npx vitepress build docs-src",
+  "outputDirectory": ".",
   "rewrites": [
     { "source": "/", "destination": "/wisprstories.html" },
     { "source": "/features", "destination": "/features.html" },
@@ -12,7 +14,13 @@
     { "source": "/card", "destination": "/api/card" },
     { "source": "/c/:id", "destination": "/api/c/[id]" },
     { "source": "/download/:id", "destination": "/api/download/:id" },
-    { "source": "/docs/:path*", "destination": "/docs-src/.vitepress/dist/:path*" }
+    { "source": "/docs", "destination": "/docs-src/.vitepress/dist/index.html" },
+    { "source": "/docs/", "destination": "/docs-src/.vitepress/dist/index.html" },
+    { "source": "/docs/assets/:path*", "destination": "/docs-src/.vitepress/dist/assets/:path*" },
+    { "source": "/docs/vp-icons.css", "destination": "/docs-src/.vitepress/dist/vp-icons.css" },
+    { "source": "/docs/hashmap.json", "destination": "/docs-src/.vitepress/dist/hashmap.json" },
+    { "source": "/docs/404", "destination": "/docs-src/.vitepress/dist/404.html" },
+    { "source": "/docs/:path*", "destination": "/docs-src/.vitepress/dist/:path*.html" }
   ],
   "redirects": [
     { "source": "/about.html", "destination": "/about", "statusCode": 301 },
