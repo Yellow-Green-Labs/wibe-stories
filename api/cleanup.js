@@ -8,6 +8,7 @@
 
 import { list, del } from '@vercel/blob';
 import { getNeon } from '../lib/neon.js';
+import Sentry from '../lib/sentry-node.js';
 
 const MAX_AGE_HOURS = 168;
 const PRO_MAX_AGE_HOURS = 336;
@@ -109,6 +110,7 @@ export default async function handler(req, res) {
       cutoff: new Date(cutoff7d).toISOString(),
     }));
   } catch (e) {
+    Sentry.captureException(e);
     res.statusCode = 500;
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({

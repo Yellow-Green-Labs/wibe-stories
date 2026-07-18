@@ -1,6 +1,7 @@
 export const config = { runtime: 'nodejs' };
 
 import { getRedis, KEYS } from '../../lib/redis.js';
+import Sentry from '../../lib/sentry-node.js';
 import { getOccasionForDate, sendOccasionEmail } from '../lib/occasion-email.js';
 
 const CONCURRENCY = 5;
@@ -10,6 +11,7 @@ function normalizeEmail(email) {
 }
 
 export default async function handler(req) {
+  try {
   const expected = process.env.CRON_SECRET;
   if (!expected || req.headers['authorization'] !== `Bearer ${expected}`) {
     return new Response('Unauthorized', { status: 401 });
@@ -97,4 +99,9 @@ export default async function handler(req) {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
   });
+  } catch (e) {
+    Sentry.captureException(e);
+    console.error('[OccasionCron] Unhandled error:', e.message);
+    return new Response('Internal server error', { status: 500 });
+  }
 }

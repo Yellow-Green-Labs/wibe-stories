@@ -1,6 +1,7 @@
 export const config = { runtime: 'edge' };
 
 import { getRedis, KEYS } from '../lib/redis.js';
+import Sentry from '../lib/sentry.js';
 
 // ── Constants ──
 const RESEND_API_URL = 'https://api.resend.com/emails';
@@ -156,14 +157,15 @@ async function sendProKeyEmail(resendApiKey, { toEmail, toName, proKey }) {
 // ── Handler ──
 
 export default async function handler(req) {
+  try {
   if (req.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 });
   }
 
   const BMAC_SECRET = process.env.BMAC_WEBHOOK_SECRET;
   const RESEND_KEY = process.env.RESEND_API_KEY;
-  if (!BMAC_SECRET || !RESEND_KEY) {
-    console.error('[BMAC] Missing required env vars: BMAC_WEBHOOK_SECRET or RESEND_API_KEY');
+  if (!RESEND_KEY) {
+    console.error('[BMAC] Missing required env var: RESEND_API_KEY');
     return new Response('Server configuration error', { status: 500 });
   }
 
@@ -187,7 +189,13 @@ export default async function handler(req) {
     return new Response('OK', { status: 200 });
   }
 
-  const incomingSignature = req.headers.get('X-Bmc-Signature') || '';
+  // Prevent unexpected test pings from being processed as real events
+  if (!BMAC_SECRET) {
+    console.log('[BMAC] BMAC_WEBHOOK_SECRET not set — accepting event without processing (bootstrapping mode)');
+    return new Response('OK', { status: 200 });
+  }
+
+  const incomingSignature = req.headers.get('x-signature-sha256') || '';
   const signatureValid = await verifySignature(BMAC_SECRET, rawBody, incomingSignature);
   if (!signatureValid) {
     console.warn('[BMAC] Signature verification failed');
@@ -390,4 +398,9 @@ export default async function handler(req) {
   // ── Unhandled events ─────────────────────────────────────────────────────────
   console.log(`[BMAC] Unhandled event "${eventType}" — no-op`);
   return new Response('OK', { status: 200 });
+  } catch (e) {
+    Sentry.captureException(e);
+    console.error('[BMAC] Unhandled error:', e.message);
+    return new Response('Internal server error', { status: 500 });
+  }
 }

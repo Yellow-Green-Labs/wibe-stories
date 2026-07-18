@@ -6,9 +6,9 @@
   try {
     var _m = window.location.hash.match(/^#ws-admin=(.+)$/);
     if (_m && _m[1]) {
-      localStorage.setItem('wsAdminSecret', _m[1]);
-      localStorage.setItem('wsSupporter', 'true');
-      localStorage.setItem('wsProKey', _m[1]);
+      sessionStorage.setItem('wsAdminSecret', _m[1]);
+      sessionStorage.setItem('wsSupporter', 'true');
+      sessionStorage.setItem('wsTempKey', _m[1]);
       history.replaceState(null, '', window.location.pathname + window.location.search);
     }
   } catch (_e) {}
@@ -26,7 +26,7 @@
 
   // Include admin secret header if available
   var adminSecret;
-  try { adminSecret = localStorage.getItem('wsAdminSecret'); } catch (_e) {}
+  try { adminSecret = sessionStorage.getItem('wsAdminSecret') || localStorage.getItem('wsAdminSecret'); } catch (_e) {}
   if (adminSecret) {
     headers['X-Admin-Secret'] = adminSecret;
   }
@@ -39,7 +39,7 @@
     headers['X-Session-Token'] = storedToken;
   } else {
     var storedKey;
-    try { storedKey = localStorage.getItem('wsProKey'); } catch (e) {}
+    try { storedKey = localStorage.getItem('wsProKey') || sessionStorage.getItem('wsTempKey'); } catch (e) {}
     if (storedKey) {
       headers['X-Pro-Key'] = storedKey;
       isPro = true;

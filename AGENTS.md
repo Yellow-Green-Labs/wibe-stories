@@ -228,6 +228,6 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-18; Renamed "Occasion alerts" → "Get Reminders" in en.json/wisprstories.html(2)/footer-menu.js; added YGLabs + footer logo to copyright in 5 pages (wisprstories, about, features, language-stats, key-status); added .footer-logo CSS with logoFlip animation in layout.css. -->
+<!-- agsync: last-run 2026-07-18; Monitoring & reliability: created api/health.js, installed @sentry/vercel-edge + @sentry/node, created lib/sentry.js + lib/sentry-node.js, wired Sentry into 7 critical API files (stt, upload, rewrite, limits, webhook-bmac, cleanup, send-occasion-emails), added service dependency table to docs-internal/API.md, wired Better Stack heartbeats into cleanup.js + send-occasion-emails.js, created docs-internal/monitoring-reliability-architecture.md, set up 4 Better Stack monitors + 2 heartbeats + status page at wibestories.betteruptime.com. Added monitoring analogy to architecture doc. BMAC webhook fix: header X-Bmc-Signature → x-signature-sha256 (line 198), BMAC_WEBHOOK_SECRET now optional during bootstrapping (line 192-196). -->
 
 
