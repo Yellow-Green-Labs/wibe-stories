@@ -22,7 +22,7 @@ async function checkNeon() {
   var start = Date.now();
   if (!process.env.NEON_DATABASE_URL) return { status: 'unknown', error: 'NEON_DATABASE_URL not set' };
   var sql = neon(process.env.NEON_DATABASE_URL);
-  await Promise.race([sql('SELECT 1'), timeout(INDIVIDUAL_TIMEOUT_MS)]);
+  await Promise.race([sql`SELECT 1`, timeout(INDIVIDUAL_TIMEOUT_MS)]);
   return { status: 'up', latency_ms: Date.now() - start };
 }
 
