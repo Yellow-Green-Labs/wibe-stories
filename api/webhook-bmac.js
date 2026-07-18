@@ -269,6 +269,14 @@ export default async function handler(req) {
       }
       // Revoked key — fall through to generate a fresh one
       console.log('[BMAC] Re-subscription after revocation — generating new key');
+      // Save previous pass before overwriting
+      if (existingKey && parsed) {
+        await redis.set(KEYS.userPrevPass(email), JSON.stringify({
+          tier: parsed.tier || 'pro',
+          membershipType: parsed.membershipType || null,
+          expiresAt: parsed.expiresAt || null,
+        }));
+      }
     }
 
     // Generate new key

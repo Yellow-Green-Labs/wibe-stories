@@ -85,8 +85,41 @@ export default async function handler(req) {
 
     const data = typeof sessionData === 'string' ? JSON.parse(sessionData) : sessionData;
 
+    // Look up previous pass for this user's email
+    let prevPass = null;
+    if (data.email) {
+      try {
+        const prevPassRaw = await redis.get(KEYS.userPrevPass(data.email));
+        if (prevPassRaw) {
+          prevPass = typeof prevPassRaw === 'string' ? JSON.parse(prevPassRaw) : prevPassRaw;
+        }
+      } catch (_) {}
+    }
+
+    // Also try looking up from pro_key data if email wasn't stored in session
+    if (!prevPass && data.proKey) {
+      try {
+        const keyDataRaw = await redis.get(KEYS.upgradeKey(data.proKey));
+        if (keyDataRaw) {
+          const keyData = typeof keyDataRaw === 'string' ? JSON.parse(keyDataRaw) : keyDataRaw;
+          if (keyData.email && keyData.email !== data.email) {
+            const prevPassRaw = await redis.get(KEYS.userPrevPass(keyData.email));
+            if (prevPassRaw) {
+              prevPass = typeof prevPassRaw === 'string' ? JSON.parse(prevPassRaw) : prevPassRaw;
+            }
+          }
+        }
+      } catch (_) {}
+    }
+
     if (data.expiresAt && Date.now() > new Date(data.expiresAt).getTime()) {
-      return new Response(JSON.stringify({ isPro: false, reason: 'expired' }), {
+      return new Response(JSON.stringify({
+        isPro: false,
+        reason: 'expired',
+        expiresAt: data.expiresAt,
+        daysRemaining: 0,
+        prevPass,
+      }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -99,8 +132,10 @@ export default async function handler(req) {
     return new Response(JSON.stringify({
       isPro: true,
       tier: data.tier || 'pro',
+      membershipType: data.membershipType || null,
       expiresAt: data.expiresAt,
       daysRemaining,
+      prevPass,
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },

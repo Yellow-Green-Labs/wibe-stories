@@ -70,7 +70,9 @@ export default async function handler(req) {
     // Create session token — raw key never stored in browser
     const tier = result.keyData.tier || 'pro';
     const expiresAt = result.keyData.expiresAt || null;
-    const sessionToken = await createSessionToken(redis, key, tier, expiresAt);
+    const email = result.keyData.email || null;
+    const membershipType = result.keyData.membershipType || null;
+    const sessionToken = await createSessionToken(redis, key, tier, expiresAt, email, membershipType);
 
     // Set httpOnly cookie (primary auth — invisible to JS)
     const ttlSeconds = expiresAt

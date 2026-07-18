@@ -167,9 +167,6 @@
       <a href="/docs/legal/license" class="fmenu-link">
         <i class="fa-solid fa-file-lines" aria-hidden="true"></i><span data-i18n="footer.legal">Legal</span>
       </a>
-      <a href="/key-status" class="fmenu-link">
-        <i class="fa-solid fa-key" aria-hidden="true"></i><span>Wibe Pass</span>
-      </a>
       <div class="fmenu-version" id="fmenu-version">
         <span class="fmenu-version-number" id="fmenu-version-number"></span>
         <span class="fmenu-version-name">Wibe Stories</span>

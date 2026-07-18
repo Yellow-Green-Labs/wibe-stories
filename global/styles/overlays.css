@@ -1055,15 +1055,6 @@ body.modal-open {
   margin-bottom: 20px;
   margin-top: -12px;
 }
-.pricing-price-footnote {
-  font-size: 0.7rem;
-  font-weight: 400;
-  color: var(--ink4, #77776a);
-  text-align: center;
-  margin-top: 8px;
-  font-style: italic;
-}
-
 /* Gift banner above pricing cards */
 .pricing-gift-banner {
   display: flex;
@@ -1195,7 +1186,7 @@ body.modal-open {
 .pricing-pro-picker {
   display: none;
   align-items: center;
-  gap: 16px;
+  gap: 0;
   margin-bottom: 18px;
 }
 @media (min-width: 541px) {
@@ -1204,7 +1195,6 @@ body.modal-open {
 }
 .pricing-pro-cost {
   flex-shrink: 0;
-  text-align: center;
   min-width: 90px;
 }
 .pricing-pro-cost-amount {
@@ -1239,7 +1229,7 @@ body.modal-open {
 .pricing-pro-toggle-track {
   position: relative;
   display: flex;
-  background: #1a1a1a;
+  background: #e8e8e0;
   border-radius: 10px;
   padding: 3px;
 }
@@ -1259,7 +1249,7 @@ body.modal-open {
   z-index: 2;
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.75);
+  color: #777;
   cursor: pointer;
   padding: 10px 8px;
   font-size: clamp(12px, 0.3vw + 11px, 13px);
@@ -1293,19 +1283,7 @@ body.modal-open {
 :root.dark .pricing-tier-price {
   color: #ffffeb;
 }
-:root.dark .pricing-gift-banner {
-  background: rgba(230, 149, 0, 0.04);
-  border-color: rgba(217, 119, 6, 0.2);
-}
-:root.dark .pricing-gift-title {
-  color: #ffffeb;
-}
-:root.dark .pricing-gift-cta {
-  border-color: rgba(217, 119, 6, 0.3);
-}
-:root.dark .pricing-gift-cta:hover {
-  background: rgba(230, 149, 0, 0.08);
-}
+
 
 @media (max-width: 540px) {
   .pricing-gift-banner {
@@ -1345,9 +1323,7 @@ body.modal-open {
   color: var(--feat-accent, #e69500);
   font-weight: 700;
 }
-.pricing-unlimited {
-  color: var(--feat-accent, #e69500);
-}
+
 
 .pricing-feature-highlight {
   background: rgba(230, 149, 0, 0.2);

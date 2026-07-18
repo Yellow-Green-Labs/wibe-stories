@@ -697,6 +697,9 @@ function updateSupporterBadge() {
   applyProGating();
   // Sync vault menu label with Pro status
   if (typeof window.updateMenuLabel === "function") window.updateMenuLabel();
+  // Sync key status label and dot
+  if (typeof window.updateKeyStatusLabel === "function") window.updateKeyStatusLabel();
+  if (typeof window.updateKeyStatusDot === "function") window.updateKeyStatusDot();
 }
 
 function applyProGating() {

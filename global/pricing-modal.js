@@ -73,9 +73,59 @@
   function handleEmail() {
     var input = document.getElementById("pricingEmailInput");
     if (!input) return;
-    var email = input.value.trim();
-    if (!email || email.indexOf("@") === -1) { setMsg("pricingEmailMsg", "Enter a valid email address.", false); return; }
+    input.setCustomValidity("");
+    var raw = input.value;
+    var email = raw.trim();
     var btn = document.getElementById("pricingEmailGo");
+
+    if (!email) { setMsg("pricingEmailMsg", "Enter a valid email address.", false); if (btn) btn.disabled = false; return; }
+
+    // Silently trim leading/trailing spaces
+    if (raw !== email) { input.value = email; }
+
+    // Length check
+    if (email.length > 254) { setMsg("pricingEmailMsg", "Email is too long.", false); return; }
+
+    // Unicode/CJK/emoji check — only ASCII printable + extended ASCII for emails
+    if (/[^\x00-\x7F]/.test(email)) { setMsg("pricingEmailMsg", "Email contains unsupported characters.", false); return; }
+
+    // Split on @
+    var parts = email.split("@");
+    if (parts.length !== 2) { setMsg("pricingEmailMsg", "Enter a valid email address.", false); return; }
+
+    var username = parts[0];
+    var domain = parts[1];
+
+    // Username checks
+    if (!username) { setMsg("pricingEmailMsg", "Email is missing the part before @.", false); return; }
+    if (username.length > 64) { setMsg("pricingEmailMsg", "Email username is too long.", false); return; }
+    if (username.indexOf("..") !== -1) { setMsg("pricingEmailMsg", "Email cannot contain consecutive dots.", false); return; }
+    if (username.charAt(0) === ".") { setMsg("pricingEmailMsg", "Email cannot start with a dot.", false); return; }
+    if (username.charAt(username.length - 1) === ".") { setMsg("pricingEmailMsg", "Email cannot end with a dot.", false); return; }
+
+    // Username character check — only allow RFC 5321 allowed chars
+    if (!/^[A-Za-z0-9.!#$%&'*+\-/=?^_`{|}~]+$/.test(username)) { setMsg("pricingEmailMsg", "Email username contains invalid characters.", false); return; }
+
+    // Domain checks
+    if (!domain) { setMsg("pricingEmailMsg", "Email is missing the domain after @.", false); return; }
+    if (domain.indexOf(".") === -1) { setMsg("pricingEmailMsg", "Enter a valid email address (missing domain extension).", false); return; }
+    if (domain.charAt(0) === "." || domain.charAt(domain.length - 1) === ".") { setMsg("pricingEmailMsg", "Email domain is invalid.", false); return; }
+    if (domain.indexOf("..") !== -1) { setMsg("pricingEmailMsg", "Email domain is invalid.", false); return; }
+
+    // Domain character check — only letters, digits, dots, hyphens
+    if (!/^[A-Za-z0-9.\-]+$/.test(domain)) { setMsg("pricingEmailMsg", "Email domain contains invalid characters.", false); return; }
+
+    // Each domain label must not start or end with hyphen
+    var labels = domain.split(".");
+    for (var li = 0; li < labels.length; li++) {
+      var lbl = labels[li];
+      if (!lbl || lbl.charAt(0) === "-" || lbl.charAt(lbl.length - 1) === "-") { setMsg("pricingEmailMsg", "Email domain is invalid.", false); return; }
+    }
+
+    // Disposable email check
+    var domainLower = domain.toLowerCase();
+    if (_disposableDomains.has(domainLower)) { setMsg("pricingEmailMsg", "Disposable email addresses are not supported.", false); return; }
+
     if (btn) btn.disabled = true;
     setMsg("pricingEmailMsg", "Sending\u2026", false);
     fetch("/api/resend-key", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email }) })
@@ -160,7 +210,6 @@
     "</div>" +
 
     '<a href="https://buymeacoffee.com/yg_labs/extras" class="pricing-cta pricing-cta-pro" target="_blank" rel="noopener"><span class="pricing-cta-text">Get Wibe Pass</span> <i class="fa-solid fa-arrow-right"></i></a>' +
-    '<div class="pricing-price-footnote">No subscription &middot; No auto-renewal</div>' +
     "</div>" +
     '<div class="pricing-card pricing-free">' +
     '<div class="pricing-card-header">' +
@@ -220,16 +269,13 @@
   function positionProSlider() {
     var active = document.querySelector(".pricing-pro-toggle-btn.active");
     if (!active) return;
-    var buttons = document.querySelectorAll(".pricing-pro-toggle-btn");
     var slider = document.getElementById("proToggleSlider");
     if (!slider) return;
     var track = slider.parentElement;
-    var pad = 3;
-    var btnW = (track.offsetWidth - pad * 2) / buttons.length;
-    if (btnW <= 0) return;
-    var idx = Array.from(buttons).indexOf(active);
-    slider.style.left = (pad + idx * btnW) + "px";
-    slider.style.width = btnW + "px";
+    var trackRect = track.getBoundingClientRect();
+    var btnRect = active.getBoundingClientRect();
+    slider.style.left = (btnRect.left - trackRect.left) + "px";
+    slider.style.width = btnRect.width + "px";
   }
 
   function show() {
@@ -274,6 +320,38 @@
   document.getElementById("pricingKeyInput").addEventListener("keydown", function (e) { if (e.key === "Enter") handleKey(); });
   document.getElementById("pricingEmailInput").addEventListener("keydown", function (e) { if (e.key === "Enter") handleEmail(); });
 
+  /* ── Key input: whitelist filter ── */
+  document.getElementById("pricingKeyInput").addEventListener("input", function () {
+    this.value = this.value.replace(/[^A-Za-z0-9\-_]/g, "").slice(0, 64);
+  });
+
+  /* ── Email input: suppress browser tooltip on every change ── */
+  document.getElementById("pricingEmailInput").addEventListener("input", function () {
+    this.setCustomValidity("");
+  });
+
+  /* ── Disposable email domains ── */
+  var _disposableDomains = new Set([
+    "mailinator.com","guerrillamail.com","10minutemail.com","tempmail.com","throwaway.email",
+    "yopmail.com","sharklasers.com","trashmail.com","maildrop.cc","getairmail.com",
+    "temp-mail.org","dispostable.com","spamgourmet.com","emailondeck.com","mailnator.com",
+    "mailexpire.com","mintemail.com","spambox.us","mail-temp.com","tempemail.net",
+    "fakeinbox.com","maileater.com","mailcatch.com","mailsac.com","mailinator2.com",
+    "sogetthis.com","mailmetrash.com","thisisnotmyrealemail.com","trash2009.com","wegwerfmail.de",
+    "spamherelots.com","sendspamhere.com","spamspot.com","spamthisplease.com","uacro.com",
+    "guerillamail.org","guerillamail.net","guerillamail.biz","mailexpire.com","mailmoat.com",
+    "mailmetrash.com","mytrashmail.com","quickinbox.com","rcpt.at","sneakemail.com",
+    "spam.la","spamconference.com","spamcowboy.com","spamcowboy.net","spamcowboy.org",
+    "thankyou2010.com","trash2009.com","trashymail.com","trashymail.net","wh4f.org",
+    "whyspam.me","willselfdestruct.com","winemaven.info","wronghead.com","xagloo.com",
+    "xoxy.net","yopmail.fr","yopmail.net","zippymail.info","zzz.com",
+    "ei8ht.com","casualdx.com","eyblog.net","galaxy.tv","generalgiant.com",
+    "guerrillamailblock.com","h8s.org","haltospam.com","hotpop.com","inboxbear.com",
+    "inboxcleanup.com","inboxcleaner.org","incognitomail.org","ip6.li","irish2me.com",
+    "kaspop.com","klassmaster.com","klassmaster.net","link2mail.net","mail2rss.org",
+    "mail4trash.com","mailbiz.biz","mailbucket.org","mailcat.biz","maildealer.net"
+  ]);
+
   /* ── Pro pricing selector ── */
   var _proPickerInit = false;
   function initProPicker() {
@@ -292,13 +370,11 @@
     };
 
     function slideTo(btn) {
-      var idx = Array.from(buttons).indexOf(btn);
       var track = slider.parentElement;
-      var pad = 3;
-      var btnW = (track.offsetWidth - pad * 2) / buttons.length;
-      if (btnW <= 0) return;
-      slider.style.left = (pad + idx * btnW) + "px";
-      slider.style.width = btnW + "px";
+      var trackRect = track.getBoundingClientRect();
+      var btnRect = btn.getBoundingClientRect();
+      slider.style.left = (btnRect.left - trackRect.left) + "px";
+      slider.style.width = btnRect.width + "px";
       buttons.forEach(function(b) { b.classList.remove("active"); });
       btn.classList.add("active");
       var p = plans[btn.dataset.plan];
@@ -324,15 +400,12 @@
       clearTimeout(_rszTimer);
       _rszTimer = setTimeout(function() {
         var a = document.querySelector(".pricing-pro-toggle-btn.active");
-        if (a) {
-          var idx = Array.from(buttons).indexOf(a);
-          var track = slider.parentElement;
-          var pad = 3;
-          var btnW = (track.offsetWidth - pad * 2) / buttons.length;
-          if (btnW <= 0) return;
-          slider.style.left = (pad + idx * btnW) + "px";
-          slider.style.width = btnW + "px";
-        }
+        if (!a) return;
+        var track = slider.parentElement;
+        var trackRect = track.getBoundingClientRect();
+        var btnRect = a.getBoundingClientRect();
+        slider.style.left = (btnRect.left - trackRect.left) + "px";
+        slider.style.width = btnRect.width + "px";
       }, 100);
     });
   }

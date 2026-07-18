@@ -12,7 +12,7 @@ This roadmap outlines what we're building next and what we've recently shipped. 
 
 - **Vault improvements** — Download and share cards directly from your vault, with sort, search, and better organization tools.
 - **Pro Calendar Drawer** — Browse upcoming occasions on a calendar and create occasion cards with one tap (Pro only).
-- **Key Status Page** — View your Pro key tier, expiry date, and purchase history at a glance (Pro only).
+- **Key Status modal** — View your Pro key tier, expiry date, and days remaining at a glance (Pro only).
 
 ### Considering
 
