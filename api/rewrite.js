@@ -1,6 +1,7 @@
 export const config = { runtime: 'edge' };
 
 import { getRedis, KEYS } from '../lib/redis.js';
+import Sentry from '../lib/sentry.js';
 import { resolveProKey } from '../lib/session.js';
 
 // Free-tier quota is enforced per tone, per day.
@@ -132,6 +133,7 @@ export default async function handler(req) {
         const result = await resolveProKey(redis, proKey);
         isPro = result.valid;
       } catch (proErr) {
+        Sentry.captureException(proErr);
         console.warn('[Rewrite] Pro key check failed, treating as free:', proErr.message);
       }
     }
@@ -150,6 +152,7 @@ export default async function handler(req) {
         });
       }
     } catch (cacheErr) {
+      Sentry.captureException(cacheErr);
       console.warn('[Rewrite] Cache check failed, proceeding:', cacheErr.message);
     }
 
@@ -178,6 +181,7 @@ export default async function handler(req) {
           });
         }
       } catch (redisErr) {
+        Sentry.captureException(redisErr);
         console.warn('[Rewrite] Redis unavailable, allowing preview:', redisErr.message);
         redisFailed = true;
       }
@@ -292,6 +296,7 @@ export default async function handler(req) {
       const redis = getRedis();
       await redis.set(cacheKey(tone, text), rewritten, { ex: CACHE_TTL_SEC });
     } catch (cacheErr) {
+      Sentry.captureException(cacheErr);
       console.warn('[Rewrite] Cache write failed, continuing:', cacheErr.message);
     }
 
@@ -312,6 +317,7 @@ export default async function handler(req) {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (e) {
+    Sentry.captureException(e);
     console.error('[Rewrite] Error:', e.message);
     if (e.name === 'AbortError') {
       return new Response(JSON.stringify({ error: 'Rewrite timed out' }), {

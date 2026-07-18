@@ -497,7 +497,7 @@
     var link = document.createElement('a');
     link.href = '#';
     link.className = 'fmenu-sub-link';
-    link.textContent = '\uD83D\uDCEC Get reminders';
+    link.textContent = '\uD83D\uDCEC Get Reminders';
     link.addEventListener('click', function (e) { e.preventDefault(); openSubPopup(); });
     aEl.parentNode.insertBefore(sep, aEl.nextSibling);
     aEl.parentNode.insertBefore(link, sep.nextSibling);

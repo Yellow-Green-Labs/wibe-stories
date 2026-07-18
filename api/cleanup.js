@@ -100,6 +100,8 @@ export default async function handler(req, res) {
       deleted += batch.length;
     }
 
+    fetch('https://uptime.betterstack.com/api/v1/heartbeat/J8eZQGgcV9t2s1EiF1yBTEqJ')
+      .catch(function() { /* non-critical */ });
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({
       ok: true,

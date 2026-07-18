@@ -120,6 +120,22 @@
   color: var(--ink3);
   opacity: 0.4;
 }
+.footer-logo {
+  height: 14px;
+  width: auto;
+  vertical-align: middle;
+  display: inline-block;
+}
+.footer-logo:hover {
+  animation: logoFlip 0.8s ease-in-out;
+}
+@keyframes logoFlip {
+  0%   { transform: rotateY(0deg); }
+  25%  { transform: rotateY(-180deg); }
+  50%  { transform: rotateY(0deg); }
+  75%  { transform: rotateY(180deg); }
+  100% { transform: rotateY(0deg); }
+}
 .footer .fmenu-root {
   font-size: clamp(11px, 0.3vw + 10px, 12px);
   opacity: 0.5;

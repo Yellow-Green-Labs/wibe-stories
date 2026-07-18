@@ -1,6 +1,7 @@
 export const config = { runtime: 'edge' };
 
 import { getRedis, KEYS, secondsUntilMidnightUTC } from '../lib/redis.js';
+import Sentry from '../lib/sentry.js';
 import { resolveProKey } from '../lib/session.js';
 
 const FREE_MAX_RECORDINGS = 5;
@@ -38,6 +39,7 @@ export default async function handler(req) {
         const result = await resolveProKey(redis, proKey);
         validatedPro = result.valid;
       } catch (e) {
+        Sentry.captureException(e);
         console.warn('[Limits] Pro key check failed, treating as free:', e.message);
       }
     }
@@ -118,6 +120,7 @@ export default async function handler(req) {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (e) {
+    Sentry.captureException(e);
     console.error('[Limits] Error:', e.message);
     return new Response(JSON.stringify({
       allowed: true,

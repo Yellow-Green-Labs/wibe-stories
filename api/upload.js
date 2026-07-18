@@ -12,6 +12,7 @@
 
 import { put } from '@vercel/blob';
 import { generateOgImage } from './lib/og-render.js';
+import Sentry from '../lib/sentry-node.js';
 
 const VALID_TONES = new Set([
   'original', 'warm', 'bold', 'poetic', 'playful', 'reflective', 'honest',
@@ -123,6 +124,7 @@ export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', 'https://wibestories.vercel.app');
     res.end(JSON.stringify({ shortId, url }));
   } catch (e) {
+    Sentry.captureException(e);
     res.statusCode = 500;
     res.setHeader('Content-Type', 'text/plain');
     res.end('Upload error: ' + (e && e.message ? e.message : 'unknown'));

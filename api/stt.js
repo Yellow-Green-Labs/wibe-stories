@@ -1,4 +1,5 @@
 import { getRedis, secondsUntilMidnightUTC } from '../lib/redis.js';
+import Sentry from '../lib/sentry.js';
 
 // Accepted audio base MIME types — validated before use in Deepgram/Whisper
 // request headers to prevent header injection from client-supplied format strings.
@@ -85,7 +86,40 @@ export default async function handler(req) {
         await redis.incr(sttKey);
         await redis.expire(sttKey, ttl);
       } catch (redisErr) {
+        Sentry.captureException(redisErr);
         console.warn('[STT] Rate limit check failed, allowing through:', redisErr.message);
+      }
+    }
+
+    // IP-based rate limit — secondary safety net against session rotation attacks.
+    // Uses cf-connecting-ip (set by Cloudflare, cannot be spoofed) with fallback
+    // to x-forwarded-for. Set high (500/day) to avoid blocking shared IPs (carrier NAT).
+    // Skip for admin requests (already bypassed above) and when IP cannot be determined.
+    if (!isAdmin) {
+      try {
+        const clientIp = req.headers.get('cf-connecting-ip')
+          || (req.headers.get('x-forwarded-for') || '').split(',')[0].trim();
+        if (clientIp) {
+          const redis = getRedis();
+          const today = new Date().toISOString().slice(0, 10);
+          const ipKey = 'wispr:stt-ip:' + clientIp + ':' + today;
+          const ipCalls = parseInt(await redis.get(ipKey) || '0', 10);
+          const IP_MAX_CALLS_PER_DAY = 500;
+          if (ipCalls >= IP_MAX_CALLS_PER_DAY) {
+            return new Response(JSON.stringify({ error: 'Daily STT limit reached' }), {
+              status: 429, headers: { 'Content-Type': 'application/json' },
+            });
+          }
+          const ttl = secondsUntilMidnightUTC();
+          if (ipCalls === 0) {
+            await redis.set(ipKey, '1', { ex: ttl });
+          } else {
+            await redis.incr(ipKey);
+          }
+        }
+      } catch (redisErr) {
+        Sentry.captureException(redisErr);
+        console.warn('[STT] IP rate limit check failed, allowing through:', redisErr.message);
       }
     }
 
@@ -173,6 +207,7 @@ export default async function handler(req) {
         body: bytes,
       });
     } catch (dgErr) {
+      Sentry.captureException(dgErr);
       console.error('[STT] Deepgram fetch failed, trying Whisper fallback:', dgErr.message);
       dgFailed = true;
       const fallbackText = await _tryWhisperFallback();
@@ -217,6 +252,7 @@ export default async function handler(req) {
       status: 200, headers: { 'Content-Type': 'application/json' },
     });
   } catch (e) {
+    Sentry.captureException(e);
     const type = e.constructor?.name || 'Error';
     const stack = (e.stack || '').split('\n').slice(0,6).join('|');
     const ct = req.headers.get('content-type') || 'unknown';

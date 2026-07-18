@@ -94,6 +94,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - [ ] `docs-internal/wispr_flow_improvement_areas.md` — Flow improvement areas
 - [ ] `docs-internal/interview-quick-reference.md` — interview prep source of truth
 - [ ] `docs-internal/daily-capacity-system.md` — daily capacity system
+- [ ] `docs-internal/monitoring-reliability-architecture.md` — 4-layer monitoring architecture (Sentry, health, Better Stack, QStash)
 - [ ] `docs-internal/Tanay-linkedin-posts.md` — Wispr Flow CEO thinking (mandatory per Tanay lens rule)
 - [ ] `frontlogs/EMAILS.md` — email types catalog (10 types, 3 implemented, Resend/Loops split)
 - [ ] `frontlogs/USEFUL_SERVICES.md` — planned services (Sentry, Tally, Better Stack, Unkey, Loops, ImageKit, Ahrefs)
@@ -151,6 +152,7 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `assets/i18n/i18n.js` — i18n loader with `data-i18n`, `getI18nSync()`
 - `assets/i18n/NATIVE-REVIEW.md` — per-locale review checklist
 - `assets/occasions/` — 60 occasion images (.png)
+- `api/health.js` — health endpoint (Redis ping, Neon SELECT 1, API key presence checks)
 - `api/` — Vercel API routes
 - `api/lib/og-render.js` — OG image generator (composites card onto WS-OG-Image.png template)
 - `api/lib/occasion-email.js` — occasion email template builder (30 global occasions, Resend transactional API)
@@ -195,6 +197,8 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/beacon.js` — redirect handler (reads `WS_EP` env var)
 - `api/download/[id].js` — download proxy (serves Blob files with `Content-Disposition: attachment`)
 - `lib/neon.js` — Neon Postgres connection singleton (edge-compatible HTTP query via `@neondatabase/serverless`)
+- `lib/sentry.js` — Sentry init for Edge runtime API routes (`@sentry/vercel-edge`)
+- `lib/sentry-node.js` — Sentry init for Node.js runtime API routes (`@sentry/node`)
 - `api/vault/list.js` — GET vault cards for a Pro key (Neon query, camelCase response)
 - `api/vault/save.js` — POST save a vault card (validates Pro key, enforces 50-card limit, Neon insert)
 - `api/vault/delete.js` — POST delete vault cards by client_id array (scoped to Pro key)
@@ -224,6 +228,6 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-17; Legal docs migrated to VitePress: deleted legal/ folder (6 files), created docs-src/legal/*.md (4 pages), path-keyed sidebar in config.js, single "Legal" footer link, vercel.json redirects, en.json i18n key. Created docs-internal/limitations.md as internal truth counterpart. Added Documentation truth rules to mandatory rules. Added vault endpoints (13. Wibe Vault) to docs-internal/API.md. Rewrote docs-src/reference/limitations.md with all leaks removed. Rewrote docs-src/product-guide/wibe-stories.md — fixed 7 leaks, corrected RTL claim (disabled), synced roadmap (links to roadmap.md), replaced Tech Stack with trust-center link, updated "Pro subscription" → "Wibe Pass", removed "Live prototype" → "Live product", fixed LLM→AI language, removed cron/UTC/endpoint leaks. -->
+<!-- agsync: last-run 2026-07-18; Renamed "Occasion alerts" → "Get Reminders" in en.json/wisprstories.html(2)/footer-menu.js; added YGLabs + footer logo to copyright in 5 pages (wisprstories, about, features, language-stats, key-status); added .footer-logo CSS with logoFlip animation in layout.css. -->
 
 
