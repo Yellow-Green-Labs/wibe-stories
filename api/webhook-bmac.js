@@ -158,8 +158,8 @@ async function sendProKeyEmail(resendApiKey, { toEmail, toName, proKey }) {
 
 export default async function handler(req) {
   try {
-  // BMAC validates the webhook URL with a GET request during creation
-  if (req.method === 'GET' || req.method === 'HEAD') {
+  // BMAC validates the webhook URL with GET/OPTIONS during creation
+  if (req.method === 'GET' || req.method === 'HEAD' || req.method === 'OPTIONS') {
     return new Response('OK', { status: 200 });
   }
   if (req.method !== 'POST') {
