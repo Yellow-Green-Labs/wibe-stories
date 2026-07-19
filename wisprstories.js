@@ -159,7 +159,7 @@ let _updatePending = false;
 let _versionUpToDate = false;
 let _versionPollTimer = null;
 const VERSION_POLL_INTERVAL_MS = 60 * 1000; // 60 seconds
-const CURRENT_VERSION = "v0.11.24.4";
+const CURRENT_VERSION = "v0.11.25.0";
 
 // Shows the "new version available" notice. Persists until clicked — unlike
 // the generic showToast() which auto-dismisses after 3.2s. Clicking triggers

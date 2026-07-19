@@ -114,6 +114,7 @@
         });
       }
     </script>
+    <script async src="https://tally.so/widgets/embed.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Tone fonts (Latin + catch-all) -->
@@ -972,19 +973,6 @@
       </div>
     </div>
 
-    <!-- CONTACT MODAL -->
-    <div class="contact-modal" id="contactModal">
-      <div class="contact-modal-backdrop" id="contactBackdrop"></div>
-      <div class="contact-modal-content">
-        <button class="contact-modal-close" id="contactClose">&times;</button>
-        <iframe
-          class="contact-modal-frame"
-          id="contactFrame"
-          src=""
-          frameborder="0"
-          title="Contact Wibe Stories"
-        ></iframe>
-      </div>
     </div>
 
     <!-- ONBOARDING BANNER -->
@@ -1143,6 +1131,7 @@
         <div class="hamburger-divider"></div>
         <a href="https://medium.com/" class="hamburger-link hamburger-link-secondary" target="_blank" rel="noopener"><i class="fa-brands fa-medium"></i> <span data-i18n="footer.articles">Read Articles</span></a>
         <a href="mailto:yellowgreenlabs@proton.me?subject=Wibe%20Stories%20Feedback" class="hamburger-link hamburger-link-secondary"><i class="fa-solid fa-pen-clip"></i> <span data-i18n="footer.issues">Submit Issues</span></a>
+        <a href="#" class="hamburger-link hamburger-link-secondary" id="hmContact"><i class="fa-solid fa-envelope"></i> <span>Contact</span></a>
         <a href="#" class="hamburger-link hamburger-link-secondary" id="hmHelp"><i class="fa-solid fa-circle-question"></i> <span data-i18n="footer.help">How to Use</span></a>
         <a href="/docs/legal/license" class="hamburger-link hamburger-link-secondary"><i class="fa-solid fa-file-lines"></i> <span data-i18n="footer.legal">Legal</span></a>
         <div class="hamburger-version" id="hamburgerVersion"></div>
@@ -1236,6 +1225,18 @@
         }
       });
 
+      document.getElementById('hmContact')?.addEventListener('click', function(e) {
+        e.preventDefault(); closeMenu();
+        if (typeof Tally !== 'undefined' && Tally.openPopup) {
+          Tally.openPopup('obaD1M', {
+            width: 600,
+            overlay: true,
+            emoji: { text: '\u{1F44B}', animation: 'wave' },
+            formEventsForwarding: true
+          });
+        }
+      });
+
       fetch('version.json?v=' + Date.now(), { cache: 'no-store' })
         .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
         .then(function(d) {
@@ -1309,34 +1310,16 @@
         if (typeof window.openKeyStatusModal === 'function') window.openKeyStatusModal();
       });
 
-      // ── Contact modal ──
-      var contactModal = document.getElementById('contactModal');
-      var contactFrame = document.getElementById('contactFrame');
+      // ── Contact ──
       document.getElementById('navContact')?.addEventListener('click', function(e) {
         e.preventDefault(); closeDropdown();
-        if (contactModal && contactFrame) {
-          if (contactModal.classList.contains('open')) {
-            contactModal.classList.remove('open');
-            document.body.style.overflow = '';
-          } else {
-            contactFrame.src = 'https://tally.so/r/obaD1M?formEventsForwarding=1';
-            contactModal.classList.add('open');
-            document.body.style.overflow = 'hidden';
-          }
-        }
-      });
-      function closeContactModal() {
-        if (contactModal) {
-          contactModal.classList.remove('open');
-          document.body.style.overflow = '';
-          if (contactFrame) contactFrame.src = '';
-        }
-      }
-      document.getElementById('contactClose')?.addEventListener('click', closeContactModal);
-      document.getElementById('contactBackdrop')?.addEventListener('click', closeContactModal);
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && contactModal && contactModal.classList.contains('open')) {
-          closeContactModal();
+        if (typeof Tally !== 'undefined' && Tally.openPopup) {
+          Tally.openPopup('obaD1M', {
+            width: 600,
+            overlay: true,
+            emoji: { text: '\u{1F44B}', animation: 'wave' },
+            formEventsForwarding: true
+          });
         }
       });
     })();

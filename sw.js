@@ -109,7 +109,7 @@ self.addEventListener('fetch', (event) => {
   // fresh version on every navigation. 'no-store' is used instead of
   // 'reload' because some mobile browsers ignore cache: 'reload' and serve
   // from their HTTP cache anyway, causing stale content on pull-to-refresh.
-  const isHtml = url.pathname === '/' || url.pathname.endsWith('.html');
+  const isHtml = url.pathname === '/' || url.pathname.endsWith('.html') || url.pathname.startsWith('/docs/');
 
   if (isHtml) {
     event.respondWith(
@@ -171,7 +171,10 @@ self.addEventListener('fetch', (event) => {
         }
         return resp;
       }).catch(() => {
-        if (req.mode === 'navigate') return caches.match('/wisprstories.html');
+        if (req.mode === 'navigate') {
+          if (url.pathname.startsWith('/docs/')) return caches.match('/docs/');
+          return caches.match('/wisprstories.html');
+        }
         return new Response('', { status: 504, statusText: 'Offline' });
       });
     })
