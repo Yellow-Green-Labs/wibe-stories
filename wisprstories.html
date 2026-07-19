@@ -244,6 +244,7 @@
           <a href="#" class="fmenu-link" id="navPricing"><i class="fa-solid fa-dollar-sign" aria-hidden="true"></i><span data-i18n="footer.pricing">Unlock Pro</span></a>
           <a href="/about" class="fmenu-link"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span data-i18n="footer.about">About</span></a>
           <a href="/language-stats" class="fmenu-link"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i><span data-i18n="footer.langStats">Lang Stats</span></a>
+          <a href="#" class="fmenu-link" id="navContact"><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>Contact</span></a>
           <a href="#" class="fmenu-link" id="navVault"><i class="fa-solid fa-vault" aria-hidden="true"></i><span id="navVaultLabel">Wibe Vault</span></a>
           <a href="#" class="fmenu-link" id="navKeyStatus"><i class="fa-solid fa-key" aria-hidden="true"></i><span id="navKeyStatusLabel">My Wibe Pass</span></a>
         </div>
@@ -854,7 +855,7 @@
               <div class="card-foot">
                 <div class="card-logo">
                   <img
-                    src="assets/ws-logo-TR-whfr.png"
+                    src="assets/brand/ws-logo-TR-whfr.png"
                     alt="Wibe Stories"
                     class="card-logo-img"
                   />
@@ -1291,6 +1292,27 @@
       document.getElementById('navKeyStatus')?.addEventListener('click', function(e) {
         e.preventDefault(); closeDropdown();
         if (typeof window.openKeyStatusModal === 'function') window.openKeyStatusModal();
+      });
+
+      // ── Tally.so Contact popup ──
+      var TALLY_FORM_URL = 'https://tally.so/r/obaD1M';
+      function loadTallyWidget(callback) {
+        if (typeof Tally !== 'undefined') { callback(); return; }
+        var s = document.createElement('script');
+        s.src = 'https://tally.so/widgets/embed.js';
+        s.onload = callback;
+        s.onerror = callback;
+        document.body.appendChild(s);
+      }
+      document.getElementById('navContact')?.addEventListener('click', function(e) {
+        e.preventDefault(); closeDropdown();
+        loadTallyWidget(function() {
+          if (typeof Tally !== 'undefined' && Tally.openPopup) {
+            Tally.openPopup(TALLY_FORM_URL);
+          } else {
+            window.open(TALLY_FORM_URL, '_blank');
+          }
+        });
       });
     })();
 

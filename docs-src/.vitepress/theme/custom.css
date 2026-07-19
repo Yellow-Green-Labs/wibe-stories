@@ -30,9 +30,9 @@
 }
 
 .dark {
-  --vp-c-text-1: #777777;
-  --vp-c-text-2: #666666;
-  --vp-c-text-3: #555555;
+  --vp-c-text-1: #999999;
+  --vp-c-text-2: #777777;
+  --vp-c-text-3: #666666;
   --vp-c-bg: #111111;
   --vp-c-bg-alt: #1a1a1a;
   --vp-c-bg-elvt: #222222;
@@ -100,6 +100,9 @@
 }
 
 .VPNavBarTitle .title {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
   color: #ffffeb !important;
   font-weight: 700 !important;
 }
@@ -186,10 +189,18 @@
   margin-top: auto;
 }
 
-.prev .pager-link .title::before {
+.pager-link.prev .title::before {
   content: "←\00a0";
 }
 
-.next .pager-link .title::after {
+.pager-link.next .title::after {
   content: "\00a0→";
+}
+
+.VPNavBarAppearance {
+  display: none !important;
+}
+
+.VPMenu .appearance {
+  display: none !important;
 }

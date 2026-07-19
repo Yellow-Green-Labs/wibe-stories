@@ -7,6 +7,7 @@ export default defineConfig({
   base: '/docs/',
   lang: 'en-US',
   cleanUrls: true,
+  appearance: 'dark',
   vite: {
     publicDir: fileURLToPath(new URL('./public', import.meta.url)),
   },
@@ -14,11 +15,10 @@ export default defineConfig({
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     ['link', { href: 'https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap', rel: 'stylesheet' }],
-    ['link', { rel: 'icon', href: '/docs/assets/brand/ws-l-b.ico' }],
+    ['link', { rel: 'icon', href: '/assets/brand/ws-l-b.ico' }],
   ],
   themeConfig: {
-    appearance: 'dark',
-    siteTitle: 'Wibe Stories',
+    siteTitle: 'Wibe Story Docs',
     logo: {
       light: '/assets/logo-light.png',
       dark: '/assets/logo-dark.png',
@@ -30,7 +30,7 @@ export default defineConfig({
     sidebar: {
       '/legal/': [
         {
-          text: 'Legal',
+          text: 'Wibe Stories Legal',
           items: [
             { text: 'License', link: '/legal/license' },
             { text: 'Terms of Service', link: '/legal/terms' },
