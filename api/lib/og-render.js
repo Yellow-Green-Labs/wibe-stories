@@ -1,7 +1,7 @@
 // OG image generator — composites the user's card PNG onto the branded
 // template (WS-OG-Image.png) for a polished link-preview image.
 //
-// Template: assets/WS-OG-Image.png (1200×630, deployed as static asset)
+// Template: assets/brand/WS-OG-Image.png (1200×630, deployed as static asset)
 // Card frame area: right side, x=557 y=30, inner ~570×570
 //
 // No new dependencies — uses sharp (already installed).
@@ -26,7 +26,7 @@ async function loadTemplate(origin) {
 
   // Try HTTP fetch first (works on Vercel when template is committed + deployed)
   try {
-    const res = await fetch(`${origin}/assets/WS-OG-Image.png`);
+    const res = await fetch(`${origin}/assets/brand/WS-OG-Image.png`);
     if (res.ok) {
       _tplCache = Buffer.from(await res.arrayBuffer());
       return _tplCache;
@@ -34,7 +34,7 @@ async function loadTemplate(origin) {
   } catch (_) { /* fall through to local */ }
 
   // Fallback: read from local filesystem (works in dev / after deploy)
-  const localPath = join(__dirname, '..', '..', 'assets', 'WS-OG-Image.png');
+  const localPath = join(__dirname, '..', '..', 'assets', 'brand', 'WS-OG-Image.png');
   _tplCache = readFileSync(localPath);
   return _tplCache;
 }

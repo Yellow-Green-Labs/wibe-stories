@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/ws-logo-blwbg.png" alt="Wibe Stories logo" width="64" height="64">
+  <img src="assets/brand/ws-logo-blwbg.png" alt="Wibe Stories logo" width="64" height="64">
 </p>
 
 <h1 align="center">Wibe Stories</h1>

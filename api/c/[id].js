@@ -148,7 +148,7 @@ export default async function handler(req, res) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="${ogDesc}">
-<link rel="icon" href="${safeHomeUrl}assets/ws-logo-blwbg.png" type="image/png">
+<link rel="icon" href="${safeHomeUrl}assets/brand/ws-l-b.ico" type="image/x-icon">
 <title>${ogTitle}</title>
 <meta property="og:title" content="${ogTitle}">
 <meta property="og:description" content="${ogDesc}">
@@ -252,6 +252,9 @@ html,body{
 .landing-caption{font-size:clamp(13px,2vw,15px);color:#ffffeb;margin:0;text-align:center}
 .landing-meta{font-size:12px;color:#a5a596;text-align:center;line-height:1.5;margin:0}
 .watermark{font-size:11px;color:#555;text-align:center;margin-top:auto;padding-top:8px}
+.footer-logo{height:14px;width:auto;vertical-align:middle;display:inline-block}
+@media (hover: hover){.footer-logo:hover{animation:logoFlip 0.8s ease-in-out}}
+@keyframes logoFlip{0%{transform:rotateY(0deg)}25%{transform:rotateY(-180deg)}50%{transform:rotateY(0deg)}75%{transform:rotateY(180deg)}100%{transform:rotateY(0deg)}}
 .dl-btns{display:flex;justify-content:center;align-items:center;margin-top:4px}
 .dl-link{color:#ffffeb;font-weight:700;font-size:14px;text-decoration:underline;transition:opacity .15s}
 .dl-link:hover{opacity:.7}
@@ -271,7 +274,7 @@ html,body{
 <body>
 <main class="landing-wrap">
   <div class="branding">
-    <img class="branding-logo" src="${safeHomeUrl}assets/ws-logo-blwbg.png" alt="Wibe Stories">
+    <img class="branding-logo" src="${safeHomeUrl}assets/brand/ws-logo-blwbg.png" alt="Wibe Stories">
     <span class="branding-name">Wibe Stories</span>
   </div>
   <div class="center-content">
@@ -288,7 +291,7 @@ html,body{
       <a class="dl-link" href="/download/${id}" download="wibe-story.png">Download story card</a>
     </div>
   </div>
-  <p class="watermark">Wibe Stories · Turn your voice into something beautiful</p>
+  <p class="watermark">&copy; 2026 YGLabs <img src="${safeHomeUrl}assets/brand/YGL-L-W.png" class="footer-logo" alt="YGLabs"></p>
 </main>
 <script>(function(){var e=document.querySelector('.hook-flow');if(!e||window.matchMedia('(prefers-reduced-motion:reduce)').matches)return;var t=e.textContent;e.innerHTML='';var c=0;for(var i=0;i<t.length;i++){if(t[i]===' '){e.appendChild(document.createTextNode(' '))}else{var s=document.createElement('span');s.textContent=t[i];s.style.animationDelay=(c*0.06)+'s';e.appendChild(s);c++}}})()</script>
 </body>

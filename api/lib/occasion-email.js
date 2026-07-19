@@ -125,7 +125,7 @@ export function buildHtmlBody(occasion, email) {
           <tr>
             <td style="background:linear-gradient(135deg,#1a1a1a,#2a2a2a);padding:32px 32px 24px;text-align:center;">
               <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:0 0 40px;">
-                <img src="https://wibestories.vercel.app/assets/ws-logo-blwbg.png" alt="Wibe Stories"
+                <img src="https://wibestories.vercel.app/assets/brand/ws-logo-blwbg.png" alt="Wibe Stories"
                   style="display:block;height:40px;width:auto;" />
                 <span style="font-family:Inter,sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.3px;color:#ffffeb;">Wibe Stories</span>
               </div>
@@ -165,7 +165,7 @@ export function buildHtmlBody(occasion, email) {
                 <a href="https://wibestories.vercel.app/?showPricing" target="_blank"
                    style="color:#f59e0b;text-decoration:underline;font-weight:700;">See plans</a>
               </p>
-              <img src="https://wibestories.vercel.app/assets/occasion-cards-animation.gif" alt="Sample Wibe Stories cards"
+              <img src="https://wibestories.vercel.app/assets/brand/occasion-cards-animation.gif" alt="Sample Wibe Stories cards"
                 style="display:block;margin:0 auto;max-width:100%;width:600px;" />
               <p style="font-size:12.5px;line-height:1.7;color:#1a1a1a;margin:24px 0 0;font-family:Inter,sans-serif;">
                 Thank you for trusting Wibe Stories with your stories and messages. We hope every story you create helps you stay a little closer to the people who matter most. Thank you for letting us be part of those moments.

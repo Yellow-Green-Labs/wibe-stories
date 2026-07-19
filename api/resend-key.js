@@ -39,7 +39,7 @@ async function sendProKeyEmail(resendApiKey, { toEmail, toName, proKey }) {
         html: `
           <div style="font-family:Inter,'Noto Sans',system-ui,sans-serif;max-width:480px;margin:0 auto">
             <div style="background:#ffffeb;border-radius:12px 12px 0 0;border-left:1px solid rgba(26,26,26,0.1);border-right:1px solid rgba(26,26,26,0.1);border-top:1px solid rgba(26,26,26,0.1);padding:28px 28px 20px;text-align:center">
-              <img src="https://wibestories.vercel.app/assets/ws-logo-blwbg.png" alt="" style="height:28px;width:auto;display:block;margin:0 auto 8px" />
+              <img src="https://wibestories.vercel.app/assets/brand/ws-logo-blwbg.png" alt="" style="height:28px;width:auto;display:block;margin:0 auto 8px" />
               <h1 style="margin:0;font-size:17px;font-weight:700;color:#1a1a1a;letter-spacing:-0.3px">Wibe Stories</h1>
               <p style="margin:4px 0 0;font-size:13px;color:#77776a">Turn your voice into shareable cards</p>
             </div>

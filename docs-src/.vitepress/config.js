@@ -14,8 +14,10 @@ export default defineConfig({
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     ['link', { href: 'https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap', rel: 'stylesheet' }],
+    ['link', { rel: 'icon', href: '/docs/assets/brand/ws-l-b.ico' }],
   ],
   themeConfig: {
+    appearance: 'dark',
     siteTitle: 'Wibe Stories',
     logo: {
       light: '/assets/logo-light.png',

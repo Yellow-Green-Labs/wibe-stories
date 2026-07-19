@@ -13,13 +13,13 @@
   "theme_color": "#ffffeb",
   "icons": [
     {
-      "src": "assets/ws-logo-blwbg.png",
+      "src": "assets/brand/ws-logo-blwbg.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "assets/ws-logo-blwbg.png",
+      "src": "assets/brand/ws-logo-blwbg.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -32,7 +32,7 @@
       "description": "Open Wibe Stories ready to record or type",
       "url": "/?source=shortcut-new",
       "icons": [
-        { "src": "assets/ws-logo-blwbg.png", "sizes": "192x192", "type": "image/png" }
+        { "src": "assets/brand/ws-logo-blwbg.png", "sizes": "192x192", "type": "image/png" }
       ]
     }
   ],

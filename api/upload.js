@@ -2,7 +2,7 @@
 // Accepts raw PNG bytes (no multipart parsing) for fast uploads.
 // Creates two versions:
 //   1. Original card PNG (for landing page display)
-//   2. Branded OG JPEG — composites the card onto WS-OG-Image.png template
+//   2. Branded OG JPEG — composites the card onto brand/WS-OG-Image.png template
 //      for polished link previews (1200×630, 1.91:1 aspect ratio).
 //
 // POST /api/upload
@@ -96,7 +96,7 @@ export default async function handler(req, res) {
     });
 
     // Generate branded OG image — composites the user's card onto the
-    // WS-OG-Image.png template for polished link previews.
+    // brand/WS-OG-Image.png template for polished link previews.
     const host = req.headers.host || 'wibestories.vercel.app';
     const proto = req.headers['x-forwarded-proto'] || 'https';
     const origin = `${proto}://${host}`;

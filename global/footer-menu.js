@@ -502,4 +502,22 @@
 
   addSubLink();
   window.addEventListener('i18nApplied', addSubLink);
+
+  // ── Footer logo: theme-aware src swap ──
+  var LIGHT_LOGO = 'assets/brand/YGL-L-B.png';
+  var DARK_LOGO  = 'assets/brand/YGL-L-W.png';
+
+  function setFooterLogo() {
+    var imgs = document.querySelectorAll('img.footer-logo');
+    var isDark = document.documentElement.classList.contains('dark');
+    var src = isDark ? DARK_LOGO : LIGHT_LOGO;
+    for (var i = 0; i < imgs.length; i++) { imgs[i].src = src; }
+  }
+
+  setFooterLogo();
+
+  var observer = new MutationObserver(function () {
+    setFooterLogo();
+  });
+  observer.observe(document.documentElement, { attributeFilter: ['class'] });
 })();

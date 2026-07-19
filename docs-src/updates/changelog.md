@@ -5,9 +5,24 @@ outline: [2, 2]
 
 # Changelog
 
-*Last updated: Jul 17, 2026*
+*Last updated: Jul 19, 2026*
 
-> **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 71
+> **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 73
+
+## v0.11.24.4 — 2026-07-19
+
+Pricing modal fixes: gift banner colors, slider alignment, input validation.
+
+### Fixed
+- **Gift banner colors** — Removed stale amber dark-mode overrides that were overriding the correct teal/pink scheme.
+- **Pro pricing slider offset** — Replaced `offsetWidth` math with `getBoundingClientRect()` for pixel-perfect alignment across all plans.
+- **Light mode toggle track** — Changed background from `#1a1a1a` to `#e8e8e0` with `#777` button text for proper light mode appearance.
+- **Removed `.pricing-price-footnote`** — Deleted CSS block and HTML element per redesign requirements.
+- **Removed `.pricing-unlimited` orange color** — Inherits from `.pricing-fval` instead.
+
+### Added
+- **Supporter key input filtering** — Strips all characters except `A-Z`, `a-z`, `0-9`, `-`, `_`; max 64 chars.
+- **Email input validation** — 14 rules (unicode rejection, dot checks, length limits, disposable domain blocklist). Browser hover tooltip suppressed via `setCustomValidity`.
 
 ## v0.11.24.3 — 2026-07-17
 
@@ -110,7 +125,7 @@ Custom Color Picker.
 OG Compositing + UX Polish.
 
 ### Changed
-- Branded OG image compositing via sharp (card PNG onto WS-OG-Image template, 1200×630 JPEG, ~43 KB).
+- Branded OG image compositing via sharp (card PNG onto brand/WS-OG-Image template, 1200×630 JPEG, ~43 KB).
 - VERSION_HISTORY.md consolidated into CHANGELOG.md (single source of truth). Deleted.
 - Footer: "— made for Wispr Flow" suffix removed.
 - Update toast: light purple background (`#f0d7ff`) instead of dark.

@@ -126,8 +126,10 @@
   vertical-align: middle;
   display: inline-block;
 }
-.footer-logo:hover {
-  animation: logoFlip 0.8s ease-in-out;
+@media (hover: hover) {
+  .footer-logo:hover {
+    animation: logoFlip 0.8s ease-in-out;
+  }
 }
 @keyframes logoFlip {
   0%   { transform: rotateY(0deg); }

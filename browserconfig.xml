@@ -9,7 +9,7 @@
 <browserconfig>
   <msapplication>
     <tile>
-      <square150x150logo src="assets/ws-logo-blwbg.png"/>
+      <square150x150logo src="assets/brand/ws-logo-blwbg.png"/>
       <TileColor>#ffffeb</TileColor>
     </tile>
   </msapplication>

@@ -151,10 +151,11 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `assets/i18n/` — 11 UI locales + `en.json`. **Do not regenerate deleted locales.**
 - `assets/i18n/i18n.js` — i18n loader with `data-i18n`, `getI18nSync()`
 - `assets/i18n/NATIVE-REVIEW.md` — per-locale review checklist
+- `assets/brand/` — brand assets (logos in 4 variants, favicons, OG template, YGL footer logo, ghost images, demo GIF)
 - `assets/occasions/` — 60 occasion images (.png)
 - `api/health.js` — health endpoint (Redis ping, Neon SELECT 1, API key presence checks)
 - `api/` — Vercel API routes
-- `api/lib/og-render.js` — OG image generator (composites card onto WS-OG-Image.png template)
+- `api/lib/og-render.js` — OG image generator (composites card onto brand/WS-OG-Image.png template)
 - `api/lib/occasion-email.js` — occasion email template builder (30 global occasions, Resend transactional API)
 - `api/lib/occasion-dates.json` — year-by-year date lookup for movable festival dates (2026-2030)
 - `api/cron/send-occasion-emails.js` — daily cron (8 AM UTC) that matches date to occasion and emails Pro + subscriber users
@@ -228,6 +229,4 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-18; Monitoring & reliability: created api/health.js, installed @sentry/vercel-edge + @sentry/node, created lib/sentry.js + lib/sentry-node.js, wired Sentry into 7 critical API files (stt, upload, rewrite, limits, webhook-bmac, cleanup, send-occasion-emails), added service dependency table to docs-internal/API.md, wired Better Stack heartbeats into cleanup.js + send-occasion-emails.js, created docs-internal/monitoring-reliability-architecture.md, set up 4 Better Stack monitors + 2 heartbeats + status page at wibestories.betteruptime.com. Added monitoring analogy to architecture doc. BMAC webhook fix: GET/HEAD/OPTIONS returns 200 (line 162) for URL validation during creation, header X-Bmc-Signature → x-signature-sha256 (line 202), BMAC_WEBHOOK_SECRET optional during bootstrapping (line 196-200). Neon fix: sql('SELECT 1') → sql`SELECT 1` in health.js for @neondatabase/serverless v1.x API. BMAC webhook created and operational. -->
-
-
+<!-- agsync: last-run 2026-07-19; Theme-aware footer logo: replaced static YGL-LOGO-FOOTER.png with dynamic src swap (YGL-L-B.png light / YGL-L-W.png dark) via MutationObserver in footer-menu.js; wrapped hover animation in @media (hover: hover) for touch devices. Updated shared card landing page (api/c/[id].js) footer to show &copy; YGLabs + YGL-L-W.png (always-dark page). -->
