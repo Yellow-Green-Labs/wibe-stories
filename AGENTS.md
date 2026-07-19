@@ -229,4 +229,4 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-19; v0.11.25.0 — Added Contact modal via Tally.so iframe embed (CSP frame-src update, grid menu link, custom overlay modal with iframe + close/Escape/backdrop handlers). Restructured USEFUL_SERVICES.md into 5 sections. Updated version across all files. -->
+<!-- agsync: last-run 2026-07-20; v0.11.26.0 — Replaced all contact links with direct Tally.so URL, removed Tally widget/openContactForm/CSP, renamed BMC Support→Buy us a coffee, added Contact hm links, updated docs legal pages, added Zoho Mail Lite to USEFUL_SERVICES. -->

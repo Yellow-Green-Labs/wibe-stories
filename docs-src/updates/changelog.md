@@ -5,9 +5,26 @@ outline: [2, 2]
 
 # Changelog
 
-*Last updated: Jul 19, 2026*
+*Last updated: Jul 20, 2026*
 
 > **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 73
+
+## v0.11.26.0 — 2026-07-20
+
+Direct Tally.so contact form links, CSP cleanup, BMC Support rename.
+
+### Added
+- **Contact hamburger link** — Added "Contact" link to hamburger-items across about.html, features.html, language-stats.html. Moved hmContact from hamburger-footer-items to hamburger-items in wisprstories.html.
+- **Zoho Mail Lite** — Added to USEFUL_SERVICES.md Pending table.
+
+### Changed
+- **All contact/support/feedback links** — Replaced every `mailto:yellowgreenlabs@proton.me` across the 4 app pages, footer menu, and docs legal pages with direct Tally.so URL (`https://tally.so/r/obaD1M`). All links open in new tab (`target="_blank"`).
+- **BMC "Support" → "Buy us a coffee ☕"** — Renamed in about.html, features.html, language-stats.html hamburger menus for clarity.
+
+### Removed
+- **Tally widget script** — Removed `tally.so/widgets/embed.js` from wisprstories.html `<head>`.
+- **`openContactForm()` function** — Removed function and all JS event handlers for navContact/hmContact (now plain `<a>` tags).
+- **Tally.so from CSP** — Removed `https://tally.so` from `script-src`, `https://*.tally.so` from `connect-src`, and `frame-src https://tally.so` from vercel.json.
 
 ## v0.11.25.0 — 2026-07-19
 

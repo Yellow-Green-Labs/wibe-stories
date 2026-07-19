@@ -12,7 +12,7 @@ All purchases are **final and non-refundable**. Because Buy Me a Coffee is a tip
 
 ### Technical Support
 
-If your Pro key does not activate after purchase, email [yellowgreenlabs@proton.me](mailto:yellowgreenlabs@proton.me?subject=Pro%20Key%20Issue) with the email address you used on Buy Me a Coffee. We will help resolve the issue. This is technical support, not a refund. No money will be returned.
+If your Pro key does not activate after purchase, visit our [contact form](https://tally.so/r/obaD1M) with the email address you used on Buy Me a Coffee. We will help resolve the issue. This is technical support, not a refund. No money will be returned.
 
 ### What You Are Purchasing
 
@@ -36,4 +36,4 @@ If Wibe Stories is discontinued or the Pro tier is substantially changed, your P
 
 ### Contact
 
-For questions about this policy, email [yellowgreenlabs@proton.me](mailto:yellowgreenlabs@proton.me?subject=Refund%20Question).
+For questions about this policy, visit our [contact form](https://tally.so/r/obaD1M).

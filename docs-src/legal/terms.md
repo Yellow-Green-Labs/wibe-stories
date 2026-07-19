@@ -26,4 +26,4 @@ The Service is provided "as is" and "as available" without warranty of any kind,
 
 ### Contact
 
-For questions about these terms, email [yellowgreenlabs@proton.me](mailto:yellowgreenlabs@proton.me?subject=Legal%20Question).
+For questions about these terms, visit our [contact form](https://tally.so/r/obaD1M).

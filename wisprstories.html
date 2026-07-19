@@ -114,7 +114,6 @@
         });
       }
     </script>
-    <script async src="https://tally.so/widgets/embed.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Tone fonts (Latin + catch-all) -->
@@ -245,7 +244,7 @@
           <a href="#" class="fmenu-link" id="navPricing"><i class="fa-solid fa-dollar-sign" aria-hidden="true"></i><span data-i18n="footer.pricing">Unlock Pro</span></a>
           <a href="/about" class="fmenu-link"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span data-i18n="footer.about">About</span></a>
           <a href="/language-stats" class="fmenu-link"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i><span data-i18n="footer.langStats">Lang Stats</span></a>
-          <a href="#" class="fmenu-link" id="navContact"><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>Contact</span></a>
+          <a href="https://tally.so/r/obaD1M" class="fmenu-link" target="_blank" rel="noopener" id="navContact"><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>Contact</span></a>
           <a href="#" class="fmenu-link" id="navVault"><i class="fa-solid fa-vault" aria-hidden="true"></i><span id="navVaultLabel">Wibe Vault</span></a>
           <a href="#" class="fmenu-link" id="navKeyStatus"><i class="fa-solid fa-key" aria-hidden="true"></i><span id="navKeyStatusLabel">My Wibe Pass</span></a>
         </div>
@@ -1126,12 +1125,12 @@
         <a href="/language-stats" class="hamburger-link"><i class="fa-solid fa-chart-simple"></i> <span data-i18n="footer.langStats">Lang Stats</span></a>
         <a href="#" class="hamburger-link" id="hmVault"><i class="fa-solid fa-vault"></i> <span id="hmVaultLabel">Wibe Vault</span></a>
         <a href="#" class="hamburger-link" id="hmKeyStatus"><i class="fa-solid fa-key"></i> <span id="hmKeyStatusLabel">My Wibe Pass</span></a>
+        <a href="https://tally.so/r/obaD1M" class="hamburger-link hamburger-link-secondary" target="_blank" rel="noopener" id="hmContact"><i class="fa-solid fa-envelope"></i> <span>Contact</span></a>
       </div>
       <div class="hamburger-footer-items">
         <div class="hamburger-divider"></div>
         <a href="https://medium.com/" class="hamburger-link hamburger-link-secondary" target="_blank" rel="noopener"><i class="fa-brands fa-medium"></i> <span data-i18n="footer.articles">Read Articles</span></a>
-        <a href="mailto:yellowgreenlabs@proton.me?subject=Wibe%20Stories%20Feedback" class="hamburger-link hamburger-link-secondary"><i class="fa-solid fa-pen-clip"></i> <span data-i18n="footer.issues">Submit Issues</span></a>
-        <a href="#" class="hamburger-link hamburger-link-secondary" id="hmContact"><i class="fa-solid fa-envelope"></i> <span>Contact</span></a>
+        <a href="https://tally.so/r/obaD1M" class="hamburger-link hamburger-link-secondary" target="_blank" rel="noopener"><i class="fa-solid fa-pen-clip"></i> <span data-i18n="footer.issues">Submit Issues</span></a>
         <a href="#" class="hamburger-link hamburger-link-secondary" id="hmHelp"><i class="fa-solid fa-circle-question"></i> <span data-i18n="footer.help">How to Use</span></a>
         <a href="/docs/legal/license" class="hamburger-link hamburger-link-secondary"><i class="fa-solid fa-file-lines"></i> <span data-i18n="footer.legal">Legal</span></a>
         <div class="hamburger-version" id="hamburgerVersion"></div>
@@ -1225,18 +1224,6 @@
         }
       });
 
-      document.getElementById('hmContact')?.addEventListener('click', function(e) {
-        e.preventDefault(); closeMenu();
-        if (typeof Tally !== 'undefined' && Tally.openPopup) {
-          Tally.openPopup('obaD1M', {
-            width: 600,
-            overlay: true,
-            emoji: { text: '\u{1F44B}', animation: 'wave' },
-            formEventsForwarding: true
-          });
-        }
-      });
-
       fetch('version.json?v=' + Date.now(), { cache: 'no-store' })
         .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
         .then(function(d) {
@@ -1310,18 +1297,7 @@
         if (typeof window.openKeyStatusModal === 'function') window.openKeyStatusModal();
       });
 
-      // ── Contact ──
-      document.getElementById('navContact')?.addEventListener('click', function(e) {
-        e.preventDefault(); closeDropdown();
-        if (typeof Tally !== 'undefined' && Tally.openPopup) {
-          Tally.openPopup('obaD1M', {
-            width: 600,
-            overlay: true,
-            emoji: { text: '\u{1F44B}', animation: 'wave' },
-            formEventsForwarding: true
-          });
-        }
-      });
+      
     })();
 
     </script>

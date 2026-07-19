@@ -42,4 +42,4 @@ We may access vault content only to investigate reported abuse, comply with lega
 
 ### Contact
 
-For questions about this policy, email [yellowgreenlabs@proton.me](mailto:yellowgreenlabs@proton.me?subject=Privacy%20Question).
+For questions about this policy, visit our [contact form](https://tally.so/r/obaD1M).

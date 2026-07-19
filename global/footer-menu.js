@@ -155,7 +155,7 @@
       <a href="https://medium.com/" class="fmenu-link" rel="noopener noreferrer" target="_blank">
         <i class="fa-brands fa-medium" aria-hidden="true"></i><span data-i18n="footer.articles">Read Articles</span>
       </a>
-      <a href="mailto:yellowgreenlabs@proton.me?subject=Wibe%20Stories%20Feedback" class="fmenu-link">
+      <a href="https://tally.so/r/obaD1M" class="fmenu-link" target="_blank" rel="noopener noreferrer">
         <i class="fa-solid fa-pen-clip" aria-hidden="true"></i><span data-i18n="footer.issues">Submit Issues</span>
       </a>
       <a href="#" class="fmenu-link" id="fmenu-help">
