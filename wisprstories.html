@@ -972,6 +972,21 @@
       </div>
     </div>
 
+    <!-- CONTACT MODAL -->
+    <div class="contact-modal" id="contactModal">
+      <div class="contact-modal-backdrop" id="contactBackdrop"></div>
+      <div class="contact-modal-content">
+        <button class="contact-modal-close" id="contactClose">&times;</button>
+        <iframe
+          class="contact-modal-frame"
+          id="contactFrame"
+          src=""
+          frameborder="0"
+          title="Contact Wibe Stories"
+        ></iframe>
+      </div>
+    </div>
+
     <!-- ONBOARDING BANNER -->
     <div class="onboarding-overlay" id="onboardingOverlay">
       <div class="onboarding-banner" id="onboardingBanner">
@@ -1294,25 +1309,35 @@
         if (typeof window.openKeyStatusModal === 'function') window.openKeyStatusModal();
       });
 
-      // ── Tally.so Contact popup ──
-      var TALLY_FORM_URL = 'https://tally.so/r/obaD1M';
-      function loadTallyWidget(callback) {
-        if (typeof Tally !== 'undefined') { callback(); return; }
-        var s = document.createElement('script');
-        s.src = 'https://tally.so/widgets/embed.js';
-        s.onload = callback;
-        s.onerror = callback;
-        document.body.appendChild(s);
-      }
+      // ── Contact modal ──
+      var contactModal = document.getElementById('contactModal');
+      var contactFrame = document.getElementById('contactFrame');
       document.getElementById('navContact')?.addEventListener('click', function(e) {
         e.preventDefault(); closeDropdown();
-        loadTallyWidget(function() {
-          if (typeof Tally !== 'undefined' && Tally.openPopup) {
-            Tally.openPopup(TALLY_FORM_URL);
+        if (contactModal && contactFrame) {
+          if (contactModal.classList.contains('open')) {
+            contactModal.classList.remove('open');
+            document.body.style.overflow = '';
           } else {
-            window.open(TALLY_FORM_URL, '_blank');
+            contactFrame.src = 'https://tally.so/r/obaD1M?formEventsForwarding=1';
+            contactModal.classList.add('open');
+            document.body.style.overflow = 'hidden';
           }
-        });
+        }
+      });
+      function closeContactModal() {
+        if (contactModal) {
+          contactModal.classList.remove('open');
+          document.body.style.overflow = '';
+          if (contactFrame) contactFrame.src = '';
+        }
+      }
+      document.getElementById('contactClose')?.addEventListener('click', closeContactModal);
+      document.getElementById('contactBackdrop')?.addEventListener('click', closeContactModal);
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && contactModal && contactModal.classList.contains('open')) {
+          closeContactModal();
+        }
       });
     })();
 

@@ -14,8 +14,8 @@ outline: [2, 2]
 Contact form via Tally.so popup, CSP update, docs cleanup.
 
 ### Added
-- **Contact popup** — New "Contact" link in the grid menu (top navbar) opens a Tally.so modal with fields: Name, Email, Request Type (7 options), Message, Screenshot. Form submissions go directly to email + Tally dashboard. No backend needed.
-- **CSP update** — `https://tally.so` added to `script-src`, `connect-src`, and `frame-src` in vercel.json to support the Tally widget.
+- **Contact modal via Tally.so iframe embed** — New "Contact" link in the grid menu (top navbar) opens a custom overlay modal with an iframe loading the Tally.so form. Fields: Name, Email, Request Type (7 options), Message, Screenshot. Modal closes via × button, backdrop click, or Escape key. `src` is cleared on close to prevent stale form state. Form submissions go directly to email + Tally dashboard. No backend needed.
+- **CSP update** — `frame-src https://tally.so` added to vercel.json to allow the iframe embed.
 
 ### Changed
 - **USEFUL_SERVICES.md restructured** — Split into 5 sections: Pending, Discussion Needed, Already Implemented, Discussed & Discarded, Never Using. Removed Free Tier column from Pending table. Removed External Libraries subsection. Consolidated unused npm deps into one row.
