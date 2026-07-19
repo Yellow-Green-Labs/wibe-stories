@@ -229,4 +229,4 @@ If any of the `frontlogs/` files above are missing, tell the user to type `/chec
 - `api/c/[id].js` fetches metadata to personalize landing page. Old cards fall back gracefully.
 - `meta/` cleaned up by `api/cleanup.js` (7 days for free, 14 days for Pro).
 
-<!-- agsync: last-run 2026-07-19; Added Contact popup via Tally.so — CSP updated in vercel.json (script-src, connect-src, frame-src), Contact link added to grid menu navDropdown in wisprstories.html, Tally widget loader + Tally.openPopup() handler with new-tab fallback in wisprstories.html JS section. -->
+<!-- agsync: last-run 2026-07-19; v0.11.25.0 — Added Contact popup via Tally.so (CSP update, grid menu link, widget loader + Tally.openPopup handler with new-tab fallback). Restructured USEFUL_SERVICES.md into 5 sections. Updated version across all files. -->

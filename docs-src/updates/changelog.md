@@ -9,6 +9,17 @@ outline: [2, 2]
 
 > **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 73
 
+## v0.11.25.0 — 2026-07-19
+
+Contact form via Tally.so popup, CSP update, docs cleanup.
+
+### Added
+- **Contact popup** — New "Contact" link in the grid menu (top navbar) opens a Tally.so modal with fields: Name, Email, Request Type (7 options), Message, Screenshot. Form submissions go directly to email + Tally dashboard. No backend needed.
+- **CSP update** — `https://tally.so` added to `script-src`, `connect-src`, and `frame-src` in vercel.json to support the Tally widget.
+
+### Changed
+- **USEFUL_SERVICES.md restructured** — Split into 5 sections: Pending, Discussion Needed, Already Implemented, Discussed & Discarded, Never Using. Removed Free Tier column from Pending table. Removed External Libraries subsection. Consolidated unused npm deps into one row.
+
 ## v0.11.24.4 — 2026-07-19
 
 Pricing modal fixes: gift banner colors, slider alignment, input validation.
