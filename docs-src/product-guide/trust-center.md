@@ -4,13 +4,15 @@ title: Trust Center
 
 # Trust Center
 
-*Last updated: Jul 17, 2026*
+*Last updated: Aug 1, 2026*
 
 > The services we rely on to run Wibe Stories, what they do, and how your data is handled.
 
 ## Hosting and Infrastructure
 
 [![Vercel](https://cdn.simpleicons.org/vercel)](https://vercel.com) **Vercel** — App hosting, serverless functions, edge network, and blob storage for card images and voice files.
+
+[![Cloudflare](https://cdn.simpleicons.org/cloudflare)](https://cloudflare.com) **Cloudflare R2** — Global CDN delivery of the welcome landing demo videos.
 
 [![Upstash](https://cdn.simpleicons.org/upstash)](https://upstash.com) **Upstash** — Redis data store for daily usage limits, rate limiting, session state, and email subscriptions.
 

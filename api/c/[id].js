@@ -61,10 +61,21 @@ export default async function handler(req, res) {
     // Old cards without sidecar — fall through with defaults
   }
 
-  // Check if voice audio exists for this card
+  // Check if voice audio exists for this card. Apple browsers can't decode
+  // the WebM container, so they get the .m4a variant produced by api/voice.js
+  // (with a fallback to the original WebM when the variant is missing).
+  const ua = (req.headers['user-agent'] || '').toLowerCase();
+  const isAppleClient = /iphone|ipad|ipod|mac/.test(ua) && !/windows/i.test(ua);
   let hasVoice = false;
+  let voiceUrl = `https://${BLOB_HOST}/voice/${id}`;
+  if (isAppleClient) {
+    try {
+      const m4aRes = await fetch(`https://${BLOB_HOST}/voice/${id}.m4a`, { method: 'HEAD' });
+      if (m4aRes.ok) voiceUrl = `https://${BLOB_HOST}/voice/${id}.m4a`;
+    } catch (e) { /* fall back to webm */ }
+  }
   try {
-    const voiceRes = await fetch(`https://${BLOB_HOST}/voice/${id}`, { method: 'HEAD' });
+    const voiceRes = await fetch(voiceUrl, { method: 'HEAD' });
     hasVoice = voiceRes.ok;
   } catch (e) { /* no voice */ }
 
@@ -99,7 +110,6 @@ export default async function handler(req, res) {
   const safeHomeUrl = escapeHtml(homeUrl);
   const safeAppUrl = escapeHtml(appUrl);
   const safeName = escapeHtml(metaName);
-  const voiceUrl = `https://${BLOB_HOST}/voice/${id}`;
   const safeVoiceUrl = escapeHtml(voiceUrl);
 
   const altText = safeName

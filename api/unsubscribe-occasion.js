@@ -15,7 +15,7 @@ export default async function handler(req) {
 
   let email;
   try {
-    email = atob(enc);
+    email = base64ToUtf8(enc);
   } catch {
     return new Response(html('Invalid unsubscribe token.'), {
       status: 400,
@@ -33,7 +33,10 @@ export default async function handler(req) {
 
   try {
     const redis = getRedis();
-    await redis.srem(KEYS.emailSubscribersSet, email);
+    await Promise.all([
+      redis.srem(KEYS.proEmailsSet, email),
+      redis.srem(KEYS.emailSubscribersSet, email),
+    ]);
   } catch (err) {
     console.error('[UnsubscribeOccasion] Redis error:', err.message);
     return new Response(html('Something went wrong. Please try again.'), {
@@ -46,6 +49,13 @@ export default async function handler(req) {
     status: 200,
     headers: { 'Content-Type': 'text/html;charset=utf-8' },
   });
+}
+
+function base64ToUtf8(str) {
+  const binary = atob(str);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
 }
 
 function html(error, success) {

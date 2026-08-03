@@ -109,7 +109,7 @@ export function buildSubject(occasion) {
 }
 
 export function buildHtmlBody(occasion, email) {
-  const enc = email ? btoa(email) : '';
+  const enc = email ? Buffer.from(email).toString('base64') : '';
   return `<!DOCTYPE html>
 <html>
 <head>

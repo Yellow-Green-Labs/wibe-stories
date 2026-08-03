@@ -259,6 +259,7 @@ export default async function handler(req) {
 
       if (!parsed || !parsed.revoked) {
         // Active key — just resend it
+        await redis.sadd(KEYS.proEmailsSet, email);
         const sent = await sendProKeyEmail(RESEND_KEY, { toEmail: email, toName: supporterName, proKey: existingKey });
         if (!sent) {
           console.error('[BMAC] Email resend failed for existing key');
@@ -345,6 +346,7 @@ export default async function handler(req) {
         KEYS.upgradeKey(existingKey),
         JSON.stringify({ ...parsed, revoked: true, revokedAt: new Date().toISOString() })
       );
+      await redis.srem(KEYS.proEmailsSet, email);
       console.log('[BMAC] Monthly membership cancelled — access revoked immediately');
     }
 
@@ -402,6 +404,7 @@ export default async function handler(req) {
         JSON.stringify({ ...parsed, revoked: true, revokedAt: new Date().toISOString() })
       );
     }
+    await redis.srem(KEYS.proEmailsSet, email);
 
     console.log('[BMAC] Pro key revoked due to refund');
     return new Response('OK', { status: 200 });

@@ -6,6 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
+    <meta name="p:domain_verify" content="bd0cf27680542a6e39fb8d8bcf12371a"/>
     <title>
       Wibe Stories &mdash; Voice-to-card app in 44 languages
     </title>
@@ -30,6 +31,10 @@
     <meta
       name="google-site-verification"
       content="Cxrj2sG3e_A59R4z25QSBUsuFVzVevyHBymTvs8O-y8"
+    />
+    <meta
+      name="ahrefs-site-verification"
+      content="d1e0cd8d79430f6c01f1971f3af0f2d28d2bdfb91d45e3875994df6d63b0ddd4"
     />
     <link rel="canonical" href="https://wibestories.vercel.app/" />
     <link rel="alternate" hreflang="x-default" href="https://wibestories.vercel.app/" />
@@ -91,6 +96,13 @@
           tt.innerHTML = '<i class="fa-solid fa-sun"></i>';
         }
       });
+      /* Welcome landing page: returning visitors (flag set) skip the landing
+         entirely. This class flip happens before first paint, so returners
+         see the app directly and first-timers see the landing as the very
+         first frame, with the app locked behind it as a blurred backdrop. */
+      if (localStorage.getItem("wsOnboardingSeen")) {
+        document.documentElement.classList.add("ws-app-return");
+      }
       /* First-paint policy: render English defaults immediately rather than
          hiding the document until i18n loads. Non-English users may see a
          very brief flash of English on slow connections before the strings
@@ -147,6 +159,7 @@
     <link rel="stylesheet" href="assets/fontawesome/css/brands.min.css" />
     <link rel="stylesheet" href="global/styles/main.css" />
     <link rel="stylesheet" href="global/styles/vault.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@v0.25.0/dist/coloris.min.css">
     <link rel="stylesheet" href="global/occasions/occasions.css" />
     <link rel="stylesheet" href="assets/flag-icons/css/flag-icons.min.css" />
     <link rel="stylesheet" href="assets/languages/languages.css" />
@@ -195,8 +208,10 @@
         dsn: "https://2f532076fe099af23434206521f33835@o4511740959391744.ingest.us.sentry.io/4511743715377152"
       });
     </script>
+    <script src="https://analytics.ahrefs.com/analytics.js" data-key="EFnnezz1QG1QnVT5w57f2A" async></script>
   </head>
   <body id="top">
+    <div id="appRoot">
     <nav class="nav">
       <a href="#top" class="nav-brand">
         <img
@@ -974,60 +989,6 @@
 
     </div>
 
-    <!-- ONBOARDING BANNER -->
-    <div class="onboarding-overlay" id="onboardingOverlay">
-      <div class="onboarding-banner" id="onboardingBanner">
-        <button
-          class="onboarding-close"
-          id="onboardingClose"
-          aria-label="Dismiss"
-        >
-          &#10005;
-        </button>
-        <div class="onboarding-header">
-          <div class="onboarding-icon">&#127908;</div>
-          <h2 class="onboarding-title" data-i18n="onboarding.title">
-            Welcome to Wibe Stories
-          </h2>
-        </div>
-        <div class="onboarding-steps">
-          <div class="onboarding-step">
-            <span class="onboarding-step-icon" aria-hidden="true">&#127908;</span>
-            <div class="onboarding-step-text" data-i18n="onboarding.step1">
-              <strong>Speak or type</strong> your message. Tap the microphone or
-              paste text.
-            </div>
-          </div>
-          <div class="onboarding-step">
-            <span class="onboarding-step-icon" aria-hidden="true">&#127912;</span>
-            <div class="onboarding-step-text" data-i18n="onboarding.step2">
-              <strong>Customize</strong> your card: choose a tone, color, and
-              corner style.
-            </div>
-          </div>
-          <div class="onboarding-step">
-            <span class="onboarding-step-icon" aria-hidden="true">&#128640;</span>
-            <div class="onboarding-step-text" data-i18n="onboarding.step3">
-              <strong>Create &amp; share</strong>: download as PNG or share
-              directly on social platforms.
-            </div>
-          </div>
-        </div>
-        <div class="onboarding-footer">
-          <button
-            class="onboarding-btn onboarding-btn-primary"
-            id="onboardingGotIt"
-            data-i18n="onboarding.gotIt"
-          >
-            Got it, let's go!
-          </button>
-          <p class="onboarding-hint" data-i18n="onboarding.hint">
-            Need help later? Open <em>How to Use</em> in the footer menu.
-          </p>
-        </div>
-      </div>
-    </div>
-
     <div class="toast" id="toast"></div>
     <div class="export-progress" id="exportProgress">
       <div class="export-progress-bar"></div>
@@ -1095,8 +1056,95 @@
         </div>
       </div>
     </div>
+    </div><!-- /#appRoot -->
 
-    <script src="https://unpkg.com/@jaames/iro@5"></script>
+    <!-- WELCOME LANDING PAGE — first-visit page: renders as the very first
+         frame (English-only static markup, no i18n hooks). The app sits behind
+         it as a locked, blurred backdrop (#appRoot). No reopen path — shows
+         once until "Got it" is pressed, then never again. -->
+    <div class="onboarding-overlay" id="onboardingOverlay">
+      <div class="onboarding-banner" id="onboardingBanner">
+        <!-- LP NAV -->
+        <nav class="lp-nav">
+          <a href="#top" class="lp-nav-brand">
+            <img
+              src="assets/brand/ws-logo-TR-whfr.png"
+              alt="Wibe Stories"
+              class="lp-nav-logo"
+            /><span class="lp-nav-brand-text">Wibe Stories</span>
+          </a>
+          <div class="lp-nav-links">
+            <a href="/features">Features</a>
+            <a href="/about">About</a>
+            <!-- /pricing is a placeholder — the standalone pricing page
+                 ships in a future session. -->
+            <a href="/pricing">Pricing</a>
+          </div>
+          <!-- Auth placeholders: no handlers yet. Sign in = text-only button,
+               Sign up = filled pill. Wired to Pro auth in a future session. -->
+          <div class="lp-nav-auth">
+            <button type="button" class="lp-nav-signin">Sign in</button>
+            <button type="button" class="lp-nav-signup">Sign up</button>
+          </div>
+        </nav>
+
+        <!-- HERO -->
+        <div class="lp-hero">
+          <h1 class="lp-hero-title">
+            Voice messages should be seen, not just heard
+          </h1>
+          <p class="lp-hero-subtitle">
+            Turn what you say into a beautiful, shareable card — no account, no
+            install, no effort.
+          </p>
+        </div>
+
+        <!-- BENEFIT BADGES -->
+        <div class="lp-benefits">
+          <span class="lp-benefit"
+            >No account</span
+          >
+          <span class="lp-benefit"
+            >44 languages</span
+          >
+          <span class="lp-benefit"
+            >Share anywhere</span
+          >
+          <span class="lp-benefit">Free</span>
+        </div>
+
+        <!-- CTA -->
+        <div class="lp-cta">
+          <button class="lp-cta-btn" id="onboardingGotIt">
+            Got it, let's go!
+          </button>
+          <p class="lp-cta-subtext">
+            No account, no credit card needed. Start in seconds.
+          </p>
+        </div>
+
+        <!-- DEMO VIDEO — TEMP: local files for dev preview only (not git-tracked,
+             won't deploy). Replace srcs with Cloudflare R2 CDN URLs once the
+             bucket upload is done. Desktop (>=721px): wheel-showcase 1440p. Mobile
+             (<=720px): mob-sc 1080x1350. Click toggles shot 1 <-> 2; resize swaps
+             the pair instantly — the src is JS-managed (see wisprstories.js). -->
+        <div class="lp-video-wrap">
+          <video
+            class="lp-video"
+            id="lpVideo"
+            muted
+            loop
+            playsinline
+            preload="metadata"
+          ></video>
+          <div class="lp-hint-pill" aria-hidden="true">Tap to switch view</div>
+        </div>
+
+        <footer class="lp-footer">Wibe Stories © 2026 YGLabs</footer>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@v0.25.0/dist/coloris.min.js"></script>
     <script src="global/capacity-check.js"></script>
     <script src="assets/i18n/i18n.js"></script>
     <script src="assets/languages/languages-loader.js"></script>
@@ -1131,7 +1179,6 @@
         <div class="hamburger-divider"></div>
         <a href="https://medium.com/" class="hamburger-link hamburger-link-secondary" target="_blank" rel="noopener"><i class="fa-brands fa-medium"></i> <span data-i18n="footer.articles">Read Articles</span></a>
         <a href="https://tally.so/r/obaD1M" class="hamburger-link hamburger-link-secondary" target="_blank" rel="noopener"><i class="fa-solid fa-pen-clip"></i> <span data-i18n="footer.issues">Submit Issues</span></a>
-        <a href="#" class="hamburger-link hamburger-link-secondary" id="hmHelp"><i class="fa-solid fa-circle-question"></i> <span data-i18n="footer.help">How to Use</span></a>
         <a href="/docs/legal/license" class="hamburger-link hamburger-link-secondary"><i class="fa-solid fa-file-lines"></i> <span data-i18n="footer.legal">Legal</span></a>
         <div class="hamburger-version" id="hamburgerVersion"></div>
       </div>
@@ -1205,11 +1252,6 @@
       document.getElementById('hmKeyStatus')?.addEventListener('click', function(e) {
         e.preventDefault(); closeMenu();
         if (typeof window.openKeyStatusModal === 'function') window.openKeyStatusModal();
-      });
-
-      document.getElementById('hmHelp')?.addEventListener('click', function(e) {
-        e.preventDefault(); closeMenu();
-        if (typeof window.showOnboarding === 'function') window.showOnboarding();
       });
 
       document.getElementById('hmOccasionSub')?.addEventListener('click', function(e) {

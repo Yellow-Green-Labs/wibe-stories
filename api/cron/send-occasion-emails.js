@@ -27,8 +27,6 @@ export default async function handler(req) {
   const occasion = getOccasionForDate(today);
 
   if (!occasion) {
-    fetch('https://uptime.betterstack.com/api/v1/heartbeat/w3uksqCqLVNogZhx78Z8yvrh')
-      .catch(function() { /* non-critical */ });
     return new Response(JSON.stringify({ ok: true, occasion: null, message: 'no occasion today' }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
@@ -44,9 +42,9 @@ export default async function handler(req) {
   ]);
   const allEmails = [...new Set([...proEmails, ...subEmails])];
 
+  console.log(`[OccasionCron] Recipients: ${allEmails.length} total (${proEmails.length} Pro, ${subEmails.length} subscriber)`);
+
   if (!allEmails || allEmails.length === 0) {
-    fetch('https://uptime.betterstack.com/api/v1/heartbeat/w3uksqCqLVNogZhx78Z8yvrh')
-      .catch(function() { /* non-critical */ });
     return new Response(JSON.stringify({ ok: true, occasion: occasion.id, sent: 0, skipped: 0 }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },

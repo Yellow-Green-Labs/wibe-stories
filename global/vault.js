@@ -1,18 +1,6 @@
 (function () {
   if (document.getElementById("vault-overlay")) return;
 
-  /* ── SAMPLE CARDS for Phase 1 testing ── */
-  var SAMPLE_CARDS = [
-    { id: "s1", shortId: "demo-a1", name: "Happy Birthday to Mom", text: "Happy Birthday Mom! Love you!", authorName: "Sarah", tone: "warm", occasion: "birthday", hasAudio: false, audioUrl: "", createdAt: "2026-07-10T10:30:00Z", theme: "birthday" },
-    { id: "s2", shortId: "demo-b2", name: "Diwali Wishes", text: "Wishing you a festival of lights filled with joy!", authorName: "Raj", tone: "poetic", occasion: "diwali", hasAudio: true, audioUrl: "", createdAt: "2026-07-08T14:00:00Z", theme: "diwali" },
-    { id: "s3", shortId: "demo-c3", name: "Happy Anniversary", text: "To many more years of love and happiness.", authorName: "Priya", tone: "warm", occasion: "anniversary", hasAudio: false, audioUrl: "", createdAt: "2026-07-05T09:00:00Z", theme: "anniversary" },
-    { id: "s4", shortId: "demo-d4", name: "Get Well Soon", text: "Sending you warm wishes for a speedy recovery!", authorName: "Mike", tone: "warm", occasion: "get-well", hasAudio: true, audioUrl: "", createdAt: "2026-07-03T16:45:00Z", theme: "get-well" },
-    { id: "s5", shortId: "demo-e5", name: "Just Thinking of You", text: "Hey, just wanted to say I miss you. Hope you're doing great!", authorName: "Emma", tone: "honest", occasion: "", hasAudio: false, audioUrl: "", createdAt: "2026-06-28T20:15:00Z", theme: "just-because" },
-    { id: "s6", shortId: "demo-f6", name: "Congratulations!", text: "You did it! So proud of everything you've achieved.", authorName: "Alex", tone: "bold", occasion: "congratulations", hasAudio: true, audioUrl: "", createdAt: "2026-06-20T11:00:00Z", theme: "congratulations" },
-    { id: "s7", shortId: "demo-g7", name: "Happy Eid", text: "Eid Mubarak! Wishing you peace and blessings.", authorName: "Fatima", tone: "warm", occasion: "eid", hasAudio: false, audioUrl: "", createdAt: "2026-06-15T08:30:00Z", theme: "eid" },
-    { id: "s8", shortId: "demo-h8", name: "Thank You", text: "Thank you for everything you do. You're the best!", authorName: "David", tone: "reflective", occasion: "thank-you", hasAudio: false, audioUrl: "", createdAt: "2026-06-10T13:00:00Z", theme: "thank-you" }
-  ];
-
   var cards = [];
   var selectedIds = {};
   var selectMode = false;
@@ -40,8 +28,12 @@
               _vaultIsLocal = false;
               return;
             }
+          } else {
+            if (typeof window.showToast === "function") window.showToast("Couldn't load cards from server");
           }
-        } catch (e) {}
+        } catch (e) {
+          if (typeof window.showToast === "function") window.showToast("Couldn't load cards from server");
+        }
         var stored = [];
         try { stored = JSON.parse(localStorage.getItem("wsVaultCards") || "[]"); } catch (e2) {}
         if (stored.length > 0) {
@@ -60,7 +52,9 @@
                 return;
               }
             }
-          } catch (e2) {}
+          } catch (e2) {
+            if (typeof window.showToast === "function") window.showToast("Couldn't sync your cards");
+          }
           cards = stored;
           _vaultIsLocal = false;
           return;
@@ -73,7 +67,7 @@
       cards = stored;
       _vaultIsLocal = true;
     } else {
-      cards = SAMPLE_CARDS.slice();
+      cards = [];
       _vaultIsLocal = false;
     }
   }
@@ -175,6 +169,7 @@
           '<div class="vault-card-view-info">' +
             '<div class="vault-card-view-name" id="vault-cv-name"></div>' +
             '<div class="vault-card-view-detail" id="vault-cv-detail"></div>' +
+            '<button class="vault-cv-play" id="vault-cv-play" title="Play recording" data-label="Play" style="display:none"><i class="fa-solid fa-volume-xmark"></i> Play</button>' +
           '</div>' +
         '</div>' +
       '</div>';
@@ -231,7 +226,6 @@
       btn.addEventListener("blur", undoWave);
     })();
     document.getElementById("vault-del-btn").addEventListener("click", showDeleteConfirm);
-    document.getElementById("vault-dl-btn").addEventListener("click", downloadSelected);
     document.getElementById("vault-select-all-header").addEventListener("click", selectAllCards);
     document.getElementById("vault-confirm-cancel").addEventListener("click", hideDeleteConfirm);
     document.getElementById("vault-confirm-ok").addEventListener("click", confirmDelete);
@@ -242,6 +236,18 @@
     document.getElementById("vault-cv-share").addEventListener("click", shareCardView);
     document.getElementById("vault-cv-dl").addEventListener("click", downloadCardView);
     document.getElementById("vault-cv-del").addEventListener("click", deleteCardView);
+    document.getElementById("vault-cv-play").addEventListener("click", function () {
+      if (cardViewCard) playVaultVoice(cardViewCard, this);
+    });
+    /* Tile audio badge — delegated so it survives re-renders */
+    var gridEl = document.getElementById("vault-grid");
+    gridEl.addEventListener("click", function (e) {
+      var badge = e.target.closest(".vault-tile-audio-badge");
+      if (!badge) return;
+      var id = badge.dataset.id;
+      var card = getCards().filter(function (c) { return c.id === id; })[0];
+      if (card) playVaultVoice(card, badge);
+    });
 
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") {
@@ -256,6 +262,7 @@
 
   /* ── Render ── */
   function render() {
+    stopVaultVoice();
     var grid = document.getElementById("vault-grid");
     var empty = document.getElementById("vault-empty");
     var locked = document.getElementById("vault-locked");
@@ -331,36 +338,8 @@
       });
     });
 
-    /* audio badge click handling */
-    grid.querySelectorAll(".vault-tile-audio-badge").forEach(function (badge) {
-      badge.addEventListener("click", function (e) {
-        e.stopPropagation();
-        toggleAudio(badge);
-      });
-    });
-
     updateSelectBtnLabel();
     updateActionBar();
-  }
-
-  /* ── Audio toggle ── */
-  function toggleAudio(badge) {
-    var isPlaying = badge.classList.contains("playing");
-    if (!isPlaying) {
-      var cardId = badge.dataset.id;
-      var card = cards.filter(function (c) { return c.id === cardId; })[0];
-      if (card && card.audioUrl) {
-        badge.classList.add("playing");
-        badge.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
-        badge.title = "Stop";
-      } else {
-        showToast("Audio recording not available yet");
-      }
-    } else {
-      badge.classList.remove("playing");
-      badge.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
-      badge.title = "Play recording";
-    }
   }
 
   function showToast(msg) {
@@ -477,16 +456,22 @@
     if (_pendingCardViewDeleteId) {
       var id = _pendingCardViewDeleteId;
       _pendingCardViewDeleteId = null;
+      var delOk = true;
       if (isPro()) {
         var token = getSessionToken();
         if (token) {
           try {
-            await fetch("/api/vault/delete", {
+            var delRes = await fetch("/api/vault/delete", {
               method: "POST",
               headers: { "Content-Type": "application/json", "X-Session-Token": token },
               body: JSON.stringify({ ids: [id] })
             });
-          } catch (e) {}
+            delOk = delRes.ok;
+            if (!delRes.ok && typeof window.showToast === "function") window.showToast("Couldn't remove card from server");
+          } catch (e) {
+            delOk = false;
+            if (typeof window.showToast === "function") window.showToast("Couldn't remove card from server");
+          }
         }
       }
       var delCard = cards.filter(function (c) { return c.id === id; })[0];
@@ -498,19 +483,25 @@
       if (delCard && window._lastBtnCText !== undefined && (delCard.text || "").trim() === window._lastBtnCText && (delCard.name || "").trim() === window._lastBtnCName) {
         window._lastBtnCText = undefined; window._lastBtnCName = undefined; window._lastBtnCColor = undefined; window._lastBtnCTone = undefined; window._lastBtnCRounded = undefined; window._lastBtnCFontBump = undefined; window._lastBtnCTexture = undefined; window._lastBtnCVoice = undefined;
       }
-      if (typeof window.showToast === "function") window.showToast("Card removed from vault");
+      if (delOk && typeof window.showToast === "function") window.showToast("Card removed from vault");
       return;
     }
+    var delOk2 = true;
     if (isPro()) {
       var token = getSessionToken();
       if (token) {
         try {
-          await fetch("/api/vault/delete", {
+          var delRes2 = await fetch("/api/vault/delete", {
             method: "POST",
             headers: { "Content-Type": "application/json", "X-Session-Token": token },
             body: JSON.stringify({ ids: Object.keys(selectedIds) })
           });
-        } catch (e) {}
+          delOk2 = delRes2.ok;
+          if (!delRes2.ok && typeof window.showToast === "function") window.showToast("Couldn't remove cards from server");
+        } catch (e) {
+          delOk2 = false;
+          if (typeof window.showToast === "function") window.showToast("Couldn't remove cards from server");
+        }
       }
     }
     var deletedCards = cards.filter(function (c) { return selectedIds[c.id]; });
@@ -526,13 +517,128 @@
     if (selectMode) toggleSelectMode();
     hideDeleteConfirm();
     render();
-    if (typeof window.showToast === "function") window.showToast("Card removed from vault");
+    if (delOk2 && typeof window.showToast === "function") window.showToast("Card removed from vault");
+  }
+
+  /* ── Voice playback ── */
+  var _vaultAudio = null;
+  var _vaultPlayingId = null;
+
+  function isAppleDevice() {
+    return /iPad|iPhone|iPod|Mac/.test(navigator.userAgent) && !window.MSStream;
+  }
+
+  // Deterministic Blob URL: same host as the card image, /voice/<shortId>.
+  // Apple browsers can't decode the WebM container, so they get the .m4a
+  // variant produced by api/voice.js (with a WebM fallback when it's missing).
+  function voiceUrlForCard(card) {
+    if (!card || !card.shortId) return "";
+    var host = "";
+    try { host = new URL(card.imageUrl || "").origin; } catch (e) {}
+    if (!host) return "";
+    return host + "/voice/" + card.shortId + (isAppleDevice() ? ".m4a" : "");
+  }
+
+  function setVoiceButtonState(btn, playing) {
+    if (!btn) return;
+    btn.classList.toggle("playing", playing);
+    var label = btn.dataset.label || "";
+    btn.innerHTML = playing
+      ? '<i class="fa-solid fa-volume-high"></i>' + (label ? " " + label : "")
+      : '<i class="fa-solid fa-volume-xmark"></i>' + (label ? " " + label : "");
+  }
+
+  function endVoicePlayback(card, btn) {
+    if (_vaultAudio) { try { _vaultAudio.pause(); } catch (e) {} _vaultAudio = null; }
+    if (_vaultPlayingId === card.id) _vaultPlayingId = null;
+    setVoiceButtonState(btn, false);
+  }
+
+  function stopVaultVoice() {
+    if (_vaultAudio) { try { _vaultAudio.pause(); } catch (e) {} _vaultAudio = null; }
+    _vaultPlayingId = null;
+    document.querySelectorAll("#vault-grid .vault-tile-audio-badge.playing").forEach(function (b) {
+      b.classList.remove("playing");
+      b.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+    });
+    var cvPlay = document.getElementById("vault-cv-play");
+    if (cvPlay) {
+      cvPlay.classList.remove("playing");
+      cvPlay.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> ' + (cvPlay.dataset.label || "Play");
+    }
+  }
+
+  function playVaultVoice(card, btn) {
+    if (!card || !card.hasAudio) return;
+    var primary = voiceUrlForCard(card);
+    if (!primary) { showToast("Voice no longer available"); return; }
+    if (_vaultPlayingId === card.id && _vaultAudio) {
+      endVoicePlayback(card, btn);
+      return;
+    }
+    stopVaultVoice();
+    _vaultPlayingId = card.id;
+    var urls = [primary];
+    if (isAppleDevice() && primary.indexOf(".m4a") > -1) urls.push(primary.replace(/\.m4a$/, ""));
+    function tryPlay(index) {
+      var audio = new Audio(urls[index]);
+      _vaultAudio = audio;
+      setVoiceButtonState(btn, true);
+      audio.onended = function () { endVoicePlayback(card, btn); };
+      audio.onerror = function () {
+        if (index + 1 < urls.length) {
+          tryPlay(index + 1);
+        } else {
+          endVoicePlayback(card, btn);
+          showToast("Voice no longer available");
+        }
+      };
+      audio.play().catch(function () {
+        if (index + 1 < urls.length) {
+          tryPlay(index + 1);
+        } else {
+          endVoicePlayback(card, btn);
+          showToast("Voice no longer available");
+        }
+      });
+    }
+    tryPlay(0);
   }
 
   /* ── Download ── */
-  function downloadSelected() {
-    var count = Object.keys(selectedIds).length;
-    showToast("Download will work when you save cards from the app");
+  function saveBlobDownload(blob, filename) {
+    var a = document.createElement("a");
+    a.download = filename;
+    a.href = URL.createObjectURL(blob);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 10000);
+  }
+
+  async function downloadCardView() {
+    if (!cardViewCard) return;
+    var card = cardViewCard;
+    var filename = ((card.name || "").replace(/[\\/:*?"<>|]/g, "").trim() || "wibe-story") + ".png";
+    if (card.imageUrl) {
+      try {
+        var res = await fetch(card.imageUrl);
+        if (res.ok) {
+          saveBlobDownload(await res.blob(), filename);
+          showToast("Saved ✓");
+          return;
+        }
+      } catch (e) {}
+    }
+    if (card.shortId && /^[a-zA-Z0-9]{4,12}$/.test(card.shortId)) {
+      try {
+        var res2 = await fetch("/api/download/" + card.shortId);
+        if (res2.ok) {
+          saveBlobDownload(await res2.blob(), filename);
+          showToast("Saved ✓");
+          return;
+        }
+      } catch (e) {}
+    }
+    showToast("Image no longer available");
   }
 
   /* ── Full card view ── */
@@ -550,15 +656,27 @@
     if (cardViewCard.occasion) detail += " \u00B7 " + cardViewCard.occasion.charAt(0).toUpperCase() + cardViewCard.occasion.slice(1);
     if (cardViewCard.hasAudio) detail += " \u00B7 \u{1F50A} Voice";
     document.getElementById("vault-cv-detail").textContent = detail;
+    var cvPlay = document.getElementById("vault-cv-play");
+    if (cvPlay) {
+      cvPlay.style.display = cardViewCard.hasAudio ? "" : "none";
+      cvPlay.classList.remove("playing");
+      cvPlay.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> ' + (cvPlay.dataset.label || "Play");
+    }
     document.getElementById("vault-card-view").classList.add("open");
   }
 
   function closeCardView() {
+    stopVaultVoice();
     cardViewCard = null;
     document.getElementById("vault-card-view").classList.remove("open");
   }
 
-  function shareCardView() {
+  async function shareCardView() {
+    if (cardViewCard && cardViewCard.shortId && typeof window.openVaultShareModal === "function") {
+      var opened = false;
+      try { opened = await window.openVaultShareModal(cardViewCard); } catch (e) {}
+      if (opened) return;
+    }
     if (cardViewCard && cardViewCard.shortId) {
       var url = window.location.origin + "/c/" + cardViewCard.shortId;
       if (typeof navigator.share === "function") {
@@ -572,12 +690,6 @@
       }
     } else {
       showToast("Saved cards can be shared from the main app");
-    }
-  }
-
-  function downloadCardView() {
-    if (cardViewCard) {
-      showToast("Download will work when you save cards from the app");
     }
   }
 
@@ -626,6 +738,7 @@
     selectMode = false;
     selectedIds = {};
     cardViewCard = null;
+    stopVaultVoice();
     document.getElementById("vault-card-view").classList.remove("open");
     document.getElementById("vault-confirm").classList.remove("open");
   }

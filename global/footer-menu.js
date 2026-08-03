@@ -24,11 +24,11 @@
   style.textContent = `
     .fmenu-root {
       --fmenu-bg: #2a2a2a;
-      --fmenu-border: rgba(255, 255, 235, 0.12);
-      --fmenu-text: #c0c0b0;
-      --fmenu-text-dim: #a0a090;
+      --fmenu-border: #303030;
+      --fmenu-text: #aeaeae;
+      --fmenu-text-dim: #808080;
       --fmenu-accent: #f59e0b;
-      --fmenu-toggle-color: #a0a090;
+      --fmenu-toggle-color: #808080;
       --fmenu-font-main: "Space Grotesk", sans-serif;
       --fmenu-font-mono: "Space Mono", monospace;
       --fmenu-text-tag: clamp(0.65rem, 0.8vw, 0.75rem);
@@ -158,9 +158,6 @@
       <a href="https://tally.so/r/obaD1M" class="fmenu-link" target="_blank" rel="noopener noreferrer">
         <i class="fa-solid fa-pen-clip" aria-hidden="true"></i><span data-i18n="footer.issues">Submit Issues</span>
       </a>
-      <a href="#" class="fmenu-link" id="fmenu-help">
-        <i class="fa-solid fa-circle-question" aria-hidden="true"></i><span data-i18n="footer.help">How to Use</span>
-      </a>
       <a href="/docs/" class="fmenu-link">
         <i class="fa-solid fa-book" aria-hidden="true"></i><span data-i18n="footer.docs">Documentation</span>
       </a>
@@ -196,14 +193,6 @@
       panel.classList.add("hidden");
       toggle.setAttribute("aria-expanded", "false");
     }
-  });
-
-  var helpLink = wrapper.querySelector("#fmenu-help");
-  helpLink?.addEventListener("click", (e) => {
-    e.preventDefault();
-    panel.classList.add("hidden");
-    toggle.setAttribute("aria-expanded", "false");
-    if (typeof window.showOnboarding === "function") window.showOnboarding();
   });
 
   window.addEventListener("scroll", () => {

@@ -52,22 +52,22 @@ export default async function handler(req) {
       ALTER TABLE vault_cards ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT '';
     `;
 
-    const countRows = await sql`
-      SELECT COUNT(*) AS cnt FROM vault_cards WHERE pro_key = ${key}
+    // Atomic limit enforcement: the COUNT check and INSERT happen in a single
+    // statement, so N concurrent requests can never all pass the check
+    // (previously a SELECT COUNT followed by INSERT had a TOCTOU window).
+    const rows = await sql`
+      INSERT INTO vault_cards (client_id, pro_key, short_id, name, text, author_name, tone, occasion, has_audio, audio_url, created_at, theme, image_url)
+      SELECT ${clientId || ''}, ${key}, ${shortId || ''}, ${name || 'Untitled'}, ${text || ''}, ${authorName || ''}, ${tone || 'original'}, ${occasion || ''}, ${!!hasAudio}, ${audioUrl || ''}, ${createdAt || new Date().toISOString()}, ${theme || ''}, ${imageUrl || ''}
+      WHERE (SELECT COUNT(*) FROM vault_cards WHERE pro_key = ${key}) < 50
+      RETURNING *
     `;
-    var currentCount = parseInt(countRows[0].cnt, 10);
-    if (currentCount >= 50) {
+
+    if (rows.length === 0) {
       return new Response(JSON.stringify({ error: 'vault_full', message: 'Vault limit of 50 cards reached' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
     }
-
-    const rows = await sql`
-      INSERT INTO vault_cards (client_id, pro_key, short_id, name, text, author_name, tone, occasion, has_audio, audio_url, created_at, theme, image_url)
-      VALUES (${clientId || ''}, ${key}, ${shortId || ''}, ${name || 'Untitled'}, ${text || ''}, ${authorName || ''}, ${tone || 'original'}, ${occasion || ''}, ${!!hasAudio}, ${audioUrl || ''}, ${createdAt || new Date().toISOString()}, ${theme || ''}, ${imageUrl || ''})
-      RETURNING *
-    `;
 
     var r = rows[0];
     var cardData = {

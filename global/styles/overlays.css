@@ -596,161 +596,335 @@ body.modal-open {
   color: rgba(255,255,235,0.4);
 }
 
-/* ONBOARDING BANNER */
+/* WELCOME LANDING PAGE — first-visit page. Default state = visible; it is the
+   first frame for new visitors. The app renders behind it as a locked, blurred
+   backdrop (#appRoot below). Returners skip it pre-paint via html.ws-app-return
+   (added by the head script in wisprstories.html). */
 .onboarding-overlay {
   position: fixed;
   inset: 0;
   z-index: 999999;
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-}
-.onboarding-overlay.show {
-  display: flex;
-  animation: onboarding-fade-in 0.3s ease-out;
-}
-@keyframes onboarding-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  background: #fff8eb26;
+  overscroll-behavior: none;
 }
 .onboarding-banner {
   position: relative;
-  background: var(--cream);
-  border-radius: 20px;
-  padding: 36px 32px 28px;
-  max-width: 440px;
-  width: 90vw;
-  max-height: 90vh;
+  width: 95vw;
+  height: 95vh;
+  height: 95dvh;
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  background: #1a1a1a;
   overflow-y: auto;
-  box-shadow: 0 32px 96px rgba(0, 0, 0, 0.35);
-  animation: onboarding-slide-up 0.35s ease-out;
-}
-@keyframes onboarding-slide-up {
-  from { transform: translateY(24px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-.onboarding-close {
-  position: absolute;
-  top: 14px;
-  right: 16px;
-  background: none;
-  border: none;
-  font-size: clamp(20px, 0.5vw + 18px, 22px);
-  color: var(--ink3);
-  cursor: pointer;
-  line-height: 1;
-  padding: 8px;
-  touch-action: manipulation;
-}
-.onboarding-close:hover {
-  color: var(--ink);
-}
-.onboarding-header {
-  text-align: center;
-  margin-bottom: 24px;
-}
-.onboarding-icon {
-  font-size: clamp(48px, 1vw + 42px, 54px);
-  margin-bottom: 8px;
-}
-.onboarding-title {
-  font-family: var(--serif);
-  font-size: clamp(24px, 0.5vw + 22px, 26px);
-  font-weight: 700;
-  color: var(--ink);
-  margin: 0;
-}
-.onboarding-steps {
+  overscroll-behavior: contain;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-bottom: 28px;
 }
-.onboarding-step {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
+
+/* The app behind the landing: locked (inert + aria-hidden added by JS for
+   first-timers only), blurred, dimmed, slightly zoomed. */
+#appRoot {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  transform: scale(1.04);
+  filter: blur(8px) brightness(0.55) saturate(0.8);
+  pointer-events: none;
 }
-.onboarding-step-icon {
+html.ws-app-return #appRoot {
+  position: static;
+  transform: none;
+  filter: none;
+  overflow: visible;
+  pointer-events: auto;
+}
+html.ws-app-return .onboarding-overlay {
+  display: none;
+}
+
+/* Enter-the-app transition (CTA): landing fades out while the app zooms and
+   clears into focus. Position flip to static happens at the end (done() in
+   enterApp) — both states fill the viewport, so it's invisible. */
+html.ws-entering-app .onboarding-overlay {
+  opacity: 0;
+  transition: opacity 0.35s ease-out;
+}
+html.ws-entering-app #appRoot {
+  transform: none;
+  filter: none;
+  transition: transform 0.55s ease-out, filter 0.55s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.ws-entering-app .onboarding-overlay,
+  html.ws-entering-app #appRoot {
+    transition: none;
+  }
+}
+
+/* LP NAV */
+.lp-nav {
   flex-shrink: 0;
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: var(--cream2);
-  font-size: 20px;
-  line-height: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
-  border: 1px solid var(--rule);
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 28px;
 }
-.onboarding-step-text {
-  font-size: clamp(14px, 0.3vw + 13px, 15px);
-  color: var(--ink2);
-  line-height: 1.5;
+.lp-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
 }
-.onboarding-step-text strong {
-  color: var(--ink);
+.lp-nav-logo {
+  height: 24px;
+  width: auto;
+  display: block;
 }
-.onboarding-footer {
-  text-align: center;
+.lp-nav-brand-text {
+  font-family: var(--sans);
+  font-size: clamp(17px, 0.5vw + 15px, 19px);
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: #ffffeb;
 }
-.onboarding-btn {
-  display: inline-block;
-  padding: 12px 32px;
+.lp-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.lp-nav-links a {
+  font-size: clamp(13px, 0.3vw + 12px, 15px);
+  font-weight: 500;
+  color: rgba(255, 255, 235, 0.72);
+  text-decoration: none;
+  padding: 4px 0;
+  border-bottom: 1.5px solid transparent;
+  transition: color 0.18s, border-color 0.18s;
+}
+.lp-nav-links a:hover,
+.lp-nav-links a:focus-visible {
+  color: #ffffeb;
+  border-bottom-color: #ffffeb;
+}
+.lp-nav-auth {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.lp-nav-signin {
+  background: none;
+  border: none;
+  font-size: clamp(13px, 0.3vw + 12px, 15px);
+  font-weight: 600;
+  color: #ffffeb;
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  touch-action: manipulation;
+}
+.lp-nav-signin:hover {
+  opacity: 0.7;
+}
+.lp-nav-signup {
+  flex-shrink: 0;
+  font-size: clamp(13px, 0.3vw + 12px, 15px);
+  font-weight: 600;
+  color: #1a1a1a;
+  background: #ffffeb;
+  text-decoration: none;
+  padding: 8px 18px;
   border-radius: 999px;
   border: none;
-  font-size: clamp(15px, 0.3vw + 14px, 16px);
-  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: opacity 0.2s, transform 0.2s;
   touch-action: manipulation;
-  margin-top: 8px;
 }
-.onboarding-btn-primary {
-  background: var(--ink);
-  color: var(--cream);
-}
-.onboarding-btn-primary:hover {
+.lp-nav-signup:hover {
   opacity: 0.85;
   transform: scale(1.02);
 }
-.onboarding-hint {
+
+/* LP HERO */
+.lp-hero {
+  flex-shrink: 0;
+  text-align: center;
+  padding: 28px 32px 8px;
+}
+.lp-hero-title {
+  font-family: var(--serif);
+  font-size: clamp(26px, 2.4vw + 16px, 44px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.5px;
+  color: #ffffeb;
+  max-width: 22ch;
+  margin: 0 auto;
+}
+.lp-hero-subtitle {
+  font-size: clamp(15px, 0.6vw + 13px, 19px);
+  color: rgba(255, 255, 235, 0.78);
+  line-height: 1.55;
+  max-width: 46ch;
+  margin: 12px auto 0;
+}
+
+/* LP BENEFIT BADGES */
+.lp-benefits {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px 32px 4px;
+}
+.lp-benefit {
+  font-size: clamp(12px, 0.3vw + 11px, 14px);
+  font-weight: 600;
+  color: rgba(255, 255, 235, 0.8);
+  background: rgba(255, 255, 235, 0.06);
+  border: 1px solid rgba(255, 255, 235, 0.12);
+  border-radius: 999px;
+  padding: 6px 14px;
+  white-space: nowrap;
+}
+
+/* LP CTA */
+.lp-cta {
+  flex-shrink: 0;
+  text-align: center;
+  padding: 14px 32px 6px;
+}
+.lp-cta-btn {
+  display: inline-block;
+  padding: 14px 40px;
+  border-radius: 999px;
+  border: none;
+  outline: none;
+  background: #F59E0B;
+  color: #1a1a1a;
+  font-size: clamp(16px, 0.4vw + 15px, 18px);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  touch-action: manipulation;
+}
+.lp-cta-btn:hover {
+  opacity: 0.85;
+  transform: scale(1.02);
+}
+.lp-cta-subtext {
   font-size: clamp(12px, 0.3vw + 11px, 13px);
-  color: var(--ink3);
-  margin-top: 18px;
+  color: rgba(255, 255, 235, 0.45);
+  margin-top: 10px;
   line-height: 1.5;
 }
-.onboarding-hint em {
-  font-style: normal;
-  font-weight: 600;
-  color: var(--ink2);
+
+/* LP DEMO VIDEO — fills remaining height, never scrolls. Desktop: full-width,
+   cover-cropped. Mobile: portrait showcase video, largest-fit, no crop.
+   Click toggles shot 1 <-> 2; resize swaps the pair — the src is JS-managed
+   (see wisprstories.js lpCurrentFile/lpSetVideoFile). */
+.lp-video-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* padding: 0px 32px 0px; -- removed per user spec (video is edge-to-edge) */
 }
-.onboarding-hint i {
-  font-size: clamp(12px, 0.3vw + 11px, 13px);
-  vertical-align: middle;
+.lp-video {
+  max-width: 100%;
+  max-height: 100%;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  cursor: pointer;
 }
-:root.dark .onboarding-banner {
-  background: #2a2a2a;
+
+/* LP FOOTER + CLICK HINT — footer is absolute at the card (page) bottom,
+   floating over the demo video's transparent bottom strip. The hint pill is
+   centered above the footer and stays visible for the whole landing session —
+   it never fades on click; it's gone for good once the landing exits. */
+.lp-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 100;
+  color: #ffffeb55;
+  pointer-events: none;
 }
-:root.dark .onboarding-step-icon {
-  background: rgba(255,255,235,0.06);
-  border-color: rgba(255,255,235,0.12);
+.lp-hint-pill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 34px;
+  text-align: center;
+  font-size: 10.5px;
+  color: #ffffeb33;
+  /* background: rgba(0, 0, 0, 0.45); */
+  /* border: 1px solid rgba(255, 255, 235, 0.25); */
+  /* border-radius: 999px; */
+  padding: 4px 12px;
+  white-space: nowrap;
+  pointer-events: none;
 }
-:root.dark .onboarding-step-text {
-  color: rgba(255,255,235,0.78);
-}
-:root.dark .onboarding-step-text strong {
-  color: #ffffeb;
-}
-:root.dark .onboarding-hint {
-  color: rgba(255,255,235,0.45);
-}
-:root.dark .onboarding-hint em {
-  color: rgba(255,255,235,0.8);
+
+/* Landing is always dark by design — every landing color above is a hardcoded
+   dark-mode literal, so the landing looks identical in light and dark themes.
+   Do not add :root.dark overrides for landing elements; there is no light variant. */
+
+/* Mobile: drop center nav links, keep brand + contact. Backdrop goes opaque
+   dark so the app behind (buttons etc.) is fully hidden on small screens. */
+@media (max-width: 720px) {
+  .onboarding-overlay {
+    background: #2A2A2A;
+  }
+  .lp-nav-links {
+    display: none;
+  }
+  .lp-nav {
+    padding: 14px 18px;
+  }
+  .lp-hero {
+    padding: 20px 18px 6px;
+  }
+  .lp-hero-title {
+    font-size: clamp(34px, 8vw, 44px);
+  }
+  .lp-hero-subtitle {
+    font-size: 13px;
+  }
+  .lp-benefits {
+    padding: 12px 16px 2px;
+    gap: 8px;
+  }
+  .lp-benefit {
+    font-size: 10.5px;
+    padding: 4px 10px;
+  }
+  .lp-cta {
+    padding: 10px 16px 4px;
+  }
+  .lp-video-wrap {
+    /* padding: 8px 14px 0; -- removed per user spec (video flush edge-to-edge) */
+  }
+  .lp-video {
+    width: auto;
+    height: auto;
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+  }
 }
 
 /* DOWNLOAD CHOICE MODAL */

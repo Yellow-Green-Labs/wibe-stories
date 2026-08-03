@@ -512,6 +512,22 @@
 .vault-card-view-info { text-align: center; color: #fff; }
 .vault-card-view-name { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
 .vault-card-view-detail { font-size: 13px; opacity: 0.7; }
+.vault-cv-play {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(0,0,0,0.3);
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.vault-cv-play:hover { background: rgba(0,0,0,0.5); }
+.vault-cv-play.playing { border-color: var(--amber, #F59E0B); color: var(--amber, #F59E0B); }
 
 /* ── DARK MODE ── */
 :root.dark .vault-overlay { background: var(--cream); }

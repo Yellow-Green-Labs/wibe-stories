@@ -127,7 +127,6 @@
     "pricing": "Unlock Pro",
     "articles": "Read Articles",
     "issues": "Submit Issues",
-    "help": "How to Use",
     "legal": "Legal",
     "docs": "Documentation"
   },
@@ -148,13 +147,20 @@
     "reset": "We'll be back at midnight UTC.",
     "btn": "Check if we're back"
   },
-  "onboarding": {
-    "title": "Welcome to Wibe Stories",
-    "step1": "<strong>Speak or type</strong> your message. Tap the microphone or paste text.",
-    "step2": "<strong>Customize</strong> your card: choose a tone, color, and corner style.",
-    "step3": "<strong>Create &amp; share</strong>: download as PNG or share directly on social platforms.",
-    "gotIt": "Got it, let's go!",
-    "hint": "Need help later? Open <em>How to Use</em> in the footer menu."
+  "landing": {
+    "navFeatures": "Features",
+    "navAbout": "About",
+    "navPricing": "Pricing",
+    "navSignin": "Sign in",
+    "navSignup": "Sign up",
+    "heroTitle": "Voice messages should be seen, not just heard",
+    "heroSubtitle": "Turn what you say into a beautiful, shareable card — no account, no install, no effort.",
+    "benefitNoAccount": "No account",
+    "benefitLanguages": "44 languages",
+    "benefitShare": "Share anywhere",
+    "benefitFree": "Free",
+    "cta": "Got it, let's go!",
+    "ctaSubtext": "No account, no credit card needed. Start in seconds."
   },
   "mobileBar": {
     "create": "Create",

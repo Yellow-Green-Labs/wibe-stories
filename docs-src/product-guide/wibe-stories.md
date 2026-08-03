@@ -339,17 +339,32 @@ See the [Roadmap](/reference/roadmap) page for the current plan.
 - 60 auto-detected occasions with themed card images
 - Features page, About page, and Language Stats page with Chart.js
 - i18n in 11 UI locales with script-aware font mapping
+- Welcome landing page (first-visit demo showcase with video, app unlocked via "Got it, let's go!")
 
 ### Not yet implemented
 
 - Additional aspect ratios (4:5, 16:9, 3:4, 9:16)
 - Mobile preview UX (floating "Preview" button)
-- Onboarding banner (first-launch hint)
 - Animated shareable links (live web page, not just static image)
 - Custom color picker for free tier (currently Pro-only)
 
 ---
 
 ## 17. Tech Stack
+
+See the [Trust Center](/product-guide/trust-center) for the services we use and how your data is handled.
+
+---
+
+## 18. Test scenarios
+
+Manual checks before each release:
+
+- **Welcome landing (first visit)**: Fresh browser profile shows the landing as the first paint - dark card, brand logo, Features/About/Pricing links, demo video playing muted, hint pill "Tap to switch view" visible, footer text. Clicking the video switches between shot 1 and shot 2.
+- **Enter app**: "Got it, let's go!" fades the landing out and unlocks the app; the video pauses; the app is interactive immediately.
+- **Returning visit**: Same browser profile reloads straight into the app - no landing, no video fetched.
+- **Breakpoint swap**: With the landing open, resize across 720px. The video switches between desktop and mobile shots instantly and keeps its playback position. On a phone (portrait), the mobile video fits fully without cropping or letterboxing.
+- **Reduced motion**: With the OS "reduce motion" setting on, the video does not autoplay; tapping it still switches shots and plays.
+- **Link/scroll**: Nav links open the Features/About pages; the landing itself never scrolls (the demo video stays in view).
 
 See the [Trust Center](/product-guide/trust-center) for the services we use and how your data is handled.

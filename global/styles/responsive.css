@@ -464,9 +464,9 @@
 /* Nav grid dropdown — positioned below the button in .nav-right */
 #navDropdown {
   --fmenu-bg: #2a2a2a;
-  --fmenu-border: rgba(255, 255, 235, 0.12);
-  --fmenu-text: #c0c0b0;
-  --fmenu-text-dim: #a0a090;
+  --fmenu-border: #303030;
+  --fmenu-text: #aeaeae;
+  --fmenu-text-dim: #808080;
   --fmenu-accent: #f59e0b;
   --fmenu-font-main: "Space Grotesk", sans-serif;
   position: absolute;

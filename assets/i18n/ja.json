@@ -113,7 +113,6 @@
     "pricing": "Unlock Pro",
     "articles": "Read Articles",
     "issues": "Submit Issues",
-    "help": "How to Use",
     "license": "License",
     "terms": "Terms & Privacy",
     "docs": "Documentation"
@@ -131,14 +130,6 @@
     "text": "素晴らしい反応に感謝します。日次容量に達し、サーバーを少し休ませる必要があります。",
     "reset": "UTCの深夜に戻ります。",
     "btn": "戻ったか確認"
-  },
-  "onboarding": {
-    "title": "Wibe Storiesへようこそ",
-    "step1": "メッセージを<strong>話すか入力</strong>してください。マイクをタップするかテキストを貼り付けます。",
-    "step2": "カードを<strong>カスタマイズ</strong>: トーン、色、角のスタイルを選択します。",
-    "step3": "<strong>作成して共有</strong>: PNGでダウンロードするか、ソーシャルプラットフォームで直接共有します。",
-    "gotIt": "了解, 始めましょう！",
-    "hint": "後でヘルプが必要ですか？フッターメニューの<em>使い方</em>を開いてください。"
   },
   "mobileBar": {
     "create": "作成",

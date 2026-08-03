@@ -2,7 +2,8 @@
 // Runs daily via Vercel Cron (see vercel.json `crons` block). Deletes any
 // blob in `cards/`, `og/`, `voice/`, or `meta/` older than MAX_AGE_HOURS.
 // Pro subscriber cards get 14 days (PRO_MAX_AGE_HOURS) from their metadata.
-// Vault-protected cards (linked in vault_cards table) are never deleted.
+// Vault-protected cards (linked in vault_cards table) and their voice clips
+// (voice/<id> + voice/<id>.m4a) are never deleted.
 // Triggered by Vercel with `Authorization: Bearer ${CRON_SECRET}`;
 // rejects anything else with 401.
 
@@ -31,6 +32,16 @@ function shortIdFromCardUrl(blobUrl) {
   try {
     const url = new URL(blobUrl);
     const match = url.pathname.match(/\/cards\/(.+)\.png$/);
+    return match ? match[1] : null;
+  } catch {
+    return null;
+  }
+}
+
+function shortIdFromVoiceUrl(blobUrl) {
+  try {
+    const url = new URL(blobUrl);
+    const match = url.pathname.match(/\/voice\/([^/.]+)(?:\.m4a)?$/);
     return match ? match[1] : null;
   } catch {
     return null;
@@ -75,9 +86,14 @@ export default async function handler(req, res) {
         for (const blob of page.blobs) {
           const ageMs = new Date(blob.uploadedAt).getTime();
 
-          // Vault-protected card — never delete, regardless of age
+          // Vault-protected card — never delete, regardless of age.
+          // Voice clips (WebM + M4A variants) get the same protection so
+          // vault audio playback keeps working.
           if (prefix === 'cards/') {
             const sid = shortIdFromCardUrl(blob.url);
+            if (sid && await isVaultCard(sid)) continue;
+          } else if (prefix === 'voice/') {
+            const sid = shortIdFromVoiceUrl(blob.url);
             if (sid && await isVaultCard(sid)) continue;
           }
 

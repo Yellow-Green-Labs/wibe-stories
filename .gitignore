@@ -10,6 +10,7 @@ start-mobile.ps1
 .bak/
 legacy/
 docs-internal/
+marketing/
 Birthday cake-pana.svg
 server.log
 *.log
@@ -41,9 +42,19 @@ scripts/scripts-INTERNAL-DOC.md
 
 .env*.local
 
-# VitePress build cache (keep dist/ for Vercel deployment)
+# VitePress build output (rebuilt on Vercel deploy)
 docs-src/.vitepress/.temp/
 docs-src/.vitepress/cache/
+docs-src/.vitepress/dist/
 
 # Root public/ — likely a VitePress build artifact at project root
 /public/
+
+# Teaching workspace — lessons, learning records, reference materials
+/teaching/
+
+# Local demo/marketing videos — hosted on Cloudflare R2, never committed
+assets/cards/*.webm
+assets/cards/*.mp4
+assets/cards/*.gif
+assets/featurepage/hero-video/

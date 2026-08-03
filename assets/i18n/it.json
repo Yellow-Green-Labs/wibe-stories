@@ -113,7 +113,6 @@
     "pricing": "Unlock Pro",
     "articles": "Read Articles",
     "issues": "Submit Issues",
-    "help": "How to Use",
     "license": "License",
     "terms": "Terms & Privacy",
     "docs": "Documentation"
@@ -131,14 +130,6 @@
     "text": "Grazie per la risposta incredibile. Abbiamo raggiunto la nostra capacità giornaliera e dobbiamo dare un po' di riposo ai nostri server.",
     "reset": "Torneremo a mezzanotte UTC.",
     "btn": "Controlla se siamo tornati"
-  },
-  "onboarding": {
-    "title": "Benvenuto in Wibe Stories",
-    "step1": "<strong>Parla o digita</strong> il tuo messaggio. Tocca il microfono o incolla testo.",
-    "step2": "<strong>Personalizza</strong> la tua card: scegli un tono, colore e stile degli angoli.",
-    "step3": "<strong>Crea e condividi</strong>: scarica come PNG o condividi direttamente sui social.",
-    "gotIt": "Ho capito, andiamo!",
-    "hint": "Hai bisogno di aiuto dopo? Apri <em>Come usare</em> nel menu del footer."
   },
   "mobileBar": {
     "create": "Crea",

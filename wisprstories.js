@@ -159,7 +159,7 @@ let _updatePending = false;
 let _versionUpToDate = false;
 let _versionPollTimer = null;
 const VERSION_POLL_INTERVAL_MS = 60 * 1000; // 60 seconds
-const CURRENT_VERSION = "v0.11.26.0";
+const CURRENT_VERSION = "v0.11.29.0";
 
 // Shows the "new version available" notice. Persists until clicked — unlike
 // the generic showToast() which auto-dismisses after 3.2s. Clicking triggers
@@ -167,6 +167,9 @@ const CURRENT_VERSION = "v0.11.26.0";
 function showUpdateToast() {
   const t = document.getElementById("toast");
   if (!t) return;
+  // Never show the update toast while the landing page is up — it belongs on
+  // the main page only. enterApp() re-checks on entry.
+  if (!document.documentElement.classList.contains("ws-app-return")) return;
   // If version check already confirmed we're up-to-date, don't show the toast.
   // This prevents the SW controllerchange handler from showing a false positive
   // right after a hard refresh (controllerchange fires before checkVersion completes).
@@ -272,9 +275,6 @@ window.addEventListener("load", function () {
 });
 let _lastKnownRecordingsSessionId = "";
 let _sttRetrying = false;
-const isSafari =
-  navigator.vendor === "Apple Computer, Inc." &&
-  !navigator.userAgent.includes("CriOS");
 
 let usingDeepgram = false,
   mediaRec = null,
@@ -2829,33 +2829,38 @@ document.getElementById("palRow").addEventListener("keydown", (e) => {
   saveDraft();
 });
 
-/* ---- Custom color picker (iro.js, Pro-gated) ---- */
-var _iroInstance = null;
+/* ---- Custom color picker (Coloris.js, Pro-gated) ---- */
+var _colorisInited = false;
+var _lastColorisColor = null;
 var _savedCustomColor = null;
 
-function _initIroPicker() {
-  if (_iroInstance) return;
+function _getColorisTheme() {
+  return document.documentElement.classList.contains("dark") ? "dark" : "light";
+}
+
+function _initColorisPicker() {
+  if (_colorisInited) return;
   var el = document.getElementById("iroPicker");
-  if (!el || typeof iro === "undefined") return;
-  _iroInstance = new iro.ColorPicker(el, {
-    width: 200,
-    color: getCardColor(),
-    borderWidth: 1,
-    borderColor: "#ccc",
-    layoutDirection: "vertical",
-    layout: [
-      { component: iro.ui.Wheel, options: {} },
-      { component: iro.ui.Slider, options: { sliderType: "hue" } },
-      { component: iro.ui.Slider, options: { sliderType: "saturation" } },
-      { component: iro.ui.Slider, options: { sliderType: "value" } },
-    ],
-  });
-  _iroInstance.on('color:change', function(color) {
-    customColor = color.hexString;
-    _savedCustomColor = color.hexString;
-    _applyBackground();
-    wave(document.getElementById("sta").value);
-    document.getElementById("cpPreview").style.background = color.hexString;
+  if (!el || typeof Coloris === "undefined") return;
+  _colorisInited = true;
+  Coloris({
+    parent: "#iroPicker",
+    inline: true,
+    theme: "pill",
+    themeMode: _getColorisTheme(),
+    alpha: false,
+    format: "hex",
+    formatToggle: false,
+    swatches: PALS,
+    defaultColor: getCardColor(),
+    onChange: function(color) {
+      _lastColorisColor = color;
+      customColor = color;
+      _savedCustomColor = color;
+      _applyBackground();
+      wave(document.getElementById("sta").value);
+      document.getElementById("cpPreview").style.background = color;
+    },
   });
 }
 
@@ -2873,8 +2878,8 @@ function _openColorPicker() {
   body.classList.add("open");
   arrow.classList.add("open");
   btn.classList.add("open");
-  _initIroPicker();
-  if (_iroInstance) _iroInstance.color.hexString = getCardColor();
+  _initColorisPicker();
+  if (typeof Coloris !== "undefined") Coloris({ themeMode: _getColorisTheme() });
   _updateCpPreview();
 }
 
@@ -2919,8 +2924,7 @@ document.getElementById("customColorBtn").addEventListener("click", function() {
 });
 
 document.getElementById("applyCustomColor").addEventListener("click", function() {
-  if (!_iroInstance) return;
-  applyCustomColor(_iroInstance.color.hexString);
+  if (_lastColorisColor) applyCustomColor(_lastColorisColor);
 });
 document.getElementById("texRow")?.addEventListener("click", (e) => {
   var tx = e.target.closest(".txd");
@@ -3163,26 +3167,34 @@ document.getElementById("voiceToggle").addEventListener("change", function() {
   showToast(voiceAttached ? (typeof getI18nSync === "function" ? getI18nSync("voice.attached") : "Voice added") : (typeof getI18nSync === "function" ? getI18nSync("voice.detached") : "Voice removed"));
 });
 // Voice play button
+let _voicePlayUrl = null;
 document.getElementById("voicePlayBtn").addEventListener("click", function() {
   if (!audioBlob) return;
   if (this.classList.contains("playing")) {
     this.classList.remove("playing");
     this.textContent = "\u25B6";
     if (window._voiceAudio) { window._voiceAudio.pause(); window._voiceAudio = null; }
+    if (_voicePlayUrl) { URL.revokeObjectURL(_voicePlayUrl); _voicePlayUrl = null; }
     return;
   }
+  if (_voicePlayUrl) URL.revokeObjectURL(_voicePlayUrl);
   var url = URL.createObjectURL(audioBlob);
+  _voicePlayUrl = url;
   var audio = new Audio(url);
   window._voiceAudio = audio;
   audio.onended = function() {
     this.classList.remove("playing");
     this.textContent = "\u25B6";
     URL.revokeObjectURL(url);
+    if (_voicePlayUrl === url) _voicePlayUrl = null;
     window._voiceAudio = null;
   }.bind(this);
   audio.onerror = function() {
     this.classList.remove("playing");
     this.textContent = "\u25B6";
+    URL.revokeObjectURL(url);
+    if (_voicePlayUrl === url) _voicePlayUrl = null;
+    window._voiceAudio = null;
     showToast((typeof getI18nSync === "function" && getI18nSync("toasts.playbackFailed")) || "Can't play");
   }.bind(this);
   audio.play().then(function() {
@@ -3454,34 +3466,149 @@ if (location.search.includes("showPricing") && typeof window.showPricingModal ==
   window.showPricingModal();
 }
 
-// Onboarding Banner — first-launch detection + help icon trigger
-function showOnboarding() {
-  document.getElementById("onboardingOverlay").classList.add("show");
-  document.body.classList.add("modal-open");
-}
-function hideOnboarding() {
-  const overlay = document.getElementById("onboardingOverlay");
-  overlay.classList.remove("show");
-  document.body.classList.remove("modal-open");
-  localStorage.setItem("wsOnboardingSeen", "true");
+// Welcome Landing Page — first-launch detection (no reopen path exists).
+// The landing is the first-paint page for new visitors (CSS default); the app
+// behind it (#appRoot) is a locked, blurred backdrop until the CTA is pressed.
+// Returners skip the landing entirely via html.ws-app-return set in the head
+// script before first paint.
+function focusLanding() {
+  // Lock the app behind the landing: inert blocks focus/click/scroll; CSS
+  // pointer-events:none on #appRoot is the mouse/touch belt-and-braces.
+  // Added for first-timers only — returners must never carry inert/aria-hidden.
+  const appRoot = document.getElementById("appRoot");
+  if (appRoot) {
+    appRoot.setAttribute("inert", "");
+    appRoot.setAttribute("aria-hidden", "true");
+  }
 }
 
-// Show onboarding on first launch
+let _enteringApp = false;
+function enterApp() {
+  if (_enteringApp) return;
+  _enteringApp = true;
+  const appRoot = document.getElementById("appRoot");
+  const video = document.getElementById("lpVideo");
+  const done = function () {
+    localStorage.setItem("wsOnboardingSeen", "true");
+    document.documentElement.classList.remove("ws-entering-app");
+    document.documentElement.classList.add("ws-app-return");
+    if (appRoot) {
+      appRoot.removeAttribute("inert");
+      appRoot.removeAttribute("aria-hidden");
+    }
+    if (video && typeof video.pause === "function") video.pause();
+    _enteringApp = false;
+    // A version update may have arrived while the landing page was up — surface
+    // it now: either the pending flag was already set (toast was suppressed) or
+    // a fresh check finds the newer version.
+    if (_updatePending) showUpdateToast();
+    else checkVersion();
+  };
+  document.documentElement.classList.add("ws-entering-app");
+  if (
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    done();
+  } else {
+    setTimeout(done, 600);
+  }
+}
+
+// First launch: lock the app behind the landing + focus the CTA. The landing
+// itself is already visible — it is the page now, no class toggling needed.
 if (!localStorage.getItem("wsOnboardingSeen")) {
-  // Delay slightly so page renders first
-  setTimeout(showOnboarding, 800);
+  focusLanding();
 }
 
+// Dismiss via the CTA only — no close button, no backdrop click (the
+// landing page is a full-screen welcome, not a dismissable modal).
+document.getElementById("onboardingGotIt")?.addEventListener("click", enterApp);
 
-
-// Dismiss buttons
-document.getElementById("onboardingClose")?.addEventListener("click", hideOnboarding);
-document.getElementById("onboardingGotIt")?.addEventListener("click", hideOnboarding);
-
-// Close on backdrop click
-document.getElementById("onboardingOverlay")?.addEventListener("click", (e) => {
-  if (e.target === e.currentTarget) hideOnboarding();
+// Landing demo video: one file per viewport pair, swapped on click (shot
+// 1 <-> 2) and on breakpoint crossing (matchMedia change listener). <video>
+// <source media> is evaluated only at selection time and never reacts to
+// resize, so the src is fully JS-managed. Returners (ws-app-return) skip
+// playback entirely — the guard in lpSetVideoFile never fetches the video.
+// _LP_VIDEO_BASE is the public CDN base (Cloudflare R2, r2.dev). The local
+// copies under assets/cards/ are git-ignored build artifacts (backup only).
+// Desktop files are 1080p re-encodes (opaque black background — the masters'
+// alpha plane is not decodable by ffmpeg, and black is visually identical to
+// transparency on the #1a1a1a card).
+var _lpVideoShot = 0;
+var _LP_VIDEO_BASE = "https://pub-5b5b01c9c3a14dad80d7d71e76a269b4.r2.dev/welcome-landing/";
+var _lpVideoPairs = {
+  desktop: ["wheel-showcase-1-1080p.webm", "wheel-showcase-2-1080p.webm"],
+  mobile: ["mob-sc-1.webm", "mob-sc-2.webm"],
+};
+var _lpResizeSwap = false;
+var _lpVideoClicked = false;
+function lpIsMobile() {
+  return (
+    window.matchMedia && window.matchMedia("(max-width: 720px)").matches
+  );
+}
+function lpReducedMotion() {
+  return (
+    window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}
+function lpCurrentFile() {
+  return _LP_VIDEO_BASE + _lpVideoPairs[lpIsMobile() ? "mobile" : "desktop"][_lpVideoShot];
+}
+function lpSetVideoFile() {
+  var video = document.getElementById("lpVideo");
+  if (!video) return;
+  if (document.documentElement.classList.contains("ws-app-return")) return;
+  var fromResize = _lpResizeSwap;
+  var prevTime = fromResize ? video.currentTime : 0;
+  _lpResizeSwap = false;
+  var file = lpCurrentFile();
+  if (video.getAttribute("src") === file) return;
+  video.src = file;
+  video.load();
+  if (prevTime > 0) {
+    video.addEventListener(
+      "loadedmetadata",
+      function hook() {
+        video.removeEventListener("loadedmetadata", hook);
+        var dur = video.duration;
+        var target = dur && isFinite(dur) && dur > 0 ? Math.min(prevTime, dur - 0.1) : prevTime;
+        if (target > 0) {
+          try { video.currentTime = target; } catch (e) {}
+        }
+      },
+      false
+    );
+  }
+  if (lpReducedMotion() && !_lpVideoClicked) return;
+  var p = video.play();
+  if (p && typeof p.catch === "function") p.catch(function () {});
+}
+document.getElementById("lpVideo")?.addEventListener("click", function () {
+  _lpVideoShot = 1 - _lpVideoShot;
+  _lpVideoClicked = true;
+  lpSetVideoFile();
 });
+if (window.matchMedia) {
+  var _lpMq = window.matchMedia("(max-width: 720px)");
+  if (_lpMq.addEventListener)
+    _lpMq.addEventListener("change", function () {
+      _lpResizeSwap = true;
+      lpSetVideoFile();
+    });
+  else if (_lpMq.addListener)
+    _lpMq.addListener(function () {
+      _lpResizeSwap = true;
+      lpSetVideoFile();
+    });
+}
+if (lpReducedMotion()) {
+  var _lpVideoEl = document.getElementById("lpVideo");
+  if (_lpVideoEl) _lpVideoEl.preload = "auto";
+}
+lpSetVideoFile();
 
 // Update bar/pill display when crossing mobile breakpoint on resize
 var _prevMobile = window.innerWidth <= 720;
@@ -3744,7 +3871,7 @@ document.getElementById("btnC").addEventListener("click", async () => {
     if (typeof isSupporter === "function" && isSupporter() && typeof window.saveCardToVault === "function") {
       _shortId = null;
       window._vaultAutoSaved = true;
-      (async () => {
+      window._vaultAutoSavePromise = (async () => {
         try {
           await window.ensureHtml2canvas();
           if (!window.html2canvas) throw new Error("html2canvas not loaded");
@@ -3764,7 +3891,10 @@ document.getElementById("btnC").addEventListener("click", async () => {
               authorName: document.getElementById("nin").value,
               tone: curTone || "original",
               hasAudio: voiceAttached && !!audioBlob,
-              audioUrl: audioBlob ? URL.createObjectURL(audioBlob) : "",
+              // audioUrl intentionally not persisted: URL.createObjectURL is
+              // session-only and would dangle across sessions (known bug).
+              // Real audio persistence is handled by the vault audio item.
+              audioUrl: "",
               createdAt: new Date().toISOString(),
               shortId: _shortId,
               imageUrl: data.url || ""
@@ -3862,12 +3992,6 @@ document.getElementById("dlChoiceWebm")?.addEventListener("click", async () => {
 });
 document.getElementById("dlChoiceClose")?.addEventListener("click", hideDownloadChoice);
 document.getElementById("dlChoiceBackdrop")?.addEventListener("click", hideDownloadChoice);
-function _formatSize(bytes) {
-  if (!bytes || bytes < 1) return "";
-  if (bytes < 1024) return bytes + " B";
-  if (bytes < 1048576) return (bytes / 1024).toFixed(0) + " KB";
-  return (bytes / 1048576).toFixed(1) + " MB";
-}
 function _estPngSize() {
   if (_pngCache && _pngCache.blob) return _pngCache.blob.size;
   var txt = (document.getElementById("sta").value || "").length;
@@ -3929,6 +4053,7 @@ document.getElementById("mobileBtnS")?.addEventListener("click", () => {
 // Share modal
 let _shareBlob = null;
 let _shareSocialBlob = null;
+let _sharePreviewUrl = null;
 let _shortId = null;
 
 // Build a 1080×1920 (9:16) social image: the card centered on a solid
@@ -3966,11 +4091,18 @@ document.getElementById("btnS").addEventListener("click", async () => {
   if (voiceAttached) { showToast("Download the card to keep the voice"); return; }
   _vibrate();
   const btn = document.getElementById("btnS");
+  if (window._vaultAutoSaved) {
+    if (window._vaultAutoSavePromise) {
+      try { await window._vaultAutoSavePromise; } catch (e) {}
+    }
+  }
   if (window._vaultAutoSaved && _shareBlob && _shortId) {
     btn.innerHTML = '<i class="fas fa-share-nodes"></i> Share card';
     btn.disabled = false;
     const preview = document.getElementById("sharePreview");
-    preview.innerHTML = '<img src="' + URL.createObjectURL(_shareBlob) + '" alt="Card preview" />';
+    if (_sharePreviewUrl) URL.revokeObjectURL(_sharePreviewUrl);
+    _sharePreviewUrl = URL.createObjectURL(_shareBlob);
+    preview.innerHTML = '<img src="' + _sharePreviewUrl + '" alt="Card preview" />';
     const file = new File([_shareBlob], "wibe-story.png", { type: "image/png" });
     document.getElementById("shareNative").style.display = navigator.share ? "" : "none";
     document.getElementById("shareModal").classList.add("open");
@@ -3992,7 +4124,9 @@ document.getElementById("btnS").addEventListener("click", async () => {
     btn.innerHTML = '<i class="fas fa-share-nodes"></i> Share card';
     btn.disabled = false;
     const preview = document.getElementById("sharePreview");
-    preview.innerHTML = '<img src="' + URL.createObjectURL(_shareBlob) + '" alt="Card preview" />';
+    if (_sharePreviewUrl) URL.revokeObjectURL(_sharePreviewUrl);
+    _sharePreviewUrl = URL.createObjectURL(_shareBlob);
+    preview.innerHTML = '<img src="' + _sharePreviewUrl + '" alt="Card preview" />';
     const file = new File([_shareBlob], "wibe-story.png", { type: "image/png" });
     document.getElementById("shareNative").style.display =
       navigator.share ? "" : "none";
@@ -4022,8 +4156,38 @@ document.getElementById("btnS").addEventListener("click", async () => {
     showToast((typeof getI18nSync === "function" && getI18nSync("toasts.exportFailed")) || "Export failed");
   }
 });
-document.getElementById("shareClose").addEventListener("click", function () { _deactivateModal(); document.getElementById("shareModal").classList.remove("open"); document.body.classList.remove("modal-open"); });
-document.getElementById("shareBackdrop").addEventListener("click", function () { _deactivateModal(); document.getElementById("shareModal").classList.remove("open"); document.body.classList.remove("modal-open"); });
+document.getElementById("shareClose").addEventListener("click", function () { _deactivateModal(); document.getElementById("shareModal").classList.remove("open"); document.body.classList.remove("modal-open"); window._vaultShareCard = null; if (_sharePreviewUrl) { URL.revokeObjectURL(_sharePreviewUrl); _sharePreviewUrl = null; } });
+document.getElementById("shareBackdrop").addEventListener("click", function () { _deactivateModal(); document.getElementById("shareModal").classList.remove("open"); document.body.classList.remove("modal-open"); window._vaultShareCard = null; if (_sharePreviewUrl) { URL.revokeObjectURL(_sharePreviewUrl); _sharePreviewUrl = null; } });
+
+// Vault share adapter — opens the existing share modal for a saved vault card.
+// The modal's handlers all key off _shareBlob/_shortId; we reuse them wholesale
+// and gate the main-app-only paths (voiceAttached guards, name field) on
+// window._vaultShareCard while the modal is in vault mode.
+window._vaultShareCard = null;
+window.openVaultShareModal = async function (card) {
+  if (!card || !card.shortId) return false;
+  if (!card.imageUrl) return false; // legacy card — caller falls back to copy-link
+  try {
+    var res = await fetch(card.imageUrl);
+    if (!res.ok) throw new Error("image fetch failed");
+    var blob = await res.blob();
+    _shareBlob = blob;
+    _shareSocialBlob = null;
+    _shortId = card.shortId;
+    window._vaultShareCard = card;
+    if (_sharePreviewUrl) URL.revokeObjectURL(_sharePreviewUrl);
+    _sharePreviewUrl = URL.createObjectURL(blob);
+    document.getElementById("sharePreview").innerHTML = '<img src="' + _sharePreviewUrl + '" alt="Card preview" />';
+    document.getElementById("shareNative").style.display = navigator.share ? "" : "none";
+    document.getElementById("shareModal").classList.add("open");
+    document.body.classList.add("modal-open");
+    _activateModal(document.getElementById("shareModal"));
+    return true;
+  } catch (e) {
+    console.error("[Vault Share] Preview failed:", e);
+    return false;
+  }
+};
 // Wispr Flow CTA lines — one is appended to every share caption
 var _flowCTAs = [
   "Speak anywhere you type. \u2192 wisprflow.ai",
@@ -4063,7 +4227,7 @@ document.getElementById("shareNative").addEventListener("click", async function 
       return;
     }
     var shareUrl = location.origin + "/c/" + _shortId;
-    var sharerName = document.getElementById("nin").value || "";
+    var sharerName = (window._vaultShareCard && window._vaultShareCard.name) || document.getElementById("nin").value || "";
     var shareTitle = sharerName ? "A Wibe Story by " + sharerName : "A Wibe Story";
     // Auto-copy the link to the clipboard. A Story image cannot carry a
     // clickable link automatically (platform limit), so we pre-load the link
@@ -4122,7 +4286,7 @@ document.getElementById("shareDownload").addEventListener("click", async functio
   a.href = URL.createObjectURL(_shareBlob);
   a.click();
   showToast((typeof getI18nSync === "function" && getI18nSync("toasts.downloaded")) || "Saved ✓");
-  if (voiceAttached && audioBlob && webmCodecString) {
+  if (voiceAttached && audioBlob && webmCodecString && !window._vaultShareCard) {
     try {
       var webmBlob = await generateWebm();
       if (!webmBlob || !webmBlob.size) {
@@ -4196,7 +4360,7 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
 var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 var isAndroid = /Android/.test(navigator.userAgent);
 document.getElementById("shareCopyImage").addEventListener("click", async function () {
-  if (voiceAttached) {
+  if (voiceAttached && !window._vaultShareCard) {
     showToast("Download the card to keep the voice");
     return;
   }
@@ -4384,10 +4548,10 @@ async function generateBlob() {
   if (!effectiveCustomColor) {
     effectiveCustomColor = _savedCustomColor;
   }
-  if (!effectiveCustomColor && _iroInstance) {
+  if (!effectiveCustomColor && _lastColorisColor) {
     var _cpBody = document.getElementById("cpBody");
     if (_cpBody && _cpBody.classList.contains("open")) {
-      effectiveCustomColor = _iroInstance.color.hexString;
+      effectiveCustomColor = _lastColorisColor;
     }
   }
   var cacheColor = effectiveCustomColor || (curP >= 0 && curP < PALS.length ? PALS[curP] : PALS[0]);
@@ -4474,7 +4638,7 @@ async function _generateAnimatedWebm(blob, cacheKey) {
 
     var texDataUrl = _curTexture !== null ? await _getTextureBgDataUrl(cw, ch, scale) : null;
     var _effCC = customColor || _savedCustomColor;
-    if (!_effCC && _iroInstance) { var _cpB = document.getElementById("cpBody"); if (_cpB && _cpB.classList.contains("open")) _effCC = _iroInstance.color.hexString; }
+    if (!_effCC && _lastColorisColor) { var _cpB = document.getElementById("cpBody"); if (_cpB && _cpB.classList.contains("open")) _effCC = _lastColorisColor; }
     var customColorBgDataUrl = _effCC ? await _getCustomColorBgDataUrl(_effCC, cw, ch) : null;
     var activeBgDataUrl2 = texDataUrl || customColorBgDataUrl;
 
@@ -4647,7 +4811,7 @@ async function generateWebm() {
   var scale = isSupporter() ? 2 : 1;
   var texDataUrl = _curTexture !== null ? await _getTextureBgDataUrl(cw, ch, scale) : null;
   var _effCC2 = customColor || _savedCustomColor;
-  if (!_effCC2 && _iroInstance) { var _cpB2 = document.getElementById("cpBody"); if (_cpB2 && _cpB2.classList.contains("open")) _effCC2 = _iroInstance.color.hexString; }
+  if (!_effCC2 && _lastColorisColor) { var _cpB2 = document.getElementById("cpBody"); if (_cpB2 && _cpB2.classList.contains("open")) _effCC2 = _lastColorisColor; }
   var customColorBgDataUrl = _effCC2 ? await _getCustomColorBgDataUrl(_effCC2, cw, ch) : null;
   var activeBgDataUrl3 = texDataUrl || customColorBgDataUrl;
   var bgEl = document.getElementById("cardBg");
@@ -5067,12 +5231,16 @@ window.addEventListener('i18nApplied', function () {
     if (!card) { showToast(msg); return; }
     var t = document.getElementById("toast");
     if (!t) return;
+    if (t.dataset.updateToast === "1") return;
     t.innerHTML = '<span>' + msg + '</span><button class="toast-undo-btn" id="toastUndoBtn">Undo</button>';
     t.classList.remove("update-toast");
     t.classList.add("show");
+    clearTimeout(t._t);
+    _toastShowing = true;
     var timeout = setTimeout(function () {
       t.classList.remove("show");
       _toastShowing = false;
+      if (_toastQueue.length) setTimeout(function () { showToast(_toastQueue[0].msg, _toastQueue[0].duration); _toastQueue.shift(); }, 250);
     }, 6000);
     var undoBtn = document.getElementById("toastUndoBtn");
     if (undoBtn) {
@@ -5080,6 +5248,7 @@ window.addEventListener('i18nApplied', function () {
         clearTimeout(timeout);
         t.classList.remove("show");
         _toastShowing = false;
+        if (_toastQueue.length) setTimeout(function () { showToast(_toastQueue[0].msg, _toastQueue[0].duration); _toastQueue.shift(); }, 250);
         var proAuth = "";
         try { proAuth = localStorage.getItem("wsSessionToken") || localStorage.getItem("wsProKey") || ""; } catch (e) {}
         if (proAuth) {

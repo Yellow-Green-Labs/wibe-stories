@@ -113,7 +113,6 @@
     "pricing": "Unlock Pro",
     "articles": "Read Articles",
     "issues": "Submit Issues",
-    "help": "How to Use",
     "license": "License",
     "terms": "Terms & Privacy",
     "docs": "Documentation"
@@ -131,14 +130,6 @@
     "text": "感谢令人难以置信的响应。我们已达到每日容量，需要让服务器休息一下。",
     "reset": "我们将在 UTC 午夜回来。",
     "btn": "检查我们是否回来了"
-  },
-  "onboarding": {
-    "title": "欢迎来到 Wibe Stories",
-    "step1": "<strong>说话或输入</strong>你的信息。点击麦克风或粘贴文字。",
-    "step2": "<strong>自定义</strong>你的卡片: 选择语气、颜色和边角样式。",
-    "step3": "<strong>创建和分享</strong>: 下载为 PNG 或直接分享到社交平台。",
-    "gotIt": "明白了, 开始吧！",
-    "hint": "稍后需要帮助？在页脚菜单中打开<em>使用说明</em>。"
   },
   "mobileBar": {
     "create": "创建",

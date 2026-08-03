@@ -16,6 +16,7 @@ export default defineConfig({
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     ['link', { href: 'https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap', rel: 'stylesheet' }],
     ['link', { rel: 'icon', href: '/assets/brand/ws-l-b.ico' }],
+    ['meta', { name: 'p:domain_verify', content: 'bd0cf27680542a6e39fb8d8bcf12371a' }],
   ],
   themeConfig: {
     siteTitle: 'Wibe Story Docs',
