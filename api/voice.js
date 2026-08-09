@@ -1,51 +1,53 @@
-// Voice clip upload + Apple-compatible transcode.
+// Voice clip upload.
 //
 // Stores the original clip (usually WebM from MediaRecorder) at
-// `voice/<shortId>` and a transcoded AAC/M4A at `voice/<shortId>.m4a`.
+// `voice/<shortId>`. The Apple-compatible AAC/M4A variant is NOT produced
+// here anymore — it is generated lazily on first play by
+// `GET /api/voice/m4a/<shortId>` (transcode-on-demand, once per card), so
+// recordings that no Apple device ever plays never pay the ffmpeg cost.
+//
 // Apple browsers (Safari/iOS/macOS) cannot decode the WebM container, so
-// the vault player and the shared `/c/<id>` page use the M4A variant on
-// Apple devices and the original WebM everywhere else.
+// the vault player and the shared `/c/<id>` page point Apple devices at
+// the lazy endpoint and everyone else at the original WebM.
 //
 // Transcoding failures are non-fatal: the WebM is kept and the .m4a is
 // simply absent (players fall back to the WebM, then to a graceful toast).
 
-import { execFile } from 'node:child_process';
-import { promisify } from 'node:util';
-import os from 'node:os';
-import path from 'node:path';
-
-const execFileAsync = promisify(execFile);
+import { getRedis, secondsUntilMidnightUTC } from '../lib/redis.js';
 
 export const config = { runtime: 'nodejs' };
 
 const MAX_AUDIO_BYTES = 6 * 1024 * 1024;
 
-async function transcodeToM4a(shortId, webmBuffer, contentType) {
-  let ffmpegPath = null;
-  try {
-    ffmpegPath = (await import('ffmpeg-static')).default;
-  } catch (e) {
-    console.error('[Voice] ffmpeg-static import failed:', e.message);
-  }
-  if (!ffmpegPath) return null;
+// Daily upload cap per IP. Set high to avoid blocking shared IPs (carrier
+// NAT) — this is a safety net against callers who bypass /api/limits, not a
+// per-user quota. Skipped for admin requests and when the IP is unknown.
+const VOICE_MAX_PER_IP_DAY = 500;
 
-  const tmpBase = path.join(os.tmpdir(), 'ws-voice-' + shortId);
-  const inFile = tmpBase + '.webm';
-  const outFile = tmpBase + '.m4a';
-  const fs = await import('node:fs/promises');
+async function isOverDailyIpLimit(req) {
+  const adminSecret = req.headers['x-admin-secret'];
+  if (adminSecret && process.env.ADMIN_API_SECRET && adminSecret === process.env.ADMIN_API_SECRET) {
+    return false;
+  }
+  const clientIp = req.headers['cf-connecting-ip']
+    || (req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+  if (!clientIp) return false;
   try {
-    await fs.writeFile(inFile, webmBuffer);
-    // -vn drops any video track (MediaRecorder captures of the animated card
-    // carry one); -c:a aac produces a container every Apple browser plays.
-    await execFileAsync(ffmpegPath, ['-y', '-i', inFile, '-vn', '-c:a', 'aac', '-b:a', '96k', '-movflags', '+faststart', outFile], { timeout: 25000, maxBuffer: 1024 * 1024 * 16 });
-    const m4aBuffer = await fs.readFile(outFile);
-    return { buffer: m4aBuffer, contentType: contentType.startsWith('audio/mp4') || contentType.includes('mp4') ? contentType : 'audio/mp4' };
+    const redis = getRedis();
+    const today = new Date().toISOString().slice(0, 10);
+    const ipKey = 'wispr:voice-ip:' + clientIp + ':' + today;
+    const calls = parseInt(await redis.get(ipKey) || '0', 10);
+    if (calls >= VOICE_MAX_PER_IP_DAY) return true;
+    const ttl = secondsUntilMidnightUTC();
+    if (calls === 0) {
+      await redis.set(ipKey, '1', { ex: ttl });
+    } else {
+      await redis.incr(ipKey);
+    }
+    return false;
   } catch (e) {
-    console.error('[Voice] Transcode failed:', e && e.message ? e.message : e);
-    return null;
-  } finally {
-    try { await fs.unlink(inFile); } catch (e) {}
-    try { await fs.unlink(outFile); } catch (e) {}
+    console.warn('[Voice] Rate limit check failed, allowing through:', e && e.message ? e.message : e);
+    return false;
   }
 }
 
@@ -66,9 +68,19 @@ export default async function handler(req, res) {
     return;
   }
 
+  if (await isOverDailyIpLimit(req)) {
+    res.statusCode = 429;
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', 'https://wibestories.vercel.app');
+    res.end(JSON.stringify({ error: 'Daily upload limit reached' }));
+    return;
+  }
+
   try {
     const shortId = req.headers['x-short-id'];
-    if (!shortId || shortId.length < 4) {
+    // Alphanumeric-only, 4-12 chars — matches the download and m4a endpoints.
+    // Rejects ../ path traversal and any other non-blob-key-safe characters.
+    if (!shortId || !/^[a-zA-Z0-9]{4,12}$/.test(shortId)) {
       res.statusCode = 400;
       res.setHeader('Content-Type', 'application/json');
       res.end(JSON.stringify({ error: 'Invalid shortId' }));
@@ -107,26 +119,13 @@ export default async function handler(req, res) {
       cacheControlMaxAge: 60 * 60 * 24 * 5,
     });
 
-    const m4a = await transcodeToM4a(shortId, audioBuffer, contentType);
-    if (m4a) {
-      try {
-        await put('voice/' + shortId + '.m4a', m4a.buffer, {
-          access: 'public',
-          addRandomSuffix: false,
-          contentType: m4a.contentType,
-          cacheControlMaxAge: 60 * 60 * 24 * 5,
-        });
-      } catch (e) {
-        console.error('[Voice] M4A upload failed:', e.message);
-      }
-    }
-
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', 'https://wibestories.vercel.app');
-    res.end(JSON.stringify({ ok: true, m4a: !!m4a }));
+    res.end(JSON.stringify({ ok: true, m4a: false }));
   } catch (e) {
+    console.error('[Voice] Upload error:', e && e.message ? e.message : e);
     res.statusCode = 500;
     res.setHeader('Content-Type', 'text/plain');
-    res.end('Voice upload error: ' + (e && e.message ? e.message : 'unknown'));
+    res.end('Voice upload failed');
   }
 }

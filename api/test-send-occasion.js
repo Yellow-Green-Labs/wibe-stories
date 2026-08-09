@@ -1,8 +1,16 @@
 export const config = { runtime: 'nodejs' };
 
-import { getOccasionById, getNextOccasion, sendOccasionEmail } from './lib/occasion-email.js';
+import { getOccasionById, getNextOccasion, sendOccasionEmail } from '../lib/occasion-email.js';
 
 export default async function handler(req, res) {
+  // Admin-only: requires the same x-admin-secret used by the app's other
+  // admin-gated endpoints. Prevents strangers from spending Resend credits
+  // by calling this endpoint directly.
+  const adminSecret = req.headers['x-admin-secret'];
+  if (!adminSecret || !process.env.ADMIN_API_SECRET || adminSecret !== process.env.ADMIN_API_SECRET) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   const url = new URL(req.url, `https://${req.headers.host || 'wibestories.vercel.app'}`);
   const email = url.searchParams.get('email');
   const occasionId = url.searchParams.get('occasion');

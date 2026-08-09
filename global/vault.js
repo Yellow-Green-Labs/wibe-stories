@@ -528,15 +528,17 @@
     return /iPad|iPhone|iPod|Mac/.test(navigator.userAgent) && !window.MSStream;
   }
 
-  // Deterministic Blob URL: same host as the card image, /voice/<shortId>.
-  // Apple browsers can't decode the WebM container, so they get the .m4a
-  // variant produced by api/voice.js (with a WebM fallback when it's missing).
+  // Voice URL for a card. Non-Apple devices get the original WebM blob URL.
+  // Apple browsers can't decode the WebM container, so they are pointed at
+  // the lazy /api/voice/m4a/:shortId endpoint, which transcodes the WebM to
+  // AAC/M4A on first play (once per card, then cached in Blob).
   function voiceUrlForCard(card) {
     if (!card || !card.shortId) return "";
     var host = "";
     try { host = new URL(card.imageUrl || "").origin; } catch (e) {}
     if (!host) return "";
-    return host + "/voice/" + card.shortId + (isAppleDevice() ? ".m4a" : "");
+    if (isAppleDevice()) return "/api/voice/m4a/" + card.shortId;
+    return host + "/voice/" + card.shortId;
   }
 
   function setVoiceButtonState(btn, playing) {
@@ -579,7 +581,13 @@
     stopVaultVoice();
     _vaultPlayingId = card.id;
     var urls = [primary];
-    if (isAppleDevice() && primary.indexOf(".m4a") > -1) urls.push(primary.replace(/\.m4a$/, ""));
+    // Apple fallback: if the lazy /api/voice/m4a/:id endpoint fails (e.g.
+    // transcode error, no webm), fall back to the raw WebM blob URL.
+    if (isAppleDevice() && primary.indexOf("/api/voice/m4a/") === 0) {
+      var host = "";
+      try { host = new URL(card.imageUrl || "").origin; } catch (e) {}
+      if (host) urls.push(host + "/voice/" + card.shortId);
+    }
     function tryPlay(index) {
       var audio = new Audio(urls[index]);
       _vaultAudio = audio;

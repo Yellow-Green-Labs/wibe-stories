@@ -78,6 +78,14 @@ function stripControls(str) {
   return str.replace(/[\x00-\x1F\x7F\u200B\u200C\u200D\uFEFF]/g, "");
 }
 
+// Escape HTML so attacker-controlled strings (e.g. the #name URL hash) can
+// never inject markup when placed into innerHTML sinks.
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+}
+
 // RTL intentionally disabled — page layout stays LTR always
 
 // Map script codes (from fonts.js detectScript) to language codes (from languages.json)
@@ -159,7 +167,7 @@ let _updatePending = false;
 let _versionUpToDate = false;
 let _versionPollTimer = null;
 const VERSION_POLL_INTERVAL_MS = 60 * 1000; // 60 seconds
-const CURRENT_VERSION = "v0.11.29.0";
+const CURRENT_VERSION = "v0.11.30.0";
 
 // Shows the "new version available" notice. Persists until clicked — unlike
 // the generic showToast() which auto-dismisses after 3.2s. Clicking triggers
@@ -1120,11 +1128,11 @@ function updateCard(preserveText) {
     // Build label with spans for hierarchy (name bold, language muted)
     if (name || langName) {
       if (name && langName) {
-        lbl.innerHTML = '<span class="card-label-name">' + name + '</span><span class="card-label-sep"> \u00b7 </span><span class="card-label-lang">' + langName + '</span>';
+        lbl.innerHTML = '<span class="card-label-name">' + escapeHtml(name) + '</span><span class="card-label-sep"> \u00b7 </span><span class="card-label-lang">' + escapeHtml(langName) + '</span>';
       } else if (name) {
-        lbl.innerHTML = '<span class="card-label-name">' + name + '</span>';
+        lbl.innerHTML = '<span class="card-label-name">' + escapeHtml(name) + '</span>';
       } else {
-        lbl.innerHTML = '<span class="card-label-lang">' + langName + '</span>';
+        lbl.innerHTML = '<span class="card-label-lang">' + escapeHtml(langName) + '</span>';
       }
     } else {
       lbl.textContent = "";

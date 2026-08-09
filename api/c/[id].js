@@ -62,8 +62,11 @@ export default async function handler(req, res) {
   }
 
   // Check if voice audio exists for this card. Apple browsers can't decode
-  // the WebM container, so they get the .m4a variant produced by api/voice.js
-  // (with a fallback to the original WebM when the variant is missing).
+  // the WebM container. If the pre-generated .m4a exists in Blob, point
+  // Apple devices straight at it (no function invocation needed). Otherwise
+  // point them at the lazy /api/voice/m4a/:id endpoint, which transcodes
+  // the WebM on first play (once per card). Non-Apple devices get the
+  // original WebM directly.
   const ua = (req.headers['user-agent'] || '').toLowerCase();
   const isAppleClient = /iphone|ipad|ipod|mac/.test(ua) && !/windows/i.test(ua);
   let hasVoice = false;
@@ -72,7 +75,8 @@ export default async function handler(req, res) {
     try {
       const m4aRes = await fetch(`https://${BLOB_HOST}/voice/${id}.m4a`, { method: 'HEAD' });
       if (m4aRes.ok) voiceUrl = `https://${BLOB_HOST}/voice/${id}.m4a`;
-    } catch (e) { /* fall back to webm */ }
+      else voiceUrl = `${origin}/api/voice/m4a/${id}`;
+    } catch (e) { voiceUrl = `${origin}/api/voice/m4a/${id}`; }
   }
   try {
     const voiceRes = await fetch(voiceUrl, { method: 'HEAD' });
@@ -296,7 +300,7 @@ html,body{
     <p class="hook-line">${hookLine} <a class="hook-flow pulse" href="https://wisprflow.ai/r?BEST76" target="_blank" rel="noopener">→Wispr Flow</a></p>
     <hr class="divider">
     <p class="landing-meta">${hasVoice ? 'With voice' : 'Text only'}${expiryHtml ? ' · ' + expiryHtml : ''}</p>
-    ${hasVoice ? '<audio controls src="' + safeVoiceUrl + '" style="width:100%;max-width:280px;border-radius:8px;display:block;margin:0 auto"></audio>' : ''}
+    ${hasVoice ? '<audio controls src="' + safeVoiceUrl + '"' + (isAppleClient && voiceUrl.indexOf('/api/voice/m4a/') !== -1 ? ' preload="none"' : '') + ' style="width:100%;max-width:280px;border-radius:8px;display:block;margin:0 auto"></audio>' : ''}
     <div class="dl-btns">
       <a class="dl-link" href="/download/${id}" download="wibe-story.png">Download story card</a>
     </div>

@@ -37,6 +37,19 @@
     return val;
   }
 
+  // Translation values intentionally contain a small safe subset of HTML
+  // (links, <br/>, icon <i> tags). Sanitize before innerHTML so a compromised
+  // translation file can never run scripts: drop script/style blocks, event
+  // handler attributes, executable URLs, and embedding/foreign tags.
+  function sanitizeHtml(val) {
+    return String(val)
+      .replace(/<script[\s\S]*?<\/script\s*>/gi, '')
+      .replace(/<style[\s\S]*?<\/style\s*>/gi, '')
+      .replace(/[\s/]on\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+      .replace(/\s(?:href|src)\s*=\s*(?:"\s*(?:javascript|vbscript|data):[^"]*"|'\s*(?:javascript|vbscript|data):[^']*'|\s*(?:javascript|vbscript|data):[^\s>]*)/gi, '')
+      .replace(/<\s*(?:iframe|object|embed|base|link|meta|form|input|button)[^>]*>/gi, '');
+  }
+
   function applyToElement(el, translations) {
     var key = el.getAttribute('data-i18n');
     var val = resolveKey(translations, key);
@@ -46,7 +59,7 @@
     } else if (el.tagName === 'IMG') {
       el.alt = val;
     } else {
-      el.innerHTML = val;
+      el.innerHTML = sanitizeHtml(val);
     }
   }
 

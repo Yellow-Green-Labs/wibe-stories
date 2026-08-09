@@ -6,7 +6,7 @@
  * Requires RESEND_API_KEY env var (set in .env or export before running).
  */
 
-import { getOccasionById, getNextOccasion, sendOccasionEmail } from '../api/lib/occasion-email.js';
+import { getOccasionById, getNextOccasion, sendOccasionEmail } from '../lib/occasion-email.js';
 
 const email = process.argv[2];
 const occasionId = process.argv[3];

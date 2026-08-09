@@ -2,7 +2,7 @@ export const config = { runtime: 'nodejs' };
 
 import { getRedis, KEYS } from '../../lib/redis.js';
 import Sentry from '../../lib/sentry-node.js';
-import { getOccasionForDate, sendOccasionEmail } from '../lib/occasion-email.js';
+import { getOccasionForDate, sendOccasionEmail } from '../../lib/occasion-email.js';
 
 const CONCURRENCY = 5;
 

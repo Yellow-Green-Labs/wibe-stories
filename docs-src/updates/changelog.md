@@ -5,9 +5,32 @@ outline: [2, 2]
 
 # Changelog
 
-*Last updated: Aug 1, 2026*
+*Last updated: Aug 9, 2026*
 
-> **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 82
+> **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 92
+
+## v0.11.30.1 — 2026-08-09
+
+Hardening release — security fixes, no user-facing changes.
+
+### Fixed
+- **Speech-to-text errors no longer leak internal details** — Error responses are now generic; technical details stay server-side.
+- **Card name from a shared link is now safe** — Names carried in the URL of a shared card are cleaned before display, so a crafted link can't inject markup.
+- **Upload endpoints hardened** — Voice uploads now accept only valid card IDs, and unexpected errors return generic messages instead of internal details.
+
+## v0.11.30.0 — 2026-08-09
+
+Voice recordings get faster to create, and the service stays responsive and protected behind the scenes.
+
+### Changed
+- **Faster voice uploads** - The Apple-friendly version of a voice recording is now prepared only when someone actually opens that card on an Apple device — not at upload time. Uploading is quicker, and recordings nobody plays on Apple devices never spend extra processing.
+- **Voice playback fix on shared pages** - Audio on shared story pages could be blocked by browser security rules; the rules now allow it so the player works for everyone.
+- **Upload safeguards** - Daily upload limits guard against a single source overwhelming the service. Normal use is unaffected.
+- **Retired legacy share route** - The old `/card` shortcut now points to the main app (replaced by short-link cards under `/c/...`).
+
+### Fixed
+- **More reliable status monitoring** - The health check now reports a problem only when core services are actually down together. Brief hiccups in one service no longer look like an outage.
+- **Smarter speech-to-text** - The text-recognition step no longer prepares data it doesn't need for the most common path, making each call leaner.
 
 ## v0.11.29.0 - 2026-08-01
 

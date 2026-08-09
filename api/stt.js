@@ -68,7 +68,13 @@ export default async function handler(req) {
       for (var i = 0; i < buf.length; i++) bin += String.fromCharCode(buf[i]);
       return btoa(bin);
     }
-    var audioBase64 = rawBytesToBase64(bytes);
+    // Lazy: only computed when a Whisper request will actually be made
+    // (the Deepgram path never needs it). Built at most once per request.
+    var audioBase64 = null;
+    function getAudioBase64() {
+      if (audioBase64 === null) audioBase64 = rawBytesToBase64(bytes);
+      return audioBase64;
+    }
 
     // Server-side session rate limit
     if (!isAdmin && sessionId) {
@@ -142,7 +148,7 @@ export default async function handler(req) {
           },
           body: JSON.stringify({
             model: 'openai/whisper-large-v3-turbo',
-            input_audio: { data: audioBase64, format: audioFormat },
+            input_audio: { data: getAudioBase64(), format: audioFormat },
             language: dgLang,
           }),
         });
@@ -183,7 +189,7 @@ export default async function handler(req) {
         },
         body: JSON.stringify({
           model: 'openai/whisper-large-v3-turbo',
-          input_audio: { data: audioBase64, format: audioFormat },
+          input_audio: { data: getAudioBase64(), format: audioFormat },
           language: dgLang,
         }),
       });
@@ -253,12 +259,10 @@ export default async function handler(req) {
     });
   } catch (e) {
     Sentry.captureException(e);
-    const type = e.constructor?.name || 'Error';
-    const stack = (e.stack || '').split('\n').slice(0,6).join('|');
-    const ct = req.headers.get('content-type') || 'unknown';
-    const lang = req.headers.get('x-language') || 'unknown';
-    console.error('[STT] Error:', type, '-', e.message, '| CT:', ct, '| Lang:', lang);
-    return new Response(JSON.stringify({ error: e.message, type, stack, ct, lang }), {
+    console.error('[STT] Error:', e.constructor?.name || 'Error', '-', e.message,
+      '| CT:', req.headers.get('content-type') || 'unknown',
+      '| Lang:', req.headers.get('x-language') || 'unknown');
+    return new Response(JSON.stringify({ error: 'Speech recognition failed' }), {
       status: 500, headers: { 'Content-Type': 'application/json' },
     });
   }
