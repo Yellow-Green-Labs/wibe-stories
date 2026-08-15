@@ -1,5 +1,5 @@
 {
-  "buildCommand": "node scripts/fetch-content.mjs && npx vitepress build blog-src && node scripts/gen-sitemap.mjs && npx vitepress build docs-src",
+  "buildCommand": "node scripts/fetch-content.mjs && npx vitepress build blog-src && node scripts/copy-fontawesome.mjs && node scripts/gen-sitemap.mjs && npx vitepress build docs-src",
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/", "destination": "/wisprstories.html" },
@@ -7,6 +7,7 @@
     { "source": "/about", "destination": "/about.html" },
     { "source": "/language-stats", "destination": "/language-stats.html" },
     { "source": "/card", "destination": "/wisprstories.html" },
+    { "source": "/unsubscribe", "destination": "/api/unsubscribe-occasion" },
     { "source": "/c/:id", "destination": "/api/c/[id]" },
     { "source": "/download/:id", "destination": "/api/download/:id" },
     { "source": "/docs", "destination": "/docs-src/.vitepress/dist/index.html" },
@@ -16,15 +17,23 @@
     { "source": "/docs/hashmap.json", "destination": "/docs-src/.vitepress/dist/hashmap.json" },
     { "source": "/docs/404", "destination": "/docs-src/.vitepress/dist/404.html" },
     { "source": "/docs/:path*.html", "destination": "/docs/:path*", "statusCode": 301 },
+    { "source": "/docs/:path*/", "destination": "/docs-src/.vitepress/dist/:path*.html" },
     { "source": "/docs/:path*", "destination": "/docs-src/.vitepress/dist/:path*.html" },
     { "source": "/blog", "destination": "/blog-src/.vitepress/dist/index.html" },
     { "source": "/blog/", "destination": "/blog-src/.vitepress/dist/index.html" },
     { "source": "/blog/assets/:path*", "destination": "/blog-src/.vitepress/dist/assets/:path*" },
     { "source": "/blog/hashmap.json", "destination": "/blog-src/.vitepress/dist/hashmap.json" },
+    { "source": "/blog/vp-icons.css", "destination": "/blog-src/.vitepress/dist/vp-icons.css" },
+    { "source": "/blog/BLOG-LOGO.png", "destination": "/blog-src/.vitepress/dist/BLOG-LOGO.png" },
+    { "source": "/blog/WS-HORI-DARK.png", "destination": "/blog-src/.vitepress/dist/WS-HORI-DARK.png" },
+    { "source": "/blog/WS-HORI-LIGHT.png", "destination": "/blog-src/.vitepress/dist/WS-HORI-LIGHT.png" },
+    { "source": "/blog/ws-l-b.ico", "destination": "/blog-src/.vitepress/dist/ws-l-b.ico" },
+    { "source": "/blog/sitemap.xml", "destination": "/blog-src/.vitepress/dist/sitemap.xml" },
     { "source": "/blog/404", "destination": "/blog-src/.vitepress/dist/404.html" },
     { "source": "/blog/:locale", "destination": "/blog-src/.vitepress/dist/:locale/index.html" },
     { "source": "/blog/:locale/", "destination": "/blog-src/.vitepress/dist/:locale/index.html" },
     { "source": "/blog/:path*.html", "destination": "/blog/:path*", "statusCode": 301 },
+    { "source": "/blog/:path*/", "destination": "/blog-src/.vitepress/dist/:path*.html" },
     { "source": "/blog/:path*", "destination": "/blog-src/.vitepress/dist/:path*.html" }
   ],
   "redirects": [
@@ -36,13 +45,13 @@
   ],
   "crons": [
     { "path": "/api/cleanup", "schedule": "0 3 * * *" },
-    { "path": "/api/cron/send-occasion-emails", "schedule": "0 8 * * *" }
+    { "path": "/api/cron/send-occasion-emails", "schedule": "0 2 * * *" }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net https://analytics.ahrefs.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.blob.vercel-storage.com https://*.public.blob.vercel-storage.com https://cdn.simpleicons.org https://picsum.photos https://*.r2.dev; media-src 'self' blob: https://*.public.blob.vercel-storage.com https://*.r2.dev; connect-src 'self' https://unpkg.com https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com https://*.public.blob.vercel-storage.com https://*.sentry.io https://analytics.ahrefs.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" },
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net https://analytics.ahrefs.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.blob.vercel-storage.com https://*.public.blob.vercel-storage.com https://cdn.simpleicons.org https://picsum.photos https://fastly.picsum.photos https://*.r2.dev; media-src 'self' blob: https://*.public.blob.vercel-storage.com https://*.r2.dev; connect-src 'self' https://unpkg.com https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com https://*.public.blob.vercel-storage.com https://*.sentry.io https://analytics.ahrefs.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" },

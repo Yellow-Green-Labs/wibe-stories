@@ -33,7 +33,8 @@ Wibe Stories uses the following third-party services. Each service processes dat
 - **Vercel** &mdash; hosting, blob storage, serverless functions
 - **Upstash** &mdash; Redis data storage (usage limits, pro keys, email subscriptions)
 - **Neon** &mdash; Postgres database (vault cards for Pro users)
-- **Resend** &mdash; transactional emails (Pro key delivery, occasion reminders)
+- **Resend** &mdash; transactional emails (Pro key delivery, account notices)
+- **Loops** &mdash; marketing emails (occasion reminders, product announcements); subscription choices made via our unsubscribe page are synced to Loops
 - **Sentry** &mdash; error monitoring and session replay (see above)
 - **Ahrefs** &mdash; visitor analytics (page views, referrer, approximate location). Ahrefs Web Analytics is cookieless and does not store personal data.
 

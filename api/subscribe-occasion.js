@@ -65,6 +65,21 @@ export default async function handler(req) {
     });
   }
 
+  const name = typeof body.name === 'string' ? body.name.trim() : '';
+  const NAME_RE = /^[\p{L}\p{N} .'\-]+$/u;
+  if (name.length > 60) {
+    return new Response(JSON.stringify({ ok: false, error: 'Name is too long (max 60 characters).' }), {
+      status: 400,
+      headers,
+    });
+  }
+  if (name && !NAME_RE.test(name)) {
+    return new Response(JSON.stringify({ ok: false, error: 'Name contains invalid characters.' }), {
+      status: 400,
+      headers,
+    });
+  }
+
   const clientIp = getClientIp(req);
   const today = new Date().toISOString().slice(0, 10);
   const rateKey = 'wispr:sub-rate:' + clientIp + ':' + today;
@@ -88,6 +103,11 @@ export default async function handler(req) {
     }
 
     await redis.sadd(KEYS.emailSubscribersSet, email);
+    if (name) {
+      await redis.set(KEYS.subscriberName(email), name, { ex: 31536000 });
+    } else {
+      await redis.del(KEYS.subscriberName(email));
+    }
   } catch (err) {
     console.error('[SubscribeOccasion] Redis error:', err.message);
     return new Response(JSON.stringify({ ok: false, error: 'Server error' }), {
@@ -96,8 +116,33 @@ export default async function handler(req) {
     });
   }
 
+  await syncLoopsContact(email, name);
+
   return new Response(JSON.stringify({ ok: true }), {
     status: 200,
     headers,
   });
+}
+
+// Best-effort mirror of the subscription into Loops (marketing email platform).
+// Never fails the request — Loops is the marketing channel, Redis is the source of truth.
+async function syncLoopsContact(email, name) {
+  if (!process.env.LOOPS_API_KEY) return;
+  try {
+    const payload = { email, subscribed: true, userGroup: 'subscriber' };
+    if (name) {
+      payload.firstName = name.split(' ')[0];
+      if (name.includes(' ')) payload.lastName = name.split(' ').slice(1).join(' ');
+    }
+    await fetch('https://app.loops.so/api/v1/contacts/update', {
+      method: 'PUT',
+      headers: {
+        Authorization: 'Bearer ' + process.env.LOOPS_API_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    console.error('[SubscribeOccasion] Loops sync error:', err.message);
+  }
 }

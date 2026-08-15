@@ -28,6 +28,8 @@ _start-dev.cmd
 .env*.local
 intercom-blog-frontend.css
 opencode-athena-agent-spec.md
+opencode.json
+DESIGN.html
 
 # Internal logs folder — team-only source files are git-ignored.
 # observer.js is un-ignored so it ships with the public site.

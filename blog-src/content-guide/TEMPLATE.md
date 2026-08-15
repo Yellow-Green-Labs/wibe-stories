@@ -21,13 +21,16 @@ subtitle:     # One extra sentence that makes the reader want to continue.
 description:  # Two sentences max, plain summary. This is the text Google
               # shows under the title in search results. Must mention the
               # topic's keyword phrase naturally.
-category:     # One of the keys below (the name shown to readers is in brackets):
-              # voice-recording-tips [Voice Dictation]
-              # stories-traditions [User Stories]
-              # languages-culture [Language Culture]
-              # occasions-celebrations [Seasonal Moments]
-              # tech-ai [Tech Behind]
-              # product-news [Personal Voice]
+category:     # One of the keys below (the theme renders the localized
+              # display name from the locale; descriptions are the one-liners
+              # from content-guide/CATEGORIES.md translated per locale with
+              # the same meaning — see the name table there):
+              # wibes-news [Wibe's News]
+              # voice-dictation [Voice Dictation]
+              # tech-behind [Tech Behind]
+              # confluence [Confluence]
+              # user-stories [User Stories]
+              # cultural-mosaic [Cultural Mosaic]
 author:       # One of these four, chosen to fit the article's subject:
               # "Wibe Engineering Team" | "Wibe Editorial Team"
               # "Wibe International Team" | "Wibe Design Team"

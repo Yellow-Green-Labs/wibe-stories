@@ -167,7 +167,7 @@ let _updatePending = false;
 let _versionUpToDate = false;
 let _versionPollTimer = null;
 const VERSION_POLL_INTERVAL_MS = 60 * 1000; // 60 seconds
-const CURRENT_VERSION = "v0.11.30.0";
+const CURRENT_VERSION = "v0.11.34.1";
 
 // Shows the "new version available" notice. Persists until clicked — unlike
 // the generic showToast() which auto-dismisses after 3.2s. Clicking triggers
@@ -3540,13 +3540,13 @@ document.getElementById("onboardingGotIt")?.addEventListener("click", enterApp);
 // playback entirely — the guard in lpSetVideoFile never fetches the video.
 // _LP_VIDEO_BASE is the public CDN base (Cloudflare R2, r2.dev). The local
 // copies under assets/cards/ are git-ignored build artifacts (backup only).
-// Desktop files are 1080p re-encodes (opaque black background — the masters'
-// alpha plane is not decodable by ffmpeg, and black is visually identical to
-// transparency on the #1a1a1a card).
+// All four files are transparent WebM (VP9 alpha, alpha_mode=1) so they work
+// on both light and dark mode. The desktop pair (2560x1440 masters, or user
+// compressed transparent variants) and mobile pair (1080x1350) live on R2.
 var _lpVideoShot = 0;
 var _LP_VIDEO_BASE = "https://pub-5b5b01c9c3a14dad80d7d71e76a269b4.r2.dev/welcome-landing/";
 var _lpVideoPairs = {
-  desktop: ["wheel-showcase-1-1080p.webm", "wheel-showcase-2-1080p.webm"],
+  desktop: ["wheel-showcase-1.webm", "wheel-showcase-2.webm"],
   mobile: ["mob-sc-1.webm", "mob-sc-2.webm"],
 };
 var _lpResizeSwap = false;

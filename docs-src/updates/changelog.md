@@ -5,9 +5,45 @@ outline: [2, 2]
 
 # Changelog
 
-*Last updated: Aug 9, 2026*
+*Last updated: Aug 15, 2026*
 
-> **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 92
+> **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 94
+
+## v0.11.34.1 - 2026-08-15
+
+Occasion email subscriptions are now managed through a dedicated marketing email platform.
+
+### Changed
+- **Marketing email platform** - Occasion reminder emails and future product announcements will be delivered through a dedicated marketing email service, keeping transactional mail (Pro keys, account notices) separate. Your subscription choice is now synced there automatically.
+- **Stricter undo protection** - The undo option on the unsubscribe page now only works for a link that actually unsubscribed you, so it can't re-subscribe you by mistake.
+- **Update notification fix** - Fixed a false "new version ready" notification some users saw after the latest release.
+
+## v0.11.33.0 - 2026-08-15
+
+A cleaner, safer unsubscribe experience for occasion emails.
+
+### Changed
+- **Clean unsubscribe link** - Occasion emails now link to a tidy unsubscribe page instead of a technical URL.
+- **Undo option** - If you unsubscribe by accident, the confirmation page lets you undo it instantly and stay subscribed.
+- **Fresh look** - The page matches the app's style with a new icon and favicon.
+
+## v0.11.32.0 - 2026-08-15
+
+Occasion emails now show the card exactly as it looks in the app.
+
+### Changed
+- **Arched card design** - The occasion card at the top of each email now mirrors the app's card exactly: a warm cream card with an arched cutout that lets the occasion illustration show through, so the email looks like the real card you send.
+- **Flags-only country row** - The row under the occasion name now shows just the flags of the celebrating countries - no name lists, no clutter.
+- **Sharper occasion banners** - Occasion-name art was re-rendered so longer names (Lunar New Year, St. Patrick's Day, Dragon Boat Festival and more) sit on two balanced lines.
+
+## v0.11.31.0 - 2026-08-11
+
+Occasion emails get a fresh, brand-consistent design.
+
+### Changed
+- **New look for occasion emails** - The occasion card at the top of each email now mirrors the app's card design: a warm cream card floating over the occasion illustration, a "NEW OCCASION" badge, and the occasion name in a bold dashed frame - with a single "CREATE YOUR CARD" button below.
+- **Live headline text** - Occasion names now render as text that wraps naturally, so every name fits perfectly on any screen.
+- **Demo cards animation updated** - The email's sample-cards animation was regenerated from the current card designs and now lives at its own asset address.
 
 ## v0.11.30.1 — 2026-08-09
 
@@ -48,6 +84,13 @@ The welcome landing demo videos now stream from a public CDN, so first-time visi
 ## [Unreleased]
 
 Multi-sync session: PENDING view columns fixed, legacy PENDING removed, C_WS-updates brain dump section + items added, DECISIONS expanded with context, Target Dates set by priority.
+
+### Changed
+
+- **Blog categories overhauled** — The Wibe & Wonder blog's six categories use clean slugs that match their display names (`wibes-news`, `voice-dictation`, `tech-behind`, `confluence`, `user-stories`, `cultural-mosaic`) in a fixed display order. Category names are the same in every language (the slug's readable words, e.g. "Confluence" is never translated), while each category page shows a short localized description under its title. Old category URLs were removed without redirects. Old category URLs were removed without redirects.
+
+### Fixed
+- **Trailing-slash deep URLs (blog + docs)** — URLs like `/blog/categories/wibes-news/` and `/docs/product-guide/wibe-stories/` returned 404 because the path wildcard captured the trailing slash (files were looked up as `.../.html`). Added explicit `/:path*/` rewrite rules before the slash-less catch-alls for both `/blog/` and `/docs/`. Site-generated links were unaffected (slash-less cleanUrls).
 
 ### Added
 - **Project Tasks Notion database** — Created under WIBE_STORIES frontlogs page with 110 items (109 Pending, 1 Discarded) across 15 categories. Schema: Item, Category, Status, Priority, Effort, Source, Start Date, Target Date, Notes.

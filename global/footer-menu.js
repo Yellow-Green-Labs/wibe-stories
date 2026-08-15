@@ -386,6 +386,7 @@
       '<div class="fmenu-sub-title">Get occasion reminders</div>' +
       '<p class="fmenu-sub-sub">We\'ll email you before festivals and special days so you never miss a celebration.</p>' +
       '<input type="email" class="fmenu-sub-input" id="fmenuSubEmail" placeholder="your@email.com" />' +
+      '<input type="text" class="fmenu-sub-input" id="fmenuSubName" maxlength="60" placeholder="Your name (optional)" />' +
       '<button class="fmenu-sub-btn" id="fmenuSubBtn">Subscribe</button>' +
       '<p class="fmenu-sub-success" id="fmenuSubSuccess">\u2713 You\'re in! We\'ll email you before special days.</p>' +
       '<p class="fmenu-sub-error" id="fmenuSubError"></p>' +
@@ -417,7 +418,10 @@
   document.getElementById("fmenuSubBtn").addEventListener("click", async function () {
     const emailInput = document.getElementById("fmenuSubEmail");
     const email = emailInput.value.trim();
+    const nameInput = document.getElementById("fmenuSubName");
+    const name = nameInput.value.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const nameRegex = /^[\p{L}\p{N} .'\-]+$/u;
     const errorEl = document.getElementById("fmenuSubError");
     const successEl = document.getElementById("fmenuSubSuccess");
 
@@ -430,6 +434,12 @@
       return;
     }
 
+    if (name && !nameRegex.test(name)) {
+      errorEl.textContent = "Please use letters, numbers, spaces, and . ' - only.";
+      errorEl.classList.add("visible");
+      return;
+    }
+
     const btn = document.getElementById("fmenuSubBtn");
     btn.disabled = true;
     btn.textContent = "Subscribing\u2026";
@@ -438,12 +448,13 @@
       const res = await fetch("/api/subscribe-occasion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, name }),
       });
       const data = await res.json();
       if (data.ok) {
         successEl.classList.add("visible");
         emailInput.value = "";
+        nameInput.value = "";
         btn.textContent = "Joined!";
         setTimeout(function () {
           btn.textContent = "Subscribe";
@@ -464,6 +475,12 @@
   });
 
   document.getElementById("fmenuSubEmail").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      document.getElementById("fmenuSubBtn").click();
+    }
+  });
+
+  document.getElementById("fmenuSubName").addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
       document.getElementById("fmenuSubBtn").click();
     }

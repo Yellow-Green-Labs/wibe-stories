@@ -49,3 +49,4 @@ User-agent: Bingbot
 Disallow: /c/
 
 Sitemap: https://wibestories.vercel.app/sitemap.xml
+Sitemap: https://wibestories.vercel.app/blog/sitemap.xml

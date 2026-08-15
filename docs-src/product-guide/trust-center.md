@@ -4,7 +4,7 @@ title: Trust Center
 
 # Trust Center
 
-*Last updated: Aug 1, 2026*
+*Last updated: Aug 15, 2026*
 
 > The services we rely on to run Wibe Stories, what they do, and how your data is handled.
 
@@ -28,7 +28,9 @@ title: Trust Center
 
 [![Buy Me a Coffee](https://cdn.simpleicons.org/buymeacoffee)](https://buymeacoffee.com) **Buy Me a Coffee** — Payment processing for Wibe Pass purchases and gift cards.
 
-[![Resend](https://cdn.simpleicons.org/resend)](https://resend.com) **Resend** — Transactional email delivery for Pro key recovery and occasion reminders.
+[![Resend](https://cdn.simpleicons.org/resend)](https://resend.com) **Resend** — Transactional email delivery: Pro key delivery and recovery, and account notices that must reach you regardless of marketing preferences.
+
+[![Loops](https://cdn.simpleicons.org/loops)](https://loops.so) **Loops** — Marketing email platform for occasion reminder emails and product announcements. Subscription choices made on our unsubscribe page are synced here.
 
 ## Monitoring
 

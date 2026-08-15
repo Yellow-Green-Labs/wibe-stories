@@ -3,7 +3,7 @@ layout: post
 title: 더 선명한 음성 녹음을 위한 세 가지 습관
 subtitle: 작은 변화로 목소리가 훨씬 또렷해집니다.
 description: 시끄러운 방에서도 음성 녹음을 선명하게 만드는 실용적인 팁 — 마이크 거리, 공간 선택, 그리고 녹음 전 준비.
-category: voice-recording-tips
+category: voice-dictation
 author: Wibe Engineering Team
 date: 2026-08-07
 image: https://picsum.photos/seed/clearer-voice-korean-placeholder/1200/675

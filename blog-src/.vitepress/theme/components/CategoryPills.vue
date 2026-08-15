@@ -15,7 +15,7 @@ function href(key) {
 </script>
 
 <template>
-  <nav class="ws-pills" aria-label="Categories">
+  <nav class="ws-pills" :aria-label="t('categories')">
     <a class="ws-pill" :class="{ 'ws-pill-on': current === '' }" :href="href('')">
       {{ t('allCategories') }}
     </a>

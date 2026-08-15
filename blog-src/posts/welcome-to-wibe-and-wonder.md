@@ -3,7 +3,7 @@ layout: post
 title: Welcome to Wibe & Wonder — The Blog for Your Voice
 subtitle: A small promise about what we'll write here, and why.
 description: Wibe & Wonder is the Wibe Stories blog — stories, tips and culture for making your voice a card, in your language, in seconds.
-category: product-news
+category: wibes-news
 author: Wibe Editorial Team
 date: 2026-08-09
 image: https://picsum.photos/seed/welcome-to-wibe-and-wonder/1200/675

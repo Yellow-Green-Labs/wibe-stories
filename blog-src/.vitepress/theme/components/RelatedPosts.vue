@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useI18n } from '../i18n'
+import { withBase } from 'vitepress'
 import { data as allPosts } from '../data/posts.data'
 import PostCard from './PostCard.vue'
 
@@ -12,21 +13,33 @@ const { t, locale } = useI18n()
 
 const related = computed(() => {
   if (!props.post) return []
-  const sameCat = allPosts.filter(
-    (p) => p.locale === props.post.locale && p.category === props.post.category && p.url !== props.post.url
+  const others = allPosts.filter((p) => p.url !== props.post.url)
+  const sameCat = others.filter(
+    (p) => p.locale === props.post.locale && p.category === props.post.category
   )
-  const sameLocale = allPosts.filter(
-    (p) => p.locale === props.post.locale && p.url !== props.post.url && p.category !== props.post.category
+  const sameLocale = others.filter(
+    (p) => p.locale === props.post.locale && p.category !== props.post.category
   )
-  return [...sameCat, ...sameLocale].slice(0, 3)
+  const rest = others.filter((p) => p.locale !== props.post.locale)
+  return [...sameCat, ...sameLocale, ...rest].slice(0, 3)
 })
+
+const browseHref = computed(() =>
+  withBase(locale.value ? `/${locale.value}/` : '/')
+)
 </script>
 
 <template>
-  <template v-if="related.length">
+  <div class="ws-related-head">
     <div class="ws-section-label">{{ t('related') }}</div>
-    <div class="ws-related">
-      <PostCard v-for="r in related" :key="r.url" :post="r" />
-    </div>
-  </template>
+    <a class="ws-browse-all" :href="browseHref">
+      {{ t('browseAll') }}
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </a>
+  </div>
+  <div v-if="related.length" class="ws-related">
+    <PostCard v-for="r in related" :key="r.url" :post="r" variant="related" />
+  </div>
 </template>

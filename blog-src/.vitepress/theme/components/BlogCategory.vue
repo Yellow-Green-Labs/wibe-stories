@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue'
 import { useData, withBase } from 'vitepress'
 import { useI18n } from '../i18n'
 import { data as allPosts } from '../data/posts.data'
-import CategoryPills from './CategoryPills.vue'
+import CategoryDropdown from './CategoryDropdown.vue'
 import PostCard from './PostCard.vue'
 import Pagination from './Pagination.vue'
 import BackToTop from './BackToTop.vue'
@@ -32,16 +32,19 @@ watch([cat, locale], () => {
 <template>
   <header class="ws-category-head">
     <h1>{{ catName(cat) }}</h1>
-    <p>{{ posts.length }} {{ t('stories') }}</p>
+    <p class="ws-cat-desc" v-if="frontmatter.description">{{ frontmatter.description }}</p>
   </header>
 
-  <CategoryPills :current="cat" />
+  <CategoryDropdown :current="cat" />
 
-  <div class="ws-container" style="padding-top: 8px">
+  <div class="ws-container" style="padding-top: var(--space-8)">
     <div v-if="pagePosts.length" class="ws-list">
-      <PostCard v-for="p in pagePosts" :key="p.url" :post="p" />
+      <PostCard v-for="p in pagePosts" :key="p.url" :post="p" variant="minimal" />
     </div>
-    <div v-else class="ws-empty">{{ t('noResults') }}</div>
+    <div v-else class="ws-empty">
+      <p>{{ t('noResults') }}</p>
+      <a :href="homeHref" class="ws-empty-cta">{{ t('browseAll') }}</a>
+    </div>
 
     <Pagination :total="posts.length" :per-page="PER_PAGE" :current="page" @update="page = $event" />
   </div>

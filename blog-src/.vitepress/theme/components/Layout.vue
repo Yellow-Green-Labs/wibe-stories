@@ -6,6 +6,7 @@ import SiteFooter from './SiteFooter.vue'
 import BlogHome from './BlogHome.vue'
 import BlogArticle from './BlogArticle.vue'
 import BlogCategory from './BlogCategory.vue'
+import ConsentBanner from './ConsentBanner.vue'
 
 const { frontmatter, site } = useData()
 
@@ -32,9 +33,10 @@ watch(
     <BlogHome v-if="frontmatter.layout === 'home'" />
     <BlogArticle v-else-if="frontmatter.layout === 'post'" />
     <BlogCategory v-else-if="frontmatter.layout === 'category'" />
-    <div v-else class="ws-container" style="padding-top: 40px">
+    <div v-else class="ws-container" style="padding-top: var(--space-40)">
       <Content />
     </div>
   </main>
   <SiteFooter />
+  <ConsentBanner />
 </template>

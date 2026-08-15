@@ -77,6 +77,13 @@ self.addEventListener('fetch', (event) => {
     return; // browser handles it; we don't intercept
   }
 
+  // Cloudflare R2 (r2.dev) — same reasoning as Blob above. Landing-page
+  // videos load via <video> (covered by media-src CSP); the SW must not
+  // intercept them or its fetch() hits connect-src and gets blocked.
+  if (url.hostname.endsWith('.r2.dev')) {
+    return; // browser handles it; we don't intercept
+  }
+
   // Cross-origin (Google Fonts, etc.) — stale-while-revalidate so updates
   // arrive on the next visit but offline still works.
   // Skip FFmpeg WASM CDN — browser must get a fresh Response with unconsumed

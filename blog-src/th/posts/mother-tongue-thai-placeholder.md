@@ -3,7 +3,7 @@ layout: post
 title: ภาษาแม่คือบ้านของหัวใจ ทำไมเสียงของคุณถึงพิเศษเสมอ
 subtitle: ประโยคเดียวกัน ฟังแล้วต่างกัน เมื่อพูดเป็นภาษาแม่
 description: ภาษาแม่เชื่อมต่อกับอารมณ์และความทรงจำของเรา มากกว่าภาษาที่เรียนทีหลัง นี่คือเหตุผลที่การบันทึกเสียงในภาษาแม่ของคุณจึงมีความหมาย
-category: languages-culture
+category: cultural-mosaic
 author: Wibe International Team
 date: 2026-08-08
 image: https://picsum.photos/seed/mother-tongue-thai-placeholder/1200/675

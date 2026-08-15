@@ -1,7 +1,9 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { useI18n } from '../i18n'
 
 const show = ref(false)
+const { t } = useI18n()
 
 function onScroll() {
   show.value = window.scrollY > 640
@@ -25,8 +27,7 @@ onBeforeUnmount(() => {
   <button
     class="ws-backtop"
     :class="{ 'ws-show': show }"
-    aria-label="Back to top"
-    @click="toTop"
+    :aria-label="t('backToTop')"    @click="toTop"
   >
     ↑
   </button>

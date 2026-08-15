@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { useI18n } from '../i18n'
 
 const props = defineProps({
   total: { type: Number, required: true },
@@ -8,6 +9,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update'])
+const { t } = useI18n()
 
 const pages = computed(() => Math.max(1, Math.ceil(props.total / props.perPage)))
 const list = computed(() => {
@@ -22,7 +24,7 @@ function go(n) {
 </script>
 
 <template>
-  <nav v-if="pages > 1" class="ws-pagination" aria-label="Pagination">
+  <nav v-if="pages > 1" class="ws-pagination" :aria-label="t('pagination')">
     <button class="ws-page-btn" :disabled="current <= 1" @click="go(current - 1)">←</button>
     <button
       v-for="n in list"

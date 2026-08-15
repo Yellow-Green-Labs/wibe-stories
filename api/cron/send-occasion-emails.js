@@ -10,27 +10,31 @@ function normalizeEmail(email) {
   return email.toLowerCase().trim();
 }
 
-export default async function handler(req) {
+export default async function handler(req, res) {
   try {
   const expected = process.env.CRON_SECRET;
   if (!expected || req.headers['authorization'] !== `Bearer ${expected}`) {
-    return new Response('Unauthorized', { status: 401 });
+    res.statusCode = 401;
+    res.end('Unauthorized');
+    return;
   }
 
   const resendApiKey = process.env.RESEND_API_KEY;
   if (!resendApiKey) {
     console.error('[OccasionCron] RESEND_API_KEY not set');
-    return new Response('Server config error', { status: 500 });
+    res.statusCode = 500;
+    res.end('Server config error');
+    return;
   }
 
   const today = new Date();
   const occasion = getOccasionForDate(today);
 
   if (!occasion) {
-    return new Response(JSON.stringify({ ok: true, occasion: null, message: 'no occasion today' }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    res.setHeader('Content-Type', 'application/json');
+    res.statusCode = 200;
+    res.end(JSON.stringify({ ok: true, occasion: null, message: 'no occasion today' }));
+    return;
   }
 
   console.log(`[OccasionCron] Today is ${occasion.name} — preparing emails`);
@@ -42,13 +46,19 @@ export default async function handler(req) {
   ]);
   const allEmails = [...new Set([...proEmails, ...subEmails])];
 
+  const nameRows = await redis.mget(allEmails.map((e) => KEYS.subscriberName(e)));
+  const nameMap = new Map();
+  allEmails.forEach((email, i) => {
+    if (nameRows[i]) nameMap.set(email, nameRows[i]);
+  });
+
   console.log(`[OccasionCron] Recipients: ${allEmails.length} total (${proEmails.length} Pro, ${subEmails.length} subscriber)`);
 
   if (!allEmails || allEmails.length === 0) {
-    return new Response(JSON.stringify({ ok: true, occasion: occasion.id, sent: 0, skipped: 0 }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    res.setHeader('Content-Type', 'application/json');
+    res.statusCode = 200;
+    res.end(JSON.stringify({ ok: true, occasion: occasion.id, sent: 0, skipped: 0 }));
+    return;
   }
 
   let sent = 0;
@@ -67,7 +77,7 @@ export default async function handler(req) {
           return 'skipped';
         }
 
-        const result = await sendOccasionEmail(resendApiKey, email, occasion);
+        const result = await sendOccasionEmail(resendApiKey, email, occasion, undefined, { name: nameMap.get(email) || '' });
         if (result.ok) {
           await redis.set(dedupKey, '1', { ex: 31536000 });
           return 'sent';
@@ -93,13 +103,13 @@ export default async function handler(req) {
 
   fetch('https://uptime.betterstack.com/api/v1/heartbeat/w3uksqCqLVNogZhx78Z8yvrh')
     .catch(function() { /* non-critical */ });
-  return new Response(JSON.stringify({ ok: true, occasion: occasion.id, sent, skipped, errors }), {
-    status: 200,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  res.setHeader('Content-Type', 'application/json');
+  res.statusCode = 200;
+  res.end(JSON.stringify({ ok: true, occasion: occasion.id, sent, skipped, errors }));
   } catch (e) {
     Sentry.captureException(e);
     console.error('[OccasionCron] Unhandled error:', e.message);
-    return new Response('Internal server error', { status: 500 });
+    res.statusCode = 500;
+    res.end('Internal server error');
   }
 }

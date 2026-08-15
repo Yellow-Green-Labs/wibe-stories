@@ -4,6 +4,9 @@ import { useI18n } from '../i18n'
 import { data as allPosts } from '../data/posts.data'
 
 const { t, locale } = useI18n()
+const props = defineProps({
+  showButton: { type: Boolean, default: false }
+})
 
 const query = ref('')
 const open = ref(false)
@@ -34,6 +37,11 @@ function onDocClick(e) {
   if (!e.target.closest('.ws-search-wrap')) open.value = false
 }
 
+function go() {
+  if (query.value.trim()) open.value = true
+  inputRef.value?.focus()
+}
+
 watch(locale, () => {
   query.value = ''
   open.value = false
@@ -51,7 +59,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="ws-search-wrap">
+  <div class="ws-search-wrap" :class="{ 'ws-search-wrap-btn': showButton }">
+    <svg class="ws-search-icon" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+      <circle cx="6.5" cy="6.5" r="4.5" fill="none" stroke="currentColor" stroke-width="1.5" />
+      <line x1="10.2" y1="10.2" x2="13.8" y2="13.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+    </svg>
     <input
       ref="inputRef"
       v-model="query"
@@ -62,11 +74,12 @@ onBeforeUnmount(() => {
       @focus="open = true"
       @input="open = true"
     />
+    <button v-if="showButton" type="button" class="ws-search-go" @click="go">{{ t('searchLabel') }}</button>
     <div v-if="open" class="ws-search-results">
       <template v-if="results.length">
         <a v-for="r in results" :key="r.url" class="ws-search-result" :href="r.url">
           <strong>{{ r.title }}</strong>
-          <span>{{ r.author }} · {{ t('readTime') }}</span>
+          <span>{{ r.author }} · {{ r.readMin }} {{ t('readTime') }}</span>
         </a>
       </template>
       <div v-else class="ws-search-empty">{{ t('noResults') }}</div>

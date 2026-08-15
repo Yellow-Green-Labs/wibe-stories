@@ -1,10 +1,11 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useData, useRoute, withBase } from 'vitepress'
 import { useI18n } from '../i18n'
 import { data as allPosts } from '../data/posts.data'
 import RelatedPosts from './RelatedPosts.vue'
 import BackToTop from './BackToTop.vue'
+import ShareBar from './ShareBar.vue'
 
 const { frontmatter, site } = useData()
 const route = useRoute()
@@ -47,62 +48,64 @@ const APP_URL = 'https://wibestories.vercel.app'
 const TALLY_URL = 'https://tally.so/r/WO6B8Q'
 
 const shareUrl = computed(() => APP_URL + route.path)
+const sharedTitle = computed(() => String(frontmatter.value.title || ''))
 const improveHref = computed(
-  () => TALLY_URL + '?article=' + encodeURIComponent(String(frontmatter.value.title || ''))
+  () => TALLY_URL + '?article=' + encodeURIComponent(sharedTitle.value)
 )
 const contributors = computed(() =>
   Array.isArray(frontmatter.value.contributors) ? frontmatter.value.contributors : []
 )
 
-const copied = ref(false)
-let copyTimer = null
+const sigEl = ref(null)
+const railEl = ref(null)
+const articleEl = ref(null)
+let railTicking = false
+const RAIL_TOP = 96
 
-async function share() {
-  if (typeof navigator !== 'undefined' && navigator.share) {
-    try {
-      await navigator.share({ title: String(frontmatter.value.title || ''), url: shareUrl.value })
-    } catch (e) {
-      /* user dismissed the share sheet */
-    }
-    return
-  }
-  try {
-    await navigator.clipboard.writeText(shareUrl.value)
-  } catch (e) {
-    const ta = document.createElement('textarea')
-    ta.value = shareUrl.value
-    document.body.appendChild(ta)
-    ta.select()
-    document.execCommand('copy')
-    ta.remove()
-  }
-  copied.value = true
-  clearTimeout(copyTimer)
-  copyTimer = setTimeout(() => {
-    copied.value = false
-  }, 2000)
+function updateRail() {
+  railTicking = false
+  const rail = railEl.value
+  if (!rail) return
+  const bodyTop = articleEl.value ? articleEl.value.getBoundingClientRect().top : RAIL_TOP
+  rail.style.top = Math.max(RAIL_TOP, bodyTop) + 'px'
+  const show = !sigEl.value || sigEl.value.getBoundingClientRect().top > RAIL_TOP
+  rail.classList.toggle('ws-rail-hidden', !show)
 }
+
+function onRailScroll() {
+  if (railTicking) return
+  railTicking = true
+  requestAnimationFrame(updateRail)
+}
+
+onMounted(() => {
+  updateRail()
+  window.addEventListener('scroll', onRailScroll, { passive: true })
+  window.addEventListener('resize', onRailScroll, { passive: true })
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', onRailScroll)
+  window.removeEventListener('resize', onRailScroll)
+})
 </script>
 
 <template>
   <article class="ws-article-top">
-    <div class="ws-container ws-article-main">
-      <a class="ws-back" :href="homeHref">{{ t('backToBlog') }}</a>
+    <div ref="railEl">
+      <ShareBar variant="rail" :url="shareUrl" :title="sharedTitle" />
+    </div>
+
+    <div ref="articleEl" class="ws-container ws-article-main">
+      <a class="ws-back" :href="homeHref"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i>{{ t('backToBlog') }}</a>
 
       <header class="ws-article-header">
-        <div class="ws-article-head-row">
-          <div class="ws-article-head-main">
-            <div class="ws-meta">
-              <a class="ws-cat" :href="catHref(frontmatter.category)">{{ catName(frontmatter.category) }}</a>
-              <span>{{ t('publishedOn') }} {{ fmtDate(frontmatter.date) }}</span>
-            </div>
-            <h1>{{ frontmatter.title }}</h1>
-            <p v-if="frontmatter.subtitle" class="ws-subtitle">{{ frontmatter.subtitle }}</p>
-          </div>
-          <button class="ws-share-top" :aria-label="t('shareButton')" :title="t('shareButton')" @click="share">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-          </button>
+        <div class="ws-meta">
+          <a class="ws-cat" :href="catHref(frontmatter.category)">{{ catName(frontmatter.category) }}</a>
+          <span>{{ t('publishedOn') }} {{ fmtDate(frontmatter.date) }}</span>
         </div>
+        <h1>{{ frontmatter.title }}</h1>
+        <p v-if="frontmatter.subtitle" class="ws-subtitle">{{ frontmatter.subtitle }}</p>
         <div class="ws-meta ws-article-meta">
           <span class="ws-avatar" aria-hidden="true">{{ initial(frontmatter.author) }}</span>
           <span>{{ frontmatter.author }}</span>
@@ -112,21 +115,24 @@ async function share() {
             <span>{{ readMin }} {{ t('readTime') }}</span>
           </span>
         </div>
-        <img v-if="frontmatter.image" :src="frontmatter.image" alt="" />
+        <img
+          v-if="frontmatter.image"
+          :src="frontmatter.image"
+          alt=""
+          width="1200"
+          height="675"
+        />
       </header>
+
+      <ShareBar variant="top" :url="shareUrl" :title="sharedTitle" />
 
       <div class="ws-article-body">
         <Content />
+        <p ref="sigEl" class="ws-signature">{{ t('signature') }}</p>
       </div>
 
       <footer class="ws-article-foot">
-        <div class="ws-share-row">
-          <span class="ws-share-line">{{ t('shareLine') }}</span>
-          <button class="ws-share-btn" @click="share">
-            {{ copied ? t('copied') : t('shareButton') }}
-          </button>
-        </div>
-        <p class="ws-signature">{{ t('signature') }}</p>
+        <ShareBar variant="foot" :url="shareUrl" :title="sharedTitle" />
         <p class="ws-disclosure">{{ t('disclosure') }}</p>
         <a class="ws-improve" :href="improveHref" target="_blank" rel="noopener">
           {{ frontmatter.improve === false ? t('improveFinal') : t('improveOpen') }}
@@ -141,11 +147,20 @@ async function share() {
     <div class="ws-container">
       <RelatedPosts :post="currentPost" />
 
-      <aside class="ws-cta">
-        <h2>{{ t('createCta') }}</h2>
-        <p>{{ t('createCtaSub') }}</p>
-        <a class="ws-cta-btn" :href="APP_URL">{{ t('createCard') }}</a>
-      </aside>
+      <div class="cta-section">
+        <div class="cta-title">{{ t('createCta') }}</div>
+        <div class="cta-sub">{{ t('createCtaSub') }}</div>
+        <a :href="APP_URL" class="cta-btn">
+          {{ t('ctaButton') }}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6l-6 6"></path></svg>
+        </a>
+        <p class="wispr-cta-tagline">
+          {{ t('ctaTaglinePre') }}
+          <a href="https://wisprflow.ai/r?BEST76" target="_blank" rel="noopener" class="wispr-wave">Wispr Flow</a>
+          {{ t('ctaTaglineFlow') }}
+        </p>
+        <div class="support-link">{{ t('supportQuestion') }} <a href="https://tally.so/r/obaD1M" target="_blank" rel="noopener">{{ t('supportContact') }}</a></div>
+      </div>
     </div>
   </article>
 
