@@ -3273,7 +3273,7 @@ function syncToneCountsFromServer() {
   var sessionId = localStorage.getItem("wsSessionId");
   if (!sessionId) return;
   var proKey = localStorage.getItem("wsSessionToken") || localStorage.getItem("wsProKey") || "";
-  var url = "/api/rewrite-status?sessionId=" + encodeURIComponent(sessionId);
+  var url = (window._API_BASE || '') + "/api/rewrite-status?sessionId=" + encodeURIComponent(sessionId);
   if (proKey) url += "&proKey=" + encodeURIComponent(proKey);
   fetch(url).then(function(r) { return r.json(); }).then(function(data) {
     if (!data || !data.counts) return;

@@ -47,7 +47,10 @@
   }
 
   // Call /api/usage
-  fetch(window._API_BASE + '/api/usage', {
+  // NOTE: window._API_BASE may not be set yet (this runs on page load).
+  // Hardcode the Railway URL as fallback.
+  var _apiBase = window._API_BASE || 'https://wibe-stories-production.up.railway.app';
+  fetch(_apiBase + '/api/usage', {
     method: 'POST',
     headers: headers,
     body: JSON.stringify({ sessionId: sid, isPro: isPro }),
