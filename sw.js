@@ -84,6 +84,11 @@ self.addEventListener('fetch', (event) => {
     return; // browser handles it; we don't intercept
   }
 
+  // API calls — bypass the SW entirely. These go to Railway, not Vercel.
+  if (url.pathname.startsWith('/api/')) {
+    return;
+  }
+
   // Cross-origin (Google Fonts, etc.) — stale-while-revalidate so updates
   // arrive on the next visit but offline still works.
   // Skip FFmpeg WASM CDN — browser must get a fresh Response with unconsumed
