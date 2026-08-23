@@ -37,7 +37,7 @@ import cronVaultChain from './api/cron/vault-chain.js';
 import cronMilestones from './api/cron/milestones.js';
 import cronExpiryEmails from './api/cron/expiry-emails.js';
 import cleanup from './api/cleanup.js';
-import voiceM4a from './api/voice/m4a/[id].js';
+import voiceM4a from './api/voice/m4a/m4a.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
