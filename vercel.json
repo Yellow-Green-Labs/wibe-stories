@@ -2,6 +2,7 @@
   "buildCommand": "node scripts/fetch-content.mjs && npx vitepress build blog-src && npx pagefind --site blog-src/.vitepress/dist && node scripts/copy-fontawesome.mjs && node scripts/gen-sitemap.mjs && npx vitepress build docs-src",
   "outputDirectory": ".",
   "rewrites": [
+    { "source": "/__clerk/:path*", "destination": "https://immune-sailfish-86.clerk.accounts.dev/:path*" },
     { "source": "/", "destination": "/wisprstories.html" },
     { "source": "/features", "destination": "/features.html" },
     { "source": "/about", "destination": "/about.html" },

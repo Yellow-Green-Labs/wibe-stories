@@ -60,6 +60,8 @@ If any box is unchecked, you are not done. Fix it.
 
 A full Content-Security-Policy **is** set in `vercel.json` (allows `unpkg.com`, Google Fonts, Vercel Blob, Sentry CDN, and Sentry ingest). It does **not** break the Web Speech API, which is browser-native and needs no `connect-src` entry. All other security headers are in `vercel.json` too.
 
+**Clerk auth wiring (2026-08):** official 3-part script init in `wisprstories.html` + `pricing.html` — `@clerk/ui@1/dist/ui.browser.js` + `clerk-js@6/dist/clerk.browser.js` (with `data-clerk-publishable-key`) + explicit `Clerk.load({ ui: { ClerkUI: window.__internal_ClerkUICtor } })`; omitting the UI bundle or the load() option throws "Clerk was not loaded with Ui components". CSP allows `*.clerk.accounts.dev`/`*.clerk.com` in script-src/connect-src/frame-src (+ img.clerk.com). vercel.json has a `/__clerk/:path*` rewrite (Clerk's Vercel-domain proxy) whose destination AND both HTML instance-domain URLs are hardcoded to the TEST instance — swap all three together when moving to production keys.
+
 # Deployment
 
 - **Platform**: Vercel (production URL `wibestories.vercel.app`; legacy deploy slug `wisprstories.vercel.app`, code/filenames stay `wisprstories`)
@@ -194,7 +196,7 @@ Remotion demo testing: see `remotion-demo/` for test and render commands.
 - `opencode.json` — project-scoped OpenCode config (registers the OpenSEO remote MCP for this project only; see the MCP sections below). No secrets — safe to commit. (The Loops MCP entry was added 2026-08-15 and removed 2026-08-16 — see the Loops section below.)
 - `sitemap.xml` — 28 URLs: 5 app pages + 12 blog (home + 11 English posts) + 11 docs pages. No blog locale variants, no category pages, no `/c/` share routes (ephemeral). Update when new posts/pages ship.
 - `.vercelignore` — excludes remotion-demo/ from deployments
-- `sw.js` — service worker for offline font caching
+- `sw.js` — service worker; NEVER intercepts cross-origin requests (internal fetch runs under page connect-src — interception caused CSP blocks/503s for Blob, R2, then Clerk bundles; structural fix v20: same-origin only)
 - `global/footer-menu.js` — footer menu rendering, i18n, reorder, occasion email subscription popup
 - `global/occasions/` — occasion triggers, date-occasions, country mapping
 - `remotion-demo/` — **Marketing demo video project** (Remotion/React). Do NOT delete.
