@@ -7,6 +7,8 @@
 export const config = { runtime: 'edge' };
 
 import { getRedis, KEYS } from '../lib/redis.js';
+import { verifyClerkToken } from '../lib/clerk.js';
+import { hasActiveProEntitlement } from '../lib/entitlement.js';
 
 const RATE_LIMIT_MAX = 30;
 const RATE_LIMIT_WINDOW_SEC = 60;
@@ -26,6 +28,23 @@ export default async function handler(req) {
   }
 
   try {
+    // Hoist redis + rate limit first (before any branches)
+    const redis = getRedis();
+    const ip = getClientIP(req);
+    try {
+      const rlKey = `wispr:ratelimit:verify:${ip}`;
+      const count = await redis.incr(rlKey);
+      if (count === 1) await redis.expire(rlKey, RATE_LIMIT_WINDOW_SEC);
+      if (count > RATE_LIMIT_MAX) {
+        return new Response(JSON.stringify({ isPro: false, reason: 'rate_limited' }), {
+          status: 429,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    } catch {
+      // Fail open — never block on Redis hiccup
+    }
+
     // Read session token from cookie first
     const cookieHeader = req.headers.get('cookie') || '';
     const cookies = Object.fromEntries(
@@ -49,6 +68,45 @@ export default async function handler(req) {
       } catch (_) {}
     }
 
+    // Check for Clerk token in Authorization header — entitlement-gated
+    const authHeader = req.headers.get('authorization') || '';
+    const clerkToken = authHeader.replace('Bearer ', '');
+
+    if (clerkToken && clerkToken.startsWith('ey')) {
+      const clerkUser = await verifyClerkToken(clerkToken, redis);
+      if (clerkUser) {
+        const entitlement = await hasActiveProEntitlement(redis, clerkUser.email);
+        if (!entitlement) {
+          return new Response(JSON.stringify({
+            isPro: false,
+            reason: 'no_entitlement',
+            clerkUser: {
+              userId: clerkUser.userId,
+              email: clerkUser.email,
+            },
+          }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+        return new Response(JSON.stringify({
+          isPro: true,
+          tier: 'pro',
+          membershipType: 'clerk',
+          expiresAt: entitlement.keyData.expiresAt || null,
+          daysRemaining: null,
+          prevPass: null,
+          clerkUser: {
+            userId: clerkUser.userId,
+            email: clerkUser.email,
+          },
+        }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
     if (!sessionToken) {
       return new Response(JSON.stringify({ isPro: false, reason: 'no_session' }), {
         status: 200,
@@ -56,24 +114,6 @@ export default async function handler(req) {
       });
     }
 
-    // Rate limit: 30 verifications per IP per minute
-    const ip = getClientIP(req);
-    try {
-      const redis = getRedis();
-      const rlKey = `wispr:ratelimit:verify:${ip}`;
-      const count = await redis.incr(rlKey);
-      if (count === 1) await redis.expire(rlKey, RATE_LIMIT_WINDOW_SEC);
-      if (count > RATE_LIMIT_MAX) {
-        return new Response(JSON.stringify({ isPro: false, reason: 'rate_limited' }), {
-          status: 429,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-    } catch {
-      // Fail open — never block on Redis hiccup
-    }
-
-    const redis = getRedis();
     const sessionData = await redis.get(KEYS.sessionToken(sessionToken));
 
     if (!sessionData) {

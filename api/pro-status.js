@@ -3,6 +3,8 @@ export const config = { runtime: 'edge' };
 import { getRedis } from '../lib/redis.js';
 import { validateProKey } from '../lib/pro-key.js';
 import { createSessionToken } from '../lib/session.js';
+import { verifyClerkToken } from '../lib/clerk.js';
+import { hasActiveProEntitlement } from '../lib/entitlement.js';
 
 const RATE_LIMIT_MAX = 10;
 const RATE_LIMIT_WINDOW_SEC = 60;
@@ -32,7 +34,7 @@ export default async function handler(req) {
     }
 
     // Dev/test bypass — accept test key without Redis lookup
-    if (key === 'WS-TEST-DEMO-KEY' && process.env.VERCEL_ENV !== 'production') {
+    if (key === 'WS-TEST-DEMO-KEY' && process.env.VERCEL_ENV === 'development') {
       console.warn('[ProStatus] Dev bypass activated — test key used');
       return new Response(JSON.stringify({ isPro: true, tier: 'pro' }), {
         status: 200,
@@ -56,6 +58,65 @@ export default async function handler(req) {
       }
     } catch {
       // Fail open on rate limit — never block a legitimate user due to Redis hiccup
+    }
+
+    // Check for Clerk session token in Authorization header
+    const authHeader = req.headers.get('authorization') || '';
+    const clerkToken = authHeader.replace('Bearer ', '');
+
+    if (clerkToken && clerkToken.startsWith('ey')) {
+      // Looks like a Clerk JWT
+      const clerkUser = await verifyClerkToken(clerkToken, redis);
+      if (clerkUser) {
+        // Pro is granted ONLY to verified sign-ins whose email has an active purchase
+        const entitlement = await hasActiveProEntitlement(redis, clerkUser.email);
+        if (!entitlement) {
+          return new Response(JSON.stringify({
+            isPro: false,
+            reason: 'no_entitlement',
+            clerkUser: {
+              userId: clerkUser.userId,
+              email: clerkUser.email,
+            },
+          }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+
+        // Entitled — create session (annual keys carry expiresAt, monthly keys run 30 days)
+        const expiresAt = entitlement.keyData.expiresAt || null;
+        const sessionToken = await createSessionToken(
+          redis,
+          `clerk:${clerkUser.userId}`,
+          'pro',
+          expiresAt,
+          clerkUser.email,
+          'clerk'
+        );
+
+        const ttlSeconds = expiresAt
+          ? Math.max(60, Math.floor((new Date(expiresAt).getTime() - Date.now()) / 1000))
+          : 30 * 24 * 60 * 60;
+        const cookie = `ws_session=${sessionToken}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${ttlSeconds}`;
+
+        return new Response(JSON.stringify({
+          isPro: true,
+          tier: 'pro',
+          sessionToken,
+          expiresAt,
+          clerkUser: {
+            userId: clerkUser.userId,
+            email: clerkUser.email,
+          },
+        }), {
+          status: 200,
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            'Set-Cookie': cookie,
+          }),
+        });
+      }
     }
 
     const result = await validateProKey(redis, key);

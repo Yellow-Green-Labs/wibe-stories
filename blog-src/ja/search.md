@@ -1,0 +1,5 @@
+---
+layout: search
+title: 検索
+lang: ja-JP
+---

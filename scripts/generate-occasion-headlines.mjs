@@ -93,6 +93,8 @@ const HEADLINE_LINES = {
   'april-fools-day': ['April', "Fools' Day"],
   'dragon-boat-festival': ['Dragon Boat', 'Festival'],
   'new-years-eve': ["New Year's", 'Eve'],
+  'mother-language-day': ['International Mother', 'Language Day'],
+  'world-voice-day': ['World', 'Voice Day'],
 };
 
 async function main() {

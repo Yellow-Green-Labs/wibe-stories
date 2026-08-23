@@ -50,11 +50,15 @@ export default async function handler(req) {
         theme TEXT NOT NULL DEFAULT '',
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
         updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        image_url TEXT NOT NULL DEFAULT ''
+        image_url TEXT NOT NULL DEFAULT '',
+        last_accessed_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
     `;
     await sql`
       ALTER TABLE vault_cards ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT '';
+    `;
+    await sql`
+      ALTER TABLE vault_cards ADD COLUMN IF NOT EXISTS last_accessed_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
     `;
     let migrated = 0;
 

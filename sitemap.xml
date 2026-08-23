@@ -28,6 +28,12 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://wibestories.vercel.app/pricing</loc>
+    <lastmod>2026-08-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://wibestories.vercel.app/language-stats</loc>
     <lastmod>2026-07-11</lastmod>
     <changefreq>daily</changefreq>

@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from 'vue'
 import { useI18n } from '../i18n'
 import { withBase } from 'vitepress'
 
@@ -7,6 +8,10 @@ const blogHome = withBase(locale.value ? `/${locale.value}/` : '/')
 const wordmark = withBase('/assets/BLOG-LOGO-W.png')
 const yglLogo = withBase('/assets/YGL-L-W.png')
 const APP_URL = 'https://wibestories.vercel.app'
+const SOCIAL = computed(() => [
+  { href: 'https://x.com/wibestories', label: t('followX'), icon: 'fa-brands fa-x-twitter' },
+  { href: 'https://www.linkedin.com/company/wibestories', label: t('followLinkedIn'), icon: 'fa-brands fa-linkedin-in' },
+])
 </script>
 
 <template>
@@ -21,13 +26,28 @@ const APP_URL = 'https://wibestories.vercel.app'
           <span>{{ t('copyright') }}</span>
           <img :src="yglLogo" class="footer-logo" alt="YGLabs" />
         </div>
-        <p>{{ t('independence') }}</p>
+<p class="footer-independence">{{ t('independence') }}</p>
+        <div class="footer-social">
+          <a
+            v-for="s in SOCIAL"
+            :key="s.href"
+            :href="s.href"
+            target="_blank"
+            rel="noopener"
+            class="footer-social-link"
+            :aria-label="s.label"
+            :title="s.label"
+          >
+            <i :class="s.icon" aria-hidden="true"></i>
+          </a>
+        </div>
       </div>
 
       <nav class="footer-col" :aria-label="t('explore')">
         <h3>{{ t('explore') }}</h3>
         <a :href="blogHome">{{ t('home') }}</a>
         <a :href="APP_URL" target="_blank" rel="noopener">{{ t('createCard') }}</a>
+        <a href="https://tally.so/r/obaD1M" target="_blank" rel="noopener">{{ t('contactUs') }}</a>
       </nav>
 
       <nav class="footer-col" :aria-label="t('legal')">
@@ -37,5 +57,7 @@ const APP_URL = 'https://wibestories.vercel.app'
         <a :href="APP_URL + '/docs/legal/refund'" target="_blank" rel="noopener">{{ t('legalRefund') }}</a>
       </nav>
     </div>
+
+    <p class="footer-independence footer-independence-bottom">{{ t('independence') }}</p>
   </footer>
 </template>

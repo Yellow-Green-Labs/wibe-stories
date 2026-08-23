@@ -1061,17 +1061,17 @@ html.ws-entering-app #appRoot {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-.pricing-modal {
-  position: relative;
-  background: var(--cream2);
-  border-radius: 16px;
-  padding: 28px 32px;
-  max-width: 640px;
-  width: 90vw;
-  box-shadow: 0 32px 96px rgba(0, 0, 0, 0.35);
-  border: 1px solid var(--rule);
-  animation: pricing-slide-up 0.35s ease-out;
-  --feat-accent: #e69500;
+.gift-modal {
+    position: relative;
+    background: var(--cream2);
+    border-radius: 16px;
+    padding: 28px 32px;
+    max-width: 500px;
+    width: 90vw;
+    box-shadow: 0 32px 96px rgba(0, 0, 0, 0.35);
+    border: 1px solid var(--rule);
+    animation: pricing-slide-up 0.35s ease-out;
+    --feat-accent: #e69500;
 }
 @keyframes pricing-slide-up {
   from { transform: translateY(24px); opacity: 0; }
@@ -1131,6 +1131,13 @@ html.ws-entering-app #appRoot {
   display: none;
 }
 .pricing-panel.active {
+  display: block;
+}
+/* Gift code redemption panel */
+.pricing-panel-gift {
+  display: none;
+}
+.pricing-panel-gift.active {
   display: block;
 }
 .pricing-header {
@@ -1356,6 +1363,79 @@ html.ws-entering-app #appRoot {
   border-color: var(--feat-accent);
 }
 
+/* Clerk sign-in button */
+.clerk-sign-in-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid rgba(26, 26, 26, 0.15);
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #555548;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.clerk-sign-in-btn:hover {
+  background: rgba(26, 26, 26, 0.05);
+  border-color: rgba(26, 26, 26, 0.25);
+}
+.clerk-sign-in-btn i {
+  margin-right: 4px;
+}
+
+/* Show sign-in button when user is NOT signed in */
+body.clerk-signed-out .clerk-sign-in-btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Hide sign-in button when user IS signed in */
+body.clerk-signed-in .clerk-sign-in-btn {
+  display: none;
+}
+
+/* Sign-out button (hidden by default) */
+.clerk-sign-out-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid rgba(26, 26, 26, 0.15);
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #555548;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.clerk-sign-out-btn:hover {
+  background: rgba(26, 26, 26, 0.05);
+  border-color: rgba(26, 26, 26, 0.25);
+}
+
+/* Show sign-out button when user IS signed in */
+body.clerk-signed-in .clerk-sign-out-btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Hide sign-out button when user is NOT signed in */
+body.clerk-signed-out .clerk-sign-out-btn {
+  display: none;
+}
+
+/* Dark mode */
+:root.dark .clerk-sign-in-btn,
+:root.dark .clerk-sign-out-btn {
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #ffffeb;
+}
+:root.dark .clerk-sign-in-btn:hover,
+:root.dark .clerk-sign-out-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
 /* ── Pro price picker (horizontal layout) ── */
 .pricing-pro-picker {
   display: none;
@@ -1370,6 +1450,7 @@ html.ws-entering-app #appRoot {
 .pricing-pro-cost {
   flex-shrink: 0;
   min-width: 90px;
+  width: 120px;
 }
 .pricing-pro-cost-amount {
   font-weight: 700;
@@ -1650,7 +1731,7 @@ html.ws-entering-app #appRoot {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-bottom: 2px solid var(--feat-accent, #e69500);
 }
-:root.dark .pricing-modal {
+:root.dark .gift-modal {
   background: #242424;
   border-color: rgba(255, 255, 235, 0.1);
   --feat-accent: #e69500;
@@ -1758,7 +1839,7 @@ html.ws-entering-app #appRoot {
   .pricing-overlay {
     align-items: flex-end;
   }
-  .pricing-modal {
+  .gift-modal {
     width: 100%;
     max-width: 100%;
     border-radius: 20px 20px 0 0;

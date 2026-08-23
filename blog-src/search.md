@@ -1,0 +1,5 @@
+---
+layout: search
+title: Search
+lang: en-US
+---

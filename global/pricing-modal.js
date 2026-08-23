@@ -135,19 +135,46 @@
       .finally(function () { if (btn) btn.disabled = false; });
   }
 
+  function handleGiftCode() {
+    var input = document.getElementById("giftCodeInput");
+    if (!input) return;
+    var code = input.value.trim();
+    if (!code) { setMsg("giftCodeMsg", "Please enter a gift code.", false); return; }
+    var btn = document.getElementById("giftCodeGo");
+    if (btn) btn.disabled = true;
+    setMsg("giftCodeMsg", "Redeeming...", false);
+    fetch("/api/redeem-gift", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code: code }) })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data.valid === true) {
+          const durationDays = data.durationDays || 60;
+          setMsg("giftCodeMsg", `\u2713 Gift redeemed! ${durationDays} months of Pro activated.`, true);
+          if (typeof window.updateSupporterBadge === "function") window.updateSupporterBadge();
+          // Persist session token and Pro flag so the app knows the user is Pro
+          try { localStorage.setItem("wsSessionToken", data.sessionToken); } catch (_) {}
+          try { localStorage.setItem("wsSupporter", "true"); } catch (_) {}
+        } else {
+          var msgs = { already_used: "This code has already been used.", expired: "This code has expired.", invalid_code: "Invalid code. Please check and try again.", voided: "This code has been voided." };
+          setMsg("giftCodeMsg", msgs[data.reason] || "Invalid code. Please try again.", false);
+        }
+      })
+      .catch(function () { setMsg("giftCodeMsg", "Network error. Please try again.", false); })
+      .finally(function () { if (btn) btn.disabled = false; });
+  }
+
   var overlay = document.createElement("div");
   overlay.className = "pricing-overlay";
   overlay.id = "pricingOverlay";
   overlay.innerHTML =
-    '<div class="pricing-modal" id="pricingModal">' +
+    '<div class="gift-modal" id="giftModal">' +
     '<div class="pricing-top-bar">' +
     '<div class="pricing-tabs">' +
-    '<button class="pricing-tab active" data-tab="plans">Plans</button>' +
-    '<button class="pricing-tab" data-tab="key">Activate Key</button>' +
+    '<button class="pricing-tab active" data-tab="gift">Gift Code</button>' +
+    '<button class="pricing-tab" data-tab="plans" style="display:none">Plans</button>' +
     "</div>" +
     '<button class="pricing-close" id="pricingClose" aria-label="Close">\u2715</button>' +
     "</div>" +
-    '<div class="pricing-panel pricing-panel-plans active">' +
+    '<div class="pricing-panel pricing-panel-plans active" style="display:none">' +
     '<div class="pricing-header">' +
     '<div class="pricing-emoji">&#10024;</div>' +
     '<h2 class="pricing-title"><span class="pricing-title-1">Free for everyone.</span> <span class="pricing-title-2"><em>Pro</em> for the ones who <em>love</em> it.</span></h2>' +
@@ -253,6 +280,21 @@
     '<div id="pricingEmailMsg" class="pricing-key-msg"></div>' +
     "</div>" +
     "</div>" +
+
+    '<div class="pricing-panel pricing-panel-gift active">' +
+    '<div class="pricing-header">' +
+    '<div class="pricing-emoji">&#127873;</div>' +
+    '<h2 class="pricing-title">Redeem your gift code</h2>' +
+    '<p class="pricing-sub">Enter the code your friend sent you.</p>' +
+    '</div>' +
+    '<div class="pricing-key-section">' +
+    '<div class="pricing-key-row">' +
+    '<input class="pricing-key-input" id="giftCodeInput" placeholder="GIFT-XXXX-XXXX-XXXX" />' +
+    '<button class="pricing-key-btn" id="giftCodeGo">Redeem</button>' +
+    '</div>' +
+    '<div id="giftCodeMsg" class="pricing-key-msg"></div>' +
+    '</div>' +
+    '</div>' +
     '<div class="pricing-footer-tagline">speak \u2022 scribe \u2022 share \u2014 Wibe Stories</div>' +
     "</div>";
   document.body.appendChild(overlay);
@@ -281,9 +323,8 @@
   function show() {
     document.getElementById("pricingOverlay").classList.add("show");
     document.body.classList.add("modal-open");
-    var hasKey = false;
-    try { hasKey = !!localStorage.getItem("wsSessionToken") || !!localStorage.getItem("wsProKey"); } catch (e) {}
-    switchTab(hasKey ? "key" : "plans");
+    // Always show gift tab
+    switchTab("gift");
     setTimeout(positionProSlider, 50);
   }
   function hide() {
@@ -307,11 +348,11 @@
   });
 
   overlay.addEventListener("mouseenter", function (e) {
-    var t = e.target.closest(".pricing-cta");
+    var t = e.target instanceof Element ? e.target.closest(".pricing-cta") : null;
     if (t) { var txt = t.querySelector(".pricing-cta-text"); if (txt) wave(txt); }
   }, true);
   overlay.addEventListener("mouseleave", function (e) {
-    var t = e.target.closest(".pricing-cta");
+    var t = e.target instanceof Element ? e.target.closest(".pricing-cta") : null;
     if (t) { var txt = t.querySelector(".pricing-cta-text"); if (txt) unwave(txt); }
   }, true);
 
@@ -319,6 +360,10 @@
   document.getElementById("pricingEmailGo").addEventListener("click", handleEmail);
   document.getElementById("pricingKeyInput").addEventListener("keydown", function (e) { if (e.key === "Enter") handleKey(); });
   document.getElementById("pricingEmailInput").addEventListener("keydown", function (e) { if (e.key === "Enter") handleEmail(); });
+
+
+  document.getElementById("giftCodeGo")?.addEventListener("click", handleGiftCode);
+  document.getElementById("giftCodeInput")?.addEventListener("keydown", function (e) { if (e.key === "Enter") handleGiftCode(); });
 
   /* ── Key input: whitelist filter ── */
   document.getElementById("pricingKeyInput").addEventListener("input", function () {
@@ -328,6 +373,12 @@
   /* ── Email input: suppress browser tooltip on every change ── */
   document.getElementById("pricingEmailInput").addEventListener("input", function () {
     this.setCustomValidity("");
+  });
+
+
+  /* ── Gift code input: whitelist filter ── */
+  document.getElementById("giftCodeInput")?.addEventListener("input", function () {
+    this.value = this.value.replace(/[^A-Za-z0-9\-]/g, "").toUpperCase().slice(0, 20);
   });
 
   /* ── Disposable email domains ── */
@@ -351,6 +402,7 @@
     "kaspop.com","klassmaster.com","klassmaster.net","link2mail.net","mail2rss.org",
     "mail4trash.com","mailbiz.biz","mailbucket.org","mailcat.biz","maildealer.net"
   ]);
+
 
   /* ── Pro pricing selector ── */
   var _proPickerInit = false;
@@ -385,6 +437,10 @@
         detailEl.innerHTML = p.detail;
         costEl.style.opacity = "1";
         detailEl.style.opacity = "1";
+        slider.style.transition = "none";
+        positionProSlider();
+        void slider.offsetWidth;
+        slider.style.transition = "";
       }, 120);
     }
 

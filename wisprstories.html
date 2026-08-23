@@ -209,6 +209,11 @@
       });
     </script>
     <script src="https://analytics.ahrefs.com/analytics.js" data-key="EFnnezz1QG1QnVT5w57f2A" async></script>
+    <script
+      crossorigin="anonymous"
+      src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
+      data-clerk-publishable-key="pk_test_aW1tdW5lLXNhaWxmaXNoLTg2LmNsZXJrLmFjY291bnRzLmRldiQ"
+    ></script>
   </head>
   <body id="top">
     <div id="appRoot">
@@ -256,7 +261,10 @@
         <div class="fmenu-panel hidden" id="navDropdown">
           <a href="#" class="fmenu-link" id="navOccasionSub"><i class="fa-solid fa-bell" aria-hidden="true"></i><span data-i18n="hamburger.subscribe">Get Reminders</span></a>
           <a href="/features" class="fmenu-link"><i class="fa-solid fa-star" aria-hidden="true"></i><span data-i18n="footer.features">Features</span></a>
-          <a href="#" class="fmenu-link" id="navPricing"><i class="fa-solid fa-dollar-sign" aria-hidden="true"></i><span data-i18n="footer.pricing">Unlock Pro</span></a>
+          <a href="/pricing" class="fmenu-link"><i class="fa-solid fa-dollar-sign" aria-hidden="true"></i><span data-i18n="footer.pricingPage">Pricing</span></a>
+          <a href="#" class="fmenu-link" id="navGiftRedeem"><i class="fa-solid fa-gift" aria-hidden="true"></i><span data-i18n="footer.giftRedeem">Redeem gift code</span></a>
+          <button class="fmenu-link clerk-sign-in-btn" id="navClerkSignIn" style="display:none"><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i><span>Sign in</span></button>
+          <button class="fmenu-link clerk-sign-out-btn" id="navClerkSignOut" style="display:none"><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i><span>Sign out</span></button>
           <a href="/about" class="fmenu-link"><i class="fa-solid fa-book-open" aria-hidden="true"></i><span data-i18n="footer.about">About</span></a>
           <a href="/language-stats" class="fmenu-link"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i><span data-i18n="footer.langStats">Lang Stats</span></a>
           <a href="https://tally.so/r/obaD1M" class="fmenu-link" target="_blank" rel="noopener" id="navContact"><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>Contact</span></a>
@@ -795,7 +803,7 @@
         <div class="pvw-lbl" data-i18n="preview.label">Live preview</div>
         <div id="tonePillWrap" class="tone-pill-wrap" style="display: none">
           <span id="tonePill" class="tone-pill"></span>
-          <button id="upgradeBtn" class="tone-upgrade-link" data-i18n="unlock">Unlock</button>
+          <button id="upgradeBtn" class="tone-upgrade-link" data-i18n="unlock" style="display:none">Unlock</button>
         </div>
         <div class="card-wrap">
           <button class="dl-btn" id="dlBtn" style="display: none">
@@ -1021,6 +1029,7 @@
         <button
           class="mobile-bar-btn mobile-bar-btn-upgrade"
           id="mobileBtnUpgrade"
+          style="display:none"
         >
           <i class="fas fa-key"></i>
           <span class="mobile-bar-btn-label" data-i18n="mobileBar.unlock"
@@ -1076,15 +1085,11 @@
           <div class="lp-nav-links">
             <a href="/features">Features</a>
             <a href="/about">About</a>
-            <!-- /pricing is a placeholder — the standalone pricing page
-                 ships in a future session. -->
             <a href="/pricing">Pricing</a>
           </div>
-          <!-- Auth placeholders: no handlers yet. Sign in = text-only button,
-               Sign up = filled pill. Wired to Pro auth in a future session. -->
           <div class="lp-nav-auth">
-            <button type="button" class="lp-nav-signin">Sign in</button>
-            <button type="button" class="lp-nav-signup">Sign up</button>
+            <button type="button" class="lp-nav-signin" onclick="if(typeof Clerk!=='undefined') Clerk.openSignIn()">Sign in</button>
+            <button type="button" class="lp-nav-signup" onclick="if(typeof Clerk!=='undefined') Clerk.openSignUp()">Sign up</button>
           </div>
         </nav>
 
@@ -1168,7 +1173,10 @@
       <div class="hamburger-items">
         <a href="#" class="hamburger-link" id="hmOccasionSub"><i class="fa-solid fa-bell"></i> <span data-i18n="hamburger.subscribe">Get Reminders</span></a>
         <a href="/features" class="hamburger-link"><i class="fa-solid fa-star"></i> <span data-i18n="footer.features">Features</span></a>
-        <a href="#" class="hamburger-link" id="hmPricing"><i class="fa-solid fa-dollar-sign"></i> <span data-i18n="footer.pricing">Unlock Pro</span></a>
+        <a href="/pricing" class="hamburger-link"><i class="fa-solid fa-dollar-sign"></i> <span data-i18n="footer.pricingPage">Pricing</span></a>
+        <a href="#" class="hamburger-link" id="hmGiftRedeem"><i class="fa-solid fa-gift"></i> <span data-i18n="footer.giftRedeem">Redeem gift code</span></a>
+        <button class="hamburger-link clerk-sign-in-btn" id="hmClerkSignIn" style="display:none"><i class="fa-solid fa-right-to-bracket"></i> Sign in</button>
+        <button class="hamburger-link clerk-sign-out-btn" id="hmClerkSignOut" style="display:none"><i class="fa-solid fa-right-from-bracket"></i> Sign out</button>
         <a href="/about" class="hamburger-link"><i class="fa-solid fa-book-open"></i> <span data-i18n="footer.about">About</span></a>
         <a href="/language-stats" class="hamburger-link"><i class="fa-solid fa-chart-simple"></i> <span data-i18n="footer.langStats">Lang Stats</span></a>
         <a href="#" class="hamburger-link" id="hmVault"><i class="fa-solid fa-vault"></i> <span id="hmVaultLabel">Wibe Vault</span></a>
@@ -1239,9 +1247,15 @@
         }
       });
 
-      document.getElementById('hmPricing')?.addEventListener('click', function(e) {
+      document.getElementById('hmGiftRedeem')?.addEventListener('click', function(e) {
         e.preventDefault(); closeMenu();
-        if (typeof window.showPricingModal === 'function') window.showPricingModal();
+        if (typeof window.showPricingModal === 'function') {
+          window.showPricingModal();
+          setTimeout(function() {
+            var giftTab = document.querySelector('[data-tab="gift"]');
+            if (giftTab) giftTab.click();
+          }, 100);
+        }
       });
 
       document.getElementById('hmVault')?.addEventListener('click', function(e) {
@@ -1270,7 +1284,7 @@
         .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
         .then(function(d) {
           var el = document.getElementById('hamburgerVersion');
-          if (el && d.version) el.textContent = 'v' + d.version;
+          if (el && d.version) el.textContent = d.version;
         })
         .catch(function() {});
     })();
@@ -1325,9 +1339,15 @@
         }
       });
 
-      document.getElementById('navPricing')?.addEventListener('click', function(e) {
+      document.getElementById('navGiftRedeem')?.addEventListener('click', function(e) {
         e.preventDefault(); closeDropdown();
-        if (typeof window.showPricingModal === 'function') window.showPricingModal();
+        if (typeof window.showPricingModal === 'function') {
+          window.showPricingModal();
+          setTimeout(function() {
+            var giftTab = document.querySelector('[data-tab="gift"]');
+            if (giftTab) giftTab.click();
+          }, 100);
+        }
       });
 
       document.getElementById('navVault')?.addEventListener('click', function(e) {

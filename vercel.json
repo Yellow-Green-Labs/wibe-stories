@@ -1,10 +1,11 @@
 {
-  "buildCommand": "node scripts/fetch-content.mjs && npx vitepress build blog-src && node scripts/copy-fontawesome.mjs && node scripts/gen-sitemap.mjs && npx vitepress build docs-src",
+  "buildCommand": "node scripts/fetch-content.mjs && npx vitepress build blog-src && npx pagefind --site blog-src/.vitepress/dist && node scripts/copy-fontawesome.mjs && node scripts/gen-sitemap.mjs && npx vitepress build docs-src",
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/", "destination": "/wisprstories.html" },
     { "source": "/features", "destination": "/features.html" },
     { "source": "/about", "destination": "/about.html" },
+    { "source": "/pricing", "destination": "/pricing.html" },
     { "source": "/language-stats", "destination": "/language-stats.html" },
     { "source": "/card", "destination": "/wisprstories.html" },
     { "source": "/unsubscribe", "destination": "/api/unsubscribe-occasion" },
@@ -29,7 +30,8 @@
     { "source": "/blog/WS-HORI-LIGHT.png", "destination": "/blog-src/.vitepress/dist/WS-HORI-LIGHT.png" },
     { "source": "/blog/ws-l-b.ico", "destination": "/blog-src/.vitepress/dist/ws-l-b.ico" },
     { "source": "/blog/sitemap.xml", "destination": "/blog-src/.vitepress/dist/sitemap.xml" },
-    { "source": "/blog/404", "destination": "/blog-src/.vitepress/dist/404.html" },
+    { "source": "/blog/pagefind/:path*", "destination": "/blog-src/.vitepress/dist/pagefind/:path*" },
+    { "source": "/blog/404", "destination": "/404.html" },
     { "source": "/blog/:locale", "destination": "/blog-src/.vitepress/dist/:locale/index.html" },
     { "source": "/blog/:locale/", "destination": "/blog-src/.vitepress/dist/:locale/index.html" },
     { "source": "/blog/:path*.html", "destination": "/blog/:path*", "statusCode": 301 },
@@ -38,6 +40,7 @@
   ],
   "redirects": [
     { "source": "/about.html", "destination": "/about", "statusCode": 301 },
+    { "source": "/pricing.html", "destination": "/pricing", "statusCode": 301 },
     { "source": "/language-stats.html", "destination": "/language-stats", "statusCode": 301 },
     { "source": "/legal", "destination": "/docs/legal/license", "statusCode": 301 },
     { "source": "/legal/:path*", "destination": "/docs/legal/:path*", "statusCode": 301 },
@@ -45,13 +48,16 @@
   ],
   "crons": [
     { "path": "/api/cleanup", "schedule": "0 3 * * *" },
-    { "path": "/api/cron/send-occasion-emails", "schedule": "0 2 * * *" }
+    { "path": "/api/cron/send-occasion-emails", "schedule": "0 2 * * *" },
+    { "path": "/api/cron/vault-chain", "schedule": "0 4 * * *" },
+    { "path": "/api/cron/milestones", "schedule": "0 5 * * *" },
+    { "path": "/api/cron/expiry-emails", "schedule": "0 6 * * *" }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net https://analytics.ahrefs.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.blob.vercel-storage.com https://*.public.blob.vercel-storage.com https://cdn.simpleicons.org https://picsum.photos https://fastly.picsum.photos https://*.r2.dev; media-src 'self' blob: https://*.public.blob.vercel-storage.com https://*.r2.dev; connect-src 'self' https://unpkg.com https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com https://*.public.blob.vercel-storage.com https://*.sentry.io https://analytics.ahrefs.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" },
+        { "key": "Content-Security-Policy", "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net https://analytics.ahrefs.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.blob.vercel-storage.com https://*.public.blob.vercel-storage.com https://cdn.simpleicons.org https://picsum.photos https://fastly.picsum.photos https://img.clerk.com; https://*.r2.dev; media-src 'self' blob: https://*.public.blob.vercel-storage.com https://*.r2.dev; connect-src 'self' https://unpkg.com https://cdn.jsdelivr.net https://fonts.googleapis.com https://fonts.gstatic.com https://*.public.blob.vercel-storage.com https://*.sentry.io https://analytics.ahrefs.com; frame-src https://*.clerk.accounts.dev https://*.clerk.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" },
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "X-Frame-Options", "value": "DENY" },
         { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains" },

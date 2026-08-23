@@ -2,6 +2,9 @@ export const config = { runtime: 'edge' };
 
 import { getRedis, KEYS } from '../lib/redis.js';
 import Sentry from '../lib/sentry.js';
+import { createGiftCodes, voidGiftCodesByPayment } from '../lib/gift.js';
+import { sendGiftCodesEmail } from '../lib/gift-email.js';
+import { verifyClerkToken } from '../lib/clerk.js';
 
 // ── Constants ──
 const RESEND_API_URL = 'https://api.resend.com/emails';
@@ -86,6 +89,29 @@ function annualExpiresAt(fromDateISO) {
   return d.toISOString();
 }
 
+// Gift card product ID (from BMAC)
+const GIFT_PRODUCT_ID = '557246';
+const GIFT_PRODUCT_TITLE = 'gift'; // partial match
+
+// Detect if an extras line is a gift card purchase
+function isGiftProduct(item) {
+  const id = String(item.id || item.product_id || '');
+  const title = (item.title || item.product_name || item.name || '').toLowerCase();
+  return id === GIFT_PRODUCT_ID || title.includes(GIFT_PRODUCT_TITLE);
+}
+
+// Look up Clerk user ID by email (if they have a Clerk account)
+async function findClerkUserByEmail(redis, email) {
+  // Check if we've stored a Clerk user ID for this email
+  const clerkUserId = await redis.get(`wispr:clerk-user:${email}`);
+  return clerkUserId || null;
+}
+
+// Store Clerk user ID mapping
+async function storeClerkUserMapping(redis, email, clerkUserId) {
+  await redis.set(`wispr:clerk-user:${email}`, clerkUserId);
+}
+
 // Send pro key email via Resend with 8s timeout
 async function sendProKeyEmail(resendApiKey, { toEmail, toName, proKey }) {
   const safeName = htmlEscape(toName);
@@ -134,6 +160,9 @@ async function sendProKeyEmail(resendApiKey, { toEmail, toName, proKey }) {
               <hr style="border:none;border-top:1px solid rgba(26,26,26,0.1);margin:0 0 16px" />
               <p style="margin:0;font-size:0.8rem;color:#77776a;line-height:1.5">
                 Need help? We're here for you &mdash; reach out anytime at <a href="mailto:yellowgreenlabs@proton.me" style="color:#d97706;font-weight:600">yellowgreenlabs@proton.me</a>.
+              </p>
+              <p style="margin:8px 0 0;font-size:0.8rem;color:#77776a;line-height:1.5">
+                We'd love to hear from you: <a href="https://tally.so/r/obaD1M" style="color:#d97706;font-weight:600">Contact us</a> &middot; <a href="https://tally.so/r/jaqlJ6" style="color:#d97706;font-weight:600">Help us improve</a>
               </p>
             </div>
             <div style="background:#f0f0df;padding:16px 28px;text-align:center;border-radius:0 0 12px 12px;border:1px solid rgba(26,26,26,0.1);border-top:0">
@@ -276,6 +305,7 @@ export default async function handler(req) {
           tier: parsed.tier || 'pro',
           membershipType: parsed.membershipType || null,
           expiresAt: parsed.expiresAt || null,
+          key: existingKey,
         }));
       }
     }
@@ -297,6 +327,13 @@ export default async function handler(req) {
     await redis.set(KEYS.upgradeKey(proKey), JSON.stringify(keyData));
     await redis.set(KEYS.emailLookup(email), proKey);
     await redis.sadd(KEYS.proEmailsSet, email);
+
+    // Link to Clerk user if they have an account
+    const clerkUserId = await findClerkUserByEmail(redis, email);
+    if (clerkUserId) {
+      await storeClerkUserMapping(redis, email, clerkUserId);
+      console.log(`[BMAC] Linked purchase to Clerk user: ${clerkUserId}`);
+    }
 
     const sent = await sendProKeyEmail(RESEND_KEY, { toEmail: email, toName: supporterName, proKey });
     if (!sent) {
@@ -408,6 +445,82 @@ export default async function handler(req) {
 
     console.log('[BMAC] Pro key revoked due to refund');
     return new Response('OK', { status: 200 });
+  }
+
+  // ── Gift Card Purchase (extras with gift product) ──────────────────────────
+  // Handles both old-format (coffee_purchase with extras) and new-format (extra_purchase.created)
+  const extras = data.extras || data.response?.extras || data.items || [];
+  const hasExtras = Array.isArray(extras) && extras.length > 0;
+
+  if (hasExtras) {
+    // Check if any line is a gift product
+    const giftLines = extras.filter(isGiftProduct);
+
+    if (giftLines.length > 0) {
+      // Process gift lines — generate codes
+      const totalQuantity = giftLines.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+      if (totalQuantity > 0 && totalQuantity <= 10) { // Safety cap
+        const paymentId = data.id || data.payment_id || data.transaction_id || `${email}:${Date.now()}`;
+
+        // Idempotency check
+        const idempKey = `wispr:bmac-gift:${paymentId}`;
+        const isNew = await redis.set(idempKey, '1', { nx: true, ex: 86400 });
+
+        if (isNew) {
+          const codes = await createGiftCodes(redis, {
+            buyerEmail: email,
+            buyerName: supporterName,
+            paymentId,
+            quantity: totalQuantity,
+          });
+
+          // Send email with codes
+          const sent = await sendGiftCodesEmail(RESEND_KEY, {
+            toEmail: email,
+            toName: supporterName,
+            codes,
+          });
+
+          if (!sent) {
+            console.error('[BMAC] Gift code email delivery failed');
+            return new Response('Email delivery failed', { status: 500 });
+          }
+
+          console.log(`[BMAC] Gift codes generated and emailed: ${codes.length} codes`);
+        } else {
+          // Duplicate event — resend email if codes exist
+          const existingCodes = await redis.smembers(KEYS.giftPaymentSet(paymentId));
+          if (existingCodes.length > 0) {
+            await sendGiftCodesEmail(RESEND_KEY, {
+              toEmail: email,
+              toName: supporterName,
+              codes: existingCodes,
+              isResend: true,
+            });
+            console.log('[BMAC] Duplicate gift event — resent codes email');
+          }
+        }
+      } else {
+        console.warn(`[BMAC] Gift quantity out of range: ${totalQuantity}`);
+      }
+
+      return new Response('OK', { status: 200 });
+    }
+
+    // Non-gift extras (pass purchases) — fall through to existing support_created handler
+  }
+
+  // ── Refund (gift codes) ──────────────────────────────────────────────────
+  // Check if refund is for a gift purchase
+  if (isRefund) {
+    const paymentId = data.id || data.payment_id || data.transaction_id;
+    if (paymentId) {
+      const voided = await voidGiftCodesByPayment(redis, paymentId);
+      if (voided.voided > 0) {
+        console.log(`[BMAC] Gift codes voided on refund: ${voided.voided}/${voided.total}`);
+      }
+    }
   }
 
   // ── Unhandled events ─────────────────────────────────────────────────────────

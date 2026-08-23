@@ -5,9 +5,56 @@ outline: [2, 2]
 
 # Changelog
 
-*Last updated: Aug 15, 2026*
+*Last updated: Aug 18, 2026*
 
 > **Project planned:** May 8, 2026 · **First commit:** June 8, 2026 · **Total days active:** 94
+
+## v0.11.38.0 - 2026-08-18
+
+Gift cards and Clerk authentication.
+
+### Added
+- **Gift card system** - Buy a gift card, receive codes, share with anyone. Recipients redeem codes without creating an account and get 2 months of Pro access.
+- **Gift code redemption** - Activate Key modal repurposed for gift code entry. Codes in `GIFT-XXXX-XXXX-XXXX` format, standalone redemption with no account required.
+- **Buyer gift view** - Buyers can see masked gift codes and resend them to their email.
+- **Clerk SSO authentication** - Sign in via Google or Microsoft on the pricing page before purchasing.
+- **Landing page sign-in/sign-up** - Welcome landing nav buttons connected to Clerk authentication.
+
+### Changed
+- **Pricing page sign-in gate** - "Unlock Pro" buttons removed for free users; pricing page prompts sign-in with Clerk before redirecting to BMAC.
+- **Activate Key modal dual-purpose** - Now handles both Pro key activation and gift code redemption.
+
+### Fixed
+- **Gift code refund safety** - Unredeemed codes are voided on refund to prevent abuse.
+- **Pricing modal hardening** - Crash guard on the modal's overlay hover handlers (a non-element event target, e.g. `document` when the pointer leaves the window, no longer throws in `.closest()`), and the Pro toggle slider can no longer drift: the cost block width is locked to 120px so the "Best Value" detail never pushes the track, and the slider re-anchors instantly after the price-text swap. Mirrors the standalone pricing page fixes. Shared stylesheet cache-bust bumped.
+
+## v0.11.37.0 - 2026-08-17
+
+All email now flows through one service, with real tracking and a working unsubscribe everywhere.
+
+### Changed
+- **One email service for everything** - Renewal reminders, milestone celebrations and the monthly founder letter now use the same service that already delivers Pro keys and account notices, so every email comes from one trusted sender with a consistent look.
+- **Open and click tracking** - Emails are now tracked: we can see when a message is opened and which links are clicked, so we can tell what actually helps and what lands in spam folders.
+- **Unsubscribe on every marketing email** - All promotional mail (occasion reminders, expiry reminders, milestone notes, the founder letter) carries a one-tap unsubscribe link at the bottom that works instantly, with an undo option.
+
+## v0.11.36.0 - 2026-08-17
+
+A custom 404 page with video background, glitch effects, and interactive elements.
+
+### Added
+- **Custom 404 page** - A dedicated 404 page with full-viewport video background, glitch effect on "404" text (renders ON TOP via mix-blend-mode), 3D tilt on hover, text scramble on CTA button, magnetic pull on logo, grain overlay, and mouse parallax. The page is context-aware: shows Wibe Stories logo + "Go to home" for root paths, and Wibe & Wonder blog logo + "Go to blog home" for /blog/ paths.
+- **Video protection** - Right-click, drag, and download controls disabled on the 404 page video.
+- **SEO** - noindex, nofollow meta tag, Open Graph tags, canonical URL, favicon, and meta description added to the 404 page.
+
+## v0.11.35.0 - 2026-08-16
+
+A dedicated pricing page so everyone can see what Pro costs — and what it unlocks.
+
+### Added
+- **Pricing page** - A standalone page at /pricing shows both plans side by side: Wibe Basic (free forever) and Wibe Pass, with a 1/3/12-month picker. Existing Pro members see a golden banner with their remaining days.
+
+### Changed
+- **Menu clarity** - The in-app menu now separates "Pricing" (opens the pricing page) from "Activate Key" (unlocks an existing Pro key), so the two actions no longer share one entry.
 
 ## v0.11.34.1 - 2026-08-15
 
@@ -88,6 +135,8 @@ Multi-sync session: PENDING view columns fixed, legacy PENDING removed, C_WS-upd
 ### Changed
 
 - **Blog categories overhauled** — The Wibe & Wonder blog's six categories use clean slugs that match their display names (`wibes-news`, `voice-dictation`, `tech-behind`, `confluence`, `user-stories`, `cultural-mosaic`) in a fixed display order. Category names are the same in every language (the slug's readable words, e.g. "Confluence" is never translated), while each category page shows a short localized description under its title. Old category URLs were removed without redirects. Old category URLs were removed without redirects.
+
+- **Vault UX overhaul (items 1–6)**: Loading skeletons on vault open + retry (Item 1); newest/oldest sort toggle with persistence (Item 2); `last_accessed_at` column auto-added to DB and touched on vault open (Item 3); rename card inline in card view with API endpoint (Item 4); returning-Pro auto-restore adoption (Item 5); search/filter live with no‑matches state and Select All on filtered set (Item 6).
 
 ### Fixed
 - **Trailing-slash deep URLs (blog + docs)** — URLs like `/blog/categories/wibes-news/` and `/docs/product-guide/wibe-stories/` returned 404 because the path wildcard captured the trailing slash (files were looked up as `.../.html`). Added explicit `/:path*/` rewrite rules before the slash-less catch-alls for both `/blog/` and `/docs/`. Site-generated links were unaffected (slash-less cleanUrls).

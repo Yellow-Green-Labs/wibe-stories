@@ -232,22 +232,24 @@
 <div class="hamburger-panel" id="hamburgerPanel">
   <div class="hamburger-header">
     <span class="hamburger-title">Menu</span>
-    <button class="hamburger-close" id="hamburgerClose">&times;</button>
+    <div class="hamburger-header-actions">
+      <button class="hamburger-theme-toggle" id="hamburgerThemeToggle" aria-label="Toggle dark mode">
+        <i class="fa-solid fa-moon"></i>
+      </button>
+      <button class="hamburger-close" id="hamburgerClose"><i class="fa-solid fa-xmark"></i></button>
+    </div>
   </div>
   <div class="hamburger-items">
     <a href="/features" class="hamburger-link">Features</a>
+    <a href="/pricing" class="hamburger-link">Pricing</a>
     <a href="/about" class="hamburger-link active-page">About</a>
     <a href="/language-stats" class="hamburger-link">Language Stats</a>
-    <a href="https://tally.so/r/obaD1M" class="hamburger-link" target="_blank" rel="noopener">Contact</a>
+    <a href="https://tally.so/r/obaD1M" class="hamburger-link hamburger-link-secondary" target="_blank" rel="noopener">Contact</a>
+  </div>
+  <div class="hamburger-footer-items">
     <div class="hamburger-divider"></div>
-    <a href="https://buymeacoffee.com/yg_labs/membership" class="hamburger-link" target="_blank" rel="noopener">Buy us a coffee ☕</a>
-    <a href="https://tally.so/r/obaD1M" class="hamburger-link" target="_blank" rel="noopener">Submit issues / feedback</a>
-    <div class="hamburger-divider"></div>
+    <a href="https://tally.so/r/obaD1M" class="hamburger-link hamburger-link-secondary" target="_blank" rel="noopener">Submit issues / feedback</a>
     <div class="hamburger-version" id="hamburgerVersion"></div>
-    <div class="hamburger-divider"></div>
-    <button class="hamburger-link hamburger-theme-toggle" id="hamburgerThemeToggle">
-      <i class="fa-solid fa-moon"></i> <span>Dark mode</span>
-    </button>
   </div>
 </div>
 <script>
@@ -283,15 +285,12 @@
       document.documentElement.classList.toggle('dark');
       var isDark = document.documentElement.classList.contains('dark');
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      var icon = themeBtn.querySelector('i');
-      var label = themeBtn.querySelector('span');
-      if (isDark) { icon.className = 'fa-solid fa-sun'; label.textContent = 'Light mode'; }
-      else { icon.className = 'fa-solid fa-moon'; label.textContent = 'Dark mode'; }
+      themeBtn.querySelector('i').className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
     });
   }
 
   fetch('/version.json').then(function(r){return r.json()}).then(function(d){
-    if (d.version && versionEl) versionEl.textContent = 'v' + d.version;
+    if (d.version && versionEl) versionEl.textContent = d.version;
   }).catch(function(){});
 })();
 </script>

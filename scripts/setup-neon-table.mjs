@@ -23,9 +23,25 @@ const res = await sql`
     audio_url TEXT NOT NULL DEFAULT '',
     theme TEXT NOT NULL DEFAULT '',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    image_url TEXT NOT NULL DEFAULT '',
+    last_accessed_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
   );
 `;
+
+try {
+  await sql`ALTER TABLE vault_cards ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT ''`;
+  console.log('Column image_url ensured');
+} catch (e) {
+  console.log('Column image_url skipped:', e.message);
+}
+
+try {
+  await sql`ALTER TABLE vault_cards ADD COLUMN IF NOT EXISTS last_accessed_at TIMESTAMPTZ NOT NULL DEFAULT NOW()`;
+  console.log('Column last_accessed_at ensured');
+} catch (e) {
+  console.log('Column last_accessed_at skipped:', e.message);
+}
 
 console.log('Table vault_cards ready:', res);
 
@@ -48,6 +64,13 @@ try {
   console.log('Unique index idx_vault_cards_client_pro ready');
 } catch (e) {
   console.log('Unique index idx_vault_cards_client_pro skipped:', e.message);
+}
+
+try {
+  await sql`CREATE INDEX IF NOT EXISTS idx_vault_cards_last_access ON vault_cards (last_accessed_at)`;
+  console.log('Index idx_vault_cards_last_access ready');
+} catch (e) {
+  console.log('Index idx_vault_cards_last_access skipped:', e.message);
 }
 
 console.log('Setup complete.');

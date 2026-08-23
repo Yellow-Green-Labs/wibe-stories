@@ -1,0 +1,192 @@
+/* Wibe Stories — Standalone Pricing Page */
+
+/* Pricing accent (modal scoped this inside .gift-modal; the standalone page defines it globally) */
+:root {
+  --feat-accent: #e69500;
+  --feat-accent-soft: rgba(230, 149, 0, 0.1);
+}
+:root.dark {
+  --feat-accent: #f0a500;
+  --feat-accent-soft: rgba(240, 165, 0, 0.15);
+}
+
+/* Page chrome (same as about/features pages) */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 1px 0 var(--rule);
+}
+.main {
+  margin: 50px auto;
+  padding: 0 24px 48px;
+  width: 100%;
+  max-width: 720px;
+}
+.footer {
+  grid-row: auto;
+  grid-column: auto;
+  margin-left: 0;
+  width: 100%;
+}
+@media (max-width: 640px) {
+  .main {
+    padding: 0 40px 32px;
+  }
+}
+
+/* Back to top */
+.back-to-top {
+  display: flex;
+  position: fixed;
+  right: 28px;
+  bottom: 80px;
+  justify-content: center;
+  align-items: center;
+  transform: translateY(10px);
+  opacity: 0;
+  z-index: 50;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: var(--cream2);
+  width: 40px;
+  height: 40px;
+  pointer-events: none;
+  color: var(--ink2);
+  font-size: 14px;
+}
+.back-to-top.visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.back-to-top:hover {
+  border-color: var(--feat-accent);
+  background: var(--feat-accent);
+  color: #fff;
+}
+.back-to-top:focus-visible {
+  outline: 2px solid var(--feat-accent);
+  outline-offset: 3px;
+}
+
+/* Accessibility */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--feat-accent);
+  outline-offset: 2px;
+}
+
+/* Pricing content */
+.main .pricing-header {
+  margin-top: 4px;
+}
+.main .pricing-title {
+  font-size: clamp(26px, 0.5vw + 24px, 30px);
+}
+
+/* Golden Pro banner */
+.pricing-pro-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f59e0b, #e69500);
+  color: #1a1a1a;
+  box-shadow: 0 4px 16px rgba(230, 149, 0, 0.35);
+}
+.pricing-pro-banner[hidden] {
+  display: none;
+}
+.pricing-pro-banner-icon {
+  font-size: clamp(22px, 0.5vw + 20px, 26px);
+  line-height: 1;
+  flex-shrink: 0;
+}
+.pricing-pro-banner-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.pricing-pro-banner-text strong {
+  font-size: clamp(13px, 0.3vw + 12px, 14px);
+  font-weight: 800;
+}
+.pricing-pro-banner-text span {
+  font-size: clamp(11px, 0.2vw + 10px, 12px);
+  opacity: 0.85;
+}
+
+/* Gift code redeem link */
+.pricing-gift-redeem {
+  text-align: center;
+  margin: 16px auto 20px;
+  padding: 14px 20px;
+  font-size: 0.9rem;
+  color: #555548;
+  background: #ffffeb;
+  border: 1px solid rgba(26, 26, 26, 0.08);
+  border-radius: 8px;
+  max-width: 400px;
+}
+.pricing-gift-redeem a {
+  color: #d97706;
+  font-weight: 600;
+  text-decoration: none;
+}
+.pricing-gift-redeem a:hover {
+  text-decoration: underline;
+}
+:root.dark .pricing-gift-redeem {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #ffffeb;
+}
+
+/* Pro tier picker: align the toggle track with the top of the price (page only) */
+.pricing-pro-picker {
+  align-items: flex-start;
+}
+
+/* Pro tier picker: fixed cost width (page only) so the Best Value label
+   can never expand the cost block and shift the toggle track */
+.pricing-pro-cost {
+  flex-shrink: 0;
+  width: 120px;
+}
+
+/* Sticky footer (page only): body is min-height 100vh; flex column +
+   growing main keep the footer at the viewport bottom when content is
+   shorter than the viewport, instead of leaving a gap below the footer */
+body {
+  display: flex;
+  flex-direction: column;
+}
+.main {
+  flex: 1 0 auto;
+}
+.footer {
+  flex-shrink: 0;
+}
+
+/* CTA wave (same as pricing modal) */
+@keyframes pricing-wave {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pricing-cta-text span { animation: none !important; transform: none !important; }
+}
+@media (max-width: 720px) {
+  .pricing-cta-text span { animation: none !important; transform: none !important; }
+}

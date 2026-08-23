@@ -38,7 +38,6 @@ export default async function handler(req) {
         redis.sadd(KEYS.proEmailsSet, email),
         redis.sadd(KEYS.emailSubscribersSet, email),
       ]);
-      await syncLoopsContact(email, true);
       return respond(200, html('undo'));
     }
 
@@ -49,37 +48,10 @@ export default async function handler(req) {
     if (proRemoved > 0 || subRemoved > 0) {
       await redis.set(KEYS.unsubGate(email), '1', { ex: UNSUB_GATE_TTL_SEC });
     }
-    await syncLoopsContact(email, false);
     return respond(200, html('unsubscribed', enc));
   } catch (err) {
     console.error('[UnsubscribeOccasion] Redis error:', err.message);
     return respond(500, html('Something went wrong. Please try again.'));
-  }
-}
-
-// Best-effort mirror of the un/subscription into Loops (marketing email platform).
-// Never fails the request — Redis is the source of truth for our own sends.
-// Unsubscribing sets subscribed:false (Loops then suppresses marketing sends);
-// Undo re-subscribes and removes any suppression so the contact receives mail again.
-async function syncLoopsContact(email, subscribed) {
-  if (!process.env.LOOPS_API_KEY) return;
-  try {
-    await fetch('https://app.loops.so/api/v1/contacts/update', {
-      method: 'PUT',
-      headers: {
-        Authorization: 'Bearer ' + process.env.LOOPS_API_KEY,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, subscribed }),
-    });
-    if (subscribed) {
-      await fetch(
-        'https://app.loops.so/api/v1/contacts/suppression?email=' + encodeURIComponent(email),
-        { method: 'DELETE', headers: { Authorization: 'Bearer ' + process.env.LOOPS_API_KEY } }
-      );
-    }
-  } catch (err) {
-    console.error('[UnsubscribeOccasion] Loops sync error:', err.message);
   }
 }
 

@@ -75,6 +75,9 @@ async function sendProKeyEmail(resendApiKey, { toEmail, toName, proKey }) {
               <p style="margin:0;font-size:0.8rem;color:#77776a;line-height:1.5">
                 Need help? We're here for you &mdash; reach out anytime at <a href="mailto:yellowgreenlabs@proton.me" style="color:#d97706;font-weight:600">yellowgreenlabs@proton.me</a>.
               </p>
+              <p style="margin:8px 0 0;font-size:0.8rem;color:#77776a;line-height:1.5">
+                We'd love to hear from you: <a href="https://tally.so/r/obaD1M" style="color:#d97706;font-weight:600">Contact us</a> &middot; <a href="https://tally.so/r/jaqlJ6" style="color:#d97706;font-weight:600">Help us improve</a>
+              </p>
             </div>
             <div style="background:#f0f0df;padding:16px 28px;text-align:center;border-radius:0 0 12px 12px;border:1px solid rgba(26,26,26,0.1);border-top:0">
               <p style="margin:0;font-size:0.7rem;color:#77776a;line-height:1.6">

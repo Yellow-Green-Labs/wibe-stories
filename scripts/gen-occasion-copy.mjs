@@ -6,7 +6,7 @@
 //   node scripts/gen-occasion-copy.mjs            -> validate + write lib/occasion-copy-data.js
 //   node scripts/gen-occasion-copy.mjs --check    -> validate only (exit 1 on any problem)
 //
-// Validation: exactly 37 blocks in OCCASIONS order, exactly 3 copy lines per
+// Validation: exactly N blocks (one per OCCASIONS entry, matched by number) in OCCASIONS order, exactly 3 copy lines per
 // block, a quote is present with its author (or neither), countries/flags are
 // consistent, and every flag code has a local SVG file under
 // assets/flag-icons/flags/4x3/.

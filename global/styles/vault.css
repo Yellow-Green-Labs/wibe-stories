@@ -111,14 +111,46 @@
   border-color: var(--ink);
 }
 
-/* ── COUNTER ── */
-.vault-counter {
+/* ── COUNTER ROW ── */
+.vault-counter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   padding: 12px 20px 8px;
+  flex-shrink: 0;
+}
+.vault-counter {
   font-size: 13px;
   color: var(--ink3);
   flex-shrink: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .vault-counter span { font-weight: 600; }
+
+.vault-sort-btn {
+  background: none;
+  border: none;
+  color: var(--ink3);
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-family: var(--sans);
+  touch-action: manipulation;
+  white-space: nowrap;
+  visibility: hidden;
+  transition: color 0.15s, background 0.15s;
+}
+.vault-sort-btn.visible { visibility: visible; }
+.vault-sort-btn:hover { background: var(--cream2); color: var(--ink); }
+.vault-sort-btn i { font-size: 11px; }
 
 /* ── CONTENT (thin hover-only scrollbar) ── */
 .vault-content {
@@ -224,6 +256,53 @@
   font-size: 11px;
   color: var(--ink3);
   margin-top: 2px;
+}
+
+/* ── SKELETON LOADING ── */
+.vault-skeleton {
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--cream2);
+  border: 1px solid var(--rule);
+}
+.vault-skeleton-thumb {
+  aspect-ratio: 1 / 1;
+  background: linear-gradient(
+    100deg,
+    var(--cream3) 40%,
+    var(--cream2) 50%,
+    var(--cream3) 60%
+  );
+  background-size: 200% 100%;
+  animation: vault-shimmer 1.4s ease-in-out infinite;
+}
+.vault-skeleton-info {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.vault-skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  width: 80%;
+  background: linear-gradient(
+    100deg,
+    var(--cream3) 40%,
+    var(--cream2) 50%,
+    var(--cream3) 60%
+  );
+  background-size: 200% 100%;
+  animation: vault-shimmer 1.4s ease-in-out infinite;
+}
+.vault-skeleton-line-short { width: 50%; }
+@keyframes vault-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vault-skeleton-thumb,
+  .vault-skeleton-line { animation: none; }
 }
 
 /* ── SELECT CHECKBOX ── */
@@ -537,3 +616,5 @@
 :root.dark .vault-select-all-header-btn { background: var(--cream2); border-color: var(--rule); }
 :root.dark .vault-select-all-header-btn:hover { background: var(--cream3); }
 :root.dark .vault-select-all-header-btn.all-selected { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+/* ── SEARCH ── */\n.vault-search-wrap {\n  padding: 0 20px 10px;\n  display: none;\n}\n.vault-search {\n  position: relative;\n  display: flex;\n  align-items: center;\n}\n.vault-search-input {\n  width: 100%;\n  padding: 0 32px;\n  height: 38px;\n  border: 1px var(--rule);\n  border-radius: 10px;\n  background: var(--cream2);\n  color: var(--ink3);\n  font-size: 13px;\n  outline: none;\n  transition: border-color 0.15s;\n}\n.vault-search-input:focus {\n  border-color: var(--ink);\n}\n.vault-search-clear {\n  position: absolute;\n  right: 8px;\n  background: none;\n  border: none;\n  color: var(--ink3);\n  padding: 0 8px;\n  cursor: pointer;\n  font-size: 14px;\n  display: none;\n}\n.vault-search-clear.visible {\n  display: block;\n}\n.vault-search-clear:hover {\n  color: var(--ink);\n}

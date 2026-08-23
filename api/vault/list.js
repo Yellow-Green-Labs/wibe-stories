@@ -1,6 +1,6 @@
 export const config = { runtime: 'edge' };
 
-import { getRedis } from '../../lib/redis.js';
+import { getRedis, KEYS } from '../../lib/redis.js';
 import { resolveProKey } from '../../lib/session.js';
 import { getNeon } from '../../lib/neon.js';
 
@@ -42,11 +42,54 @@ export default async function handler(req) {
         theme TEXT NOT NULL DEFAULT '',
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
         updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        image_url TEXT NOT NULL DEFAULT ''
+        image_url TEXT NOT NULL DEFAULT '',
+        last_accessed_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
       );
     `;
     await sql`
       ALTER TABLE vault_cards ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT '';
+    `;
+    await sql`
+      ALTER TABLE vault_cards ADD COLUMN IF NOT EXISTS last_accessed_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+    `;
+    /* Auto-restore: returning Pro user — adopt prior vault cards into the new key */
+    try {
+      const kk = KEYS.upgradeKey(key);
+      const kr = await redis.get(kk);
+      if (kr) {
+        const kd = typeof kr === 'string' ? JSON.parse(kr) : kr;
+        if (kd.email) {
+          const pr = await redis.get(KEYS.userPrevPass(kd.email));
+          if (pr) {
+            const prev = typeof pr === 'string' ? JSON.parse(pr) : pr;
+            const prevKey = prev.key;
+            if (prevKey && typeof prevKey === 'string' && prevKey !== key) {
+              /* Drop rows whose client_id already exists under the new key (new key wins) */
+              await sql`
+                DELETE FROM vault_cards
+                WHERE pro_key = ${prevKey}
+                  AND client_id IN (SELECT client_id FROM vault_cards WHERE pro_key = ${key})
+              `;
+              /* Adopt the rest, newest first, capped so the new key never exceeds 50 */
+              await sql`
+                UPDATE vault_cards SET pro_key = ${key}, last_accessed_at = NOW()
+                WHERE pro_key = ${prevKey}
+                  AND id IN (
+                    SELECT id FROM vault_cards WHERE pro_key = ${prevKey}
+                    ORDER BY created_at DESC
+                    LIMIT GREATEST(0, 50 - (SELECT COUNT(*) FROM vault_cards WHERE pro_key = ${key}))
+                  )
+              `;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.error('[Vault List] Auto-restore skipped:', e.message);
+    }
+    /* opening the vault is the access signal — touch every card for this key */
+    await sql`
+      UPDATE vault_cards SET last_accessed_at = NOW() WHERE pro_key = ${key};
     `;
     const rows = await sql`
       SELECT * FROM vault_cards

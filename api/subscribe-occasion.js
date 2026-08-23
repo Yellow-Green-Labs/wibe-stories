@@ -116,33 +116,8 @@ export default async function handler(req) {
     });
   }
 
-  await syncLoopsContact(email, name);
-
   return new Response(JSON.stringify({ ok: true }), {
     status: 200,
     headers,
   });
-}
-
-// Best-effort mirror of the subscription into Loops (marketing email platform).
-// Never fails the request — Loops is the marketing channel, Redis is the source of truth.
-async function syncLoopsContact(email, name) {
-  if (!process.env.LOOPS_API_KEY) return;
-  try {
-    const payload = { email, subscribed: true, userGroup: 'subscriber' };
-    if (name) {
-      payload.firstName = name.split(' ')[0];
-      if (name.includes(' ')) payload.lastName = name.split(' ').slice(1).join(' ');
-    }
-    await fetch('https://app.loops.so/api/v1/contacts/update', {
-      method: 'PUT',
-      headers: {
-        Authorization: 'Bearer ' + process.env.LOOPS_API_KEY,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-  } catch (err) {
-    console.error('[SubscribeOccasion] Loops sync error:', err.message);
-  }
 }

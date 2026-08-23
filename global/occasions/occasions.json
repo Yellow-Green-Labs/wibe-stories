@@ -3326,5 +3326,68 @@
     "examples": {
       "en-US": "Wishing you peace today and every day. The world is brighter when we choose kindness."
     }
+  },
+  {
+    "id": "mother-language-day",
+    "img": "assets/occasions/international-mother-language-day.png",
+    "triggers": [
+      "international mother language day",
+      "happy international mother language day",
+      "mother language day",
+      "happy mother language day",
+      "mother tongue day",
+      "happy mother tongue day",
+      "international mother tongue day",
+      "antarrashtriya matrubhasha divas",
+      "matrubhasha divas",
+      "antarjatik matrubhasha dibosh",
+      "día internacional de la lengua materna",
+      "journée internationale de la langue maternelle",
+      "अंतर्राष्ट्रीय मातृभाषा दिवस",
+      "मातृभाषा दिवस",
+      "আন্তর্জাতিক মাতৃভাষা দিবস",
+      "মাতৃভাষা দিবস",
+      "சர்வதேச தாய்மொழி நாள்",
+      "అంతర్జాతీయ మాతృభాషా దినోత్సవం"
+    ],
+    "examples": {
+      "en-US": "Happy International Mother Language Day! Speak the words of home today and keep them alive.",
+      "hi-IN": "अंतर्राष्ट्रीय मातृभाषा दिवस की शुभकामनाएँ! आज अपनी मातृभाषा में एक संदेश भेजें।",
+      "bn-BD": "আন্তর্জাতিক মাতৃভাষা দিবসের শুভেচ্ছা! আজ মাতৃভাষায় একটি বার্তা পাঠান।",
+      "ta-IN": "சர்வதேச தாய்மொழி நாள் வாழ்த்துக்கள்! இன்று உங்கள் தாய்மொழியில் ஒரு செய்தியை அனுப்புங்கள்।",
+      "te-IN": "అంతర్జాతీయ మాతృభాషా దినోత్సవ శుభాకాంక్షలు! ఈరోజు మీ మాతృభాషలో ఒక సందేశం పంపండి।",
+      "es-ES": "¡Feliz Día Internacional de la Lengua Materna! Habla hoy las palabras de tu hogar.",
+      "fr-FR": "Joyeuse Journée internationale de la langue maternelle ! Faites vivre vos mots de toujours.",
+      "ja-JP": "国際母語デーおめでとうございます。今日は母語で伝えたい言葉を届けましょう。",
+      "ko-KR": "세계 모국어의 날을 축하합니다! 오늘은 우리말로 마음을 전해보세요.",
+      "tr-TR": "Uluslararası Anadil Gününüz kutlu olsun! Bugün ana dilinizle bir mesaj gönderin."
+    }
+  },
+  {
+    "id": "world-voice-day",
+    "img": "assets/occasions/world-voice-day.png",
+    "triggers": [
+      "world voice day",
+      "happy world voice day",
+      "voice day",
+      "happy voice day",
+      "world voice day wishes",
+      "international voice day",
+      "happy international voice day",
+      "día mundial de la voz",
+      "journée mondiale de la voix",
+      "विश्व आवाज़ दिवस"
+    ],
+    "examples": {
+      "en-US": "Happy World Voice Day! Your voice is one of a kind — record a message today.",
+      "es-ES": "¡Feliz Día Mundial de la Voz! Tu voz es única: graba un mensaje hoy.",
+      "fr-FR": "Joyeuse Journée mondiale de la voix ! Votre voix est unique : enregistrez un message aujourd'hui.",
+      "it-IT": "Buona Giornata Mondiale della Voce! La tua voce è unica: registra un messaggio oggi.",
+      "pt-BR": "Feliz Dia Mundial da Voz! A sua voz é única: grave uma mensagem hoje.",
+      "ja-JP": "世界声の日おめでとうございます。あなたの声は唯一無二。今日はメッセージを録音しましょう。",
+      "ko-KR": "세계 목소리의 날을 축하합니다! 당신의 목소리는 단 하나뿐이에요.",
+      "id-ID": "Selamat Hari Suara Sedunia! Suaramu unik — kirim pesan suara hari ini.",
+      "tr-TR": "Dünya Ses Gününüz kutlu olsun! Sesiniz biricik — bugün bir sesli mesaj gönderin."
+    }
   }
 ]

@@ -1,0 +1,39 @@
+name: Build & Validate Blog
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Fetch content (no-op without secrets)
+        run: node scripts/fetch-content.mjs
+        env:
+          CONTENT_TOKEN: ${{ secrets.CONTENT_TOKEN }}
+          CONTENT_REPO: ${{ secrets.CONTENT_REPO }}
+
+      - name: Build blog
+        run: npx vitepress build blog-src
+
+      - name: Copy FontAwesome assets
+        run: node scripts/copy-fontawesome.mjs
+
+      - name: Generate sitemap
+        run: node scripts/gen-sitemap.mjs
+
+      - name: Build docs
+        run: npx vitepress build docs-src

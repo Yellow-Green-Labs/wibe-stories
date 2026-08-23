@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitepress'
 import { fileURLToPath } from 'url'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { resolve, dirname, join } from 'node:path'
 
 const APP_URL = 'https://wibestories.vercel.app'
@@ -19,6 +19,7 @@ const LOCALES = [
 ]
 
 const srcDir = resolve(dirname(fileURLToPath(import.meta.url)), '..')
+const publicDir = fileURLToPath(new URL('./public', import.meta.url))
 
 function esc(s) {
   return String(s == null ? '' : s)
@@ -42,7 +43,7 @@ function relFromId(id) {
 }
 
 function pathToUrl(rel) {
-  const clean = rel.replace(/\/index$/, '')
+  const clean = rel.replace(/(^|\/)index$/, '')
   return APP_URL + BASE + (clean ? clean + '/' : '')
 }
 
@@ -54,6 +55,31 @@ function localeOf(rel, frontmatterLang) {
   return LOCALES.some((l) => l.code === seg) ? seg : ''
 }
 
+// Strip the locale prefix from a rel path and collapse the locale homepage
+// to ''. E.g. 'th/index' -> '', 'th/posts/x' -> 'posts/x', 'index' -> '',
+// 'posts/x' -> 'posts/x'. Used for canonical/alternate URL construction.
+function coreOf(rel, locale) {
+  let core = rel
+  if (locale && core.startsWith(locale + '/')) core = core.slice(locale.length + 1)
+  return core === 'index' ? '' : core
+}
+
+// Rough word count of the markdown body (frontmatter stripped, links/images
+// reduced to their visible text). Used for the JSON-LD wordCount field.
+function wordCountOf(filePath) {
+  try {
+    const body = readFileSync(filePath, 'utf8')
+      .replace(/^---[\s\S]*?---\s*/, '')
+      .replace(/```[\s\S]*?```/g, ' ')
+      .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+      .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+      .replace(/[#*_`>~]/g, ' ')
+    return body.trim().split(/\s+/).filter(Boolean).length
+  } catch {
+    return 0
+  }
+}
+
 export default defineConfig({
   title: 'Wibe & Wonder',
   description: 'The Wibe Stories publication — stories, tips and culture from the Wibe team.',
@@ -62,37 +88,63 @@ export default defineConfig({
   cleanUrls: true,
   appearance: false,
   srcExclude: ['content-guide/**'],
+  markdown: {
+    anchor: { permalink: false, level: [2, 3] },
+  },
   vite: {
     publicDir: fileURLToPath(new URL('./public', import.meta.url)),
+    plugins: [
+      {
+        name: 'root-favicon-redirect',
+        configureServer(server) {
+          server.middlewares.use('/favicon.ico', (req, res, next) => {
+            res.statusCode = 302
+            res.setHeader('Location', '/blog/favicon.ico')
+            res.end()
+          })
+        },
+      },
+    ],
   },
   head: [
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     ['link', { href: 'https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+Thai:wght@400;500;700&display=swap', rel: 'stylesheet' }],
+    ['link', { href: 'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap', rel: 'stylesheet' }],
     ['link', { rel: 'stylesheet', href: '/blog/assets/fontawesome/css/fontawesome.min.css' }],
     ['link', { rel: 'stylesheet', href: '/blog/assets/fontawesome/css/solid.min.css' }],
+    ['link', { rel: 'stylesheet', href: '/blog/assets/fontawesome/css/regular.min.css' }],
+    ['link', { rel: 'stylesheet', href: '/blog/assets/fontawesome/css/brands.min.css' }],
     ['link', { rel: 'icon', href: '/blog/ws-l-b.ico' }],
+    ['script', { type: 'speculationrules' }, JSON.stringify({
+      prefetch: [{ source: 'document', where: { and: [{ href_matches: '/blog/**' }] }, eagerness: 'moderate' }],
+    })],
   ],
   async transformHtml(code, id, ctx) {
-    const page = ctx && ctx.page
-    if (!page) return code
-    const rel = page.relativePath ? relOf(page.relativePath) : relFromId(id)
+    const data = ctx && ctx.pageData
+    if (!data) return code
+    const rel = data.relativePath ? relOf(data.relativePath) : relFromId(id)
     if (!rel || rel === '404') return code
-    const locale = localeOf(rel, page.frontmatter && page.frontmatter.lang)
+    const locale = localeOf(rel, data.frontmatter && data.frontmatter.lang)
     const langEntry = LOCALES.find((l) => l.code === locale) || LOCALES[0]
-    const url = pathToUrl(rel)
+    const core = coreOf(rel, locale)
+    const url = pathToUrl((locale ? locale + '/' : '') + (core || 'index'))
 
-    let title = (page.frontmatter && page.frontmatter.title) || ''
-    let description = (page.frontmatter && page.frontmatter.description) || ''
-    const layout = (page.frontmatter && page.frontmatter.layout) || ''
-    const date = (page.frontmatter && page.frontmatter.date) || ''
-    const image = (page.frontmatter && page.frontmatter.image) || ''
+    let title = (data.frontmatter && data.frontmatter.title) || ''
+    let description = (data.frontmatter && data.frontmatter.description) || ''
+    const layout = (data.frontmatter && data.frontmatter.layout) || ''
+    const date = (data.frontmatter && data.frontmatter.date) || ''
+    const image = (data.frontmatter && data.frontmatter.image) || ''
 
-    const ogImage = APP_URL + BASE + 'assets/og/' + rel + '.png'
+    const ogRel = 'assets/og/' + rel + '.png'
+    const ogImage = existsSync(join(publicDir, ogRel))
+      ? APP_URL + BASE + ogRel
+      : APP_URL + BASE.replace(/\/$/, '') + '/assets/blog-fallback.webp'
 
     let alternates = ''
     for (const l of LOCALES) {
-      const cand = (l.code ? l.code + '/' : '') + rel
+      if (l.code && l.code === locale) continue
+      const cand = (l.code ? l.code + '/' : '') + (core || 'index')
       const file = join(srcDir, cand + '.md')
       if (existsSync(file)) {
         const href = pathToUrl(cand)
@@ -102,15 +154,21 @@ export default defineConfig({
 
     let jsonLd = ''
     if (layout === 'post' && title) {
-      const author = (page.frontmatter && page.frontmatter.author) || ''
+      const author = (data.frontmatter && data.frontmatter.author) || ''
+      const postFile = join(srcDir, rel + '.md')
+      const wordCount = existsSync(postFile) ? wordCountOf(postFile) : 0
       const payload = {
         '@context': 'https://schema.org',
         '@type': 'BlogPosting',
         headline: title,
         description,
-        image: image ? [image] : [ogImage],
+        image: image
+          ? [image.startsWith('/') ? APP_URL + BASE.replace(/\/$/, '') + image : image]
+          : [ogImage],
         datePublished: date,
         dateModified: date,
+        inLanguage: langEntry.lang,
+        wordCount: wordCount || undefined,
         author: { '@type': 'Organization', name: author || 'Wibe & Wonder' },
         publisher: { '@type': 'Organization', name: 'Wibe & Wonder' },
         mainEntityOfPage: url,

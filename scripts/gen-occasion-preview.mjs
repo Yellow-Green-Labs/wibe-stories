@@ -123,7 +123,7 @@ function main() {
   }
 
   writeFileSync(PREVIEW_PATH, PAGE);
-  console.log('Wrote ' + PREVIEW_PATH + ' — open in a browser to preview all 37 occasions.');
+  console.log('Wrote ' + PREVIEW_PATH + ' — open in a browser to preview all 39 occasions.');
 }
 
 main();

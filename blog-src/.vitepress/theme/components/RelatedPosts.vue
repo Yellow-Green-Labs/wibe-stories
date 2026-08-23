@@ -33,7 +33,8 @@ const browseHref = computed(() =>
   <div class="ws-related-head">
     <div class="ws-section-label">{{ t('related') }}</div>
     <a class="ws-browse-all" :href="browseHref">
-      {{ t('browseAll') }}
+      <span class="ws-browse-all-full">{{ t('browseAll') }}</span>
+      <span class="ws-browse-all-short">{{ t('browseShort') }}</span>
       <svg viewBox="0 0 16 16" aria-hidden="true">
         <path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
       </svg>

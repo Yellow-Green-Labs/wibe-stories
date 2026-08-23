@@ -167,7 +167,7 @@ let _updatePending = false;
 let _versionUpToDate = false;
 let _versionPollTimer = null;
 const VERSION_POLL_INTERVAL_MS = 60 * 1000; // 60 seconds
-const CURRENT_VERSION = "v0.11.34.1";
+const CURRENT_VERSION = "v0.11.38.0";
 
 // Shows the "new version available" notice. Persists until clicked — unlike
 // the generic showToast() which auto-dismisses after 3.2s. Clicking triggers
@@ -691,6 +691,10 @@ function trackCardUsage() {
 }
 
 function isSupporter() {
+  // Check Pro status from server session (ws_session cookie → localStorage
+  // set during sign-in). Clerk sign-in alone does NOT grant Pro — that
+  // requires an active purchase; the entitlement check runs server-side
+  // (pro-status/pro-verify) and persists wsSupporter in localStorage.
   return localStorage.getItem("wsSupporter") === "true";
 }
 
@@ -749,12 +753,12 @@ function applyProGating() {
   }
 }
 
-document.getElementById("upgradeBtn")?.addEventListener("click", function () {
-  if (typeof window.showPricingModal === "function") window.showPricingModal();
-});
-document.getElementById("mobileBtnUpgrade")?.addEventListener("click", function () {
-  if (typeof window.showPricingModal === "function") window.showPricingModal();
-});
+// document.getElementById("upgradeBtn")?.addEventListener("click", function () {
+//   if (typeof window.showPricingModal === "function") window.showPricingModal();
+// });
+// document.getElementById("mobileBtnUpgrade")?.addEventListener("click", function () {
+//   if (typeof window.showPricingModal === "function") window.showPricingModal();
+// });
 window.addEventListener("i18nApplied", function () {
   updateSupporterBadge();
   applyProGating();
@@ -3381,6 +3385,10 @@ document.addEventListener("languagesReady", tryAutoDetectLang);
 async function revalidateProKey() {
   // Skip validation for admin bypass
   if (localStorage.getItem("wsAdminSecret")) return;
+  // If Clerk is available and user is signed in, skip key validation
+  if (typeof Clerk !== 'undefined' && Clerk.user) {
+    return;
+  }
   const isMarkedPro = localStorage.getItem("wsSupporter") === "true";
   if (!isMarkedPro) return;
 
@@ -3469,9 +3477,116 @@ async function revalidateProKey() {
 }
 revalidateProKey();
 
+/* ── Clerk session management ── */
+(function initClerkSession() {
+  function checkClerkSession() {
+    if (typeof Clerk === 'undefined') return;
+    if (Clerk.user) {
+      document.body.classList.add('clerk-signed-in');
+      document.body.classList.remove('clerk-signed-out');
+      // Attempt to sync Pro status from server for fresh Clerk sign-ins
+      // (without an existing server session). Skip if the user already has
+      // a Pro session from a prior key redemption or gift code.
+      if (Clerk.user && !localStorage.getItem('wsSessionToken')) {
+        (async () => {
+          try {
+            const token = await Clerk.session.getToken();
+            if (!token) return;
+            const res = await fetch('/api/pro-status', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({}),
+            });
+            const data = await res.json();
+            if (data.isPro) {
+              try { localStorage.setItem('wsSessionToken', data.sessionToken); } catch (_) {}
+              try { localStorage.setItem('wsSupporter', 'true'); } catch (_) {}
+              if (typeof window.updateSupporterBadge === "function") window.updateSupporterBadge();
+            } else {
+              // Not entitled — clear any stale Pro state
+              try { localStorage.removeItem('wsSessionToken'); } catch (_) {}
+              try { localStorage.removeItem('wsSupporter'); } catch (_) {}
+              if (typeof window.updateSupporterBadge === "function") window.updateSupporterBadge();
+            }
+          } catch (e) {
+            console.warn('[Clerk] Pro sync error:', e.message);
+          }
+        })();
+      }
+    } else {
+      document.body.classList.add('clerk-signed-out');
+      document.body.classList.remove('clerk-signed-in');
+    }
+  }
+
+  checkClerkSession();
+
+  if (typeof Clerk !== 'undefined') {
+    Clerk.addListener(function() { checkClerkSession(); });
+  } else {
+    var clerkCheckInterval = setInterval(function() {
+      if (typeof Clerk !== 'undefined') {
+        clearInterval(clerkCheckInterval);
+        Clerk.addListener(function() { checkClerkSession(); });
+        checkClerkSession();
+      }
+    }, 100);
+  }
+
+  document.getElementById('navClerkSignIn')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (typeof Clerk !== 'undefined') Clerk.openSignIn();
+  });
+
+  document.getElementById('navClerkSignOut')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (typeof Clerk !== 'undefined') {
+      Clerk.signOut().then(function() {
+        localStorage.removeItem('wsSupporter');
+        localStorage.removeItem('wsSessionToken');
+        localStorage.removeItem('wsSupporterVerifiedAt');
+        localStorage.removeItem('wsProKey');
+        if (typeof window.updateSupporterBadge === 'function') window.updateSupporterBadge();
+        window.location.reload();
+      });
+    }
+  });
+
+  document.getElementById('hmClerkSignIn')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (typeof Clerk !== 'undefined') Clerk.openSignIn();
+  });
+
+  document.getElementById('hmClerkSignOut')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (typeof Clerk !== 'undefined') {
+      Clerk.signOut().then(function() {
+        localStorage.removeItem('wsSupporter');
+        localStorage.removeItem('wsSessionToken');
+        localStorage.removeItem('wsSupporterVerifiedAt');
+        localStorage.removeItem('wsProKey');
+        if (typeof window.updateSupporterBadge === 'function') window.updateSupporterBadge();
+        window.location.reload();
+      });
+    }
+  });
+})();
+
 // Auto-open pricing modal from email link (?showPricing)
 if (location.search.includes("showPricing") && typeof window.showPricingModal === "function") {
   window.showPricingModal();
+}
+
+// Auto-open pricing modal with gift tab from link (?showGiftRedeem)
+if (location.search.includes("showGiftRedeem") && typeof window.showPricingModal === "function") {
+  window.showPricingModal();
+  setTimeout(function() {
+    var giftTab = document.querySelector('[data-tab="gift"]');
+    if (giftTab) giftTab.click();
+  }, 100);
 }
 
 // Welcome Landing Page — first-launch detection (no reopen path exists).
@@ -4096,6 +4211,7 @@ async function _makeSocialBlob(srcBlob) {
 }
 
 document.getElementById("btnS").addEventListener("click", async () => {
+  window._vaultShareCard = null;
   if (voiceAttached) { showToast("Download the card to keep the voice"); return; }
   _vibrate();
   const btn = document.getElementById("btnS");
@@ -4912,6 +5028,8 @@ document.addEventListener("keydown", function(e) {
     openModals.forEach(function(m) { m.classList.remove("open"); });
     document.body.classList.remove("modal-open");
     _deactivateModal();
+    window._vaultShareCard = null;
+    if (_sharePreviewUrl) { URL.revokeObjectURL(_sharePreviewUrl); _sharePreviewUrl = null; }
   }
 });
 // Spacebar record toggle

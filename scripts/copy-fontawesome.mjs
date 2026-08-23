@@ -15,7 +15,11 @@ const dist = join(root, 'blog-src', '.vitepress', 'dist', 'assets', 'fontawesome
 const files = [
   'css/fontawesome.min.css',
   'css/solid.min.css',
+  'css/regular.min.css',
+  'css/brands.min.css',
   'webfonts/fa-solid-900.woff2',
+  'webfonts/fa-regular-400.woff2',
+  'webfonts/fa-brands-400.woff2',
 ]
 
 mkdirSync(dist, { recursive: true })
