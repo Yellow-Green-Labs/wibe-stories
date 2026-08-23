@@ -9,7 +9,7 @@
 //   - HTML and JS              → network-first (always fetch latest when
 //                                online; fall back to cache when offline)
 //   - CSS and static assets    → cache-first (fast on repeat visits)
-//   - Cross-origin (fonts etc) → stale-while-revalidate
+//   - Cross-origin requests    → NEVER intercepted (see fetch handler)
 //   - /api/* and /c/*          → network-only (never cached)
 //
 // Cache lifecycle:
@@ -18,7 +18,7 @@
 //   online. Only change CACHE_NAME when you want to force a full cache
 //   flush across all existing users (rare — major structural changes only).
 
-const CACHE_NAME = 'wispr-stories-shell-v19';
+const CACHE_NAME = 'wispr-stories-shell-v20';
 
 // Files seeded into the cache on install so the app works on first
 // offline visit. Keep this list to the true shell only — every entry
@@ -59,63 +59,22 @@ self.addEventListener('fetch', (event) => {
   // support them and trying to put() these URLs throws unhandled rejections.
   if (url.protocol !== 'https:' && url.protocol !== 'http:') return;
 
+  // Cross-origin requests — NEVER intercept. The SW's internal fetch() runs
+  // under the page's CSP connect-src, so any host not listed there gets
+  // blocked inside this worker, the catch() below would hand back a synthetic
+  // "503 Offline" response, and the page loses resources the browser itself
+  // could load fine. This bit Clerk's CDN bundles, Vercel Blob images, and
+  // R2 landing videos before — pass EVERYTHING cross-origin straight through.
+  if (url.origin !== self.location.origin) return;
+
   // Same-origin dynamic routes — always go to network. Never cache API
   // responses or share-link lookups.
-  if (url.origin === self.location.origin) {
-    if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/c/')) {
-      return; // browser handles it; we don't intercept
-    }
-    // /version.json must always hit the network so the update-check never
-    // compares a stale SW-cached version against CURRENT_VERSION.
-    if (url.pathname === '/version.json') return;
-  }
-
-  // Vercel Blob storage — bypass the SW entirely. The browser loads these
-  // directly via <img> (covered by img-src CSP). Intercepting them here
-  // causes fetch() calls that hit connect-src and get blocked.
-  if (url.hostname.endsWith('.blob.vercel-storage.com')) {
+  if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/c/')) {
     return; // browser handles it; we don't intercept
   }
-
-  // Cloudflare R2 (r2.dev) — same reasoning as Blob above. Landing-page
-  // videos load via <video> (covered by media-src CSP); the SW must not
-  // intercept them or its fetch() hits connect-src and gets blocked.
-  if (url.hostname.endsWith('.r2.dev')) {
-    return; // browser handles it; we don't intercept
-  }
-
-  // API calls — bypass the SW entirely. These go to Railway, not Vercel.
-  if (url.pathname.startsWith('/api/')) {
-    return;
-  }
-
-  // Cross-origin (Google Fonts, etc.) — stale-while-revalidate so updates
-  // arrive on the next visit but offline still works.
-  // Skip FFmpeg WASM CDN — browser must get a fresh Response with unconsumed
-  // body stream so toBlobURL's arrayBuffer() doesn't throw.
-  if (url.hostname.includes('cdn.jsdelivr.net')) return;
-
-  if (url.origin !== self.location.origin) {
-    event.respondWith(
-      caches.open(CACHE_NAME).then((cache) =>
-        cache.match(req).then((cached) => {
-          const fetchPromise = fetch(req)
-            .then((resp) => {
-              // Only cache explicit CORS responses (type === 'cors', status 200).
-              // Opaque (no-cors), opaque-redirect, and error responses must not
-              // be passed to cache.put() — they throw NetworkError unhandled.
-              if (resp && resp.status === 200 && resp.type === 'cors') {
-                cache.put(req, resp.clone()).catch(() => {});
-              }
-              return resp;
-            })
-            .catch(() => cached || new Response('', { status: 503, statusText: 'Offline' }));
-          return cached || fetchPromise;
-        })
-      )
-    );
-    return;
-  }
+  // /version.json must always hit the network so the update-check never
+  // compares a stale SW-cached version against CURRENT_VERSION.
+  if (url.pathname === '/version.json') return;
 
   // HTML — network-only. Never serve stale HTML so users always get the
   // fresh version on every navigation. 'no-store' is used instead of
