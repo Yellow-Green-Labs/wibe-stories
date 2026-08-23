@@ -209,11 +209,21 @@
       });
     </script>
     <script src="https://analytics.ahrefs.com/analytics.js" data-key="EFnnezz1QG1QnVT5w57f2A" async></script>
-    <script
-      crossorigin="anonymous"
-      src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"
-      data-clerk-publishable-key="pk_test_aW1tdW5lLXNhaWxmaXNoLTg2LmNsZXJrLmFjY291bnRzLmRldiQ"
-    ></script>
+    <script defer crossorigin="anonymous" src="https://immune-sailfish-86.clerk.accounts.dev/npm/@clerk/ui@1/dist/ui.browser.js" type="text/javascript"></script>
+    <script defer crossorigin="anonymous" data-clerk-publishable-key="pk_test_aW1tdW5lLXNhaWxmaXNoLTg2LmNsZXJrLmFjY291bnRzLmRldiQ" src="https://immune-sailfish-86.clerk.accounts.dev/npm/@clerk/clerk-js@6/dist/clerk.browser.js" type="text/javascript"></script>
+    <script>
+      // Official Clerk v6 script-tag init — the UI bundle above defines
+      // __internal_ClerkUICtor; without it openSignIn/openSignUp throw
+      // "Clerk was not loaded with Ui components".
+      // NOTE: swap BOTH instance-domain URLs together with the publishable
+      // key when moving to production keys.
+      window.addEventListener("load", function () {
+        if (!window.Clerk) return;
+        Clerk.load({ ui: { ClerkUI: window.__internal_ClerkUICtor } }).catch(function (e) {
+          console.warn("[Clerk] init failed:", e && e.message);
+        });
+      });
+    </script>
   </head>
   <body id="top">
     <div id="appRoot">
