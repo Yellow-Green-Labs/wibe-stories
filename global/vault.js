@@ -29,7 +29,7 @@
       var token = getSessionToken();
       if (token) {
         try {
-          var res = await fetch("/api/vault/list", { headers: { "X-Session-Token": token } });
+          var res = await fetch(window._API_BASE + "/api/vault/list", { headers: { "X-Session-Token": token } });
           if (res.ok) {
             var data = await res.json();
             if (data.cards && data.cards.length > 0) {
@@ -49,12 +49,12 @@
         try { stored = JSON.parse(localStorage.getItem("wsVaultCards") || "[]"); } catch (e2) {}
         if (stored.length > 0) {
           try {
-            await fetch("/api/vault/migrate", {
+            await fetch(window._API_BASE + "/api/vault/migrate", {
               method: "POST",
               headers: { "Content-Type": "application/json", "X-Session-Token": token },
               body: JSON.stringify({ cards: stored })
             });
-            var res2 = await fetch("/api/vault/list", { headers: { "X-Session-Token": token } });
+            var res2 = await fetch(window._API_BASE + "/api/vault/list", { headers: { "X-Session-Token": token } });
             if (res2.ok) {
               var data2 = await res2.json();
               if (data2.cards && data2.cards.length > 0) {
@@ -378,7 +378,7 @@
               key = tokens[1] || "";
             } catch (e) {}
             if (!key) key = "";
-            fetch("/api/vault/rename", {
+            fetch(window._API_BASE + "/api/vault/rename", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -759,7 +759,7 @@ grid.innerHTML = html;
         var token = getSessionToken();
         if (token) {
           try {
-            var delRes = await fetch("/api/vault/delete", {
+            var delRes = await fetch(window._API_BASE + "/api/vault/delete", {
               method: "POST",
               headers: { "Content-Type": "application/json", "X-Session-Token": token },
               body: JSON.stringify({ ids: [id] })
@@ -789,7 +789,7 @@ grid.innerHTML = html;
       var token = getSessionToken();
       if (token) {
         try {
-          var delRes2 = await fetch("/api/vault/delete", {
+          var delRes2 = await fetch(window._API_BASE + "/api/vault/delete", {
             method: "POST",
             headers: { "Content-Type": "application/json", "X-Session-Token": token },
             body: JSON.stringify({ ids: Object.keys(selectedIds) })
@@ -940,7 +940,7 @@ grid.innerHTML = html;
     }
     if (card.shortId && /^[a-zA-Z0-9]{4,12}$/.test(card.shortId)) {
       try {
-        var res2 = await fetch("/api/download/" + card.shortId);
+        var res2 = await fetch(window._API_BASE + "/api/download/" + card.shortId);
         if (res2.ok) {
           saveBlobDownload(await res2.blob(), filename);
           showToast("Saved ✓");

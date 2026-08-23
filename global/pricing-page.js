@@ -65,7 +65,7 @@
   } catch (e) {}
 
   /* Server truth: one verify per page load (30/min rate limit, fail silent) */
-  fetch('/api/pro-verify', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+  fetch(window._API_BASE + '/api/pro-verify', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
     .then(function (r) { return r.json(); })
     .then(function (data) {
       renderBanner(data);

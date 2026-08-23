@@ -163,7 +163,7 @@
   }
 
   function fetchStats() {
-    fetch('/api/lang-stats')
+    fetch(window._API_BASE + '/api/lang-stats')
       .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
       .then(function(data) {
         var wasFailed = fetchFailed;

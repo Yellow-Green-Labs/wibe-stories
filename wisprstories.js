@@ -1,4 +1,6 @@
 (async function(){try{var r=await fetch("/version.json?v="+Date.now(),{cache:"no-store"});var v=await r.json();console.log("%c[Build] Wibe Stories "+v.version+" ("+v.buildDate+")","color:#ec4899;font-weight:bold;font-size:14px");}catch(e){console.log("%c[Build] Wibe Stories","color:#ec4899;font-weight:bold;font-size:14px");}})();
+// API base URL — all /api/ fetch calls go to Railway
+window._API_BASE = 'https://wibe-stories-production.up.railway.app';
 const PALS = [
   "#7c3aed",
   "#f59e0b",
@@ -679,7 +681,7 @@ function trackCardUsage() {
   var lang = source === "voice"
     ? (effectiveSpeechLang || effectiveCurLang || "en")
     : (effectiveCurLang || effectiveSpeechLang || "en");
-  fetch("/api/track-usage", {
+  fetch(window._API_BASE + "/api/track-usage", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ lang: lang, source: source })
@@ -1045,7 +1047,7 @@ async function confirmRewrite(tone) {
       sessionId = "sess_" + Math.random().toString(36).slice(2, 10);
       localStorage.setItem("wsSessionId", sessionId);
     }
-    const res = await fetch("/api/rewrite-confirm", {
+    const res = await fetch(window._API_BASE + "/api/rewrite-confirm", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -1439,7 +1441,7 @@ function stopDeepgramRecording() {
         var controller = new AbortController();
         var sttTimeout = setTimeout(function() { controller.abort(); }, 15000);
         try {
-          const res = await fetch("/api/stt", {
+          const res = await fetch(window._API_BASE + "/api/stt", {
             method: "POST",
             headers: Object.assign({
               "Content-Type": "audio/wav",
@@ -1499,7 +1501,7 @@ async function _retryLastStt() {
   var controller = new AbortController();
   var sttTimeout = setTimeout(function() { controller.abort(); }, 15000);
   try {
-    const res = await fetch("/api/stt", {
+    const res = await fetch(window._API_BASE + "/api/stt", {
       method: "POST",
       headers: Object.assign({
         "Content-Type": "audio/wav",
@@ -1613,14 +1615,14 @@ function startRec() {
     if (_sttHealthCache && (Date.now() - _sttHealthCache.ts) < STT_HEALTH_TTL_MS) {
       return Promise.resolve(_sttHealthCache.value);
     }
-    return fetch("/api/stt?check=1").then(function(r) { return r.json(); }).then(function(data) {
+    return fetch(window._API_BASE + "/api/stt?check=1").then(function(r) { return r.json(); }).then(function(data) {
       _sttHealthCache = { value: data, ts: Date.now() };
       return data;
     }).catch(function() {
       // Network error — try one retry after 2s before falling back.
       return new Promise(function(resolve) {
         setTimeout(function() {
-          fetch("/api/stt?check=1").then(function(r) { return r.json(); }).then(function(d) {
+          fetch(window._API_BASE + "/api/stt?check=1").then(function(r) { return r.json(); }).then(function(d) {
             _sttHealthCache = { value: d, ts: Date.now() };
             resolve(d);
           }).catch(function() { resolve(null); });
@@ -2124,7 +2126,7 @@ document.getElementById("recBtn").addEventListener("click", async () => {
   const maxDuration = isPro ? PRO_MAX_RECORDING_SEC : FREE_MAX_RECORDING_SEC;
 
   try {
-    const res = await fetch("/api/limits", {
+    const res = await fetch(window._API_BASE + "/api/limits", {
       method: "POST",
       headers: Object.assign({ "Content-Type": "application/json" }, getAdminHeaders()),
       body: JSON.stringify({ sessionId: localStorage.getItem("wsSessionId"), isPro, audioDuration: maxDuration, checkOnly: true }),
@@ -2188,7 +2190,7 @@ async function reportRecordingDuration(actualDuration) {
   const sessionId = localStorage.getItem("wsSessionId");
   const isPro = isSupporter();
   try {
-    const res = await fetch("/api/limits", {
+    const res = await fetch(window._API_BASE + "/api/limits", {
       method: "POST",
       headers: Object.assign({ "Content-Type": "application/json" }, getAdminHeaders()),
       body: JSON.stringify({ sessionId, isPro, audioDuration: actualDuration || 0, checkOnly: false }),
@@ -2218,7 +2220,7 @@ async function _refreshLimitsFromServer() {
   if (!sessionId) return;
   const isPro = isSupporter();
   try {
-    const res = await fetch("/api/limits", {
+    const res = await fetch(window._API_BASE + "/api/limits", {
       method: "POST",
       headers: Object.assign({ "Content-Type": "application/json" }, getAdminHeaders()),
       body: JSON.stringify({ sessionId, isPro, audioDuration: 0, checkOnly: true }),
@@ -2439,7 +2441,7 @@ async function _processAudioFile(file) {
     var durLabel = document.getElementById('uploadDuration');
     if (durLabel) durLabel.textContent = 'Transcribing...';
     var timeoutId = setTimeout(function() { controller.abort(); }, 60000);
-    var sttRes = await fetch('/api/stt', {
+    var sttRes = await fetch(window._API_BASE + '/api/stt', {
       method: 'POST',
       headers: Object.assign({
         'Content-Type': 'audio/wav',
@@ -2745,7 +2747,7 @@ document.getElementById("toneRow").addEventListener("click", async (e) => {
     // server's own success/error response always reaches us before we abort.
     const timeoutId = setTimeout(() => controller.abort(), 25000);
 
-    const res = await fetch("/api/rewrite", {
+    const res = await fetch(window._API_BASE + "/api/rewrite", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text, tone, sessionId, proKey: localStorage.getItem("wsSessionToken") || localStorage.getItem("wsProKey") || null }),
@@ -3409,7 +3411,7 @@ async function revalidateProKey() {
   const sessionToken = localStorage.getItem("wsSessionToken");
   if (sessionToken) {
     try {
-      const res = await fetch("/api/pro-verify", {
+      const res = await fetch(window._API_BASE + "/api/pro-verify", {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-Session-Token": sessionToken },
         body: JSON.stringify({}),
@@ -3444,7 +3446,7 @@ async function revalidateProKey() {
   }
 
   try {
-    const res = await fetch("/api/pro-status", {
+    const res = await fetch(window._API_BASE + "/api/pro-status", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ key: storedKey }),
@@ -3492,7 +3494,7 @@ revalidateProKey();
           try {
             const token = await Clerk.session.getToken();
             if (!token) return;
-            const res = await fetch('/api/pro-status', {
+            const res = await fetch(window._API_BASE + '/api/pro-status', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -4001,12 +4003,12 @@ document.getElementById("btnC").addEventListener("click", async () => {
           await document.fonts.ready;
           _shareBlob = await generateBlobWithProgress();
           _shareSocialBlob = await _makeSocialBlob(_shareBlob);
-          var res = await fetch("/api/upload", { method: "POST", body: _shareBlob, headers: { "Content-Type": "image/png", "X-Card-Text": encodeURIComponent(document.getElementById("sta").value), "X-Card-Name": encodeURIComponent(document.getElementById("nin").value), "X-Card-Tone": curTone || "", "X-Card-P": String(curP), "X-Card-R": useRounded ? "rounded" : "sharp", "X-Card-Pro": "1" } });
+          var res = await fetch(window._API_BASE + "/api/upload", { method: "POST", body: _shareBlob, headers: { "Content-Type": "image/png", "X-Card-Text": encodeURIComponent(document.getElementById("sta").value), "X-Card-Name": encodeURIComponent(document.getElementById("nin").value), "X-Card-Tone": curTone || "", "X-Card-P": String(curP), "X-Card-R": useRounded ? "rounded" : "sharp", "X-Card-Pro": "1" } });
           if (res.ok) {
             var data = await res.json();
             _shortId = data.shortId;
             if (voiceAttached && audioBlob) {
-              try { await fetch("/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Auto-save] Voice upload failed:", ve); }
+              try { await fetch(window._API_BASE + "/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Auto-save] Voice upload failed:", ve); }
             }
             window.saveCardToVault({
               text: document.getElementById("sta").value,
@@ -4263,12 +4265,12 @@ document.getElementById("btnS").addEventListener("click", async () => {
     // gesture context expires and the share sheet opens without file data.
     (async () => {
       try {
-        var res = await fetch("/api/upload", { method: "POST", body: _shareBlob, headers: { "Content-Type": "image/png", "X-Card-Text": encodeURIComponent(document.getElementById("sta").value), "X-Card-Name": encodeURIComponent(document.getElementById("nin").value), "X-Card-Tone": curTone || "", "X-Card-P": String(curP), "X-Card-R": useRounded ? "rounded" : "sharp", "X-Card-Pro": isSupporter() ? "1" : "0" } });
+        var res = await fetch(window._API_BASE + "/api/upload", { method: "POST", body: _shareBlob, headers: { "Content-Type": "image/png", "X-Card-Text": encodeURIComponent(document.getElementById("sta").value), "X-Card-Name": encodeURIComponent(document.getElementById("nin").value), "X-Card-Tone": curTone || "", "X-Card-P": String(curP), "X-Card-R": useRounded ? "rounded" : "sharp", "X-Card-Pro": isSupporter() ? "1" : "0" } });
         if (res.ok) {
           var data = await res.json();
           _shortId = data.shortId;
           if (voiceAttached && audioBlob) {
-            try { await fetch("/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Voice] Upload failed:", ve); }
+            try { await fetch(window._API_BASE + "/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Voice] Upload failed:", ve); }
           }
           // btnS never saves to vault — only btnC does
         }
@@ -4336,12 +4338,12 @@ document.getElementById("shareNative").addEventListener("click", async function 
   btn.disabled = true;
   try {
     if (!_shortId) {
-      var res = await fetch("/api/upload", { method: "POST", body: _shareBlob, headers: { "Content-Type": "image/png", "X-Card-Text": encodeURIComponent(document.getElementById("sta").value), "X-Card-Name": encodeURIComponent(document.getElementById("nin").value), "X-Card-Tone": curTone || "", "X-Card-P": String(curP), "X-Card-R": useRounded ? "rounded" : "sharp", "X-Card-Pro": isSupporter() ? "1" : "0" } });
+      var res = await fetch(window._API_BASE + "/api/upload", { method: "POST", body: _shareBlob, headers: { "Content-Type": "image/png", "X-Card-Text": encodeURIComponent(document.getElementById("sta").value), "X-Card-Name": encodeURIComponent(document.getElementById("nin").value), "X-Card-Tone": curTone || "", "X-Card-P": String(curP), "X-Card-R": useRounded ? "rounded" : "sharp", "X-Card-Pro": isSupporter() ? "1" : "0" } });
       if (!res.ok) throw new Error("Upload failed");
       var data = await res.json();
       _shortId = data.shortId;
       if (voiceAttached && audioBlob) {
-        try { await fetch("/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Voice] Upload failed:", ve); }
+        try { await fetch(window._API_BASE + "/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Voice] Upload failed:", ve); }
       }
     }
     if (!/^[a-zA-Z0-9]{4,12}$/.test(_shortId)) {
@@ -4439,12 +4441,12 @@ document.getElementById("shareCopyLink").addEventListener("click", async functio
   btn.disabled = true;
   try {
     if (!_shortId) {
-      var res = await fetch("/api/upload", { method: "POST", body: _shareBlob, headers: { "Content-Type": "image/png", "X-Card-Text": encodeURIComponent(document.getElementById("sta").value), "X-Card-Name": encodeURIComponent(document.getElementById("nin").value), "X-Card-Tone": curTone || "", "X-Card-P": String(curP), "X-Card-R": useRounded ? "rounded" : "sharp", "X-Card-Pro": isSupporter() ? "1" : "0" } });
+      var res = await fetch(window._API_BASE + "/api/upload", { method: "POST", body: _shareBlob, headers: { "Content-Type": "image/png", "X-Card-Text": encodeURIComponent(document.getElementById("sta").value), "X-Card-Name": encodeURIComponent(document.getElementById("nin").value), "X-Card-Tone": curTone || "", "X-Card-P": String(curP), "X-Card-R": useRounded ? "rounded" : "sharp", "X-Card-Pro": isSupporter() ? "1" : "0" } });
       if (!res.ok) throw new Error("Upload failed");
       var data = await res.json();
       _shortId = data.shortId;
       if (voiceAttached && audioBlob) {
-        try { await fetch("/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Voice] Upload failed:", ve); }
+        try { await fetch(window._API_BASE + "/api/voice", { method: "POST", body: audioBlob, headers: { "Content-Type": audioBlob.type || "audio/webm", "X-Short-Id": _shortId } }); } catch (ve) { console.error("[Voice] Upload failed:", ve); }
       }
     }
     if (!/^[a-zA-Z0-9]{4,12}$/.test(_shortId)) {
@@ -5292,7 +5294,7 @@ window.addEventListener('i18nApplied', function () {
         var clientId = "v" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
         (async function () {
           try {
-            var res = await fetch("/api/vault/save", {
+            var res = await fetch(window._API_BASE + "/api/vault/save", {
               method: "POST",
               headers: { "Content-Type": "application/json", "X-Session-Token": proAuth },
               body: JSON.stringify({
@@ -5378,7 +5380,7 @@ window.addEventListener('i18nApplied', function () {
         var proAuth = "";
         try { proAuth = localStorage.getItem("wsSessionToken") || localStorage.getItem("wsProKey") || ""; } catch (e) {}
         if (proAuth) {
-          fetch("/api/vault/delete", {
+          fetch(window._API_BASE + "/api/vault/delete", {
             method: "POST",
             headers: { "Content-Type": "application/json", "X-Session-Token": proAuth },
             body: JSON.stringify({ ids: [card.id] })

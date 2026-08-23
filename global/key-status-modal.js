@@ -265,7 +265,7 @@
     if (_ksDebug) { handleResponse(_ksDebug); return; }
     if (_ksCache && _ksCache.isPro) { handleResponse(_ksCache); return; }
 
-    fetch("/api/pro-verify", {
+    fetch(window._API_BASE + "/api/pro-verify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     })
@@ -309,7 +309,7 @@
   /* ── Pre-fetch on load (only if ever had Pro) ── */
   try {
     if (localStorage.getItem("wsSessionToken")) {
-      fetch("/api/pro-verify", {
+      fetch(window._API_BASE + "/api/pro-verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       })

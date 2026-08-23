@@ -47,7 +47,7 @@
   }
 
   // Call /api/usage
-  fetch('/api/usage', {
+  fetch(window._API_BASE + '/api/usage', {
     method: 'POST',
     headers: headers,
     body: JSON.stringify({ sessionId: sid, isPro: isPro }),

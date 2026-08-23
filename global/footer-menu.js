@@ -445,7 +445,7 @@
     btn.textContent = "Subscribing\u2026";
 
     try {
-      const res = await fetch("/api/subscribe-occasion", {
+      const res = await fetch(window._API_BASE + "/api/subscribe-occasion", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, name }),

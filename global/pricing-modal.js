@@ -54,7 +54,7 @@
     if (!key) { setMsg("pricingKeyMsg", "Please paste your key.", false); return; }
     var btn = document.getElementById("pricingKeyGo");
     if (btn) btn.disabled = true;
-    fetch("/api/pro-status", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: key }) })
+    fetch(window._API_BASE + "/api/pro-status", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ key: key }) })
       .then(function (r) { return r.json(); })
       .then(function (data) {
         if (data.isPro === true) {
@@ -128,7 +128,7 @@
 
     if (btn) btn.disabled = true;
     setMsg("pricingEmailMsg", "Sending\u2026", false);
-    fetch("/api/resend-key", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email }) })
+    fetch(window._API_BASE + "/api/resend-key", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: email }) })
       .then(function (r) { return r.json(); })
       .then(function () { setMsg("pricingEmailMsg", "\u2713 Check your inbox for your key.", true); })
       .catch(function () { setMsg("pricingEmailMsg", "Something went wrong. Try again.", false); })
@@ -143,7 +143,7 @@
     var btn = document.getElementById("giftCodeGo");
     if (btn) btn.disabled = true;
     setMsg("giftCodeMsg", "Redeeming...", false);
-    fetch("/api/redeem-gift", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code: code }) })
+    fetch(window._API_BASE + "/api/redeem-gift", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code: code }) })
       .then(function (r) { return r.json(); })
       .then(function (data) {
         if (data.valid === true) {
