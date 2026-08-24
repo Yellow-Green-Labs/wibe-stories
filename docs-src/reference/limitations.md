@@ -1,5 +1,6 @@
 ---
 title: Limitations
+description: Wibe Stories usage limits — daily recording caps, Pro tier limits, card storage expiry, content moderation rules, and platform constraints.
 ---
 
 # Limitations

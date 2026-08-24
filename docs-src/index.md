@@ -1,5 +1,6 @@
 ---
 title: Welcome to Wibe Stories
+description: Documentation hub for Wibe Stories — the free voice-to-card app that turns your words into beautiful shareable cards in 44 languages.
 ---
 
 # Welcome to Wibe Stories

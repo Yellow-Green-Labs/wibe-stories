@@ -1,5 +1,6 @@
 ---
 title: Trust Center
+description: Services and infrastructure powering Wibe Stories. Learn about Deepgram, Upstash Redis, Neon Postgres, Vercel, and other trusted providers.
 ---
 
 # Trust Center

@@ -1,5 +1,6 @@
 ---
 title: Product Roadmap
+description: Wibe Stories product roadmap — upcoming features, planned improvements, and future direction for the voice-to-card platform.
 ---
 
 # Roadmap

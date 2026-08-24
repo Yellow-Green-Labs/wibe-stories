@@ -1,5 +1,6 @@
 ---
 title: 'Wibe Stories — Product Documentation'
+description: Complete product documentation for Wibe Stories — features, architecture, voice recording, AI tone rewriting, card design, sharing, and Pro membership.
 ---
 
 # Wibe Stories — Product Documentation

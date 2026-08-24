@@ -1,5 +1,6 @@
 ---
 title: Refund Policy
+description: Wibe Stories refund policy for Pro subscriptions. Learn about our no-refund terms and what happens when you cancel.
 ---
 
 # Refund Policy

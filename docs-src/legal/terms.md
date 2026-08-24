@@ -1,5 +1,6 @@
 ---
 title: Terms of Service
+description: Terms and conditions for using Wibe Stories. Read about acceptable use, user responsibilities, and service limitations.
 ---
 
 # Terms of Service

@@ -1,5 +1,6 @@
 ---
 title: Changelog
+description: Wibe Stories version history — every release, feature update, bug fix, and improvement from v0.1.0 to the latest version.
 outline: [2, 2]
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: Privacy Policy
+description: How Wibe Stories handles your data. Learn what we collect, how we store it, and your rights under our privacy policy.
 ---
 
 # Privacy Policy

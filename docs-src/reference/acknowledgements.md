@@ -1,5 +1,6 @@
 ---
 title: Known Issues
+description: Known issues and limitations in Wibe Stories including WebM audio, Firefox support, translation coverage, and browser compatibility.
 ---
 
 # Known Issues

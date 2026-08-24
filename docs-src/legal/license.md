@@ -1,5 +1,6 @@
 ---
 title: License
+description: Wibe Stories software license terms. Read about permitted use, restrictions, and intellectual property rights.
 ---
 
 # License
