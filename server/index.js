@@ -1,5 +1,9 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // API handlers
 import stt from './api/stt.js';
@@ -199,6 +203,10 @@ app.all('/api/cron', wrapNode(async (req, res) => {
       res.end(JSON.stringify({ error: 'Unknown job: ' + job }));
   }
 }));
+
+// ── Static files ──────────────────────────────────────────────────────────
+// Serve the frontend (HTML/JS/CSS) from the project root
+app.use(express.static(path.join(__dirname, '..')));
 
 // ── Catch-all 404 ─────────────────────────────────────────────────────────
 app.all('*', (req, res) => {

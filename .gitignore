@@ -65,6 +65,3 @@ assets/cards/*.webm
 assets/cards/*.mp4
 assets/cards/*.gif
 assets/featurepage/hero-video/
-
-# blog article backups (phase-1 pipeline preview)
-_backup-blog-articles/

@@ -1587,6 +1587,20 @@ main {
   color: var(--ink2);
 }
 
+.ws-ps {
+  margin: var(--space-16) 0 0;
+  padding-top: var(--space-16);
+  border-top: 1px solid var(--rule);
+  font-size: var(--text-base);
+  color: var(--ink2);
+}
+
+.ws-ps-label {
+  font-weight: 700;
+  color: var(--ink);
+  margin-right: 6px;
+}
+
 .ws-disclosure {
   margin: 0;
   font-size: var(--text-xs);

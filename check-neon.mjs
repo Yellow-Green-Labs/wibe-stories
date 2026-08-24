@@ -1,0 +1,1 @@
+import { neon } from "@neondatabase/serverless"; const sql = neon(process.env.NEON_DATABASE_URL); try { const r = await sql`SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = $$vault_cards$$) as exists`; console.log("Table exists:", r[0].exists); } catch(e) { console.error("ERR:", e.message); }

@@ -106,6 +106,10 @@ const contributors = computed(() =>
           <p class="ws-signature" v-html="t('signature')"></p>
         </div>
 
+        <aside v-if="frontmatter.ps" class="ws-ps">
+          <span class="ws-ps-label">P.S.</span><span class="ws-ps-text">{{ frontmatter.ps }}</span>
+        </aside>
+
         <footer class="ws-article-foot">
           <ShareBar variant="foot" :url="shareUrl" :title="sharedTitle" />
           <p class="ws-disclosure">{{ t('disclosure') }}</p>

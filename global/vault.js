@@ -35,6 +35,7 @@
             if (data.cards && data.cards.length > 0) {
               cards = data.cards;
               _vaultIsLocal = false;
+              _loadFailed = false;
               return;
             }
           } else {
@@ -346,12 +347,18 @@
         e.stopPropagation();
         if (_renameOriginal === null) {
           _renameOriginal = renameName.textContent;
+          renameName.contentEditable = "true";
           renameName.classList.add("editing");
-          renameName.textContent = "";
           renameName.focus();
-          renameName.dispatchEvent(new Event("input", { bubbles: true }));
+          /* select all text for easy replacement */
+          var range = document.createRange();
+          range.selectNodeContents(renameName);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
         } else {
           renameName.classList.remove("editing");
+          renameName.contentEditable = "false";
           renameName.textContent = _renameOriginal;
           _renameOriginal = null;
         }
@@ -360,24 +367,27 @@
         if (e.key === "Escape") {
           e.stopPropagation();
           renameName.classList.remove("editing");
+          renameName.contentEditable = "false";
           renameName.textContent = _renameOriginal || "";
           _renameOriginal = null;
         } else if (e.key === "Enter") {
           e.preventDefault();
           e.stopPropagation();
-          if (_renameOriginal !== null && _renameOriginal.trim()) {
-            var newName = _renameOriginal.trim();
+          var newName = renameName.textContent.trim();
+          if (_renameOriginal !== null && newName && newName !== _renameOriginal) {
+            var oldName = _renameOriginal;
             _renameOriginal = null;
             renameName.classList.remove("editing");
+            renameName.contentEditable = "false";
             renameName.textContent = newName;
-            /* POST to api/vault/rename */
-            var key = null;
-            try {
-              var auth = document.getElementById("vault-overlay").getAttribute("data-auth") || "";
-              var tokens = auth.split("=");
-              key = tokens[1] || "";
-            } catch (e) {}
-            if (!key) key = "";
+            /* update card in vault + UI immediately */
+            if (cardViewCard) {
+              cardViewCard.name = newName;
+              var idx = cards.findIndex(function (c) { return c.id === cardViewCard.id; });
+              if (idx >= 0) cards[idx].name = newName;
+            }
+            render();
+            var key = getSessionToken();
             fetch(window._API_BASE + "/api/vault/rename", {
               method: "POST",
               headers: {

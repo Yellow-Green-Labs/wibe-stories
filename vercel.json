@@ -1,8 +1,8 @@
 {
   "buildCommand": "node scripts/fetch-content.mjs && npx vitepress build blog-src && npx pagefind --site blog-src/.vitepress/dist && node scripts/copy-fontawesome.mjs && node scripts/gen-sitemap.mjs && npx vitepress build docs-src",
   "outputDirectory": ".",
-  "rewrites": [
-    { "source": "/__clerk/:path*", "destination": "https://immune-sailfish-86.clerk.accounts.dev/:path*" },
+"rewrites": [
+    { "source": "/__clerk/:path*", "destination": "/api/clerk-proxy/:path*" },
     { "source": "/", "destination": "/wisprstories.html" },
     { "source": "/features", "destination": "/features.html" },
     { "source": "/about", "destination": "/about.html" },
@@ -26,6 +26,7 @@
     { "source": "/blog/hashmap.json", "destination": "/blog-src/.vitepress/dist/hashmap.json" },
     { "source": "/blog/vp-icons.css", "destination": "/blog-src/.vitepress/dist/vp-icons.css" },
     { "source": "/blog/BLOG-LOGO.png", "destination": "/blog-src/.vitepress/dist/BLOG-LOGO.png" },
+    { "source": "/blog/BLOG-LABEL.png", "destination": "/blog-src/.vitepress/dist/BLOG-LABEL.png" },
     { "source": "/blog/WS-HORI-DARK.png", "destination": "/blog-src/.vitepress/dist/WS-HORI-DARK.png" },
     { "source": "/blog/WS-HORI-LIGHT.png", "destination": "/blog-src/.vitepress/dist/WS-HORI-LIGHT.png" },
     { "source": "/blog/ws-l-b.ico", "destination": "/blog-src/.vitepress/dist/ws-l-b.ico" },

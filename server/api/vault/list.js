@@ -14,16 +14,22 @@ export default async function handler(req) {
 
   try {
     const authValue = req.headers.get('x-session-token') || req.headers.get('x-pro-key') || '';
-    const redis = getRedis();
-    const result = await resolveProKey(redis, authValue);
-    if (!result.valid || !result.proKey) {
-      return new Response(JSON.stringify({ error: 'invalid_key' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      });
+    /* Admin bypass — skip Redis entirely for the admin secret */
+    const adminKey = process.env.ADMIN_API_SECRET;
+    let key;
+    if (adminKey && authValue && authValue.toUpperCase() === adminKey.toUpperCase()) {
+      key = adminKey.toUpperCase();
+    } else {
+      const redis = getRedis();
+      const result = await resolveProKey(redis, authValue);
+      if (!result.valid || !result.proKey) {
+        return new Response(JSON.stringify({ error: 'invalid_key' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      key = result.proKey;
     }
-
-    const key = result.proKey;
 
     const sql = getNeon();
     await sql`
@@ -53,9 +59,10 @@ export default async function handler(req) {
       ALTER TABLE vault_cards ADD COLUMN IF NOT EXISTS last_accessed_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
     `;
     /* Auto-restore: returning Pro user — adopt prior vault cards into the new key */
-    try {
-      const kk = KEYS.upgradeKey(key);
-      const kr = await redis.get(kk);
+    if (redis) {
+      try {
+        const kk = KEYS.upgradeKey(key);
+        const kr = await redis.get(kk);
       if (kr) {
         const kd = typeof kr === 'string' ? JSON.parse(kr) : kr;
         if (kd.email) {
@@ -86,6 +93,7 @@ export default async function handler(req) {
       }
     } catch (e) {
       console.error('[Vault List] Auto-restore skipped:', e.message);
+      }
     }
     /* opening the vault is the access signal — touch every card for this key */
     await sql`

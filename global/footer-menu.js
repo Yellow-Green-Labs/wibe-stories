@@ -152,8 +152,8 @@
     >[ <i class="fa-solid fa-question"></i> ]</a>
 
     <div class="fmenu-panel hidden" id="fmenu-panel">
-      <a href="https://medium.com/" class="fmenu-link" rel="noopener noreferrer" target="_blank">
-        <i class="fa-brands fa-medium" aria-hidden="true"></i><span data-i18n="footer.articles">Read Articles</span>
+      <a href="/blog/" class="fmenu-link">
+        <i class="fa-solid fa-newspaper" aria-hidden="true"></i><span data-i18n="footer.articles">Read Articles</span>
       </a>
       <a href="https://tally.so/r/obaD1M" class="fmenu-link" target="_blank" rel="noopener noreferrer">
         <i class="fa-solid fa-pen-clip" aria-hidden="true"></i><span data-i18n="footer.issues">Submit Issues</span>

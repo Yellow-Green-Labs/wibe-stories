@@ -1,106 +1,76 @@
 # Article Template — Wibe & Wonder
 
-> One gist = one article. Filename = the exact destination path in the articles repository:
-> English originals → `posts/<slug>.md` · Multilingual originals → `<lang>/posts/<slug>.md` · English companions → `<lang>/posts/<slug>-en.md`
-> Gist description must start with `WIBE BLOG`.
-> Never change the filename or the description when you rewrite.
-> You only publish when the owner writes an approval comment ("approved") on your gist.
+> **Where to save your file:**
+> English article → `posts/<slug>.md`
+> Article in another language → `<lang>/posts/<slug>.md` (e.g. `th/posts/my-article.md`)
+> English companion for another language → `<lang>/posts/<slug>-en.md`
 
 ---
 
-## Front matter — copy this block and fill it in
+## Front matter — copy this block and fill in every field
 
 ```yaml
 ---
-layout: post
-title:        # 8–12 words. Contains the keyword phrase a reader would type
-              # into Google for this topic. Voice topics may include
-              # "Wispr Flow" in the title. Never clickbait.
-subtitle:     # One extra sentence that makes the reader want to continue.
-              # Optional but preferred.
-description:  # Two sentences max, plain summary. This is the text Google
-              # shows under the title in search results. Must mention the
-              # topic's keyword phrase naturally.
-category:     # One of the keys below (the theme renders the localized
-              # display name from the locale; descriptions are the one-liners
-              # from content-guide/CATEGORIES.md translated per locale with
-              # the same meaning — see the name table there):
-              # wibes-news [Wibe's News]
-              # voice-dictation [Voice Dictation]
-              # tech-behind [Tech Behind]
-              # confluence [Confluence]
-              # user-stories [User Stories]
-              # cultural-mosaic [Cultural Mosaic]
-author:       # One of these four, chosen to fit the article's subject:
-              # "Wibe Engineering Team" | "Wibe Editorial Team"
-              # "Wibe International Team" | "Wibe Design Team"
-date:         # YYYY-MM-DD. The day the article is approved.
-              # For multilingual: use the multilingual original's date.
-              # The English companion uses the SAME date as the original.
-image:        # https://picsum.photos/seed/<slug>/1200/675 (placeholder;
-              # the owner replaces it with custom art before publishing)
-lang:         # en-US | ko-KR | th-TH | ja-JP | es-ES | it-IT | fil-PH | tr-TR | sv-SE
-contributors: []    # Initials of readers whose feedback you used,
-                    # e.g. ["MK","PT"]. Leave [] unless the owner gave
-                    # you names. For English companions: copy the original's list.
-improve: true       # true = "Anything to improve? Tell us." (open for feedback)
-                    # false = "Reviewed. Still see an error? Tell us." (errors only)
-                    # Only the owner changes this. Default: true.
+layout: post          # always "post"
+title:                # 8–12 words. The exact phrase someone would type into Google.
+                      # Example: "How to Record Clear Voice Messages in Thai"
+subtitle:             # Optional. One sentence that makes people keep reading.
+description:          # REQUIRED. 2 sentences. This shows under the title in Google.
+                      # Example: "Tips for recording clear voice messages with your
+                      # phone. Works in any language, any room."
+category:             # REQUIRED. One of these keys:
+                      # wibes-news | voice-dictation | tech-behind | confluence |
+                      # user-stories | cultural-mosaic
+author:               # REQUIRED. One of these four:
+                      # Wibe Engineering Team | Wibe Editorial Team |
+                      # Wibe International Team | Wibe Design Team
+date:                 # REQUIRED. The day the article is approved. YYYY-MM-DD
+image:                # Placeholder. Owner replaces before publishing:
+                      # https://picsum.photos/seed/your-article-name/1200/675
+lang:                 # REQUIRED. The language of the article:
+                      # en-US | ko-KR | th-TH | ja-JP | es-ES | it-IT | fil-PH | tr-TR | sv-SE
+ps:                   # REQUIRED. A short P.S. after the article. 1–2 sentences.
+                      # Warm, practical, in the article's own language.
+                      # The site shows this automatically — don't write P.S. in the body.
+contributors: []      # Leave empty unless owner gives you initials.
+improve: true         # OWNER ONLY. true = open for feedback. false = errors only.
 ---
 ```
 
-## Article body — the skeleton
-
-1. **Opening hook** — 2–3 plain sentences. A question, a contrast, or a
-   scene. Do NOT repeat the title in the first sentence. No bold lead here.
-
-2. **Main sections** — 3 to 5. Full-length articles (1,200+ words) use
-   `##` subheadings. Short articles (600–900 words) may use bold-lead
-   paragraphs: `**This is the point.**` followed by plain text.
-   One idea per paragraph. Short paragraphs. No filler.
-
-3. **Pull quote (optional)** — one blockquote with the article's emotional core.
-
-4. **Warm closing** — a practical, hopeful "What to do about it" section.
-
-## Mandatory rules
-
-- **Length: minimum 1,200 words** for every new article. No exceptions.
-- **Keywords:** each article targets a natural keyword phrase for its topic.
-  "Wispr Flow" is one of those keywords and must appear naturally at least once.
-- **Internal links:** link to 1–2 related Wibe & Wonder articles where natural.
-  Not required when no relevant articles exist.
-- **Audience:** 20s–70s. Warm, plain language. No jargon, no hype, no clichés.
-- **Never write:** "native speakers" (say "careful readers"), unprovable
-  claims, ads, politics, religious debates, or medical/legal advice.
-- **Do NOT add at the end** — the website renders these automatically:
-  share button, AI disclosure, "Spotted something off?" link,
-  contributors row, sign-up CTA.
-- **Multilingual articles:** originally written in the target language (not
-  translated). Based on the English brief from the Strategist, the language
-  agent writes directly in the target language. An English companion is then
-  transcreated by Quill as a separate pass. The companion is NOT the source
-  of the original-language article — but it IS the source for ALL platform
-  distribution content (Substack, dev.to, social).
-
----
-
-## Gist footer (append verbatim, fill in the URLs)
-
-The footer is the owner's action panel. The links must match the deployed
-approve/reject endpoint base (`GIST_APPROVE_BASE`); local default is
-`http://localhost:8741` (approve) and `http://localhost:8742` (reject).
+## Article body — copy this structure and fill in
 
 ```markdown
----
+[Open with a question, a contrast, or a short scene. NOT the title repeated.
+2–3 sentences.]
 
-**Owner actions**
+## [First point — what the reader learns]
 
-- ✅ [Approve this article]({GIST_APPROVE_BASE}/?pipeline={PIPELINE_ID})
-- ❌ [Reject]({GIST_REJECT_BASE}/?pipeline={PIPELINE_ID}&flavor=topic) — topic
-- ❌ [Reject]({GIST_REJECT_BASE}/?pipeline={PIPELINE_ID}&flavor=angle) — angle
-- ❌ [Reject]({GIST_REJECT_BASE}/?pipeline={PIPELINE_ID}&flavor=quality) — quality
-- ✏️ Edit: leave a comment starting with `edit: ` and the rest of your request.
+Explain the idea in 2–3 short paragraphs. One thought per paragraph.
+Use real examples from the reader's language or culture.
 
-Or simply comment `approved` to approve.
+## [Second point — new heading]
+
+Same pattern. Another idea, its own paragraphs. If this is a Thai article,
+write about Thai-specific details. If Korean, Korean-specific details.
+
+## [Third point — new heading]
+
+Another idea. Short paragraphs. Plain language. No jargon.
+The reader is 20s–70s.
+
+## What to do next
+
+One practical, specific thing the reader can do after reading this.
+Not "start using voice" — more like "open the app and record one
+message to someone you care about."
 ```
+
+## Rules
+
+- **Minimum 1,200 words.** Every article.
+- **Use "Wispr Flow" naturally** at least once.
+- **Link to 1–2 related articles** when they exist.
+- **Plain language.** No jargon, no hype, no clichés.
+- **Never write:** "native speakers" (say "careful readers"), ads, politics, religious debates, medical or legal advice.
+- **Don't add these at the end** — the site renders them automatically:
+  signature, share buttons, "Spotted something off?" link, contributors row.

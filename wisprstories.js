@@ -1,6 +1,6 @@
 (async function(){try{var r=await fetch("/version.json?v="+Date.now(),{cache:"no-store"});var v=await r.json();console.log("%c[Build] Wibe Stories "+v.version+" ("+v.buildDate+")","color:#ec4899;font-weight:bold;font-size:14px");}catch(e){console.log("%c[Build] Wibe Stories","color:#ec4899;font-weight:bold;font-size:14px");}})();
-// API base URL — all /api/ fetch calls go to Railway
-window._API_BASE = 'https://wibe-stories-production.up.railway.app';
+// API base URL — empty on localhost (talks to local Express), Railway in production
+window._API_BASE = window.location.hostname === 'localhost' ? '' : 'https://wibe-stories-production.up.railway.app';
 const PALS = [
   "#7c3aed",
   "#f59e0b",
@@ -97,6 +97,26 @@ const SCRIPT_TO_LANG = {
   thai: "th", arab: null, zhs: "zh", zht: "zh",
   jpn: "ja", kor: "ko", cyr: "ru", dev: "en",
 };
+ 
+function handleLandingAuthClick(mode) {
+  if (typeof Clerk === 'undefined') return;
+  
+  const landingOverlay = document.querySelector('.onboarding-overlay');
+  const isLandingVisible = landingOverlay && landingOverlay.style.display !== 'none';
+  
+  if (isLandingVisible && typeof enterApp === 'function') {
+    // Landing page is visible - dismiss it first, then open Clerk
+    enterApp();
+    setTimeout(() => {
+      if (typeof Clerk !== 'undefined') {
+        Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']();
+      }
+    }, 600); // Match enterApp transition duration
+  } else {
+    // Landing page already dismissed - open Clerk directly
+    Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']();
+  }
+}
 
 function autoDetectLangFromText(text) {
   if (!text || !text.trim()) return null;
@@ -3540,7 +3560,7 @@ revalidateProKey();
 
   document.getElementById('navClerkSignIn')?.addEventListener('click', function(e) {
     e.preventDefault();
-    if (typeof Clerk !== 'undefined') Clerk.openSignIn();
+    handleLandingAuthClick('signin');
   });
 
   document.getElementById('navClerkSignOut')?.addEventListener('click', function(e) {
@@ -3559,7 +3579,7 @@ revalidateProKey();
 
   document.getElementById('hmClerkSignIn')?.addEventListener('click', function(e) {
     e.preventDefault();
-    if (typeof Clerk !== 'undefined') Clerk.openSignIn();
+    handleLandingAuthClick('signin');
   });
 
   document.getElementById('hmClerkSignOut')?.addEventListener('click', function(e) {

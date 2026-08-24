@@ -176,6 +176,12 @@
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: clamp(12px, 2vw, 20px);
 }
+@media (max-width: 600px) {
+  .vault-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}
 
 /* ── TILE ── */
 .vault-tile {
@@ -427,6 +433,44 @@
 }
 .vault-empty-btn:hover { opacity: 0.85; }
 
+/* ── ERROR STATE ── */
+.vault-error {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 20px;
+  flex: 1;
+}
+.vault-error.visible { display: flex; }
+.vault-error-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+.vault-error-title {
+  font-family: var(--serif);
+  font-size: clamp(20px, 0.5vw + 18px, 24px);
+  margin-bottom: 8px;
+}
+.vault-error-desc {
+  font-size: 14px;
+  color: var(--ink3);
+  max-width: 300px;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+.vault-error-btn {
+  background: var(--ink);
+  color: var(--cream);
+  border: none;
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  font-family: var(--sans);
+  touch-action: manipulation;
+  transition: opacity 0.15s;
+}
+.vault-error-btn:hover { opacity: 0.85; }
+
 /* ── LOCKED STATE ── */
 .vault-locked {
   display: none;
@@ -589,7 +633,8 @@
   box-shadow: 0 8px 32px rgba(0,0,0,0.3);
 }
 .vault-card-view-info { text-align: center; color: #fff; }
-.vault-card-view-name { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.vault-card-view-name { font-size: 18px; font-weight: 600; margin-bottom: 4px; outline: none; border-radius: 4px; padding: 2px 6px; min-width: 60px; }
+.vault-card-view-name.editing { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); }
 .vault-card-view-detail { font-size: 13px; opacity: 0.7; }
 .vault-cv-play {
   display: inline-flex;
