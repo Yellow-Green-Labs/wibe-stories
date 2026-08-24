@@ -163,7 +163,8 @@
   }
 
   function fetchStats() {
-    fetch(window._API_BASE + '/api/lang-stats')
+    var _apiBase = window._API_BASE || 'https://wibe-stories-production.up.railway.app';
+    fetch(_apiBase + '/api/lang-stats')
       .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
       .then(function(data) {
         var wasFailed = fetchFailed;

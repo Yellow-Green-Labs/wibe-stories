@@ -65,7 +65,8 @@
   } catch (e) {}
 
   /* Server truth: one verify per page load (30/min rate limit, fail silent) */
-  fetch(window._API_BASE + '/api/pro-verify', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+  var _apiBase = window._API_BASE || 'https://wibe-stories-production.up.railway.app';
+  fetch(_apiBase + '/api/pro-verify', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
     .then(function (r) { return r.json(); })
     .then(function (data) {
       renderBanner(data);
