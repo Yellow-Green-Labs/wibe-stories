@@ -106,22 +106,21 @@ function handleLandingAuthClick(mode) {
   
   if (isLandingVisible) {
     // Landing page is visible - switch to auth mode (blank dark page behind Clerk)
-    // instead of revealing the main app. On close, restore landing if not signed in.
+    // instead of revealing the main app. enterApp() must NOT run here — it would
+    // unblur/reveal the app, which is wrong for the auth flow.
     document.documentElement.classList.add('ws-auth-mode');
-    var openResult = Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']();
-    if (openResult && typeof openResult.then === 'function') {
-      openResult.then(function () {
-        document.documentElement.classList.remove('ws-auth-mode');
-        if (!Clerk.user) {
-          landingOverlay.style.display = '';
-        } else {
+    // Detect sign-in success — enter the app. (Clerk.openSignIn returns undefined
+    // in v6.30.0, not a promise, so we can't use .then() for close detection.)
+    if (typeof Clerk.addListener === 'function') {
+      var _clerkUnsub = Clerk.addListener(function () {
+        if (Clerk.user) {
+          document.documentElement.classList.remove('ws-auth-mode');
           if (typeof enterApp === 'function') enterApp();
+          if (typeof _clerkUnsub === 'function') _clerkUnsub();
         }
-      }).catch(function () {
-        document.documentElement.classList.remove('ws-auth-mode');
-        landingOverlay.style.display = '';
       });
     }
+    Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']();
   } else {
     // Landing page already dismissed - open Clerk directly
     Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']();
