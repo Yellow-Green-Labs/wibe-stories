@@ -100,21 +100,18 @@ const SCRIPT_TO_LANG = {
  
 function handleLandingAuthClick(mode) {
   if (typeof Clerk === 'undefined') return;
-  
-  const landingOverlay = document.querySelector('.onboarding-overlay');
-  const isLandingVisible = landingOverlay && landingOverlay.style.display !== 'none';
-  
+
+  var landingOverlay = document.querySelector('.onboarding-overlay');
+  var isLandingVisible = landingOverlay && landingOverlay.style.display !== 'none';
+
   if (isLandingVisible) {
-    // Landing page is visible - switch to auth mode (blank dark page behind Clerk)
-    // instead of revealing the main app. enterApp() must NOT run here — it would
-    // unblur/reveal the app, which is wrong for the auth flow.
-    document.documentElement.classList.add('ws-auth-mode');
-    // Detect sign-in success — enter the app. (Clerk.openSignIn returns undefined
-    // in v6.30.0, not a promise, so we can't use .then() for close detection.)
+    // Open Clerk on top of the landing page. Don't hide anything — Clerk's
+    // modal has its own backdrop and z-index (9999999) that floats over the
+    // landing overlay (999999). When the user closes it, the landing is still
+    // there. When they sign in, enterApp() transitions into the main app.
     if (typeof Clerk.addListener === 'function') {
       var _clerkUnsub = Clerk.addListener(function () {
         if (Clerk.user) {
-          document.documentElement.classList.remove('ws-auth-mode');
           if (typeof enterApp === 'function') enterApp();
           if (typeof _clerkUnsub === 'function') _clerkUnsub();
         }
@@ -122,7 +119,6 @@ function handleLandingAuthClick(mode) {
     }
     Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']();
   } else {
-    // Landing page already dismissed - open Clerk directly
     Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']();
   }
 }
