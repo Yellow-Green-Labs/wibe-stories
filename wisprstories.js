@@ -104,14 +104,23 @@ function handleLandingAuthClick(mode) {
   const landingOverlay = document.querySelector('.onboarding-overlay');
   const isLandingVisible = landingOverlay && landingOverlay.style.display !== 'none';
   
-  if (isLandingVisible && typeof enterApp === 'function') {
-    // Landing page is visible - dismiss it first, then open Clerk
-    enterApp();
-    setTimeout(() => {
-      if (typeof Clerk !== 'undefined') {
-        Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']();
+  if (isLandingVisible) {
+    // Landing page is visible - switch to auth mode (blank dark page behind Clerk)
+    // instead of revealing the main app. On close, restore landing if not signed in.
+    document.documentElement.classList.add('ws-auth-mode');
+    Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']().then(function () {
+      document.documentElement.classList.remove('ws-auth-mode');
+      if (!Clerk.user) {
+        // Not signed in — restore the landing page
+        landingOverlay.style.display = '';
+      } else {
+        // Signed in — enter the app
+        if (typeof enterApp === 'function') enterApp();
       }
-    }, 600); // Match enterApp transition duration
+    }).catch(function () {
+      document.documentElement.classList.remove('ws-auth-mode');
+      landingOverlay.style.display = '';
+    });
   } else {
     // Landing page already dismissed - open Clerk directly
     Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']();

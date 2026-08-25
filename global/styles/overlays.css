@@ -664,6 +664,19 @@ html.ws-entering-app #appRoot {
   }
 }
 
+/* Auth mode: when Clerk modal is open from the landing page, hide both the
+    landing overlay and the app behind a solid dark surface. The user sees only
+    the Clerk modal on a blank page — not the main app. */
+html.ws-auth-mode .onboarding-overlay {
+  display: none !important;
+}
+html.ws-auth-mode #appRoot {
+  visibility: hidden !important;
+}
+html.ws-auth-mode body {
+  background: #1a1a1a !important;
+}
+
 /* LP NAV */
 .lp-nav {
   flex-shrink: 0;
