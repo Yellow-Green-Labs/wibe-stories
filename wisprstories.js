@@ -105,23 +105,29 @@ function handleLandingAuthClick(mode) {
   var isLandingVisible = landingOverlay && landingOverlay.style.display !== 'none';
 
   if (isLandingVisible) {
-    // Clerk's modal backdrop is z-index 10000; our landing is 999999.
-    // Drop the landing z-index so Clerk floats on top. Restore ONLY on
-    // sign-in (enterApp hides the landing anyway) or after a timeout.
+    // Drop landing z-index so Clerk modal (10000) floats on top.
+    // Add a dark overlay behind Clerk for contrast.
     landingOverlay.style.zIndex = '1';
+    var clerkBg = document.createElement('div');
+    clerkBg.className = 'ws-clerk-overlay';
+    document.body.appendChild(clerkBg);
     Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']();
+    function _cleanupClerkAuth() {
+      landingOverlay.style.zIndex = '';
+      if (clerkBg.parentNode) clerkBg.parentNode.removeChild(clerkBg);
+    }
     if (typeof Clerk.addListener === 'function') {
       var _clerkUnsub = Clerk.addListener(function () {
         if (Clerk.user) {
-          landingOverlay.style.zIndex = '';
+          _cleanupClerkAuth();
           if (typeof enterApp === 'function') enterApp();
           if (typeof _clerkUnsub === 'function') _clerkUnsub();
         }
       });
     }
-    // Safety restore after 60s if user closed Clerk without signing in
+    // Safety cleanup after 60s if user closed Clerk without signing in
     setTimeout(function () {
-      if (landingOverlay.style.zIndex === '1') landingOverlay.style.zIndex = '';
+      if (landingOverlay.style.zIndex === '1') _cleanupClerkAuth();
     }, 60000);
   } else {
     Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']();
