@@ -105,22 +105,24 @@ function handleLandingAuthClick(mode) {
   var isLandingVisible = landingOverlay && landingOverlay.style.display !== 'none';
 
   if (isLandingVisible) {
-    // Clerk's modal z-index is below our landing overlay (999999).
-    // Temporarily drop the landing z-index so Clerk floats on top.
+    // Clerk's modal backdrop is z-index 10000; our landing is 999999.
+    // Drop the landing z-index so Clerk floats on top. Restore ONLY on
+    // sign-in (enterApp hides the landing anyway) or after a timeout.
     landingOverlay.style.zIndex = '1';
     Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']();
-    // Restore z-index on sign-in or after a short delay if user closes Clerk
     if (typeof Clerk.addListener === 'function') {
       var _clerkUnsub = Clerk.addListener(function () {
-        landingOverlay.style.zIndex = '';
-        if (Clerk.user && typeof enterApp === 'function') enterApp();
-        if (typeof _clerkUnsub === 'function') _clerkUnsub();
+        if (Clerk.user) {
+          landingOverlay.style.zIndex = '';
+          if (typeof enterApp === 'function') enterApp();
+          if (typeof _clerkUnsub === 'function') _clerkUnsub();
+        }
       });
     }
-    // Safety: restore z-index after 30s if Clerk was closed without sign-in
+    // Safety restore after 60s if user closed Clerk without signing in
     setTimeout(function () {
       if (landingOverlay.style.zIndex === '1') landingOverlay.style.zIndex = '';
-    }, 30000);
+    }, 60000);
   } else {
     Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']();
   }
