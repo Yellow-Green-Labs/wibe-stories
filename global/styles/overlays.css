@@ -774,27 +774,6 @@ html.ws-entering-app #appRoot {
   margin: 12px auto 0;
 }
 
-/* LP BENEFIT BADGES */
-.lp-benefits {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 16px 32px 4px;
-}
-.lp-benefit {
-  font-size: clamp(12px, 0.3vw + 11px, 14px);
-  font-weight: 600;
-  color: rgba(255, 255, 235, 0.8);
-  background: rgba(255, 255, 235, 0.06);
-  border: 1px solid rgba(255, 255, 235, 0.12);
-  border-radius: 999px;
-  padding: 6px 14px;
-  white-space: nowrap;
-}
-
 /* LP CTA */
 .lp-cta {
   flex-shrink: 0;
@@ -903,14 +882,6 @@ html.ws-entering-app #appRoot {
   }
   .lp-hero-subtitle {
     font-size: 13px;
-  }
-  .lp-benefits {
-    padding: 12px 16px 2px;
-    gap: 8px;
-  }
-  .lp-benefit {
-    font-size: 10.5px;
-    padding: 4px 10px;
   }
   .lp-cta {
     padding: 10px 16px 4px;
