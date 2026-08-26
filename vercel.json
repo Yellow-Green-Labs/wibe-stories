@@ -72,9 +72,5 @@
         { "key": "Cache-Control", "value": "no-cache, must-revalidate" }
       ]
     }
-  ],
-  "cron": {
-    "schedule": "0 2 * * *",
-    "command": "curl -X POST https://wibestories.vercel.app/api/cron/send-occasion-emails -H 'Authorization: Bearer $CRON_SECRET'"
-  }
+  ]
 }
