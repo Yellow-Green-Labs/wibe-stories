@@ -667,12 +667,13 @@ html.ws-entering-app #appRoot {
 /* Hide Clerk's close (X) button — user must complete or use browser back */
 .cl-modalCloseButton { display: none !important; }
 
-/* Dark overlay behind Clerk modal when opened from landing page */
+/* Dark overlay behind Clerk modal when opened from landing page.
+   Must be BELOW Clerk's modal backdrop (z-index 10000) but ABOVE landing (1). */
 .ws-clerk-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.7);
-  z-index: 99999;
+  z-index: 9999;
 }
 
 /* LP NAV */
