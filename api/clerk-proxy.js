@@ -25,7 +25,7 @@ export default async function handler(req) {
 
     const upstreamHeaders = new Headers();
     for (const [k, v] of req.headers) {
-      if (['host', 'content-length', 'connection', 'transfer-encoding', 'accept-encoding'].includes(k.toLowerCase())) continue;
+      if (['host', 'content-length', 'connection', 'transfer-encoding', 'accept-encoding', 'clerk-api-version'].includes(k.toLowerCase())) continue;
       upstreamHeaders.set(k, v);
     }
     upstreamHeaders.set('Clerk-Proxy-Url', 'https://wibestories.vercel.app/__clerk');

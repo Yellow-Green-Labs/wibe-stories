@@ -104,14 +104,18 @@ function handleLandingAuthClick(mode) {
   var landingOverlay = document.querySelector('.onboarding-overlay');
   var isLandingVisible = landingOverlay && landingOverlay.style.display !== 'none';
 
-  if (isLandingVisible) {
+  function _openClerk() {
+    Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']();
+  }
+
+  function _openFromLanding() {
     // Drop landing z-index so Clerk modal (10000) floats on top.
     // Add a dark overlay behind Clerk for contrast.
     landingOverlay.style.zIndex = '1';
     var clerkBg = document.createElement('div');
     clerkBg.className = 'ws-clerk-overlay';
     document.body.appendChild(clerkBg);
-    Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']();
+    _openClerk();
     function _cleanupClerkAuth() {
       landingOverlay.style.zIndex = '';
       if (clerkBg.parentNode) clerkBg.parentNode.removeChild(clerkBg);
@@ -129,8 +133,37 @@ function handleLandingAuthClick(mode) {
     setTimeout(function () {
       if (landingOverlay.style.zIndex === '1') _cleanupClerkAuth();
     }, 60000);
+  }
+
+  // Clerk not loaded yet (first visit, slow connection) — wait for it
+  if (!Clerk.loaded) {
+    if (typeof Clerk.addListener === 'function') {
+      var _waitUnsub = Clerk.addListener(function () {
+        if (Clerk.loaded) {
+          if (typeof _waitUnsub === 'function') _waitUnsub();
+          if (isLandingVisible) _openFromLanding(); else _openClerk();
+        }
+      });
+    } else {
+      // Fallback: poll every 200ms for up to 10s
+      var _attempts = 0;
+      var _poll = setInterval(function () {
+        _attempts++;
+        if (Clerk.loaded || _attempts > 50) {
+          clearInterval(_poll);
+          if (Clerk.loaded) {
+            if (isLandingVisible) _openFromLanding(); else _openClerk();
+          }
+        }
+      }, 200);
+    }
+    return;
+  }
+
+  if (isLandingVisible) {
+    _openFromLanding();
   } else {
-    Clerk[mode === 'signup' ? 'openSignUp' : 'openSignIn']();
+    _openClerk();
   }
 }
 
