@@ -100,6 +100,8 @@ const SCRIPT_TO_LANG = {
  
 function handleLandingAuthClick(mode) {
   if (typeof Clerk === 'undefined') return;
+  // Prevent multiple overlays from rapid clicks
+  if (document.querySelector('.ws-clerk-overlay')) return;
 
   var landingOverlay = document.querySelector('.onboarding-overlay');
   var isLandingVisible = landingOverlay && landingOverlay.style.display !== 'none';
@@ -115,11 +117,18 @@ function handleLandingAuthClick(mode) {
     var clerkBg = document.createElement('div');
     clerkBg.className = 'ws-clerk-overlay';
     document.body.appendChild(clerkBg);
-    _openClerk();
+
     function _cleanupClerkAuth() {
       landingOverlay.style.zIndex = '';
       if (clerkBg.parentNode) clerkBg.parentNode.removeChild(clerkBg);
     }
+
+    // Click on dark overlay = close Clerk + clean up
+    clerkBg.addEventListener('click', function () {
+      _cleanupClerkAuth();
+    });
+
+    _openClerk();
     if (typeof Clerk.addListener === 'function') {
       var _clerkUnsub = Clerk.addListener(function () {
         if (Clerk.user) {
