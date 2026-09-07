@@ -1,0 +1,23 @@
+name: Daily Email Cron
+
+on:
+  schedule:
+    - cron: '0 2 * * *'   # 02:00 UTC daily
+  workflow_dispatch:       # allow manual trigger from the Actions tab
+
+jobs:
+  run-email-jobs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Run scheduled email jobs
+        run: node scripts/cron-dispatcher.mjs
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}

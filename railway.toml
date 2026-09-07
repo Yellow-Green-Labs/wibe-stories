@@ -1,3 +1,0 @@
-[cron]
-schedule = "0 2 * * *"
-command = "node scripts/cron-dispatcher.mjs"
